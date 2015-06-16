@@ -3,6 +3,8 @@ using System.Collections;
 
 public class CameraMovement : MonoBehaviour {
 
+	private InputManagerScript inputManager;
+
     public Transform target;
     public float distance = 5.0f;
     public float xSpeed = 120.0f;
@@ -14,7 +16,7 @@ public class CameraMovement : MonoBehaviour {
     public float distanceMin = .5f;
     public float distanceMax = 15f;
 
-    private Rigidbody rigidbody;
+    private Rigidbody cameraRigidbody;
 
     float x = 0.0f;
     float y = 0.0f;
@@ -22,16 +24,18 @@ public class CameraMovement : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+		inputManager = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManagerScript>();
+
         Vector3 angles = transform.eulerAngles;
         x = angles.y;
         y = angles.x;
 
-        rigidbody = GetComponent<Rigidbody>();
+        cameraRigidbody = GetComponent<Rigidbody>();
 
         // Make the rigid body not change rotation
-        if (rigidbody != null)
+        if (cameraRigidbody != null)
         {
-            rigidbody.freezeRotation = true;
+            cameraRigidbody.freezeRotation = true;
         }
     }
 	
@@ -40,7 +44,7 @@ public class CameraMovement : MonoBehaviour {
         // These movements include the camera AND THE camera's rotation anchor
         // F key forces camera back to default position and angle
         // The default position is set manually, must change if the grid changes
-        if (GetComponent<InputManagerScript>().fButtonDown == true)
+		if (inputManager.fButtonDown == true)
         {
             transform.position = new Vector3(-1.11696f, 4.865548f, 4.112394f);
             transform.eulerAngles = new Vector3(45f, 135f, 0f);
@@ -49,25 +53,25 @@ public class CameraMovement : MonoBehaviour {
         }
 
         // Camera pans left
-        if (GetComponent<InputManagerScript>().leftButtonHold == true)
+		if (inputManager.leftButtonHold == true)
         {
             transform.Translate(Vector3.left * Time.deltaTime);
             target.transform.Translate(Vector3.left * Time.deltaTime);
         }
         // Camera pans right
-        if (GetComponent<InputManagerScript>().rightButtonHold == true)
+		if (inputManager.rightButtonHold == true)
         {
             transform.Translate(Vector3.right * Time.deltaTime);
             target.transform.Translate(Vector3.right * Time.deltaTime);
         }
         // Camera pans forward
-        if (GetComponent<InputManagerScript>().upButtonHold == true)
+		if (inputManager.upButtonHold == true)
         {
             transform.Translate(Vector3.forward * Time.deltaTime);
             target.transform.Translate(Vector3.forward * Time.deltaTime);
         }
         // Camera pans backwards
-        if (GetComponent<InputManagerScript>().downButtonHold == true)
+		if (inputManager.downButtonHold == true)
         {
             transform.Translate(Vector3.back * Time.deltaTime);
             target.transform.Translate(Vector3.back * Time.deltaTime);
@@ -80,7 +84,7 @@ public class CameraMovement : MonoBehaviour {
 
         // Late update for camera; if right click is held, it rotates AND moves the camera's position individually to the anchor. This means the anchor CANNOT be parented/child.
         // Right clicking will override default's angle, despite being hard set.
-        if (GetComponent<InputManagerScript>().rightClickHold == true)
+		if (inputManager.rightClickHold == true)
         {
             if (target)
             {
