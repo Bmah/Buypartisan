@@ -16,14 +16,14 @@ public class GameController : MonoBehaviour {
 	public Image[] playerPlacmentButtonImages;
 
 	public int numberPlayers;  //number of players per game
-	private int playersSpawned = 0; //how many players have been spawned in
+	public int playersSpawned = 0; //how many players have been spawned in
 	private bool spawnedNewPlayer = false; //bool for checking whether or not a new player has been spawned in
-	private bool playerConfirmsPlacment = false; //bool for checking if player is done
+	public bool playerConfirmsPlacment = false; //bool for checking if player is done
 
-	private int turnCounter = 0;
+	private int turnCounter = 0;//will be used to keep track of turns
 
-	public GameObject[] voters = new GameObject[10];//array which houses the voters
-	public GameObject[] players = new GameObject[4];//array which houses the players
+	public GameObject[] voters = new GameObject[2];//array which houses the voters
+	public GameObject[] players = new GameObject[2];//array which houses the players
 
 	public GameObject currentPlayer;
 	
@@ -39,10 +39,12 @@ public class GameController : MonoBehaviour {
 	/// Spawns the voters according to map
 	/// </summary>
 	void SpawnVoters(){
-		Vector3 voterLocation = new Vector3(0,0,0);
+		Vector3 voterLocation = new Vector3(1,3,2);
 		voters[0] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
-		voterLocation = new Vector3 (0,2,0);
+		voters [0].GetComponent<VoterVariables> ().votes = 3;
+		voterLocation = new Vector3 (0,2,3);
 		voters[1] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
+		voters [1].GetComponent<VoterVariables> ().votes = 3;
 	}
 	
 	// Update is called once per frame
@@ -61,7 +63,7 @@ public class GameController : MonoBehaviour {
 				float leastDistance = 1000f;
 				int closestPlayer = 0;
 				for(int j = 0; j < players.Length; j++){
-					Vector3 distanceVector = players[0].transform.position - voters[2].transform.position;
+					Vector3 distanceVector = players[j].transform.position - voters[i].transform.position;
 					float distance = Mathf.Abs(distanceVector.x) + Mathf.Abs(distanceVector.y) + Mathf.Abs(distanceVector.z);
 					if(distance < leastDistance){
 						leastDistance = distance;
@@ -96,7 +98,6 @@ public class GameController : MonoBehaviour {
 		if (!spawnedNewPlayer) {
 			currentPlayer = Instantiate(playerTemplate,new Vector3(0,0,0), Quaternion.identity) as GameObject;
 			players[playersSpawned] = currentPlayer;
-			playersSpawned++;
 			spawnedNewPlayer = true;
 			playerConfirmsPlacment = false;
 		}
@@ -118,7 +119,9 @@ public class GameController : MonoBehaviour {
 				}
 			}
 			if(playerConfirmsPlacment){ //if the player placment is legal
+				playersSpawned++;
 				spawnedNewPlayer = false;
+				playerConfirmsPlacment = false;
 			}
 		}
 	}//SpawnPlayer
