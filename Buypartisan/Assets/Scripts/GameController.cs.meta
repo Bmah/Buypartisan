@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 76277407504a9fb4fa98873d9413877a
+timeCreated: 1434479017
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - voterTemplate: {fileID: 129010, guid: 48769944b73132b48976c41308790d65, type: 2}
+  - playerTemplate: {fileID: 183562, guid: 2dc895fefcf0d974dba71dee65be4e28, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

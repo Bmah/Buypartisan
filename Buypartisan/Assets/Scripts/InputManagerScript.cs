@@ -26,6 +26,9 @@ public class InputManagerScript : MonoBehaviour {
 	public bool fButtonHold = false;
 	public bool fButtonUp = false;
 
+	public float mouseAxisX;
+	public float mouseAxisY;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -157,5 +160,8 @@ public class InputManagerScript : MonoBehaviour {
 			fButtonDown = false;
 			fButtonHold = false;
 		}
+
+		mouseAxisX = Input.GetAxis ("Mouse X");
+		mouseAxisY = Input.GetAxis ("Mouse Y");
 	}
 }
