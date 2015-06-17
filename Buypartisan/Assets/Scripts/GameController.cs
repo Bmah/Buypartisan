@@ -14,8 +14,8 @@ public class GameController : MonoBehaviour {
 
 	public Button[] playerPlacmentButtons;
 	public Image[] playerPlacmentButtonImages;
-	public int girdSize;
-
+	public int gridSize;
+	public GridInstanced GridInstancedController;
 	public int numberPlayers;  //number of players per game
 	public int playersSpawned = 0; //how many players have been spawned in
 	private bool spawnedNewPlayer = false; //bool for checking whether or not a new player has been spawned in
@@ -33,6 +33,7 @@ public class GameController : MonoBehaviour {
 	/// Adds in Voter Array
 	/// </summary>
 	void Start () {
+		GridInstancedController.GridInstantiate (gridSize);
 		SpawnVoters ();
 	}
 
