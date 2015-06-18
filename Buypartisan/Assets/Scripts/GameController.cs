@@ -19,7 +19,7 @@ public class GameController : MonoBehaviour {
 	
 	public int gridSize;
 	public GridInstanced GridInstancedController;
-	
+	public VoterVariables VoterVariablesController;
 	public int numberPlayers;  //number of players per game
 	public int playersSpawned = 0; //how many players have been spawned in
 	private bool spawnedNewPlayer = false; //bool for checking whether or not a new player has been spawned in
@@ -196,6 +196,15 @@ public class GameController : MonoBehaviour {
 			}
 		}
 	}
-	
+
+	public void PowerCall(int power) {
+		if (power == 1) {
+			for (int i = 0; i < voters.Length; i++) {
+				if (VoterVariablesController.GetSelected())
+					voters [i].GetComponent<VoterVariables> ().votes = 0;
+			}
+		}
+		//TODO: implement the rest of the powers, which will be further increments of power
+	}
 	
 }//Gamecontroller Class
