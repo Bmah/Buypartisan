@@ -76,7 +76,7 @@ public class GameController : MonoBehaviour {
 			if (turnCounter < numberOfTurns) {
 				PlayerTurn ();
 				if (Input.GetKeyDown (KeyCode.P))
-					playerTakingAction = true;
+					playerTakingAction = true;//this stops the player 1 turn form infinitely looping
 
 			} else {
 				currentState = GameState.RoundEnd;
@@ -88,10 +88,10 @@ public class GameController : MonoBehaviour {
 				int closestPlayer = 0;
 				float tieDistance = 1000f;
 				int tiePlayer = 0;
-				for (int j = 0; j < players.Length; j++) {
+				for (int j = 0; j < players.Length; j++) {//calculates the distance of voters from players
 					Vector3 distanceVector = players [j].transform.position - voters [i].transform.position;
 					float distance = Mathf.Abs (distanceVector.x) + Mathf.Abs (distanceVector.y) + Mathf.Abs (distanceVector.z);
-					if (distance < leastDistance) {
+					if (distance < leastDistance) {//determines if there is a player that beat the last one
 						leastDistance = distance;
 						closestPlayer = j;
 					} else if (distance == leastDistance) {//creates a tie between two players (3 way ties can suck it)
@@ -215,12 +215,18 @@ public class GameController : MonoBehaviour {
 		// Brings us to the results UI with all the information displayed
 		currentState = GameState.AfterEnd;
 	}
-
+	/// <summary>
+	/// So, this is the skeleton for the power functions.  Every power will be assigned an int, and checked for either though 
+	/// a switch statement or simple if checks. This function is called through a variety of means, although right now, only through
+	/// clicking on a voter.  Once its called, it checks int power for the power to execute, and then executes the code contained in the 
+	/// block.
+	/// </summary>
+	/// <param name="power">Power.</param>
 	public void PowerCall(int power) {
-		if (power == 1) {
+		if (power == 1) {//VOTER SUPPRESSION
 			for (int i = 0; i < voters.Length; i++) {
-				if (voters[i].GetComponent<VoterVariables>().GetSelected())
-					voters [i].GetComponent<VoterVariables> ().votes = 0;
+				if (voters[i].GetComponent<VoterVariables>().GetSelected())//looks through voters to get the one selected
+					voters [i].GetComponent<VoterVariables> ().votes = 0;//sets votes equal to zero
 			}
 		}
 		//TODO: implement the rest of the powers, which will be further increments of power
