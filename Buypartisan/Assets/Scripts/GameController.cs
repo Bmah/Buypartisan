@@ -28,7 +28,8 @@ public class GameController : MonoBehaviour {
 	private int currentPlayerTurn = 0; //this keeps track of which player is currently taking a turn
 	public int numberOfTurns; //this is a variable that you can change to however many number if turns we want.
 	private int turnCounter = 0;//will be used to keep track of turns
-	public bool playerTakingAction = false; //Checks if Player has finished taking an acti
+	public bool playerTakingAction = false;
+	public bool messaged;//Checks if Player has finished taking an acti
 	
 	public GameObject[] voters = new GameObject[2];//array which houses the voters
 	public GameObject[] players = new GameObject[2];//array which houses the players
@@ -42,6 +43,7 @@ public class GameController : MonoBehaviour {
 	void Start () {
 		//VoterVariables VoterVariablesController = GameObject.FindGameObjectWithTag("Voter(Clone)").GetComponent<GameController>();
 		GridInstancedController.GridInstantiate (gridSize);
+		messaged = true;
 		SpawnVoters ();
 	}
 	
@@ -59,7 +61,7 @@ public class GameController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		bool messaged = false;
+
 		if (currentState == GameState.PlayerSpawn) {
 			if (playersSpawned < numberPlayers) { //Players are still spawning in
 				SpawnPlayer ();
@@ -73,6 +75,9 @@ public class GameController : MonoBehaviour {
 			
 			if (turnCounter < numberOfTurns) {
 				PlayerTurn ();
+				if(Input.GetKeyDown(KeyCode.P))
+				   playerTakingAction = true;
+
 			} else {
 				currentState = GameState.RoundEnd;
 			}
@@ -97,6 +102,7 @@ public class GameController : MonoBehaviour {
 					
 				}
 				if(tieDistance == leastDistance) {//checks if least distance is still tied with the tie player, if not, it is shorter, so don't split
+					Debug.Log ("asadaf");
 					players[closestPlayer].GetComponent<PlayerVariables>().votes += voters[i].GetComponent<VoterVariables>().votes/2;
 					players[tiePlayer].GetComponent<PlayerVariables>().votes += voters[i].GetComponent<VoterVariables>().votes/2;
 					players[closestPlayer].GetComponent<PlayerVariables>().money += voters[i].GetComponent<VoterVariables>().money/2;
@@ -116,22 +122,25 @@ public class GameController : MonoBehaviour {
 		
 			for(int i = 0; i < players.Length; i++){
 				if(players[i].GetComponent<PlayerVariables>().votes > mostVotes){
+					Debug.Log ("I hate Coding");
 					mostVotes = players[i].GetComponent<PlayerVariables>().votes; 
 					winningPlayer = i;
 				}
 				if(players[i].GetComponent<PlayerVariables>().votes == mostVotes) {
-					Debug.Log ("here");
+					//Debug.Log ("here");
 					tieVotes = players[i].GetComponent<PlayerVariables>().votes;
+					Debug.Log(tieVotes);
+					Debug.Log(mostVotes);
 					tieFighter = i;
 				}
 			}
-			if(!messaged && mostVotes == tieVotes){
+			if(messaged && mostVotes == tieVotes){
 				Debug.Log ("Winning Players are " + winningPlayer +" and " + tieFighter + "!");
-				messaged = true;
+				messaged = false;
 			}
-			else if(!messaged){
+			else if(messaged){
 				Debug.Log("Winning Player is: " + winningPlayer + "!");
-				messaged = true;
+				messaged = false;
 			}
 		}
 	}// Update
