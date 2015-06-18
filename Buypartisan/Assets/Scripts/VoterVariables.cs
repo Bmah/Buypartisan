@@ -25,7 +25,8 @@ public class VoterVariables : MonoBehaviour {
 	
 
 	void Update () {
-		if (Input.GetMouseButton (0)) {
+		//bool controller goes here
+		if (Input.GetMouseButton (0)) {//this has to get moved to the input manager
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit hit;
 			if (Coll.Raycast (ray, out hit, 100.0F)) {
