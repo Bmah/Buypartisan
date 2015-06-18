@@ -17,6 +17,15 @@ public class UI_Script : MonoBehaviour {
 	//used for the increment and decrement of X,Y, and Z
 	Vector3 ppMove = Vector3.zero;
 
+	//holds the buttons as game objects
+	public GameObject xPlusButton;
+	public GameObject xMinusButton;
+	public GameObject yPlusButton;
+	public GameObject yMinusButton;
+	public GameObject zPlusButton;
+	public GameObject zMinusButton;
+	public GameObject confirmButton;
+
 	// Use this for initialization
 	void Start () {
 		controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
@@ -30,6 +39,15 @@ public class UI_Script : MonoBehaviour {
 		//tests the above two lines of code
 		visualText.text = "Testing";
 
+		//gets the buttons
+		xPlusButton = GameObject.Find ("+X");
+		xMinusButton = GameObject.Find ("-X");
+		yPlusButton = GameObject.Find ("+Y");
+		yMinusButton = GameObject.Find ("-Y");
+		zPlusButton = GameObject.Find ("+Z");
+		zMinusButton = GameObject.Find ("-Z");
+		confirmButton = GameObject.Find ("Confirm");
+		
 	}
 	
 	// Update is called once per frame
@@ -118,12 +136,27 @@ public class UI_Script : MonoBehaviour {
 
 		//another test of the new text box code
 		alterTextBox ("Confirm Clicked");
+
+		//quick test of the disabling player placement buttons
+		//disablePPButtons ();
 	}
 
 	public void alterTextBox(string inputText)
 	{
 		visualText.text = inputText;
 
+	}
+
+	public void disablePPButtons()
+	{
+		//disables the Player Placement buttons
+		xPlusButton.SetActive (false);
+		xMinusButton.SetActive (false);
+		yPlusButton.SetActive (false);
+		yMinusButton.SetActive (false);
+		zPlusButton.SetActive (false);
+		zMinusButton.SetActive (false);
+		confirmButton.SetActive (false);
 	}
 
 }
