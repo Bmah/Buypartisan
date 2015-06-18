@@ -45,4 +45,13 @@ public class PlayerVariables : MonoBehaviour {
 	public bool GetSelected(){
 		return selected;
 	}
+
+	public void VoterSuppressStart() {
+		if (money < 5) 
+			Debug.Log ("You Need More Money");
+		else {
+			Debug.Log ("Click on a voter");
+		}
+	}
+
 }
