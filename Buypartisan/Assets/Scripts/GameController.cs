@@ -8,24 +8,31 @@ using UnityEngine.UI;
 /// </summary>
 
 public class GameController : MonoBehaviour {
-
+	public enum GameState {PlayerSpawn, ActionTurns, RoundEnd};
+	GameState currentState = GameState.PlayerSpawn;
+	
 	public GameObject voterTemplate;
 	public GameObject playerTemplate;
-
+	
 	public Button[] playerPlacmentButtons;
 	public Image[] playerPlacmentButtonImages;
+	
 	public int gridSize;
 	public GridInstanced GridInstancedController;
+	
 	public int numberPlayers;  //number of players per game
 	public int playersSpawned = 0; //how many players have been spawned in
 	private bool spawnedNewPlayer = false; //bool for checking whether or not a new player has been spawned in
 	public bool playerConfirmsPlacment = false; //bool for checking if player is done
-
+	
+	private int currentPlayerTurn = 0; //this keeps track of which player is currently taking a turn
+	public int numberOfTurns; //this is a variable that you can change to however many number if turns we want.
 	private int turnCounter = 0;//will be used to keep track of turns
-
+	public bool playerTakingAction = false; //Checks if Player has finished taking an acti
+	
 	public GameObject[] voters = new GameObject[2];//array which houses the voters
 	public GameObject[] players = new GameObject[2];//array which houses the players
-
+	
 	public GameObject currentPlayer;
 	
 	/// <summary>
@@ -36,7 +43,7 @@ public class GameController : MonoBehaviour {
 		GridInstancedController.GridInstantiate (gridSize);
 		SpawnVoters ();
 	}
-
+	
 	/// <summary>
 	/// Spawns the voters according to map
 	/// </summary>
@@ -52,16 +59,24 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		bool messaged = false;
-		if (playersSpawned < numberPlayers) { //Players are still spawning in
-			SpawnPlayer();
-		} 
-		else { // Players are done spawning
-
-			//Turns go here
-			//*INCOMPLETE*//
-			//currentPlayer = players[turnCounter];
-			//PlayerTurn();
-
+		if (currentState == GameState.PlayerSpawn) {
+			if (playersSpawned < numberPlayers) { //Players are still spawning in
+				SpawnPlayer ();
+			} else {
+				currentState = GameState.ActionTurns;
+				playerTakingAction = false;
+				Debug.Log ("Turn " + (turnCounter + 1) + " begin!");
+				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+			}
+		} else if (currentState == GameState.ActionTurns) {
+			
+			if (turnCounter < numberOfTurns) {
+				PlayerTurn ();
+			} else {
+				currentState = GameState.RoundEnd;
+			}
+			
+		} else if (currentState == GameState.RoundEnd) {
 			for(int i = 0; i < voters.Length; i++) {
 				float leastDistance = 1000f;
 				int closestPlayer = 0;
@@ -87,17 +102,17 @@ public class GameController : MonoBehaviour {
 					players[tiePlayer].GetComponent<PlayerVariables>().money += voters[i].GetComponent<VoterVariables>().money/2;
 				}
 				else {//do normal assignments if least distance is not tied
-				players[closestPlayer].GetComponent<PlayerVariables>().votes += voters[i].GetComponent<VoterVariables>().votes;
-				players[closestPlayer].GetComponent<PlayerVariables>().money += voters[i].GetComponent<VoterVariables>().money;
+					players[closestPlayer].GetComponent<PlayerVariables>().votes += voters[i].GetComponent<VoterVariables>().votes;
+					players[closestPlayer].GetComponent<PlayerVariables>().money += voters[i].GetComponent<VoterVariables>().money;
 				}
 			}
-
+			
 			int mostVotes = 0;
 			int winningPlayer = 0;
 			int tieVotes = 0;
 			int tieFighter = 0;//player that ties
-
-			//no Tie functionality as of yet
+			
+		
 			for(int i = 0; i < players.Length; i++){
 				if(players[i].GetComponent<PlayerVariables>().votes > mostVotes){
 					mostVotes = players[i].GetComponent<PlayerVariables>().votes; 
@@ -118,8 +133,8 @@ public class GameController : MonoBehaviour {
 			}
 		}
 	}// Update
-
-
+	
+	
 	/// <summary>
 	/// Spawns the player and enables player placment controlls.
 	/// Disables controlls upon confirmation and last player placed
@@ -131,16 +146,16 @@ public class GameController : MonoBehaviour {
 			spawnedNewPlayer = true;
 			playerConfirmsPlacment = false;
 		}
-
+		
 		if (!playerPlacmentButtons [0].enabled) {
 			for(int i = 0; i < playerPlacmentButtons.Length; i++){
 				playerPlacmentButtons[i].enabled = true;
 				playerPlacmentButtonImages[i].enabled = true;
 			}
 		}
-
+		
 		//Player Uses Buttons to choose where the player goes in the scene
-
+		
 		if (playerConfirmsPlacment) {
 			//checks the player against all of the previous players to ensure no duplicates
 			for(int i = 0; i < playersSpawned; i++){
@@ -155,17 +170,32 @@ public class GameController : MonoBehaviour {
 			}
 		}
 	}//SpawnPlayer
-
+	
 	/// <summary>
 	/// Players turn.
 	/// </summary>
 	void PlayerTurn(){
-		//do player turn stuff
-		//currentPlayer is the player that will be affected
-		//*INCOMPLETE*//
+		if (playerTakingAction) {
+			currentPlayerTurn++;
+			if (currentPlayerTurn < numberPlayers) {
+				playerTakingAction = false;
+				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+			}
+			if (currentPlayerTurn >= numberPlayers) {
+				//this is when all players have made their turns
+				turnCounter++;
+				currentPlayerTurn = 0;
+				playerTakingAction = false;
+				
+				if (turnCounter < numberOfTurns) {
+					Debug.Log ("Turn " + (turnCounter + 1) + " begin!");
+					Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+				} else {
+					Debug.Log ("Round Ends!");
+				}
+			}
+		}
 	}
-
-	void VoterSuppression (int voterNumber){
-		voters [voterNumber].GetComponent<VoterVariables> ().votes = 0;
-	}
+	
+	
 }//Gamecontroller Class
