@@ -14,7 +14,8 @@ public class GameController : MonoBehaviour {
 
 	public Button[] playerPlacmentButtons;
 	public Image[] playerPlacmentButtonImages;
-
+	public int gridSize;
+	public GridInstanced GridInstancedController;
 	public int numberPlayers;  //number of players per game
 	public int playersSpawned = 0; //how many players have been spawned in
 	private bool spawnedNewPlayer = false; //bool for checking whether or not a new player has been spawned in
@@ -32,6 +33,7 @@ public class GameController : MonoBehaviour {
 	/// Adds in Voter Array
 	/// </summary>
 	void Start () {
+		GridInstancedController.GridInstantiate (gridSize);
 		SpawnVoters ();
 	}
 
@@ -49,6 +51,7 @@ public class GameController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		bool messaged = false;
 		if (playersSpawned < numberPlayers) { //Players are still spawning in
 			SpawnPlayer();
 		} 
@@ -62,6 +65,8 @@ public class GameController : MonoBehaviour {
 			for(int i = 0; i < voters.Length; i++) {
 				float leastDistance = 1000f;
 				int closestPlayer = 0;
+				float tieDistance = 1000f;
+				int tiePlayer = 0;
 				for(int j = 0; j < players.Length; j++){
 					Vector3 distanceVector = players[j].transform.position - voters[i].transform.position;
 					float distance = Mathf.Abs(distanceVector.x) + Mathf.Abs(distanceVector.y) + Mathf.Abs(distanceVector.z);
@@ -69,13 +74,28 @@ public class GameController : MonoBehaviour {
 						leastDistance = distance;
 						closestPlayer = j;
 					}
+					else if (distance == leastDistance) {//creates a tie between two players (3 way ties can suck it)
+						tieDistance = distance;
+						tiePlayer = j;
+					}
+					
 				}
+				if(tieDistance == leastDistance) {//checks if least distance is still tied with the tie player, if not, it is shorter, so don't split
+					players[closestPlayer].GetComponent<PlayerVariables>().votes += voters[i].GetComponent<VoterVariables>().votes/2;
+					players[tiePlayer].GetComponent<PlayerVariables>().votes += voters[i].GetComponent<VoterVariables>().votes/2;
+					players[closestPlayer].GetComponent<PlayerVariables>().money += voters[i].GetComponent<VoterVariables>().money/2;
+					players[tiePlayer].GetComponent<PlayerVariables>().money += voters[i].GetComponent<VoterVariables>().money/2;
+				}
+				else {//do normal assignments if least distance is not tied
 				players[closestPlayer].GetComponent<PlayerVariables>().votes += voters[i].GetComponent<VoterVariables>().votes;
 				players[closestPlayer].GetComponent<PlayerVariables>().money += voters[i].GetComponent<VoterVariables>().money;
+				}
 			}
 
 			int mostVotes = 0;
 			int winningPlayer = 0;
+			int tieVotes = 0;
+			int tieFighter = 0;//player that ties
 
 			//no Tie functionality as of yet
 			for(int i = 0; i < players.Length; i++){
@@ -83,9 +103,19 @@ public class GameController : MonoBehaviour {
 					mostVotes = players[i].GetComponent<PlayerVariables>().votes; 
 					winningPlayer = i;
 				}
+				if(players[i].GetComponent<PlayerVariables>().votes == mostVotes) {
+					tieVotes = players[i].GetComponent<PlayerVariables>().votes;
+					tieFighter = i;
+				}
 			}
-
-			Debug.Log("Winning Player is: " + winningPlayer + "!");
+			if(!messaged && mostVotes == tieVotes){
+				Debug.Log ("Winning Players are " + winningPlayer +" and " + tieFighter + "!");
+				messaged = true;
+			}
+			else if(!messaged){
+				Debug.Log("Winning Player is: " + winningPlayer + "!");
+				messaged = true;
+			}
 		}
 	}// Update
 
@@ -135,4 +165,7 @@ public class GameController : MonoBehaviour {
 		//*INCOMPLETE*//
 	}
 
+	void VoterSuppression (int voterNumber){
+		voters [voterNumber].GetComponent<VoterVariables> ().votes = 0;
+	}
 }//Gamecontroller Class
