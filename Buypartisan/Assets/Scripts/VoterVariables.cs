@@ -18,8 +18,9 @@ public class VoterVariables : MonoBehaviour {
 
 	void Start () {
 		voterRenderer = this.GetComponent<Renderer>();
-		Coll = GetComponent<Collider> ();
+		Coll = this.GetComponent<Collider> ();
 		powerType = 1; //hardcoded for testing suppression
+		ControllerSquared = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 	}
 	
 
