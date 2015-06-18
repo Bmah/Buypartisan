@@ -122,6 +122,7 @@ public class GameController : MonoBehaviour {
 		
 			for(int i = 0; i < players.Length; i++){
 				if(players[i].GetComponent<PlayerVariables>().votes > mostVotes){
+					Debug.Log ("I hate Coding");
 					mostVotes = players[i].GetComponent<PlayerVariables>().votes; 
 					winningPlayer = i;
 				}

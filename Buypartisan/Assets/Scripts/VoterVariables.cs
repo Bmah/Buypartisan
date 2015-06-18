@@ -13,7 +13,7 @@ public class VoterVariables : MonoBehaviour {
 	public Material selectedTexture;
 	public Material unselectedTexture;
 	private Renderer voterRenderer;
-	public Collider Coll;
+	public Collider Coll;//not sure if needed
 	public GameController ControllerSquared;//used for power calls
 
 	void Start () {
