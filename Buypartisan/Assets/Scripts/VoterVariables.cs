@@ -13,19 +13,24 @@ public class VoterVariables : MonoBehaviour {
 	public Material selectedTexture;
 	public Material unselectedTexture;
 	private Renderer voterRenderer;
-	public Collider Coll;
+	public Collider Coll;//not sure if needed
 	public GameController ControllerSquared;//used for power calls
 
 	void Start () {
 		voterRenderer = this.GetComponent<Renderer>();
 		Coll = this.GetComponent<Collider> ();
-		powerType = 1; //hardcoded for testing suppression
+		powerType = 1; //hardcoded for testing suppression, make sure to remove when code in place for buttons assigning
 		ControllerSquared = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 	}
 	
-
+	/// <summary>
+	/// should have two checks, one controlled by a bool "powersUsed".  If powers aren't being used, clicking on a voter should bring up a 
+	/// small menu showing their attributes (votes and Money).  If powers is used, this will trigger going to the powers function, and 
+	/// will execute whatever power numvber "powerType" is set to.  
+	/// </summary>
 	void Update () {
-		if (Input.GetMouseButton (0)) {
+		//bool controller goes here, should be enabled when a player clicks on a power
+		if (Input.GetMouseButton (0)) {//this has to get moved to the input manager
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit hit;
 			if (Coll.Raycast (ray, out hit, 100.0F)) {
