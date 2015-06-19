@@ -8,6 +8,8 @@ public class UI_Script : MonoBehaviour {
 
 	private GameController controller;
 
+	public int gridSize;
+
 	//holds the main text box object
 	public GameObject mainTextBox;
 
@@ -64,68 +66,80 @@ public class UI_Script : MonoBehaviour {
 	
 	public void PP_X_Plus()
 	{
-		ppMove = controller.currentPlayer.transform.position;
-		ppMove = ppMove + Vector3.right;
-		controller.currentPlayer.transform.position = ppMove;
-		//Debug.Log ("X+ Clicked");
+		if (controller.currentPlayer.transform.position.x < gridSize - 1) {
+			ppMove = controller.currentPlayer.transform.position;
+			ppMove = ppMove + Vector3.right;
+			controller.currentPlayer.transform.position = ppMove;
+			//Debug.Log ("X+ Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("X+ Clicked");
+			//another test of the new text box code
+			alterTextBox ("X+ Clicked");
+		}
 	}
 	
 	public void PP_X_Minus()
 	{
-		ppMove = controller.currentPlayer.transform.position;
-		ppMove = ppMove + Vector3.left;
-		controller.currentPlayer.transform.position = ppMove;
-		//Debug.Log ("X- Clicked");
+		if (controller.currentPlayer.transform.position.x > 0) {
+			ppMove = controller.currentPlayer.transform.position;
+			ppMove = ppMove + Vector3.left;
+			controller.currentPlayer.transform.position = ppMove;
+			//Debug.Log ("X- Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("X- Clicked");
+			//another test of the new text box code
+			alterTextBox ("X- Clicked");
+		}
 	}
 	
 	public void PP_Y_Plus()
 	{
-		ppMove = controller.currentPlayer.transform.position;
-		ppMove = ppMove + Vector3.up;
-		controller.currentPlayer.transform.position = ppMove;
-		//Debug.Log ("Y+ Clicked");
+		if (controller.currentPlayer.transform.position.y < gridSize - 1) {
+			ppMove = controller.currentPlayer.transform.position;
+			ppMove = ppMove + Vector3.up;
+			controller.currentPlayer.transform.position = ppMove;
+			//Debug.Log ("Y+ Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("Y+ Clicked");
+			//another test of the new text box code
+			alterTextBox ("Y+ Clicked");
+		}
 	}
 	
 	public void PP_Y_Minus()
 	{
-		ppMove = controller.currentPlayer.transform.position;
-		ppMove = ppMove + Vector3.down;
-		controller.currentPlayer.transform.position = ppMove;
-		//Debug.Log ("Y- Clicked");
+		if (controller.currentPlayer.transform.position.y > 0) {
+			ppMove = controller.currentPlayer.transform.position;
+			ppMove = ppMove + Vector3.down;
+			controller.currentPlayer.transform.position = ppMove;
+			//Debug.Log ("Y- Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("Y- Clicked");
+			//another test of the new text box code
+			alterTextBox ("Y- Clicked");
+		}
 	}
 	
 	public void PP_Z_Plus()
 	{
-		ppMove = controller.currentPlayer.transform.position;
-		ppMove = ppMove + Vector3.forward;
-		controller.currentPlayer.transform.position = ppMove;
-		//Debug.Log ("Z+ Clicked");
+		if (controller.currentPlayer.transform.position.z < gridSize - 1) {
+			ppMove = controller.currentPlayer.transform.position;
+			ppMove = ppMove + Vector3.forward;
+			controller.currentPlayer.transform.position = ppMove;
+			//Debug.Log ("Z+ Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("Z+ Clicked");
+			//another test of the new text box code
+			alterTextBox ("Z+ Clicked");
+		}
 	}
 	
 	public void PP_Z_Minus()
 	{
-		ppMove = controller.currentPlayer.transform.position;
-		ppMove = ppMove + Vector3.back;
-		controller.currentPlayer.transform.position = ppMove;
-		//Debug.Log ("Z- Clicked");
+		if (controller.currentPlayer.transform.position.z > 0) {
+			ppMove = controller.currentPlayer.transform.position;
+			ppMove = ppMove + Vector3.back;
+			controller.currentPlayer.transform.position = ppMove;
+			//Debug.Log ("Z- Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("Z- Clicked");
+			//another test of the new text box code
+			alterTextBox ("Z- Clicked");
+		}
 	}
 
 	//calls the confirm function
@@ -149,6 +163,7 @@ public class UI_Script : MonoBehaviour {
 
 	public void disablePPButtons()
 	{
+		Debug.Log("Pressed");
 		//disables the Player Placement buttons
 		xPlusButton.SetActive (false);
 		xMinusButton.SetActive (false);

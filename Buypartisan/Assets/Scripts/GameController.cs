@@ -14,20 +14,19 @@ public class GameController : MonoBehaviour {
 	public GameObject voterTemplate;
 	public GameObject playerTemplate;
 	
-	public Button[] playerPlacmentButtons;
-	public Image[] playerPlacmentButtonImages;
-	
 	public int gridSize;
 	public GridInstanced GridInstancedController;
-	//public VoterVariables VoterVariablesController;
+
+	public UI_Script UIController;
+
 	public int numberPlayers;  //number of players per game
 	public int playersSpawned = 0; //how many players have been spawned in
 	private bool spawnedNewPlayer = false; //bool for checking whether or not a new player has been spawned in
 	public bool playerConfirmsPlacment = false; //bool for checking if player is done
 	
-	private int currentPlayerTurn = 0; //this keeps track of which player is currently taking a turn
-	public int numberOfTurns; //this is a variable that you can change to however many number if turns we want.
-	private int turnCounter = 0;//will be used to keep track of turns
+	public int currentPlayerTurn = 0; //this keeps track of which player is currently taking a turn
+	public int numberOfRounds; //this is a variable that you can change to however many number if rounds we want.
+	private int roundCounter = 0;//will be used to keep track of rounds
 	public bool playerTakingAction = false;
 	public bool messaged;//Checks if Player has finished taking an acti
 	
@@ -43,6 +42,7 @@ public class GameController : MonoBehaviour {
 	void Start () {
 		//VoterVariables VoterVariablesController = GameObject.FindGameObjectWithTag("Voter(Clone)").GetComponent<GameController>();
 		GridInstancedController.GridInstantiate (gridSize);
+		UIController.gridSize = gridSize;
 		messaged = true;
 		SpawnVoters ();
 	}
@@ -68,15 +68,15 @@ public class GameController : MonoBehaviour {
 			} else {
 				currentState = GameState.ActionTurns;
 				playerTakingAction = false;
-				Debug.Log ("Turn " + (turnCounter + 1) + " begin!");
+				Debug.Log ("Round " + (roundCounter + 1) + " begin!");
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 			}
 		} else if (currentState == GameState.ActionTurns) {
-			// In Game Heirchy, GameController must set Number Of Turns greater than 0 in order for this to be called
-			if (turnCounter < numberOfTurns) {
+			// In Game Heirchy, GameController must set Number Of Rounds greater than 0 in order for this to be called
+			if (roundCounter < numberOfRounds) {
 				PlayerTurn ();
 				if (Input.GetKeyDown (KeyCode.P))
-					playerTakingAction = true;
+					playerTakingAction = true;//this skips the current turn by ending the turn.
 
 			} else {
 				currentState = GameState.RoundEnd;
@@ -88,10 +88,10 @@ public class GameController : MonoBehaviour {
 				int closestPlayer = 0;
 				float tieDistance = 1000f;
 				int tiePlayer = 0;
-				for (int j = 0; j < players.Length; j++) {
+				for (int j = 0; j < players.Length; j++) {//calculates the distance of voters from players
 					Vector3 distanceVector = players [j].transform.position - voters [i].transform.position;
 					float distance = Mathf.Abs (distanceVector.x) + Mathf.Abs (distanceVector.y) + Mathf.Abs (distanceVector.z);
-					if (distance < leastDistance) {
+					if (distance < leastDistance) {//determines if there is a player that beat the last one
 						leastDistance = distance;
 						closestPlayer = j;
 					} else if (distance == leastDistance) {//creates a tie between two players (3 way ties can suck it)
@@ -133,14 +133,7 @@ public class GameController : MonoBehaviour {
 			spawnedNewPlayer = true;
 			playerConfirmsPlacment = false;
 		}
-		
-		if (!playerPlacmentButtons [0].enabled) {
-			for(int i = 0; i < playerPlacmentButtons.Length; i++){
-				playerPlacmentButtons[i].enabled = true;
-				playerPlacmentButtonImages[i].enabled = true;
-			}
-		}
-		
+
 		//Player Uses Buttons to choose where the player goes in the scene
 		
 		if (playerConfirmsPlacment) {
@@ -154,12 +147,22 @@ public class GameController : MonoBehaviour {
 				playersSpawned++;
 				spawnedNewPlayer = false;
 				playerConfirmsPlacment = false;
+				if(!(playersSpawned < numberPlayers)){
+					UIController.disablePPButtons();
+				}
 			}
 		}
 	}//SpawnPlayer
 	
 	/// <summary>
 	/// Players turn.
+	/// So this system works similarly to Brian's player placement Script.
+	/// It first keeps track of which player is currently taking an action. 
+	/// When the action is finished, it moves on to the next player until all players have moved.
+	/// When all players have moved, it ends the round, and continues till all rounds are done.
+	/// NOTE: Make sure that you set the number of Rounds in the scene editor. Default is 0 right now.
+	/// Another note, in order to end the turn, an outside script needs to tell the Game Controller that "playerTakingAction" is true for the turn to end.
+	/// For now, just press P to end a turn.
 	/// </summary>
 	void PlayerTurn(){
 		if (playerTakingAction) {
@@ -170,15 +173,15 @@ public class GameController : MonoBehaviour {
 			}
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
-				turnCounter++;
+				roundCounter++;
 				currentPlayerTurn = 0;
 				playerTakingAction = false;
 				
-				if (turnCounter < numberOfTurns) {
-					Debug.Log ("Turn " + (turnCounter + 1) + " begin!");
+				if (roundCounter < numberOfRounds) {
+					Debug.Log ("Round " + (roundCounter + 1) + " begin!");
 					Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 				} else {
-					Debug.Log ("Round Ends!");
+					Debug.Log ("Game Ends!");
 				}
 			}
 		}
@@ -215,12 +218,18 @@ public class GameController : MonoBehaviour {
 		// Brings us to the results UI with all the information displayed
 		currentState = GameState.AfterEnd;
 	}
-
+	/// <summary>
+	/// So, this is the skeleton for the power functions.  Every power will be assigned an int, and checked for either though 
+	/// a switch statement or simple if checks. This function is called through a variety of means, although right now, only through
+	/// clicking on a voter.  Once its called, it checks int power for the power to execute, and then executes the code contained in the 
+	/// block.
+	/// </summary>
+	/// <param name="power">Power.</param>
 	public void PowerCall(int power) {
-		if (power == 1) {
+		if (power == 1) {//VOTER SUPPRESSION
 			for (int i = 0; i < voters.Length; i++) {
-				if (voters[i].GetComponent<VoterVariables>().GetSelected())
-					voters [i].GetComponent<VoterVariables> ().votes = 0;
+				if (voters[i].GetComponent<VoterVariables>().GetSelected())//looks through voters to get the one selected
+					voters [i].GetComponent<VoterVariables> ().votes = 0;//sets votes equal to zero
 			}
 		}
 		//TODO: implement the rest of the powers, which will be further increments of power
