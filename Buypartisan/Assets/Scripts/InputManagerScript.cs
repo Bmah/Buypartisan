@@ -29,6 +29,13 @@ public class InputManagerScript : MonoBehaviour {
 	public float mouseAxisX;
 	public float mouseAxisY;
 
+	public bool qButtonDown = false;
+	public bool qButtonHold = false;
+	public bool qButtonUp = false;
+	public bool eButtonDown = false;
+	public bool eButtonHold = false;
+	public bool eButtonUp = false;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -163,5 +170,39 @@ public class InputManagerScript : MonoBehaviour {
 
 		mouseAxisX = Input.GetAxis ("Mouse X");
 		mouseAxisY = Input.GetAxis ("Mouse Y");
+
+		if (eButtonUp) {
+			eButtonUp = false;
+		} else if (Input.GetKeyUp (KeyCode.E)) {
+			eButtonUp = true;
+		}
+		if (Input.GetKey (KeyCode.E)) {
+			eButtonHold = true;
+			eButtonDown = false;
+		}
+		if (Input.GetKeyDown (KeyCode.E)) {
+			eButtonDown = true;
+		}
+		if (Input.GetKeyUp (KeyCode.E)) {
+			eButtonDown = false;
+			eButtonHold = false;
+		}
+
+		if (qButtonUp) {
+			qButtonUp = false;
+		} else if (Input.GetKeyUp (KeyCode.Q)) {
+			qButtonUp = true;
+		}
+		if (Input.GetKey (KeyCode.Q)) {
+			qButtonHold = true;
+			qButtonDown = false;
+		}
+		if (Input.GetKeyDown (KeyCode.Q)) {
+			qButtonDown = true;
+		}
+		if (Input.GetKeyUp (KeyCode.Q)) {
+			qButtonDown = false;
+			qButtonHold = false;
+		}
 	}
 }
