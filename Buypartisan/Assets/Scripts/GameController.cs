@@ -26,8 +26,8 @@ public class GameController : MonoBehaviour {
 	public bool playerConfirmsPlacment = false; //bool for checking if player is done
 	
 	private int currentPlayerTurn = 0; //this keeps track of which player is currently taking a turn
-	public int numberOfTurns; //this is a variable that you can change to however many number if turns we want.
-	private int turnCounter = 0;//will be used to keep track of turns
+	public int numberOfRounds; //this is a variable that you can change to however many number if rounds we want.
+	private int roundCounter = 0;//will be used to keep track of rounds
 	public bool playerTakingAction = false;
 	public bool messaged;//Checks if Player has finished taking an acti
 	
@@ -68,15 +68,15 @@ public class GameController : MonoBehaviour {
 			} else {
 				currentState = GameState.ActionTurns;
 				playerTakingAction = false;
-				Debug.Log ("Turn " + (turnCounter + 1) + " begin!");
+				Debug.Log ("Round " + (roundCounter + 1) + " begin!");
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 			}
 		} else if (currentState == GameState.ActionTurns) {
-			// In Game Heirchy, GameController must set Number Of Turns greater than 0 in order for this to be called
-			if (turnCounter < numberOfTurns) {
+			// In Game Heirchy, GameController must set Number Of Rounds greater than 0 in order for this to be called
+			if (roundCounter < numberOfRounds) {
 				PlayerTurn ();
 				if (Input.GetKeyDown (KeyCode.P))
-					playerTakingAction = true;//this stops the player 1 turn form infinitely looping
+					playerTakingAction = true;//this skips the current turn by ending the turn.
 
 			} else {
 				currentState = GameState.RoundEnd;
@@ -160,6 +160,13 @@ public class GameController : MonoBehaviour {
 	
 	/// <summary>
 	/// Players turn.
+	/// So this system works similarly to Brian's player placement Script.
+	/// It first keeps track of which player is currently taking an action. 
+	/// When the action is finished, it moves on to the next player until all players have moved.
+	/// When all players have moved, it ends the round, and continues till all rounds are done.
+	/// NOTE: Make sure that you set the number of Rounds in the scene editor. Default is 0 right now.
+	/// Another note, in order to end the turn, an outside script needs to tell the Game Controller that "playerTakingAction" is true for the turn to end.
+	/// For now, just press P to end a turn.
 	/// </summary>
 	void PlayerTurn(){
 		if (playerTakingAction) {
@@ -170,15 +177,15 @@ public class GameController : MonoBehaviour {
 			}
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
-				turnCounter++;
+				roundCounter++;
 				currentPlayerTurn = 0;
 				playerTakingAction = false;
 				
-				if (turnCounter < numberOfTurns) {
-					Debug.Log ("Turn " + (turnCounter + 1) + " begin!");
+				if (roundCounter < numberOfRounds) {
+					Debug.Log ("Round " + (roundCounter + 1) + " begin!");
 					Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 				} else {
-					Debug.Log ("Round Ends!");
+					Debug.Log ("Game Ends!");
 				}
 			}
 		}
