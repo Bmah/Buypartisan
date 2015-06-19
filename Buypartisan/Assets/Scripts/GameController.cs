@@ -14,12 +14,11 @@ public class GameController : MonoBehaviour {
 	public GameObject voterTemplate;
 	public GameObject playerTemplate;
 	
-	public Button[] playerPlacmentButtons;
-	public Image[] playerPlacmentButtonImages;
-	
 	public int gridSize;
 	public GridInstanced GridInstancedController;
-	//public VoterVariables VoterVariablesController;
+
+	public UI_Script UIController;
+
 	public int numberPlayers;  //number of players per game
 	public int playersSpawned = 0; //how many players have been spawned in
 	private bool spawnedNewPlayer = false; //bool for checking whether or not a new player has been spawned in
@@ -43,6 +42,7 @@ public class GameController : MonoBehaviour {
 	void Start () {
 		//VoterVariables VoterVariablesController = GameObject.FindGameObjectWithTag("Voter(Clone)").GetComponent<GameController>();
 		GridInstancedController.GridInstantiate (gridSize);
+		UIController.gridSize = gridSize;
 		messaged = true;
 		SpawnVoters ();
 	}
@@ -133,14 +133,7 @@ public class GameController : MonoBehaviour {
 			spawnedNewPlayer = true;
 			playerConfirmsPlacment = false;
 		}
-		
-		if (!playerPlacmentButtons [0].enabled) {
-			for(int i = 0; i < playerPlacmentButtons.Length; i++){
-				playerPlacmentButtons[i].enabled = true;
-				playerPlacmentButtonImages[i].enabled = true;
-			}
-		}
-		
+
 		//Player Uses Buttons to choose where the player goes in the scene
 		
 		if (playerConfirmsPlacment) {
@@ -154,6 +147,9 @@ public class GameController : MonoBehaviour {
 				playersSpawned++;
 				spawnedNewPlayer = false;
 				playerConfirmsPlacment = false;
+				if(!(playersSpawned < numberPlayers)){
+					UIController.disablePPButtons();
+				}
 			}
 		}
 	}//SpawnPlayer
