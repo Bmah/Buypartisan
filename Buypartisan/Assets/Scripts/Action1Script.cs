@@ -2,26 +2,26 @@
 using System.Collections;
 
 public class Action1Script : MonoBehaviour {
+	/*
+	Power Summary: Move Player
+	This power will be able to move the player one unit away from his current position to be his new position.
+	*/
+	public int moneyRequired = 0;
+	
 	public GameObject gameController; //this is the game controller variable. It is obtained from the PlayerTurnsManager
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the PlayerTurnManager
 	private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
+	
+	private int currentPlayer; //this variable finds which player is currently using his turn.
 
-	private int currentPlayer;
+	private Vector3 originalPosition; //this will save the original position that the player started at.
+	private bool chosenPositionConfirmed = false; //final position has been chosen and confirmed.
 
 	// Use this for initialization
 	void Start () {
-		if (this.transform.parent.GetComponent<PlayerTurnsManager> ().gameController != null) {
-			gameController = this.transform.parent.GetComponent<PlayerTurnsManager> ().gameController;
-		} else {
-			Debug.Log ("Set the PlayerTurnsManager variable game controller to the Game Controller in the scene!");
-		}
-		
-		if (this.transform.parent.GetComponent<PlayerTurnsManager> ().inputManager != null) {
-			inputManager = this.transform.parent.GetComponent<PlayerTurnsManager> ().inputManager;
-		} else {
-			Debug.Log ("Set the PlayerTurnsManager variable inputManager to the input manager in the scene!");
-		}
+		gameController = GameObject.FindWithTag ("GameController");
+		inputManager = GameObject.FindWithTag ("InputManager");
 		
 		if (gameController != null) {
 			voters = gameController.GetComponent<GameController> ().voters;
@@ -29,20 +29,58 @@ public class Action1Script : MonoBehaviour {
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
-
+		
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < moneyRequired) {
+			Debug.Log ("Current Player doesn't have enough money to make this action.");
+			Destroy(gameObject);
+		}
+
+		originalPosition = players[currentPlayer].transform.position;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		//This is where the action should be placed.
-		//action action action. blah blah. E.g. move a voter or player one block over.
-		//When action is finished, run this bit of code below to tell the Game Manager the turn is over, 
-		//and deletes itself so the PlayerTurnsManager knows the turn is over as well.
+		Vector3 currentPos = players [currentPlayer].transform.position;
+		if (inputManager.GetComponent<InputManagerScript> ().leftButtonDown) {
+			if (currentPos.x < 1 && currentPos.y == 0 && currentPos.z == 0)
+			players[currentPlayer].transform.position += new Vector3(1,0,0);
+		}
+		if (inputManager.GetComponent<InputManagerScript> ().upButtonDown) {
+			if (currentPos.x == 0 && currentPos.y == 0 && currentPos.z > -1)
+			players[currentPlayer].transform.position += new Vector3(0,0,-1);
+		}
+		if (inputManager.GetComponent<InputManagerScript> ().downButtonDown) {
+			if (currentPos.x == 0 && currentPos.y == 0 && currentPos.z < 1)
+			players[currentPlayer].transform.position += new Vector3(0,0,1);
+		}
+		if (inputManager.GetComponent<InputManagerScript> ().rightButtonDown) {
+			if (currentPos.x > -1 && currentPos.y == 0 && currentPos.z == 0)
+			players[currentPlayer].transform.position += new Vector3(-1,0,0);
+		}
+		if (inputManager.GetComponent<InputManagerScript> ().qButtonDown) {
+			if (currentPos.x == 0 && currentPos.y < 1 && currentPos.z == 0)
+			players[currentPlayer].transform.position += new Vector3(0,1,0);
+		}
+		if (inputManager.GetComponent<InputManagerScript> ().eButtonDown) {
+			if (currentPos.x == 0 && currentPos.y > -1 && currentPos.z == 0)
+			players[currentPlayer].transform.position += new Vector3(0,-1,0);
+		}
+
+
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			int counter = 0;
+			for (int i = 0; i < players.Length; i++) {
+				if (players[i].transform.position == currentPos) {
+					counter ++;
+				}
+				    chosenPositionConfirmed = true;
+			}
+		}
 		
-		/*
-		EndAction ();
-		*/
+		if (chosenPositionConfirmed) {
+			EndAction ();
+		}
 	}
 	
 	void EndAction() {
