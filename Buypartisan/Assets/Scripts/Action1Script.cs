@@ -68,7 +68,7 @@ public class Action1Script : MonoBehaviour {
 		}
 
 
-		if (Input.GetKeyDown (KeyCode.Space)) {
+	/*	if (Input.GetKeyDown (KeyCode.Space)) {
 			int counter = 0;
 			for (int i = 0; i < players.Length; i++) {
 				if (players[i].transform.position == currentPos) {
@@ -76,6 +76,10 @@ public class Action1Script : MonoBehaviour {
 				}
 				    chosenPositionConfirmed = true;
 			}
+		}*/
+
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			chosenPositionConfirmed = true;
 		}
 		
 		if (chosenPositionConfirmed) {
