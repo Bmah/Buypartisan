@@ -98,11 +98,13 @@ public class CameraMovement : MonoBehaviour {
 
                 distance = Mathf.Clamp(distance - Input.GetAxis("Mouse ScrollWheel") * 5, distanceMin, distanceMax);
 
-                RaycastHit hit;
-                if (Physics.Linecast(target.position, transform.position, out hit))
-                {
-                    distance -= hit.distance;
-                }
+				//This contains the zoomin function from a raycast. Disabled for now - if we need it in the future, we can enable it.
+                //RaycastHit hit;
+                //if (Physics.Linecast(target.position, transform.position, out hit))
+                //{
+                //    distance -= hit.distance;
+                //}
+
                 Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
                 Vector3 position = rotation * negDistance + target.position;
 
