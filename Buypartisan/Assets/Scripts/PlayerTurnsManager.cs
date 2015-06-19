@@ -3,6 +3,7 @@ using System.Collections;
 
 public class PlayerTurnsManager : MonoBehaviour {
 	public GameObject gameController; //Make sure to place the GameController here, so it can obtain the array.
+	public GameObject inputManager; //Make sure to place the inputManager object here, so it can obtain inputs.
 	public GameObject[] actionArray = new GameObject[10]; //This is the array of action prefabs.
 	private GameObject instantiatedAction; //This saves the action prefab that was instantiated to check if it still exists. So long as this prefab exists, TurnsManager knows the turn hasn't ended yet.
 

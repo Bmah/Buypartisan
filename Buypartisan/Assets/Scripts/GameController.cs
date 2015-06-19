@@ -25,7 +25,7 @@ public class GameController : MonoBehaviour {
 	private bool spawnedNewPlayer = false; //bool for checking whether or not a new player has been spawned in
 	public bool playerConfirmsPlacment = false; //bool for checking if player is done
 	
-	private int currentPlayerTurn = 0; //this keeps track of which player is currently taking a turn
+	public int currentPlayerTurn = 0; //this keeps track of which player is currently taking a turn
 	public int numberOfRounds; //this is a variable that you can change to however many number if rounds we want.
 	private int roundCounter = 0;//will be used to keep track of rounds
 	public bool playerTakingAction = false;
