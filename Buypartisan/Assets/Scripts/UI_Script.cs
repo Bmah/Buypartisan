@@ -19,7 +19,7 @@ public class UI_Script : MonoBehaviour {
 	//used for the increment and decrement of X,Y, and Z
 	Vector3 ppMove = Vector3.zero;
 
-	//holds the buttons as game objects
+	//holds the buttons for playr placement as game objects
 	public GameObject xPlusButton;
 	public GameObject xMinusButton;
 	public GameObject yPlusButton;
@@ -27,6 +27,9 @@ public class UI_Script : MonoBehaviour {
 	public GameObject zPlusButton;
 	public GameObject zMinusButton;
 	public GameObject confirmButton;
+
+	//holds the Action Buttons by the tag ActionButton
+	public GameObject[] ActionButtonObject;
 
 	// Use this for initialization
 	void Start () {
@@ -41,7 +44,7 @@ public class UI_Script : MonoBehaviour {
 		//tests the above two lines of code
 		visualText.text = "Testing";
 
-		//gets the buttons
+		//gets the buttons for player placement
 		xPlusButton = GameObject.Find ("+X");
 		xMinusButton = GameObject.Find ("-X");
 		yPlusButton = GameObject.Find ("+Y");
@@ -49,7 +52,15 @@ public class UI_Script : MonoBehaviour {
 		zPlusButton = GameObject.Find ("+Z");
 		zMinusButton = GameObject.Find ("-Z");
 		confirmButton = GameObject.Find ("Confirm");
-		
+
+		//gets the Action Buttons
+		ActionButtonObject = GameObject.FindGameObjectsWithTag ("ActionButton");
+
+		//disables the Action Buttons at the start
+		for(int i = 0; i < 10; i++)
+		{
+			ActionButtonObject[i].SetActive(false);
+		}
 	}
 	
 	// Update is called once per frame
@@ -174,4 +185,15 @@ public class UI_Script : MonoBehaviour {
 		confirmButton.SetActive (false);
 	}
 
+	public void toggleActionButtons()
+	{
+		//this enables the action buttons
+		//Note: could recode it so that specific 
+		//buttons can be toggled on or off
+		for(int i = 0; i < 10; i++)
+		{
+			ActionButtonObject[i].SetActive(true);
+		}
+
+	}
 }
