@@ -73,7 +73,7 @@ public class Action1Script : MonoBehaviour {
 
 		//Right Now, if you press Space bar, it confirms the chosen position.
 		//You can only confirm the position if it isn't the exact same position you started at, or you are not sharing a position that another player is in
-		if (Input.GetKeyDown (KeyCode.Space)) {
+		if (Input.GetKeyDown (KeyCode.B)) {
 			for (int i = 0; i < players.Length; i++) {
 				if (i != currentPlayer && players[i].transform.position != players[currentPlayer].transform.position && currentPos != originalPosition) {
 					chosenPositionConfirmed = true;
