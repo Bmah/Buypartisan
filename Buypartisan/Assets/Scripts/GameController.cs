@@ -149,6 +149,8 @@ public class GameController : MonoBehaviour {
 				playerConfirmsPlacment = false;
 				if(!(playersSpawned < numberPlayers)){
 					UIController.disablePPButtons();
+					//adding this in to enable action buttons/test functionality (Alex Jungroth)
+					UIController.toggleActionButtons();
 				}
 			}
 		}
