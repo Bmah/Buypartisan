@@ -43,13 +43,13 @@ public class CameraMovement : MonoBehaviour {
 
         // These movements include the camera AND THE camera's rotation anchor
         // F key forces camera back to default position and angle
-        // The default position is set manually, must change if the grid changes
+        // THIS IS NOT DYNAMIC, the default position is set manually, must change if the grid changes
 		if (inputManager.fButtonDown == true)
         {
-            transform.position = new Vector3(-1.11696f, 4.865548f, 4.112394f);
-            transform.eulerAngles = new Vector3(45f, 135f, 0f);
+            transform.position = new Vector3(-1f, 5f, -1f);
+            transform.eulerAngles = new Vector3(45f, 45f, 0f);
             target.transform.position = new Vector3(1.5f, 1.5f, 1.5f);
-            target.transform.eulerAngles = new Vector3(45f, 135f, 0f);
+            target.transform.eulerAngles = new Vector3(45f, 45f, 0f);
         }
 
         // Camera pans left
