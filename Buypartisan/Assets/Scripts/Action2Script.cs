@@ -13,9 +13,28 @@ public class Action2Script : MonoBehaviour {
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 
 	private int selectedVoter = 0; //this will keep track of which voter is selected.
-	private bool voterSelected = false; //this confirms if voter has been selected.
+	public bool voterSelected = false; //this confirms if voter has been selected.
 	private bool positionSelected = false; //this confirms if the correct position has been selected.
 	private Vector3 originalPosition; //this saves the original position of the voter.
+
+	[System.NonSerialized]
+	public bool leftButton = false; //checks if left button has been pressed
+	[System.NonSerialized]
+	public bool rightButton = false; //checks if right button has been pressed
+	[System.NonSerialized]
+	public bool confirmButton = false; //checks if confirm button has been pressed
+	[System.NonSerialized]
+	public bool xPlusButton = false;
+	[System.NonSerialized]
+	public bool xMinusButton = false;
+	[System.NonSerialized]
+	public bool yPlusButton = false;
+	[System.NonSerialized]
+	public bool yMinusButton = false;
+	[System.NonSerialized]
+	public bool zPlusButton = false;
+	[System.NonSerialized]
+	public bool zMinusButton = false;
 
 	// Use this for initialization
 	void Start () {
@@ -24,6 +43,7 @@ public class Action2Script : MonoBehaviour {
 		uiController = GameObject.Find ("UI Controller");
 
 		uiController.GetComponent<UI_Script> ().disableActionButtons ();
+		uiController.GetComponent<UI_Script>().activateAction2UI1();
 		
 		if (gameController != null) {
 			voters = gameController.GetComponent<GameController> ().voters;
@@ -46,81 +66,100 @@ public class Action2Script : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (!voterSelected) {
-			if (inputManager.GetComponent<InputManagerScript> ().leftButtonDown) {
+			if (leftButton) {
 				if (selectedVoter == 0) {
 					selectedVoter = voters.Length - 1;
 				} else {
 					selectedVoter -= 1;
 				}
 				this.transform.position = voters [selectedVoter].transform.position;
+
+				leftButton = false;
 			}
-			if (inputManager.GetComponent<InputManagerScript> ().rightButtonDown) {
+			if (rightButton) {
 				if (selectedVoter == (voters.Length - 1)) {
 					selectedVoter = 0;
 				} else {
 					selectedVoter += 1;
 				}
 				this.transform.position = voters [selectedVoter].transform.position;
+
+				rightButton = false;
 			}
-			if (Input.GetKeyDown(KeyCode.B)) {
+			if (confirmButton) {
 				voterSelected = true;
 				this.GetComponent<MeshRenderer>().enabled = true;
 				originalPosition = voters[selectedVoter].transform.position;
+				confirmButton = false;
+				uiController.GetComponent<UI_Script>().activateAction2UI2();
 			}
 		} else {
 			//This is the state in which the player has now chosen which voter to act upon.
 			//Here, the player can move the voter one space away from its current spot, but can't move off the grid.
-			if (inputManager.GetComponent<InputManagerScript> ().rightButtonDown) {
+			if (xPlusButton) {
 				if ((originalPosition.x + 1) < (gameController.GetComponent<GameController>().gridSize)) {
 					this.transform.position = originalPosition + new Vector3(1,0,0);
 				} else {
 					this.transform.position = originalPosition;
 				}
+
+				xPlusButton = false;
 			}
-			if (inputManager.GetComponent<InputManagerScript> ().leftButtonDown) {
+			if (xMinusButton) {
 				if ((originalPosition.x - 1) > -1) {
 					this.transform.position = originalPosition + new Vector3(-1,0,0);
 				} else {
 					this.transform.position = originalPosition;
 				}
+
+				xMinusButton = false;
 			}
-			if (inputManager.GetComponent<InputManagerScript> ().downButtonDown) {
+			if (zMinusButton) {
 				if ((originalPosition.z - 1) > -1) {
 					this.transform.position = originalPosition + new Vector3(0,0,-1);
 				} else {
 					this.transform.position = originalPosition;
 				}
+
+				zMinusButton = false;
 			}
-			if (inputManager.GetComponent<InputManagerScript> ().upButtonDown) {
+			if (zPlusButton) {
 				if ((originalPosition.z + 1) < (gameController.GetComponent<GameController>().gridSize)) {
 					this.transform.position = originalPosition + new Vector3(0,0,1);
 				} else {
 					this.transform.position = originalPosition;
 				}
+
+				zPlusButton = false;
 			}
-			if (inputManager.GetComponent<InputManagerScript> ().qButtonDown) {
+			if (yPlusButton) {
 				if ((originalPosition.y + 1) < (gameController.GetComponent<GameController>().gridSize)) {
 					this.transform.position = originalPosition + new Vector3(0,1,0);
 				} else {
 					this.transform.position = originalPosition;
 				}
+
+				yPlusButton = false;
 			}
-			if (inputManager.GetComponent<InputManagerScript> ().eButtonDown) {
+			if (yMinusButton) {
 				if ((originalPosition.y - 1) > -1) {
 					this.transform.position = originalPosition + new Vector3(0,-1,0);
 				} else {
 					this.transform.position = originalPosition;
 				}
+
+				yMinusButton = false;
 			}
 
 			//This is where the player confirms he has chosen the spot he wants to move the voter to.
-			if (Input.GetKeyDown (KeyCode.B)){
+			if (confirmButton){
 				for (int i = 0; i < voters.Length; i++) {
 					if (i != selectedVoter && voters[i].transform.position != this.transform.position && this.transform.position != originalPosition) {
 						positionSelected = true;
 						voters[selectedVoter].transform.position = this.transform.position;
 					}
 				}
+				confirmButton = false;
 			}
 		}
 		

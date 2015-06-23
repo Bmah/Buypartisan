@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerTurnsManager : MonoBehaviour {
 	public GameObject gameController; //Make sure to place the GameController here, so it can obtain the array.
 	public GameObject inputManager; //Make sure to place the inputManager object here, so it can obtain inputs.
+	public GameObject uiController; //Make sure to place the UI Controller here.
 	public GameObject[] actionArray = new GameObject[10]; //This is the array of action prefabs.
 	private GameObject instantiatedAction; //This saves the action prefab that was instantiated to check if it still exists. So long as this prefab exists, TurnsManager knows the turn hasn't ended yet.
 
@@ -41,9 +42,9 @@ public class PlayerTurnsManager : MonoBehaviour {
 			}
 		}
 
-		if (Input.GetKeyDown (KeyCode.Z)) {
-			actionConfirmed = true;
-		}
+//		if (Input.GetKeyDown (KeyCode.Z)) {
+//			actionConfirmed = true;
+//		}
 	}
 
 	/// <summary>
@@ -57,6 +58,7 @@ public class PlayerTurnsManager : MonoBehaviour {
 				instantiatedAction = Instantiate (actionArray [actionNumber]);
 				instantiatedAction.transform.parent = this.transform;
 				actionIsRunning = true;
+				uiController.GetComponent<UI_Script>().instantiatedAction = instantiatedAction;
 			} else {
 				Debug.Log ("There is no action placed in this spot of the array");
 			}
