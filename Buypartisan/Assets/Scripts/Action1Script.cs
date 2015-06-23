@@ -55,25 +55,25 @@ public class Action1Script : MonoBehaviour {
 		//It also checks to make sure the player doesn't move outside the grid.
 		//When we figure out the GUI system, we can change the inputs to then be button presses.
 		currentPos = players [currentPlayer].transform.position;
-		if (inputManager.GetComponent<InputManagerScript> ().leftButtonDown) {
+		if (inputManager.GetComponent<InputManagerScript> ().rightButtonDown) {
 			if (transform.position.x < (gameController.GetComponent<GameController>().gridSize - 1))
 			this.transform.position += new Vector3(1,0,0);
 			UpdateCostAndDistance();
 			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().rightButtonDown) {
+		if (inputManager.GetComponent<InputManagerScript> ().leftButtonDown) {
 			if (transform.position.x > 0)
 			this.transform.position += new Vector3(-1,0,0);
 			UpdateCostAndDistance();
 			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().upButtonDown) {
+		if (inputManager.GetComponent<InputManagerScript> ().downButtonDown) {
 			if (transform.position.z > 0)
 			this.transform.position += new Vector3(0,0,-1);
 			UpdateCostAndDistance();
 			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().downButtonDown) {
+		if (inputManager.GetComponent<InputManagerScript> ().upButtonDown) {
 			if (transform.position.z < (gameController.GetComponent<GameController>().gridSize - 1))
 			this.transform.position += new Vector3(0,0,1);
 			UpdateCostAndDistance();

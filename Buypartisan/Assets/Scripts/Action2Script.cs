@@ -64,28 +64,28 @@ public class Action2Script : MonoBehaviour {
 		} else {
 			//This is the state in which the player has now chosen which voter to act upon.
 			//Here, the player can move the voter one space away from its current spot, but can't move off the grid.
-			if (inputManager.GetComponent<InputManagerScript> ().leftButtonDown) {
+			if (inputManager.GetComponent<InputManagerScript> ().rightButtonDown) {
 				if ((originalPosition.x + 1) < (gameController.GetComponent<GameController>().gridSize)) {
 					this.transform.position = originalPosition + new Vector3(1,0,0);
 				} else {
 					this.transform.position = originalPosition;
 				}
 			}
-			if (inputManager.GetComponent<InputManagerScript> ().rightButtonDown) {
+			if (inputManager.GetComponent<InputManagerScript> ().leftButtonDown) {
 				if ((originalPosition.x - 1) > -1) {
 					this.transform.position = originalPosition + new Vector3(-1,0,0);
 				} else {
 					this.transform.position = originalPosition;
 				}
 			}
-			if (inputManager.GetComponent<InputManagerScript> ().upButtonDown) {
+			if (inputManager.GetComponent<InputManagerScript> ().downButtonDown) {
 				if ((originalPosition.z - 1) > -1) {
 					this.transform.position = originalPosition + new Vector3(0,0,-1);
 				} else {
 					this.transform.position = originalPosition;
 				}
 			}
-			if (inputManager.GetComponent<InputManagerScript> ().downButtonDown) {
+			if (inputManager.GetComponent<InputManagerScript> ().upButtonDown) {
 				if ((originalPosition.z + 1) < (gameController.GetComponent<GameController>().gridSize)) {
 					this.transform.position = originalPosition + new Vector3(0,0,1);
 				} else {
