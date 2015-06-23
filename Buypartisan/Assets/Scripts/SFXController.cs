@@ -8,7 +8,7 @@ public class SFXController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		AudioChannels = GetComponents<AudioSource> ();
+		AudioChannels = this.GetComponents<AudioSource> ();
 	}
 	
 	// Update is called once per frame
