@@ -17,6 +17,7 @@ public class Action1Script : MonoBehaviour {
 	
 	public GameObject gameController; //this is the game controller variable. It is obtained from the PlayerTurnsManager
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the PlayerTurnManager
+	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
 //	private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 	
@@ -26,10 +27,30 @@ public class Action1Script : MonoBehaviour {
 	private bool chosenPositionConfirmed = false; //final position has been chosen and confirmed.
 	private Vector3 currentPos;
 
+	//these are to check which buttons have been pressed.
+	[System.NonSerialized]
+	public bool xPlusButton = false;
+	[System.NonSerialized]
+	public bool xMinusButton = false;
+	[System.NonSerialized]
+	public bool yPlusButton = false;
+	[System.NonSerialized]
+	public bool yMinusButton = false;
+	[System.NonSerialized]
+	public bool zPlusButton = false;
+	[System.NonSerialized]
+	public bool zMinusButton = false;
+	[System.NonSerialized]
+	public bool confirmButton = false;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
 		inputManager = GameObject.FindWithTag ("InputManager");
+		uiController = GameObject.Find ("UI Controller");
+
+		uiController.GetComponent<UI_Script>().disableActionButtons();
+		uiController.GetComponent<UI_Script> ().activateAction1UI ();
 		
 		if (gameController != null) {
 //			voters = gameController.GetComponent<GameController> ().voters;
@@ -39,8 +60,10 @@ public class Action1Script : MonoBehaviour {
 		}
 		
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < moneyRequired) {
+		int actionCostMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (moneyRequired + (moneyRequired * actionCostMultiplier))) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
 
@@ -55,47 +78,53 @@ public class Action1Script : MonoBehaviour {
 		//It also checks to make sure the player doesn't move outside the grid.
 		//When we figure out the GUI system, we can change the inputs to then be button presses.
 		currentPos = players [currentPlayer].transform.position;
-		if (inputManager.GetComponent<InputManagerScript> ().rightButtonDown) {
+		if (xPlusButton) {
 			if (transform.position.x < (gameController.GetComponent<GameController>().gridSize - 1))
 			this.transform.position += new Vector3(1,0,0);
 			UpdateCostAndDistance();
 			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
+			xPlusButton = false;
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().leftButtonDown) {
+		if (xMinusButton) {
 			if (transform.position.x > 0)
 			this.transform.position += new Vector3(-1,0,0);
 			UpdateCostAndDistance();
 			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
+			xMinusButton = false;
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().downButtonDown) {
+		if (zMinusButton) {
 			if (transform.position.z > 0)
 			this.transform.position += new Vector3(0,0,-1);
 			UpdateCostAndDistance();
 			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
+			zMinusButton = false;
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().upButtonDown) {
+		if (zPlusButton) {
 			if (transform.position.z < (gameController.GetComponent<GameController>().gridSize - 1))
 			this.transform.position += new Vector3(0,0,1);
 			UpdateCostAndDistance();
 			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
+			zPlusButton = false;
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().qButtonDown) {
+		if (yPlusButton) {
 			if (transform.position.y < (gameController.GetComponent<GameController>().gridSize - 1))
 			this.transform.position += new Vector3(0,1,0);
 			UpdateCostAndDistance();
 			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
+			yPlusButton = false;
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().eButtonDown) {
+		if (yMinusButton) {
 			if (transform.position.y > 0)
 			this.transform.position += new Vector3(0,-1,0);
 			UpdateCostAndDistance();
 			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
+			yMinusButton = false;
 		}
 
 		//Right Now, if you press Space bar, it confirms the chosen position.
 		//You can only confirm the position if it isn't the exact same position you started at, or you are not sharing a position that another player is in
 		//You also must have enough money to move to that position.
-		if (Input.GetKeyDown (KeyCode.B)) {
+		if (confirmButton) {
 			for (int i = 0; i < players.Length; i++) {
 				if (i != currentPlayer && players[i].transform.position != transform.position && transform.position != originalPosition) {
 					if (currentCost > players[currentPlayer].GetComponent<PlayerVariables>().money) {
@@ -107,6 +136,7 @@ public class Action1Script : MonoBehaviour {
 					}
 				}
 			}
+			confirmButton = false;
 		}
 		
 		if (chosenPositionConfirmed) {
@@ -126,7 +156,8 @@ public class Action1Script : MonoBehaviour {
 	}
 
 	void EndAction() {
-		gameController.GetComponent<GameController> ().playerTakingAction = true;
+		uiController.GetComponent<UI_Script>().toggleActionButtons();
+		this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier += 1;
 		Destroy(gameObject);
 	}
 }
