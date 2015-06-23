@@ -12,6 +12,11 @@ public class PlayerTurnsManager : MonoBehaviour {
 
 	public bool actionConfirmed; //This confirms that the action has been chosen.
 
+	public bool endTurnConfirmed; //this confirms that the player wishes to end his turn.
+
+//	public int costOfAction = 0; //this will be the variable that saves the cost of the action.
+	public int costMultiplier = 0; //this will change if the player continues to make more actions.
+
 	// Use this for initialization
 	void Start () {
 
@@ -28,6 +33,12 @@ public class PlayerTurnsManager : MonoBehaviour {
 		if (instantiatedAction == null) {
 			actionIsRunning = false;
 			actionConfirmed = false;
+
+			if (endTurnConfirmed) {
+				gameController.GetComponent<GameController> ().playerTakingAction = true;
+				endTurnConfirmed = false;
+				costMultiplier = 0;
+			}
 		}
 
 		if (Input.GetKeyDown (KeyCode.Z)) {

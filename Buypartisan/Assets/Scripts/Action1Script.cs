@@ -17,6 +17,7 @@ public class Action1Script : MonoBehaviour {
 	
 	public GameObject gameController; //this is the game controller variable. It is obtained from the PlayerTurnsManager
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the PlayerTurnManager
+	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
 //	private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 	
@@ -30,6 +31,9 @@ public class Action1Script : MonoBehaviour {
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
 		inputManager = GameObject.FindWithTag ("InputManager");
+		uiController = GameObject.Find ("UI Controller");
+
+		uiController.GetComponent<UI_Script>().disableActionButtons();
 		
 		if (gameController != null) {
 //			voters = gameController.GetComponent<GameController> ().voters;
@@ -39,8 +43,10 @@ public class Action1Script : MonoBehaviour {
 		}
 		
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < moneyRequired) {
+		int actionCostMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (moneyRequired + (moneyRequired * actionCostMultiplier))) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
 
@@ -126,7 +132,8 @@ public class Action1Script : MonoBehaviour {
 	}
 
 	void EndAction() {
-		gameController.GetComponent<GameController> ().playerTakingAction = true;
+		uiController.GetComponent<UI_Script>().toggleActionButtons();
+		this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier += 1;
 		Destroy(gameObject);
 	}
 }

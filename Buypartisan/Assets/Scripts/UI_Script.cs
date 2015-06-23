@@ -27,6 +27,9 @@ public class UI_Script : MonoBehaviour {
 	public GameObject zPlusButton;
 	public GameObject zMinusButton;
 	public GameObject confirmButton;
+	public GameObject endTurnButton;
+	public GameObject leftButton;
+	public GameObject rightButton;
 
 	//holds the button for displaying player's stats
 	public GameObject displayStatsButton;
@@ -76,6 +79,9 @@ public class UI_Script : MonoBehaviour {
 		zPlusButton = GameObject.Find ("+Z");
 		zMinusButton = GameObject.Find ("-Z");
 		confirmButton = GameObject.Find ("Confirm");
+		endTurnButton = GameObject.Find ("End Turn");
+		leftButton = GameObject.Find ("Left");
+		rightButton = GameObject.Find ("Right");
 
 		//gets the button for displaying the players stats
 		displayStatsButton = GameObject.FindGameObjectWithTag ("DisplayStats");
@@ -88,6 +94,11 @@ public class UI_Script : MonoBehaviour {
 		{
 			ActionButtonObject[i].SetActive(false);
 		}
+
+		//disables the left, right, and end turn buttons
+		endTurnButton.SetActive (false);
+		leftButton.SetActive (false);
+		rightButton.SetActive (false);
 
 		//disables the display stats button at the start
 		displayStatsButton.SetActive (false);
@@ -231,6 +242,9 @@ public class UI_Script : MonoBehaviour {
 
 		//also enables the display button
 		displayStatsButton.SetActive(true);
+
+		//also enables the end turn button
+		endTurnButton.SetActive (true);
 	}
 
 	public void displayPlayerStats()
@@ -326,5 +340,25 @@ public class UI_Script : MonoBehaviour {
 		actionManager.chosenAction = 9;
 		actionManager.actionConfirmed = true;
 		
+	}
+
+	public void disableActionButtons()
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			ActionButtonObject[i].SetActive(false);
+		}
+
+		endTurnButton.SetActive (false);
+	}
+
+	public void activateEndTurnButton()
+	{
+		actionManager.endTurnConfirmed = true;
+	}
+
+	public void enableAction1Buttons()
+	{
+
 	}
 }
