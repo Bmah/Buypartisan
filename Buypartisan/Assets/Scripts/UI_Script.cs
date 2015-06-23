@@ -19,7 +19,7 @@ public class UI_Script : MonoBehaviour {
 	//used for the increment and decrement of X,Y, and Z
 	Vector3 ppMove = Vector3.zero;
 
-	//holds the buttons as game objects
+	//holds the buttons for player placement as game objects
 	public GameObject xPlusButton;
 	public GameObject xMinusButton;
 	public GameObject yPlusButton;
@@ -27,6 +27,33 @@ public class UI_Script : MonoBehaviour {
 	public GameObject zPlusButton;
 	public GameObject zMinusButton;
 	public GameObject confirmButton;
+
+	//holds the button for displaying player's stats
+	public GameObject displayStatsButton;
+
+	//holds the Action Buttons by the tag ActionButton
+	public GameObject[] ActionButtonObject;
+
+	//holds the Turn Manager prefab
+	public PlayerTurnsManager actionManager;
+
+	//holds the current Player
+	public GameObject[] currentPlayerPrefab;
+
+	//holds the current player's indexing number
+	private int currentPlayer = 0; 
+
+	//holds the current player's money
+	private int currentPlayerMoney = 0;
+
+	//holds the current player's votes
+	private int currentPlayerVotes = 0;
+
+	//holds a string that will update the main textbox
+	private string currentPlayerStats;
+
+	//holds a integer that will be used to display which player's turn it is
+	private int actualTurn = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -41,7 +68,7 @@ public class UI_Script : MonoBehaviour {
 		//tests the above two lines of code
 		visualText.text = "Testing";
 
-		//gets the buttons
+		//gets the buttons for player placement
 		xPlusButton = GameObject.Find ("+X");
 		xMinusButton = GameObject.Find ("-X");
 		yPlusButton = GameObject.Find ("+Y");
@@ -49,7 +76,25 @@ public class UI_Script : MonoBehaviour {
 		zPlusButton = GameObject.Find ("+Z");
 		zMinusButton = GameObject.Find ("-Z");
 		confirmButton = GameObject.Find ("Confirm");
-		
+
+		//gets the button for displaying the players stats
+		displayStatsButton = GameObject.FindGameObjectWithTag ("DisplayStats");
+
+		//gets the Action Buttons
+		ActionButtonObject = GameObject.FindGameObjectsWithTag ("ActionButton");
+
+		//disables the Action Buttons at the start
+		for(int i = 0; i < 10; i++)
+		{
+			ActionButtonObject[i].SetActive(false);
+		}
+
+		//disables the display stats button at the start
+		displayStatsButton.SetActive (false);
+
+		//gets the current player
+		currentPlayerPrefab = controller.GetComponent<GameController> ().players;
+
 	}
 	
 	// Update is called once per frame
@@ -174,4 +219,112 @@ public class UI_Script : MonoBehaviour {
 		confirmButton.SetActive (false);
 	}
 
+	public void toggleActionButtons()
+	{
+		//this enables the action buttons
+		//Note: could recode it so that specific 
+		//buttons can be toggled on or off
+		for(int i = 0; i < 10; i++)
+		{
+			ActionButtonObject[i].SetActive(true);
+		}
+
+		//also enables the display button
+		displayStatsButton.SetActive(true);
+	}
+
+	public void displayPlayerStats()
+	{
+		//gets the current player
+		currentPlayer = controller.GetComponent <GameController> ().currentPlayerTurn;
+
+		//resets acutalTurn
+		actualTurn = 0;
+
+		//gets the current player plus 1 to make the first player be player 1 and not player 0
+		actualTurn = currentPlayer + 1;
+		
+		//gets the current players money
+		currentPlayerMoney = currentPlayerPrefab[currentPlayer].GetComponent<PlayerVariables> ().money; 
+		
+		//gets the current players votes
+		currentPlayerVotes = currentPlayerPrefab[currentPlayer].GetComponent<PlayerVariables> ().votes;
+		
+		//compiles the players stats into one string
+		currentPlayerStats = "Player "+ actualTurn.ToString() + " has " + currentPlayerMoney.ToString() + 
+			" dollar(s) and " + currentPlayerVotes.ToString() + " vote(s).";
+		
+		//updates the text box with player 1's stats
+		alterTextBox (currentPlayerStats);
+	}
+
+	public void activateActionButton0()
+	{
+		actionManager.chosenAction = 0;
+		actionManager.actionConfirmed = true;
+
+	}
+
+	public void activateActionButton1()
+	{
+		actionManager.chosenAction = 1;
+		actionManager.actionConfirmed = true;
+		//alterTextBox ("Test Action 1");
+	}
+
+	public void activateActionButton2()
+	{
+		actionManager.chosenAction = 2;
+		actionManager.actionConfirmed = true;
+		
+	}
+
+	public void activateActionButton3()
+	{
+		actionManager.chosenAction = 3;
+		actionManager.actionConfirmed = true;
+		
+	}
+
+	public void activateActionButton4()
+	{
+		actionManager.chosenAction = 4;
+		actionManager.actionConfirmed = true;
+		
+	}
+
+	public void activateActionButton5()
+	{
+		actionManager.chosenAction = 5;
+		actionManager.actionConfirmed = true;
+		
+	}
+
+	public void activateActionButton6()
+	{
+		actionManager.chosenAction = 6;
+		actionManager.actionConfirmed = true;
+		
+	}
+
+	public void activateActionButton7()
+	{
+		actionManager.chosenAction = 7;
+		actionManager.actionConfirmed = true;
+		
+	}
+
+	public void activateActionButton8()
+	{
+		actionManager.chosenAction = 8;
+		actionManager.actionConfirmed = true;
+		
+	}
+
+	public void activateActionButton9()
+	{
+		actionManager.chosenAction = 9;
+		actionManager.actionConfirmed = true;
+		
+	}
 }
