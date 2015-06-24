@@ -30,7 +30,12 @@ public class Action4Script : MonoBehaviour {
 	[System.NonSerialized]
 	public bool confirmButton = false;
 
-	public Vector3[] voterOriginalPositions; //this is an array of the saved original positions of the voters.
+	private Vector3[] voterOriginalPositions; //this is an array of the saved original positions of the voters.
+	private Vector3[] voterFinalPositions;	//this will be where the final positions of the voters will be saved.
+
+	private bool noOverlap = true; //this boolean will be used to check if theres any overlaps with other voters
+	private int overlap1; //these two ints save which ones are overlapping.
+	private int overlap2;
 
 	// Use this for initialization
 	void Start () {
@@ -62,6 +67,7 @@ public class Action4Script : MonoBehaviour {
 
 		//obtain the original positions of the voters
 		voterOriginalPositions = new Vector3[voters.Length];
+		voterFinalPositions = new Vector3[voters.Length];
 		for (int i = 0; i < voters.Length; i++) {
 			voterOriginalPositions[i] = voters[i].transform.position;
 		}
@@ -72,61 +78,73 @@ public class Action4Script : MonoBehaviour {
 		if (xPlusButton) {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].x < (gameController.GetComponent<GameController>().gridSize - 1)) {
-				voters[i].transform.position = voterOriginalPositions[i] + new Vector3(1,0,0);
+					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(1,0,0);
 				} else {
-					voters[i].transform.position = voterOriginalPositions[i];
+					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
 			}
+			OverlapCheck();
+			setFinalPosition();
 			xPlusButton = false;
 		}
 		if (xMinusButton) {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].x > 0) {
-					voters[i].transform.position = voterOriginalPositions[i] + new Vector3(-1,0,0);
+					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(-1,0,0);
 				} else {
-					voters[i].transform.position = voterOriginalPositions[i];
+					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
 			}
+			OverlapCheck();
+			setFinalPosition();
 			xMinusButton = false;
 		}
 		if (yPlusButton) {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].y < (gameController.GetComponent<GameController>().gridSize - 1)) {
-					voters[i].transform.position = voterOriginalPositions[i] + new Vector3(0,1,0);
+					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,1,0);
 				} else {
-					voters[i].transform.position = voterOriginalPositions[i];
+					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
 			}
+			OverlapCheck();
+			setFinalPosition();
 			yPlusButton = false;
 		}
 		if (yMinusButton) {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].y > 0) {
-					voters[i].transform.position = voterOriginalPositions[i] + new Vector3(0,-1,0);
+					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,-1,0);
 				} else {
-					voters[i].transform.position = voterOriginalPositions[i];
+					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
 			}
+			OverlapCheck();
+			setFinalPosition();
 			yMinusButton = false;
 		}
 		if (zPlusButton) {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].z < (gameController.GetComponent<GameController>().gridSize - 1)) {
-					voters[i].transform.position = voterOriginalPositions[i] + new Vector3(0,0,1);
+					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,0,1);
 				} else {
-					voters[i].transform.position = voterOriginalPositions[i];
+					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
 			}
+			OverlapCheck();
+			setFinalPosition();
 			zPlusButton = false;
 		}
 		if (zMinusButton) {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].z > 0){
-					voters[i].transform.position = voterOriginalPositions[i] + new Vector3(0,0,-1);
+					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,0,-1);
 				} else {
-					voters[i].transform.position = voterOriginalPositions[i];
+					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
 			}
+			OverlapCheck();
+			setFinalPosition();
 			zMinusButton = false;
 		}
 
@@ -135,15 +153,59 @@ public class Action4Script : MonoBehaviour {
 			confirmButton = false;
 		}
 
+		if (Input.GetKeyDown (KeyCode.B))
+			OverlapCheck ();
+	
 
-		
 		if (actionConfirmed)
 		EndAction ();
 	}
-	
+
+	void OverlapCheck() {
+		if (noOverlap) {
+			for (int i = 0; i < voters.Length; i++) {
+				if (noOverlap) {
+					for (int j = 0; j < voters.Length; j++) {
+						if (i == j) {
+							//do nothing
+						} else {
+							if (voterFinalPositions [i] == voterFinalPositions [j]) {
+								noOverlap = false;
+								overlap1 = i;
+								overlap2 = j;
+								break;
+							}
+						}
+					}
+				} else {
+					break;
+				}
+			}
+		}
+
+		if (!noOverlap) {
+			if (voterFinalPositions[overlap1] != voterOriginalPositions[overlap1]) {
+				voterFinalPositions[overlap1] = voterOriginalPositions[overlap1];
+			}
+
+			if (voterFinalPositions[overlap2] != voterOriginalPositions[overlap2]) {
+				voterFinalPositions[overlap2] = voterOriginalPositions[overlap2];
+			}
+			noOverlap = true;
+			OverlapCheck();
+		}
+	}
+
+	void setFinalPosition() {
+		for (int i = 0; i < voters.Length; i++) {
+			voters[i].transform.position = voterFinalPositions[i];
+		}
+	}
+
 	void EndAction() {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier += 1;
+		players [currentPlayer].GetComponent<PlayerVariables> ().money -= moneyRequired + (moneyRequired * this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier);
 		Destroy(gameObject);
 	}
 }

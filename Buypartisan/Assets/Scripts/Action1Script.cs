@@ -152,7 +152,7 @@ public class Action1Script : MonoBehaviour {
 		zDis = Mathf.Abs (transform.position.z - currentPos.z);
 		distance = xDis + yDis + zDis;
 		
-		currentCost = moneyRequired * Mathf.RoundToInt (Mathf.Pow (costMultiplier, (distance - 1)));
+		currentCost = (moneyRequired + (moneyRequired * this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier)) * Mathf.RoundToInt (Mathf.Pow (costMultiplier, (distance - 1)));
 	}
 
 	void EndAction() {
