@@ -8,6 +8,8 @@ public class UI_Script : MonoBehaviour {
 
 	private GameController controller;
 
+	public int gridSize;
+
 	//holds the main text box object
 	public GameObject mainTextBox;
 
@@ -17,7 +19,7 @@ public class UI_Script : MonoBehaviour {
 	//used for the increment and decrement of X,Y, and Z
 	Vector3 ppMove = Vector3.zero;
 
-	//holds the buttons as game objects
+	//holds the buttons for player placement as game objects
 	public GameObject xPlusButton;
 	public GameObject xMinusButton;
 	public GameObject yPlusButton;
@@ -25,6 +27,46 @@ public class UI_Script : MonoBehaviour {
 	public GameObject zPlusButton;
 	public GameObject zMinusButton;
 	public GameObject confirmButton;
+	public GameObject endTurnButton;
+	public GameObject leftButton;
+	public GameObject rightButton;
+
+	//holds the button for displaying player's stats
+	public GameObject displayStatsButton;
+
+	//holds the Action Buttons by the tag ActionButton
+	public GameObject[] ActionButtonObject;
+
+	//holds the Turn Manager prefab
+	public PlayerTurnsManager actionManager;
+
+	//holds the current Player
+	public GameObject[] currentPlayerPrefab;
+
+	//holds the current player's indexing number
+	private int currentPlayer = 0; 
+
+	//holds the current player's money
+	private int currentPlayerMoney = 0;
+
+	//holds the current player's votes
+	private int currentPlayerVotes = 0;
+
+	//holds a string that will update the main textbox
+	private string currentPlayerStats;
+
+	//holds a integer that will be used to display which player's turn it is
+	private int actualTurn = 0;
+
+	//this will allow us to change states for some of the buttons, so that when the turn phase begins,
+	//the buttons can therefore do something else.
+	private bool turnPhase = false;
+
+	//this is to keep track of which action has been chosen.
+	private int chosenAction = 0;
+
+	//this is so that this script can communicate with the Action script
+	public GameObject instantiatedAction;
 
 	// Use this for initialization
 	void Start () {
@@ -39,7 +81,7 @@ public class UI_Script : MonoBehaviour {
 		//tests the above two lines of code
 		visualText.text = "Testing";
 
-		//gets the buttons
+		//gets the buttons for player placement
 		xPlusButton = GameObject.Find ("+X");
 		xMinusButton = GameObject.Find ("-X");
 		yPlusButton = GameObject.Find ("+Y");
@@ -47,7 +89,33 @@ public class UI_Script : MonoBehaviour {
 		zPlusButton = GameObject.Find ("+Z");
 		zMinusButton = GameObject.Find ("-Z");
 		confirmButton = GameObject.Find ("Confirm");
-		
+		endTurnButton = GameObject.Find ("End Turn");
+		leftButton = GameObject.Find ("Left");
+		rightButton = GameObject.Find ("Right");
+
+		//gets the button for displaying the players stats
+		displayStatsButton = GameObject.FindGameObjectWithTag ("DisplayStats");
+
+		//gets the Action Buttons
+		ActionButtonObject = GameObject.FindGameObjectsWithTag ("ActionButton");
+
+		//disables the Action Buttons at the start
+		for(int i = 0; i < 10; i++)
+		{
+			ActionButtonObject[i].SetActive(false);
+		}
+
+		//disables the left, right, and end turn buttons
+		endTurnButton.SetActive (false);
+		leftButton.SetActive (false);
+		rightButton.SetActive (false);
+
+		//disables the display stats button at the start
+		displayStatsButton.SetActive (false);
+
+		//gets the current player
+		currentPlayerPrefab = controller.GetComponent<GameController> ().players;
+
 	}
 	
 	// Update is called once per frame
@@ -64,81 +132,191 @@ public class UI_Script : MonoBehaviour {
 	
 	public void PP_X_Plus()
 	{
-		ppMove = controller.currentPlayer.transform.position;
-		ppMove = ppMove + Vector3.right;
-		controller.currentPlayer.transform.position = ppMove;
-		//Debug.Log ("X+ Clicked");
+		if (!turnPhase) {
+			if (controller.currentPlayer.transform.position.x < gridSize - 1) {
+				ppMove = controller.currentPlayer.transform.position;
+				ppMove = ppMove + Vector3.right;
+				controller.currentPlayer.transform.position = ppMove;
+				//Debug.Log ("X+ Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("X+ Clicked");
+				//another test of the new text box code
+				alterTextBox ("X+ Clicked");
+			}
+		} else {
+			if (chosenAction == 1) {
+				instantiatedAction.GetComponent<Action1Script>().xPlusButton = true;
+			}
+
+			if (chosenAction == 2) {
+				instantiatedAction.GetComponent<Action2Script>().xPlusButton = true;
+			}
+
+			if (chosenAction == 4) {
+				instantiatedAction.GetComponent<Action4Script>().xPlusButton = true;
+			}
+		}
 	}
 	
 	public void PP_X_Minus()
 	{
-		ppMove = controller.currentPlayer.transform.position;
-		ppMove = ppMove + Vector3.left;
-		controller.currentPlayer.transform.position = ppMove;
-		//Debug.Log ("X- Clicked");
+		if (!turnPhase) {
+			if (controller.currentPlayer.transform.position.x > 0) {
+				ppMove = controller.currentPlayer.transform.position;
+				ppMove = ppMove + Vector3.left;
+				controller.currentPlayer.transform.position = ppMove;
+				//Debug.Log ("X- Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("X- Clicked");
+				//another test of the new text box code
+				alterTextBox ("X- Clicked");
+			}
+		} else {
+			if (chosenAction == 1) {
+				instantiatedAction.GetComponent<Action1Script>().xMinusButton = true;
+			}
+
+			if (chosenAction == 2) {
+				instantiatedAction.GetComponent<Action2Script>().xMinusButton = true;
+			}
+
+			if (chosenAction == 4) {
+				instantiatedAction.GetComponent<Action4Script>().xMinusButton = true;
+			}
+		}
 	}
 	
 	public void PP_Y_Plus()
 	{
-		ppMove = controller.currentPlayer.transform.position;
-		ppMove = ppMove + Vector3.up;
-		controller.currentPlayer.transform.position = ppMove;
-		//Debug.Log ("Y+ Clicked");
+		if (!turnPhase) {
+			if (controller.currentPlayer.transform.position.y < gridSize - 1) {
+				ppMove = controller.currentPlayer.transform.position;
+				ppMove = ppMove + Vector3.up;
+				controller.currentPlayer.transform.position = ppMove;
+				//Debug.Log ("Y+ Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("Y+ Clicked");
+				//another test of the new text box code
+				alterTextBox ("Y+ Clicked");
+			}
+		} else {
+			if (chosenAction == 1) {
+				instantiatedAction.GetComponent<Action1Script>().yPlusButton = true;
+			}
+
+			if (chosenAction == 2) {
+				instantiatedAction.GetComponent<Action2Script>().yPlusButton = true;
+			}
+
+			if (chosenAction == 4) {
+				instantiatedAction.GetComponent<Action4Script>().yPlusButton = true;
+			}
+		}
 	}
 	
 	public void PP_Y_Minus()
 	{
-		ppMove = controller.currentPlayer.transform.position;
-		ppMove = ppMove + Vector3.down;
-		controller.currentPlayer.transform.position = ppMove;
-		//Debug.Log ("Y- Clicked");
+		if (!turnPhase) {
+			if (controller.currentPlayer.transform.position.y > 0) {
+				ppMove = controller.currentPlayer.transform.position;
+				ppMove = ppMove + Vector3.down;
+				controller.currentPlayer.transform.position = ppMove;
+				//Debug.Log ("Y- Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("Y- Clicked");
+				//another test of the new text box code
+				alterTextBox ("Y- Clicked");
+			}
+		} else {
+			if (chosenAction == 1) {
+				instantiatedAction.GetComponent<Action1Script>().yMinusButton = true;
+			}
+
+			if (chosenAction == 2) {
+				instantiatedAction.GetComponent<Action2Script>().yMinusButton = true;
+			}
+
+			if (chosenAction == 4) {
+				instantiatedAction.GetComponent<Action4Script>().yMinusButton = true;
+			}
+		}
 	}
 	
 	public void PP_Z_Plus()
 	{
-		ppMove = controller.currentPlayer.transform.position;
-		ppMove = ppMove + Vector3.forward;
-		controller.currentPlayer.transform.position = ppMove;
-		//Debug.Log ("Z+ Clicked");
+		if (!turnPhase) {
+			if (controller.currentPlayer.transform.position.z < gridSize - 1) {
+				ppMove = controller.currentPlayer.transform.position;
+				ppMove = ppMove + Vector3.forward;
+				controller.currentPlayer.transform.position = ppMove;
+				//Debug.Log ("Z+ Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("Z+ Clicked");
+				//another test of the new text box code
+				alterTextBox ("Z+ Clicked");
+			}
+		} else {
+			if (chosenAction == 1) {
+				instantiatedAction.GetComponent<Action1Script>().zPlusButton = true;
+			}
+
+			if (chosenAction == 2) {
+				instantiatedAction.GetComponent<Action2Script>().zPlusButton = true;
+			}
+
+			if (chosenAction == 4) {
+				instantiatedAction.GetComponent<Action4Script>().zPlusButton = true;
+			}
+		}
 	}
 	
 	public void PP_Z_Minus()
 	{
-		ppMove = controller.currentPlayer.transform.position;
-		ppMove = ppMove + Vector3.back;
-		controller.currentPlayer.transform.position = ppMove;
-		//Debug.Log ("Z- Clicked");
+		if (!turnPhase) {
+			if (controller.currentPlayer.transform.position.z > 0) {
+				ppMove = controller.currentPlayer.transform.position;
+				ppMove = ppMove + Vector3.back;
+				controller.currentPlayer.transform.position = ppMove;
+				//Debug.Log ("Z- Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("Z- Clicked");
+				//another test of the new text box code
+				alterTextBox ("Z- Clicked");
+			}
+		} else {
+			if (chosenAction == 1) {
+				instantiatedAction.GetComponent<Action1Script>().zMinusButton = true;
+			}
+
+			if (chosenAction == 2) {
+				instantiatedAction.GetComponent<Action2Script>().zMinusButton = true;
+			}
+
+			if (chosenAction == 4) {
+				instantiatedAction.GetComponent<Action4Script>().zMinusButton = true;
+			}
+		}
 	}
 
 	//calls the confirm function
 	public void PP_Confirm()
 	{
-		controller.playerConfirmsPlacment = true;
-		//Debug.Log ("Confirm Clicked");
+		if (!turnPhase) {
+			controller.playerConfirmsPlacment = true;
+			//Debug.Log ("Confirm Clicked");
 
-		//another test of the new text box code
-		alterTextBox ("Confirm Clicked");
+			//another test of the new text box code
+			alterTextBox ("Confirm Clicked");
 
-		//quick test of the disabling player placement buttons
-		//disablePPButtons ();
+			//quick test of the disabling player placement buttons
+			//disablePPButtons ();
+		} else {
+			if (chosenAction == 1) {
+				instantiatedAction.GetComponent<Action1Script>().confirmButton = true;
+			}
+
+			if (chosenAction == 2) {
+				instantiatedAction.GetComponent<Action2Script>().confirmButton = true;
+			}
+
+			if (chosenAction == 4) {
+				instantiatedAction.GetComponent<Action4Script>().confirmButton = true;
+			}
+		}
 	}
 
 	public void alterTextBox(string inputText)
@@ -149,6 +327,7 @@ public class UI_Script : MonoBehaviour {
 
 	public void disablePPButtons()
 	{
+		//Debug.Log("Pressed");
 		//disables the Player Placement buttons
 		xPlusButton.SetActive (false);
 		xMinusButton.SetActive (false);
@@ -159,4 +338,193 @@ public class UI_Script : MonoBehaviour {
 		confirmButton.SetActive (false);
 	}
 
+	public void toggleActionButtons()
+	{
+		//this enables the action buttons
+		//Note: could recode it so that specific 
+		//buttons can be toggled on or off
+		for(int i = 0; i < 10; i++)
+		{
+			ActionButtonObject[i].SetActive(true);
+		}
+
+		//also enables the display button
+		displayStatsButton.SetActive(true);
+
+		//also enables the end turn button
+		endTurnButton.SetActive (true);
+
+		//also sets turnphase to begin
+		turnPhase = true;
+
+		//also disables the unneeded buttons
+		disablePPButtons ();
+	}
+
+	public void displayPlayerStats()
+	{
+		//gets the current player
+		currentPlayer = controller.GetComponent <GameController> ().currentPlayerTurn;
+
+		//resets acutalTurn
+		actualTurn = 0;
+
+		//gets the current player plus 1 to make the first player be player 1 and not player 0
+		actualTurn = currentPlayer + 1;
+		
+		//gets the current players money
+		currentPlayerMoney = currentPlayerPrefab[currentPlayer].GetComponent<PlayerVariables> ().money; 
+		
+		//gets the current players votes
+		currentPlayerVotes = currentPlayerPrefab[currentPlayer].GetComponent<PlayerVariables> ().votes;
+		
+		//compiles the players stats into one string
+		currentPlayerStats = "Player "+ actualTurn.ToString() + " has " + currentPlayerMoney.ToString() + 
+			" dollar(s) and " + currentPlayerVotes.ToString() + " vote(s).";
+		
+		//updates the text box with player 1's stats
+		alterTextBox (currentPlayerStats);
+	}
+
+	public void activateActionButton0()
+	{
+		actionManager.chosenAction = 0;
+		actionManager.actionConfirmed = true;
+		chosenAction = 0;
+	}
+
+	public void activateActionButton1()
+	{
+		actionManager.chosenAction = 1;
+		actionManager.actionConfirmed = true;
+		//alterTextBox ("Test Action 1");
+		chosenAction = 1;
+	}
+
+	public void activateActionButton2()
+	{
+		actionManager.chosenAction = 2;
+		actionManager.actionConfirmed = true;
+		chosenAction = 2;
+	}
+
+	public void activateActionButton3()
+	{
+		actionManager.chosenAction = 3;
+		actionManager.actionConfirmed = true;
+		chosenAction = 3;
+	}
+
+	public void activateActionButton4()
+	{
+		actionManager.chosenAction = 4;
+		actionManager.actionConfirmed = true;
+		chosenAction = 4;
+	}
+
+	public void activateActionButton5()
+	{
+		actionManager.chosenAction = 5;
+		actionManager.actionConfirmed = true;
+		chosenAction = 5;
+	}
+
+	public void activateActionButton6()
+	{
+		actionManager.chosenAction = 6;
+		actionManager.actionConfirmed = true;
+		chosenAction = 6;
+	}
+
+	public void activateActionButton7()
+	{
+		actionManager.chosenAction = 7;
+		actionManager.actionConfirmed = true;
+		chosenAction = 7;
+	}
+
+	public void activateActionButton8()
+	{
+		actionManager.chosenAction = 8;
+		actionManager.actionConfirmed = true;
+		chosenAction = 8;
+	}
+
+	public void activateActionButton9()
+	{
+		actionManager.chosenAction = 9;
+		actionManager.actionConfirmed = true;
+		chosenAction = 9;
+	}
+
+	public void disableActionButtons()
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			ActionButtonObject[i].SetActive(false);
+		}
+
+		endTurnButton.SetActive (false);
+	}
+
+	public void activateEndTurnButton()
+	{
+		actionManager.endTurnConfirmed = true;
+	}
+
+	public void activateAction1UI()
+	{
+		xPlusButton.SetActive (true);
+		xMinusButton.SetActive (true);
+		yPlusButton.SetActive (true);
+		yMinusButton.SetActive (true);
+		zPlusButton.SetActive (true);
+		zMinusButton.SetActive (true);
+		confirmButton.SetActive (true);
+	}
+
+	public void activateAction2UI1()
+	{
+		disablePPButtons ();
+		leftButton.SetActive (true);
+		rightButton.SetActive (true);
+		confirmButton.SetActive (true);
+	}
+
+	public void activateAction2UI2()
+	{
+		leftButton.SetActive (false);
+		rightButton.SetActive (false);
+		xPlusButton.SetActive (true);
+		xMinusButton.SetActive (true);
+		yPlusButton.SetActive (true);
+		yMinusButton.SetActive (true);
+		zPlusButton.SetActive (true);
+		zMinusButton.SetActive (true);
+	}
+
+	public void activateAction4UI()
+	{
+		leftButton.SetActive (false);
+		rightButton.SetActive (false);
+		xPlusButton.SetActive (true);
+		xMinusButton.SetActive (true);
+		yPlusButton.SetActive (true);
+		yMinusButton.SetActive (true);
+		zPlusButton.SetActive (true);
+		zMinusButton.SetActive (true);
+		confirmButton.SetActive (true);
+	}
+
+	public void leftButtonClicked()
+	{
+		if (chosenAction == 2)
+		instantiatedAction.GetComponent<Action2Script> ().leftButton = true;
+	}
+
+	public void rightButtonClicked()
+	{
+		if (chosenAction == 2)
+		instantiatedAction.GetComponent<Action2Script> ().rightButton = true;
+	}
 }
