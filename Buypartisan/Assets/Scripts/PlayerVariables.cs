@@ -16,7 +16,7 @@ public class PlayerVariables : MonoBehaviour {
 	private bool selected = false;
 
 	//holds all of the shadow postions
-	public ArrayList shadowPositions;
+	public ArrayList shadowPositions = new ArrayList();
 
 	void Start () {
 
