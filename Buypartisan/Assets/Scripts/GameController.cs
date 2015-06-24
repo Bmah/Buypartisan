@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Text;
+using System.IO;
+using System.Runtime;
 
 /// <summary>
 /// Game controller.
@@ -30,7 +33,7 @@ public class GameController : MonoBehaviour {
 	public bool playerTakingAction = false;
 	public bool messaged;//Checks if Player has finished taking an acti
 	
-	public GameObject[] voters = new GameObject[2];//array which houses the voters
+	public GameObject[] voters;//array which houses the voters
 	public GameObject[] players = new GameObject[2];//array which houses the players
 	
 	public GameObject currentPlayer;
@@ -51,12 +54,52 @@ public class GameController : MonoBehaviour {
 	/// Spawns the voters according to map
 	/// </summary>
 	void SpawnVoters(){
-		Vector3 voterLocation = new Vector3(1,3,2);
-		voters[0] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
-		voters [0].GetComponent<VoterVariables> ().votes = 3;
-		voterLocation = new Vector3 (0,2,3);
-		voters[1] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
-		voters [1].GetComponent<VoterVariables> ().votes = 3;
+		Vector3 voterLocation = new Vector3 (0, 0, 0);
+		int voterNumber = 0;
+
+		try{
+			string currentLine;
+			int temp;
+			StreamReader levelReader = new StreamReader(Application.dataPath + "\\level.txt",Encoding.Default);
+			using(levelReader){
+				currentLine = levelReader.ReadLine();
+				int.TryParse(currentLine,out temp);
+				voters = new GameObject[temp];
+
+				do{
+					currentLine = levelReader.ReadLine();
+					if(currentLine != null){
+						string[] voterDataRaw = currentLine.Split(new char[]{',',' '});
+						int[] voterDataInt = new int[5];
+						if(voterDataRaw.Length == 5){
+							for(int i = 0; i < 5; i++){
+								if(int.TryParse(voterDataRaw[i], out temp)){
+									voterDataInt[i] = temp;
+								}
+								else{
+									Debug.LogError("Could not Parse string: " + voterDataRaw[i] + "into int");
+								}
+							}
+							voterLocation = new Vector3(voterDataInt[0],voterDataInt[1],voterDataInt[2]);
+							voters[voterNumber] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
+							voters [voterNumber].GetComponent<VoterVariables> ().votes = voterDataInt[3];
+							voters [voterNumber].GetComponent<VoterVariables> ().money = voterDataInt[4];
+							voterNumber++;
+						}
+						else{
+							Debug.LogError("Incorrect number of inputs into level.txt on line:\n" + currentLine);
+						}
+					}
+				}
+				while(currentLine != null);
+
+				levelReader.Close();
+			}
+
+		}
+		catch(IOException e){
+			Debug.LogError("ERROR did not load file properly Exception: " + e);
+		}
 	}
 	
 	// Update is called once per frame
