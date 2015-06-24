@@ -15,7 +15,11 @@ public class PlayerVariables : MonoBehaviour {
 
 	private bool selected = false;
 
+	//holds all of the shadow postions
+	public ArrayList shadowPositions;
+
 	void Start () {
+
 		playerRenderer = this.GetComponent<Renderer>();		
 	}
 	

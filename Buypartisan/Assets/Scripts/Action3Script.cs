@@ -12,6 +12,7 @@ public class Action3Script : MonoBehaviour {
 	public GameObject gameController; //this is the game controller variable. It is obtained from the PlayerTurnsManager
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the PlayerTurnManager
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
+	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
 
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 
@@ -30,7 +31,7 @@ public class Action3Script : MonoBehaviour {
 	private int playersSpawned;
 
 
-	private bool legalShadowPostion = true; //bool for checking if player is done
+	private bool legalShadowPosition = true; //bool for checking if player is done
 
 	//These are my variables
 
@@ -41,7 +42,8 @@ public class Action3Script : MonoBehaviour {
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
 		inputManager = GameObject.FindWithTag ("InputManager");
-		
+		uiController = GameObject.Find ("UI Controller");
+
 		if (gameController != null) {
 			//			voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
@@ -49,14 +51,17 @@ public class Action3Script : MonoBehaviour {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
 		
+		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < moneyRequired) {
+		int actionCostMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (moneyRequired + (moneyRequired * actionCostMultiplier))) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
 		
 		originalPosition = players[currentPlayer].transform.position;
-		this.transform.position = originalPosition;
+		//this.transform.position = originalPosition;
 
 		//spawns in a shadow position for the player
 
@@ -66,8 +71,14 @@ public class Action3Script : MonoBehaviour {
 		//changes the shadow postion transform's postion to the player who spawned it
 		shadowPosition.transform.position =  players[currentPlayer].transform.position;
 
-		//gets the number of spawned players
+		//adds the shadow position to the players array list of shadowpositions
+		gameController.GetComponent<GameController> ().playerTemplate.GetComponent<PlayerVariables> ().shadowPositions.Add (shadowPosition);
 
+		//gets the number of spawned players
+		playersSpawned = gameController.GetComponent<GameController> ().numberPlayers;
+
+		//Disables the Action UI buttons
+		uiController.GetComponent<UI_Script>().disableActionButtons();
 	}
 	
 	// Update is called once per frame
@@ -76,68 +87,71 @@ public class Action3Script : MonoBehaviour {
 		//Right now, it makes sure that the player can only move up, down, left, right, forward, and backward from its original postion.
 		//It also checks to make sure the player doesn't move outside the grid.
 		//When we figure out the GUI system, we can change the inputs to then be button presses.
+
+		//Tests to make sure that the shadow position does not overlap another player,
+		//another shadow position, and that the shadow position does not move more than one space from the player
 		currentPos = players [currentPlayer].transform.position;
 		if (inputManager.GetComponent<InputManagerScript> ().rightButtonDown) {
-			if (transform.position.x < (gameController.GetComponent<GameController>().gridSize - 1))
+			if (shadowPosition.transform.position.x < (gameController.GetComponent<GameController>().gridSize - 1))
 			{	
-				if(TestShadowPosition())
+				if(TestShadowPosition() && (shadowPosition.transform.position.x - originalPosition.x) == 1) 
 				{
-					this.transform.position += new Vector3(1,0,0);
+					shadowPosition.transform.position += new Vector3(1,0,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
 			}
 		}
 		if (inputManager.GetComponent<InputManagerScript> ().leftButtonDown) {
-			if (transform.position.x > 0)
+			if (shadowPosition.transform.position.x > 0)
 			{
-				if(TestShadowPosition())
+				if(TestShadowPosition() && (originalPosition.x - shadowPosition.transform.position.x)== 1)
 				{
-					this.transform.position += new Vector3(-1,0,0);
+					shadowPosition.transform.position += new Vector3(-1,0,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
 			}
 		}
 		if (inputManager.GetComponent<InputManagerScript> ().downButtonDown) {
-			if (transform.position.z > 0)
+			if (shadowPosition.transform.position.z > 0)
 			{	
-				if(TestShadowPosition())
+				if(TestShadowPosition() && (originalPosition.z - shadowPosition.transform.position.z)== 1)
 				{
-					this.transform.position += new Vector3(0,0,-1);
+					shadowPosition.transform.position += new Vector3(0,0,-1);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
 			}
 		}
 		if (inputManager.GetComponent<InputManagerScript> ().upButtonDown) {
-			if (transform.position.z < (gameController.GetComponent<GameController>().gridSize - 1))
+			if (shadowPosition.transform.position.z < (gameController.GetComponent<GameController>().gridSize - 1))
 			{
-				if(TestShadowPosition())
+				if(TestShadowPosition()  && (shadowPosition.transform.position.z - originalPosition.z) == 1)
 				{
-					this.transform.position += new Vector3(0,0,1);
+					shadowPosition.transform.position += new Vector3(0,0,1);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
 			}
 		}
 		if (inputManager.GetComponent<InputManagerScript> ().qButtonDown) {
-			if (transform.position.y < (gameController.GetComponent<GameController>().gridSize - 1))
+			if (shadowPosition.transform.position.y < (gameController.GetComponent<GameController>().gridSize - 1))
 			{	
-				if(TestShadowPosition())
+				if(TestShadowPosition() && (shadowPosition.transform.position.y - originalPosition.y) == 1)
 				{
-					this.transform.position += new Vector3(0,1,0);
+					shadowPosition.transform.position += new Vector3(0,1,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
 			}
 		}
 		if (inputManager.GetComponent<InputManagerScript> ().eButtonDown) {
-			if (transform.position.y > 0)
+			if (shadowPosition.transform.position.y > 0)
 			{	
-				if(TestShadowPosition())
+				if(TestShadowPosition() && (originalPosition.y - shadowPosition.transform.position.y)== 1)
 				{
-					this.transform.position += new Vector3(0,-1,0);
+					shadowPosition.transform.position += new Vector3(0,-1,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
@@ -149,12 +163,11 @@ public class Action3Script : MonoBehaviour {
 		//You also must have enough money to move to that position.
 		if (Input.GetKeyDown (KeyCode.B)) {
 			for (int i = 0; i < players.Length; i++) {
-				if (i != currentPlayer && players[i].transform.position != transform.position && transform.position != originalPosition) {
+				if (i != currentPlayer && players[i].transform.position != shadowPosition.transform.position && shadowPosition.transform.position != originalPosition) {
 					if (currentCost > players[currentPlayer].GetComponent<PlayerVariables>().money) {
 						Debug.Log ("You don't have enough money to move to this spot!");
 					} else {
 						chosenPositionConfirmed = true;
-						players[currentPlayer].transform.position = transform.position;
 						players[currentPlayer].GetComponent<PlayerVariables>().money = players[currentPlayer].GetComponent<PlayerVariables>().money - currentCost;
 					}
 				}
@@ -168,24 +181,44 @@ public class Action3Script : MonoBehaviour {
 	}
 	
 	void EndAction() {
-		gameController.GetComponent<GameController> ().playerTakingAction = true;
+		uiController.GetComponent<UI_Script>().toggleActionButtons();
+		this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier += 1;
 		Destroy(gameObject);
 	}
 
 	bool TestShadowPosition(){
 
-		//resets playerConifrmsPlacement
-		legalShadowPostion = true;
+		//temporary holds a shadow position
+		GameObject tempShadowPosition;
 
-		//checks the player against all of the previous players to ensure no duplicates
-		for(int i = 0; i < playersSpawned; i++){
-			if (shadowPosition.transform.position == players[i].transform.position){//if they are on the same spot
-					legalShadowPostion = false;
+		//resets playerConifrmsPlacement
+		legalShadowPosition = true;
+
+		//checks the shadow position against all of the previous players to ensure that they don't overlap
+		for(int i = 0; i < playersSpawned || legalShadowPosition == false; i++)
+		{
+			if (shadowPosition.transform.position == players[i].transform.position)
+			{//if they are on the same spot
+					legalShadowPosition = false;
 			}
+
+			//checks the shadow position against all other shadow postions owned by a single player to ensure that they don't overlap
+			for(int j = 0; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count || legalShadowPosition == false; j++)
+			{
+				//gets the next shadow postion in the arraylist
+				tempShadowPosition = (GameObject)players[i].GetComponent<PlayerVariables>().shadowPositions[j];
+
+				if(shadowPosition.transform.position == tempShadowPosition.transform.position)
+				{
+					//if two shadow positions are on the same spot
+					legalShadowPosition = false;
+				}
+			}
+		
 		}
 
 		//if the player placment is legal
-		if (legalShadowPostion) 
+		if (legalShadowPosition) 
 		{
 			return(true);
 		}
