@@ -39,6 +39,9 @@ public class GameController : MonoBehaviour {
 	public GameObject[] players = new GameObject[2];//array which houses the players
 	
 	public GameObject currentPlayer;
+
+	public MusicController gameMusic;
+	public float SFXVolume;
 	
 	/// <summary>
 	/// Start this instance.
@@ -48,10 +51,16 @@ public class GameController : MonoBehaviour {
 		//VoterVariables VoterVariablesController = GameObject.FindGameObjectWithTag("Voter(Clone)").GetComponent<GameController>();
 		GridInstancedController.GridInstantiate (gridSize);
 		UIController.gridSize = gridSize;
+		UIController.SFXvolume = SFXVolume;
 		randomEventController.gridSize = gridSize;
 		messaged = true;
 		SpawnVoters ();
 		randomEventController.voters = voters;
+		gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
+		if (gameMusic == null) {
+			Debug.LogError ("The Game Controller Could not Find the Music Controller please place it in the scene.");
+		}
+
 	}
 	
 	/// <summary>
