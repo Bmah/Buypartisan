@@ -22,6 +22,8 @@ public class GameController : MonoBehaviour {
 
 	public UI_Script UIController;
 
+	public RandomEventControllerScript randomEventController;
+
 	public int numberPlayers;  //number of players per game
 	public int playersSpawned = 0; //how many players have been spawned in
 	private bool spawnedNewPlayer = false; //bool for checking whether or not a new player has been spawned in
@@ -46,6 +48,7 @@ public class GameController : MonoBehaviour {
 		//VoterVariables VoterVariablesController = GameObject.FindGameObjectWithTag("Voter(Clone)").GetComponent<GameController>();
 		GridInstancedController.GridInstantiate (gridSize);
 		UIController.gridSize = gridSize;
+		randomEventController.gridSize = gridSize;
 		messaged = true;
 		SpawnVoters ();
 	}
@@ -120,7 +123,6 @@ public class GameController : MonoBehaviour {
 				PlayerTurn ();
 				if (Input.GetKeyDown (KeyCode.P))
 					playerTakingAction = true;//this skips the current turn by ending the turn.
-
 			} else {
 				currentState = GameState.RoundEnd;
 			}
@@ -218,6 +220,10 @@ public class GameController : MonoBehaviour {
 			}
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
+
+				randomEventController.ActivateEvents();
+
+				//this is when the new round begins
 				roundCounter++;
 				currentPlayerTurn = 0;
 				playerTakingAction = false;
