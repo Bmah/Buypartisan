@@ -65,9 +65,6 @@ public class Action3Script : MonoBehaviour {
 	//holds the orignial color of the shadow position
 	private Color transparentColor;
 
-	//holds the new color of shadow positon with the changed alpha
-	private Color newColor;
-
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
