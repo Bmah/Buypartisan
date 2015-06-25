@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerVariables : MonoBehaviour {
 
@@ -15,7 +16,14 @@ public class PlayerVariables : MonoBehaviour {
 
 	private bool selected = false;
 
+	//holds all of the shadow postions (Alex Jungroth)
+	public List<GameObject> shadowPositions = new List<GameObject>();
+
 	void Start () {
+
+		//makes sure all of the players shadowPositions lists are empty at the start of the program (Alex Jungroth)
+		this.shadowPositions.Clear ();
+
 		playerRenderer = this.GetComponent<Renderer>();		
 	}
 	

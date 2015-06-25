@@ -171,6 +171,7 @@ public class Action2Script : MonoBehaviour {
 	void EndAction() {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier += 1;
+		players [currentPlayer].GetComponent<PlayerVariables> ().money -= moneyRequired + (moneyRequired * this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier);
 		Destroy(gameObject);
 	}
 }

@@ -68,6 +68,10 @@ public class UI_Script : MonoBehaviour {
 	//this is so that this script can communicate with the Action script
 	public GameObject instantiatedAction;
 
+	//this allows the UI to talk to the SFX controller to play sounds
+	private SFXController sfx;
+	public float SFXvolume = 1;
+
 	// Use this for initialization
 	void Start () {
 		controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
@@ -116,6 +120,10 @@ public class UI_Script : MonoBehaviour {
 		//gets the current player
 		currentPlayerPrefab = controller.GetComponent<GameController> ().players;
 
+		sfx = GameObject.FindGameObjectWithTag ("SFX").GetComponent<SFXController> ();
+		if (sfx == null) {
+			Debug.LogError ("ButtonScript could not find SFX Controller please add it to the scene.");
+		}
 	}
 	
 	// Update is called once per frame
@@ -151,6 +159,10 @@ public class UI_Script : MonoBehaviour {
 				instantiatedAction.GetComponent<Action2Script>().xPlusButton = true;
 			}
 
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().xPlusButton = true;
+			}
+
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().xPlusButton = true;
 			}
@@ -176,6 +188,10 @@ public class UI_Script : MonoBehaviour {
 
 			if (chosenAction == 2) {
 				instantiatedAction.GetComponent<Action2Script>().xMinusButton = true;
+			}
+
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().xMinusButton = true;
 			}
 
 			if (chosenAction == 4) {
@@ -205,6 +221,10 @@ public class UI_Script : MonoBehaviour {
 				instantiatedAction.GetComponent<Action2Script>().yPlusButton = true;
 			}
 
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().yPlusButton = true;
+			}
+
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().yPlusButton = true;
 			}
@@ -230,6 +250,10 @@ public class UI_Script : MonoBehaviour {
 
 			if (chosenAction == 2) {
 				instantiatedAction.GetComponent<Action2Script>().yMinusButton = true;
+			}
+
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().yMinusButton = true;
 			}
 
 			if (chosenAction == 4) {
@@ -259,6 +283,10 @@ public class UI_Script : MonoBehaviour {
 				instantiatedAction.GetComponent<Action2Script>().zPlusButton = true;
 			}
 
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().zPlusButton = true;
+			}
+
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().zPlusButton = true;
 			}
@@ -286,6 +314,10 @@ public class UI_Script : MonoBehaviour {
 				instantiatedAction.GetComponent<Action2Script>().zMinusButton = true;
 			}
 
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().zMinusButton = true;
+			}
+
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().zMinusButton = true;
 			}
@@ -311,6 +343,10 @@ public class UI_Script : MonoBehaviour {
 
 			if (chosenAction == 2) {
 				instantiatedAction.GetComponent<Action2Script>().confirmButton = true;
+			}
+
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().confirmButton = true;
 			}
 
 			if (chosenAction == 4) {
@@ -503,6 +539,17 @@ public class UI_Script : MonoBehaviour {
 		zMinusButton.SetActive (true);
 	}
 
+	public void activateAction3UI()
+	{
+		xPlusButton.SetActive (true);
+		xMinusButton.SetActive (true);
+		yPlusButton.SetActive (true);
+		yMinusButton.SetActive (true);
+		zPlusButton.SetActive (true);
+		zMinusButton.SetActive (true);
+		confirmButton.SetActive (true);
+	}
+
 	public void activateAction4UI()
 	{
 		leftButton.SetActive (false);
@@ -526,5 +573,9 @@ public class UI_Script : MonoBehaviour {
 	{
 		if (chosenAction == 2)
 		instantiatedAction.GetComponent<Action2Script> ().rightButton = true;
+	}
+
+	public void OnMouseOver(){
+		sfx.PlayAudioClip (0, 0, SFXvolume);
 	}
 }
