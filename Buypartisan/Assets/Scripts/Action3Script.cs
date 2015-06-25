@@ -93,7 +93,11 @@ public class Action3Script : MonoBehaviour {
 		//activates the buttons for Action 3
 		uiController.GetComponent<UI_Script> ().activateAction3UI ();
 
-
+		//makes sure all of the players shadowPositions lists are empty at the start of the program
+		//for(int i = 0; i < playersSpawned; i++)
+		//{
+		//	players [i].GetComponent<PlayerVariables> ().shadowPositions.Clear ();
+		//}
 	}
 	
 	// Update is called once per frame
@@ -111,11 +115,11 @@ public class Action3Script : MonoBehaviour {
 
 			testPosition.x = originalPosition.x + 1;
 
-			if (testPosition.x < (gameController.GetComponent<GameController>().gridSize - 1))
+			if (testPosition.x <= (gameController.GetComponent<GameController>().gridSize - 1))
 			{	
 				if(TestShadowPosition(testPosition)) 
 				{
-					semiTestedPosition += new Vector3(1,0,0);
+					semiTestedPosition = originalPosition + new Vector3(1,0,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
@@ -131,11 +135,11 @@ public class Action3Script : MonoBehaviour {
 
 			testPosition.x = originalPosition.x - 1;
 
-			if (testPosition.x > 0)
+			if (testPosition.x >= 0)
 			{
 				if(TestShadowPosition(testPosition))
 				{
-					semiTestedPosition += new Vector3(-1,0,0);
+					semiTestedPosition = originalPosition + new Vector3(-1,0,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
@@ -151,11 +155,11 @@ public class Action3Script : MonoBehaviour {
 
 			testPosition.z = originalPosition.z - 1;
 
-			if (testPosition.z > 0)
+			if (testPosition.z >= 0)
 			{
 				if(TestShadowPosition(testPosition))
 				{
-					semiTestedPosition += new Vector3(0,0,-1);
+					semiTestedPosition = originalPosition + new Vector3(0,0,-1);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
@@ -170,11 +174,11 @@ public class Action3Script : MonoBehaviour {
 
 			testPosition.z = originalPosition.z + 1;
 
-			if (testPosition.z < (gameController.GetComponent<GameController>().gridSize - 1))
+			if (testPosition.z <= (gameController.GetComponent<GameController>().gridSize - 1))
 			{
 				if(TestShadowPosition(testPosition))
 				{
-					semiTestedPosition += new Vector3(0,0,1);
+					semiTestedPosition = originalPosition + new Vector3(0,0,1);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
@@ -190,11 +194,11 @@ public class Action3Script : MonoBehaviour {
 
 			testPosition.y = originalPosition.y + 1;
 
-			if (testPosition.y < (gameController.GetComponent<GameController>().gridSize - 1))
+			if (testPosition.y <= (gameController.GetComponent<GameController>().gridSize - 1))
 			{	
 				if(TestShadowPosition(testPosition))
 				{
-					semiTestedPosition += new Vector3(0,1,0);
+					semiTestedPosition = originalPosition + new Vector3(0,1,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
@@ -209,11 +213,11 @@ public class Action3Script : MonoBehaviour {
 
 			testPosition.y = originalPosition.y - 1;
 
-			if (testPosition.y > 0)
+			if (testPosition.y >= 0)
 			{	
 				if(TestShadowPosition(testPosition))
 				{
-					semiTestedPosition += new Vector3(0,-1,0);
+					semiTestedPosition = originalPosition + new Vector3(0,-1,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
@@ -236,21 +240,6 @@ public class Action3Script : MonoBehaviour {
 					} 
 					else 
 					{
-						//instantiates a new shadow position at a confirmed position
-
-
-						//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
-						shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
-						
-						//changes the shadow postion transform's postion to the player who spawned it
-						//shadowPosition.transform.position =  players[currentPlayer].transform.position;
-						
-						//adds the shadow position to the players array list of shadowpositions
-						gameController.GetComponent<GameController> ().playerTemplate.GetComponent<PlayerVariables> ().shadowPositions.Add (shadowPosition);
-
-
-						//
-						
 						chosenPositionConfirmed = true;
 						players[currentPlayer].GetComponent<PlayerVariables>().money = players[currentPlayer].GetComponent<PlayerVariables>().money - currentCost;
 					}
@@ -260,6 +249,16 @@ public class Action3Script : MonoBehaviour {
 		}
 		
 		if (chosenPositionConfirmed) {
+
+			//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
+			shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
+			
+			//changes the shadow postion transform's postion to the player who spawned it
+			//shadowPosition.transform.position =  players[currentPlayer].transform.position;
+			
+			//adds the shadow position to the players array list of shadowpositions
+			//gameController.GetComponent<GameController> ().playerTemplate.GetComponent<PlayerVariables> ().shadowPositions.Add (shadowPosition);
+
 			EndAction ();
 		}
 
@@ -272,7 +271,7 @@ public class Action3Script : MonoBehaviour {
 	}
 
 	bool TestShadowPosition(Vector3 potentialShadowPosition){
-/*
+
 		//temporary holds a shadow position
 		GameObject tempShadowPosition;
 
@@ -335,7 +334,7 @@ public class Action3Script : MonoBehaviour {
 				}//else
 			}//if
 		}//for
-*/
+
 		//if the player placment is legal
 		return legalShadowPosition;
 
