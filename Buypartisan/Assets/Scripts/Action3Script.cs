@@ -49,8 +49,24 @@ public class Action3Script : MonoBehaviour {
 	//holds a pontential position that shadowPostion might be spawned in
 	private Vector3 testPosition;
 
-	//holdsa a pontntial position that has passed some tests
+	//holds a a pontntial position that has passed some tests
 	private Vector3 semiTestedPosition;
+
+	//holds a primative cube to mark a potential position
+	private GameObject marker;
+
+	//holds the shadow position before it is added to the shadow positions list
+	//so I can change its transparency
+	private GameObject shadowPosition;
+
+	//holds the shadow positoins Renderer
+	private Renderer shadowRenderer;
+
+	//holds the orignial color of the shadow position
+	private Color oldColor;
+
+	//holds the new color of shadow positon with the changed alpha
+	private Color newColor;
 
 	// Use this for initialization
 	void Start () {
@@ -88,7 +104,16 @@ public class Action3Script : MonoBehaviour {
 
 		//activates the buttons for Action 3
 		uiController.GetComponent<UI_Script> ().activateAction3UI ();
-		
+
+		//creates a primitive cube to show potential positions on screen
+		marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+		//initializes the marker to the original position of the player spawning a shadow positon
+		marker.transform.position = originalPosition;
+
+		//scales the marker so its no larger than everything else in the grid
+		marker.transform.localScale = new Vector3(0.099f, 0.099f, 0.099f);
+
 	}
 	
 	// Update is called once per frame
@@ -114,6 +139,10 @@ public class Action3Script : MonoBehaviour {
 					semiTestedPosition = originalPosition + new Vector3(1,0,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
+
+					//updates the positon of the marker
+					marker.transform.position = testPosition;
+
 				}
 				else
 				{
@@ -140,6 +169,10 @@ public class Action3Script : MonoBehaviour {
 					semiTestedPosition = originalPosition + new Vector3(-1,0,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
+
+					//updates the positon of the marker
+					marker.transform.position = testPosition;
+
 				}
 				else
 				{
@@ -166,6 +199,10 @@ public class Action3Script : MonoBehaviour {
 					semiTestedPosition = originalPosition + new Vector3(0,0,-1);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
+
+					//updates the positon of the marker
+					marker.transform.position = testPosition;
+				
 				}
 				else
 				{
@@ -192,6 +229,10 @@ public class Action3Script : MonoBehaviour {
 					semiTestedPosition = originalPosition + new Vector3(0,0,1);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
+					
+					//updates the positon of the marker
+					marker.transform.position = testPosition;
+
 				}
 				else
 				{
@@ -218,6 +259,10 @@ public class Action3Script : MonoBehaviour {
 					semiTestedPosition = originalPosition + new Vector3(0,1,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
+
+					//updates the positon of the marker
+					marker.transform.position = testPosition;
+
 				}
 				else
 				{
@@ -244,6 +289,10 @@ public class Action3Script : MonoBehaviour {
 					semiTestedPosition = originalPosition + new Vector3(0,-1,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
+
+					//updates the positon of the marker
+					marker.transform.position = testPosition;
+
 				}
 				else
 				{
@@ -281,16 +330,28 @@ public class Action3Script : MonoBehaviour {
 		if (chosenPositionConfirmed) {
 
 			//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
-			//shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
+			shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
+
+			//changes the shadow positions transparency
+
+			//gets the shadow positoins Renderer
+			shadowRenderer	= shadowPosition.GetComponent<Renderer>();
+			
+			//makes the players paddle transparent without changing its color
+			oldColor = shadowRenderer.material.color;
+			newColor = new Color(oldColor.r/255f, oldColor.b/255f, oldColor.g/255f, 0.5f);          
+			shadowRenderer.material.SetColor("_Color", newColor);  
 
 			//adds the shadow position to the players array list of shadowpositions
-			//gameController.GetComponent<GameController> ().playerTemplate.GetComponent<PlayerVariables> ().shadowPositions.Add (shadowPosition);
+			gameController.GetComponent<GameController> ().playerTemplate.GetComponent<PlayerVariables> ().shadowPositions.Add (shadowPosition);
 
 			//I combined the above two lines into one
 			//adds the shadow position to the players array list of shadowpositions
-			players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.
-				Add (Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject);
+			//players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.
+			//	Add (Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject);
 
+			//removes the marker
+			Destroy(marker);
 
 			EndAction ();
 		}
