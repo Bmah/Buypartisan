@@ -14,13 +14,17 @@ public class VoterVariables : MonoBehaviour {
 	public Material unselectedTexture;
 	private Renderer voterRenderer;
 	public Collider Coll;//not sure if needed
-	public GameController ControllerSquared;//used for power calls
+	private GameController ControllerSquared;//used for power calls
+	private UI_Script UIController;
+
+	string holdingText;
 
 	void Start () {
 		voterRenderer = this.GetComponent<Renderer>();
 		Coll = this.GetComponent<Collider> ();
 		powerType = 1; //hardcoded for testing suppression, make sure to remove when code in place for buttons assigning
 		ControllerSquared = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+		UIController = GameObject.FindGameObjectWithTag ("UI_Controller").GetComponent<UI_Script> ();
 	}
 	
 	/// <summary>
@@ -43,6 +47,16 @@ public class VoterVariables : MonoBehaviour {
 
 	}
 
+	void OnMouseEnter(){
+		ToggleSelected ();
+		holdingText = UIController.visualText.text;
+		UIController.alterTextBox ("Money: " + money + "\nVotes: " + votes);
+	}
+
+	void OnMouseExit(){
+		ToggleSelected ();
+		UIController.alterTextBox (holdingText);
+	}
 
 	/// <summary>
 	/// Toggles whether or not the Voter is selected.
