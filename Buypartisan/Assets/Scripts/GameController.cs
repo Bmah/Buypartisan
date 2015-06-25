@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Text;
+using System.IO;
+using System.Runtime;
 
 /// <summary>
 /// Game controller.
@@ -19,6 +22,8 @@ public class GameController : MonoBehaviour {
 
 	public UI_Script UIController;
 
+	public RandomEventControllerScript randomEventController;
+
 	public int numberPlayers;  //number of players per game
 	public int playersSpawned = 0; //how many players have been spawned in
 	private bool spawnedNewPlayer = false; //bool for checking whether or not a new player has been spawned in
@@ -30,10 +35,13 @@ public class GameController : MonoBehaviour {
 	public bool playerTakingAction = false;
 	public bool messaged;//Checks if Player has finished taking an acti
 	
-	public GameObject[] voters = new GameObject[2];//array which houses the voters
+	public GameObject[] voters;//array which houses the voters
 	public GameObject[] players = new GameObject[2];//array which houses the players
 	
 	public GameObject currentPlayer;
+
+	public MusicController gameMusic;
+	public float SFXVolume;
 	
 	/// <summary>
 	/// Start this instance.
@@ -43,20 +51,68 @@ public class GameController : MonoBehaviour {
 		//VoterVariables VoterVariablesController = GameObject.FindGameObjectWithTag("Voter(Clone)").GetComponent<GameController>();
 		GridInstancedController.GridInstantiate (gridSize);
 		UIController.gridSize = gridSize;
+		UIController.SFXvolume = SFXVolume;
+		randomEventController.gridSize = gridSize;
 		messaged = true;
 		SpawnVoters ();
+		randomEventController.voters = voters;
+		gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
+		if (gameMusic == null) {
+			Debug.LogError ("The Game Controller Could not Find the Music Controller please place it in the scene.");
+		}
+
 	}
 	
 	/// <summary>
 	/// Spawns the voters according to map
 	/// </summary>
 	void SpawnVoters(){
-		Vector3 voterLocation = new Vector3(1,3,2);
-		voters[0] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
-		voters [0].GetComponent<VoterVariables> ().votes = 3;
-		voterLocation = new Vector3 (0,2,3);
-		voters[1] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
-		voters [1].GetComponent<VoterVariables> ().votes = 3;
+		Vector3 voterLocation = new Vector3 (0, 0, 0);
+		int voterNumber = 0;
+
+		try{
+			string currentLine;
+			int temp;
+			StreamReader levelReader = new StreamReader(Application.dataPath + "\\level.txt",Encoding.Default);
+			using(levelReader){
+				currentLine = levelReader.ReadLine();
+				int.TryParse(currentLine,out temp);
+				voters = new GameObject[temp];
+
+				do{
+					currentLine = levelReader.ReadLine();
+					if(currentLine != null){
+						string[] voterDataRaw = currentLine.Split(new char[]{',',' '});
+						int[] voterDataInt = new int[5];
+						if(voterDataRaw.Length == 5){
+							for(int i = 0; i < 5; i++){
+								if(int.TryParse(voterDataRaw[i], out temp)){
+									voterDataInt[i] = temp;
+								}
+								else{
+									Debug.LogError("Could not Parse string: " + voterDataRaw[i] + "into int");
+								}
+							}
+							voterLocation = new Vector3(voterDataInt[0],voterDataInt[1],voterDataInt[2]);
+							voters[voterNumber] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
+							voters [voterNumber].GetComponent<VoterVariables> ().votes = voterDataInt[3];
+							voters [voterNumber].GetComponent<VoterVariables> ().money = voterDataInt[4];
+							voterNumber++;
+						}
+						else{
+							Debug.LogError("Incorrect number of inputs into level.txt on line:\n" + currentLine);
+						}
+					}
+				}
+				while(currentLine != null);
+
+				levelReader.Close();
+			}
+
+		}
+		catch(IOException e){
+			Debug.LogError("ERROR did not load file properly Exception: " + e);
+		}
 	}
 	
 	// Update is called once per frame
@@ -77,7 +133,6 @@ public class GameController : MonoBehaviour {
 				PlayerTurn ();
 				if (Input.GetKeyDown (KeyCode.P))
 					playerTakingAction = true;//this skips the current turn by ending the turn.
-
 			} else {
 				currentState = GameState.RoundEnd;
 			}
@@ -175,6 +230,10 @@ public class GameController : MonoBehaviour {
 			}
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
+
+				randomEventController.ActivateEvents();
+
+				//this is when the new round begins
 				roundCounter++;
 				currentPlayerTurn = 0;
 				playerTakingAction = false;

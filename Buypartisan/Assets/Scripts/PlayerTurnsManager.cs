@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerTurnsManager : MonoBehaviour {
 	public GameObject gameController; //Make sure to place the GameController here, so it can obtain the array.
 	public GameObject inputManager; //Make sure to place the inputManager object here, so it can obtain inputs.
+	public GameObject uiController; //Make sure to place the UI Controller here.
 	public GameObject[] actionArray = new GameObject[10]; //This is the array of action prefabs.
 	private GameObject instantiatedAction; //This saves the action prefab that was instantiated to check if it still exists. So long as this prefab exists, TurnsManager knows the turn hasn't ended yet.
 
@@ -11,6 +12,11 @@ public class PlayerTurnsManager : MonoBehaviour {
 	private bool actionIsRunning = false; //This value checks if the player has chosen an action, and it is currently running
 
 	public bool actionConfirmed; //This confirms that the action has been chosen.
+
+	public bool endTurnConfirmed; //this confirms that the player wishes to end his turn.
+
+//	public int costOfAction = 0; //this will be the variable that saves the cost of the action.
+	public int costMultiplier = 0; //this will change if the player continues to make more actions.
 
 	// Use this for initialization
 	void Start () {
@@ -28,11 +34,17 @@ public class PlayerTurnsManager : MonoBehaviour {
 		if (instantiatedAction == null) {
 			actionIsRunning = false;
 			actionConfirmed = false;
+
+			if (endTurnConfirmed) {
+				gameController.GetComponent<GameController> ().playerTakingAction = true;
+				endTurnConfirmed = false;
+				costMultiplier = 0;
+			}
 		}
 
-		if (Input.GetKeyDown (KeyCode.Z)) {
-			actionConfirmed = true;
-		}
+//		if (Input.GetKeyDown (KeyCode.Z)) {
+//			actionConfirmed = true;
+//		}
 	}
 
 	/// <summary>
@@ -46,6 +58,7 @@ public class PlayerTurnsManager : MonoBehaviour {
 				instantiatedAction = Instantiate (actionArray [actionNumber]);
 				instantiatedAction.transform.parent = this.transform;
 				actionIsRunning = true;
+				uiController.GetComponent<UI_Script>().instantiatedAction = instantiatedAction;
 			} else {
 				Debug.Log ("There is no action placed in this spot of the array");
 			}
