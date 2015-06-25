@@ -151,6 +151,10 @@ public class UI_Script : MonoBehaviour {
 				instantiatedAction.GetComponent<Action2Script>().xPlusButton = true;
 			}
 
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().xPlusButton = true;
+			}
+
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().xPlusButton = true;
 			}
@@ -176,6 +180,10 @@ public class UI_Script : MonoBehaviour {
 
 			if (chosenAction == 2) {
 				instantiatedAction.GetComponent<Action2Script>().xMinusButton = true;
+			}
+
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().xMinusButton = true;
 			}
 
 			if (chosenAction == 4) {
@@ -205,6 +213,10 @@ public class UI_Script : MonoBehaviour {
 				instantiatedAction.GetComponent<Action2Script>().yPlusButton = true;
 			}
 
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().yPlusButton = true;
+			}
+
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().yPlusButton = true;
 			}
@@ -230,6 +242,10 @@ public class UI_Script : MonoBehaviour {
 
 			if (chosenAction == 2) {
 				instantiatedAction.GetComponent<Action2Script>().yMinusButton = true;
+			}
+
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().yMinusButton = true;
 			}
 
 			if (chosenAction == 4) {
@@ -259,6 +275,10 @@ public class UI_Script : MonoBehaviour {
 				instantiatedAction.GetComponent<Action2Script>().zPlusButton = true;
 			}
 
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().zPlusButton = true;
+			}
+
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().zPlusButton = true;
 			}
@@ -286,6 +306,10 @@ public class UI_Script : MonoBehaviour {
 				instantiatedAction.GetComponent<Action2Script>().zMinusButton = true;
 			}
 
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().zMinusButton = true;
+			}
+
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().zMinusButton = true;
 			}
@@ -311,6 +335,10 @@ public class UI_Script : MonoBehaviour {
 
 			if (chosenAction == 2) {
 				instantiatedAction.GetComponent<Action2Script>().confirmButton = true;
+			}
+
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().confirmButton = true;
 			}
 
 			if (chosenAction == 4) {
@@ -501,6 +529,17 @@ public class UI_Script : MonoBehaviour {
 		yMinusButton.SetActive (true);
 		zPlusButton.SetActive (true);
 		zMinusButton.SetActive (true);
+	}
+
+	public void activateAction3UI()
+	{
+		xPlusButton.SetActive (true);
+		xMinusButton.SetActive (true);
+		yPlusButton.SetActive (true);
+		yMinusButton.SetActive (true);
+		zPlusButton.SetActive (true);
+		zMinusButton.SetActive (true);
+		confirmButton.SetActive (true);
 	}
 
 	public void activateAction4UI()

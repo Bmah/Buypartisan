@@ -22,6 +22,22 @@ public class Action3Script : MonoBehaviour {
 	private bool chosenPositionConfirmed = false; //final position has been chosen and confirmed.
 	private Vector3 currentPos;
 
+	//these are to check which buttons have been pressed.
+	[System.NonSerialized]
+	public bool xPlusButton = false;
+	[System.NonSerialized]
+	public bool xMinusButton = false;
+	[System.NonSerialized]
+	public bool yPlusButton = false;
+	[System.NonSerialized]
+	public bool yMinusButton = false;
+	[System.NonSerialized]
+	public bool zPlusButton = false;
+	[System.NonSerialized]
+	public bool zMinusButton = false;
+	[System.NonSerialized]
+	public bool confirmButton = false;
+
 	//This is from game controller
 
 	//holds the numbe of spawned players
@@ -61,13 +77,12 @@ public class Action3Script : MonoBehaviour {
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
-		
+
+		//gets the original postion of the player who is spawning a shadow positon
 		originalPosition = players[currentPlayer].transform.position;
-		//this.transform.position = originalPosition;
-
-		//spawns in a shadow position for the player
-
-
+		
+		//sets the semiTestedPosition equal originalPosition so that semiTestedPosition will have a value when confirm is pressed
+		semiTestedPosition = originalPosition;
 
 		//gets the number of spawned players
 		playersSpawned = gameController.GetComponent<GameController> ().playersSpawned;
@@ -75,6 +90,8 @@ public class Action3Script : MonoBehaviour {
 		//Disables the Action UI buttons
 		uiController.GetComponent<UI_Script>().disableActionButtons();
 
+		//activates the buttons for Action 3
+		uiController.GetComponent<UI_Script> ().activateAction3UI ();
 
 
 	}
@@ -90,92 +107,130 @@ public class Action3Script : MonoBehaviour {
 		//another shadow position, and that the shadow position does not move more than 
 		//one space from the player in a given direction
 		currentPos = players [currentPlayer].transform.position;
-		if (inputManager.GetComponent<InputManagerScript> ().rightButtonDown) {
-			if (shadowPosition.transform.position.x < (gameController.GetComponent<GameController>().gridSize - 1))
+		if  (xPlusButton) {
+
+			testPosition.x = originalPosition.x + 1;
+
+			if (testPosition.x < (gameController.GetComponent<GameController>().gridSize - 1))
 			{	
-
-				testPosition.x = originalPosition.x + 1;
-
-				if(TestShadowPosition(testPosition)/* && (testPosition.x - 1) == originalPosition.x && testPosition.y == originalPosition.y && testPosition.z == originalPosition.z*/) 
+				if(TestShadowPosition(testPosition)) 
 				{
 					semiTestedPosition += new Vector3(1,0,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
+				else
+				{
+					Debug.Log ("Not a valid placement.");
+				}
 			}
+		
+			xPlusButton = false;
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().leftButtonDown) {
-			if (shadowPosition.transform.position.x > 0)
-			{
-				testPosition.x = originalPosition.x - 1;
+		if (xMinusButton) {
 
-				if(TestShadowPosition(testPosition)/* && (testPosition.x + 1) == originalPosition.x && testPosition.y == originalPosition.y && testPosition.z == originalPosition.z*/)
+			testPosition.x = originalPosition.x - 1;
+
+			if (testPosition.x > 0)
+			{
+				if(TestShadowPosition(testPosition))
 				{
 					semiTestedPosition += new Vector3(-1,0,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
+				else
+				{
+					Debug.Log ("Not a valid placement.");
+				}
 			}
+		
+			xMinusButton = false;
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().downButtonDown) {
-			if (shadowPosition.transform.position.z > 0)
-			{	
-				testPosition.z = originalPosition.z - 1;
+		if (zMinusButton) {
 
-				if(TestShadowPosition(testPosition)/* && (testPosition.z + 1) == originalPosition.z && testPosition.x == originalPosition.x && testPosition.y == originalPosition.y*/)
+			testPosition.z = originalPosition.z - 1;
+
+			if (testPosition.z > 0)
+			{
+				if(TestShadowPosition(testPosition))
 				{
 					semiTestedPosition += new Vector3(0,0,-1);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
+				else
+				{
+					Debug.Log ("Not a valid placement.");
+				}
 			}
+			zMinusButton = false;
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().upButtonDown) {
-			if (shadowPosition.transform.position.z < (gameController.GetComponent<GameController>().gridSize - 1))
-			{
-				testPosition.z = originalPosition.z + 1;
+		if (zPlusButton) {
 
-				if(TestShadowPosition(testPosition)/* && (testPosition.z - 1) == originalPosition.z && testPosition.x == originalPosition.x && testPosition.y == originalPosition.y*/)
+			testPosition.z = originalPosition.z + 1;
+
+			if (testPosition.z < (gameController.GetComponent<GameController>().gridSize - 1))
+			{
+				if(TestShadowPosition(testPosition))
 				{
 					semiTestedPosition += new Vector3(0,0,1);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
+				else
+				{
+					Debug.Log ("Not a valid placement.");
+				}
 			}
+		
+			zPlusButton = false;
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().qButtonDown) {
-			if (shadowPosition.transform.position.y < (gameController.GetComponent<GameController>().gridSize - 1))
-			{	
-				testPosition.y = originalPosition.y + 1;
+		if (yPlusButton) {
 
-				if(TestShadowPosition(testPosition)/* && (testPosition.y - 1) == originalPosition.y && testPosition.x == originalPosition.x && testPosition.z == originalPosition.z*/)
+			testPosition.y = originalPosition.y + 1;
+
+			if (testPosition.y < (gameController.GetComponent<GameController>().gridSize - 1))
+			{	
+				if(TestShadowPosition(testPosition))
 				{
 					semiTestedPosition += new Vector3(0,1,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
+				else
+				{
+					Debug.Log ("Not a valid placement.");
+				}
 			}
+			yPlusButton = false;
 		}
-		if (inputManager.GetComponent<InputManagerScript> ().eButtonDown) {
-			if (shadowPosition.transform.position.y > 0)
-			{	
-				testPosition.y = originalPosition.y - 1;
+		if (yMinusButton) {
 
-				if(TestShadowPosition(testPosition)/* && (testPosition.y + 1) == originalPosition.y && testPosition.x == originalPosition.x && testPosition.z == originalPosition.z*/)
+			testPosition.y = originalPosition.y - 1;
+
+			if (testPosition.y > 0)
+			{	
+				if(TestShadowPosition(testPosition))
 				{
 					semiTestedPosition += new Vector3(0,-1,0);
 
 					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
 				}
+				else
+				{
+					Debug.Log ("Not a valid placement.");
+				}
 			}
+			yMinusButton = false;
 		}
 		
 		//Right Now, if you press Space bar, it confirms the chosen position.
 		//You can only confirm the position if it isn't the exact same position you started at, or you are not sharing a position that another player is in
 		//You also must have enough money to move to that position.
-		if (Input.GetKeyDown (KeyCode.B)) {
+		if (confirmButton) {
 			for (int i = 0; i < players.Length; i++) {
-				if (i != currentPlayer && players[i].transform.position != shadowPosition.transform.position && shadowPosition.transform.position != originalPosition) {
+				if (i != currentPlayer && players[i].transform.position != semiTestedPosition && semiTestedPosition != originalPosition) {
 					if (currentCost > players[currentPlayer].GetComponent<PlayerVariables>().money) {
 						Debug.Log ("You don't have enough money to move to this spot!");
 					} 
@@ -195,14 +250,13 @@ public class Action3Script : MonoBehaviour {
 
 
 						//
-
-						//disables the buttons for action 3
-
+						
 						chosenPositionConfirmed = true;
 						players[currentPlayer].GetComponent<PlayerVariables>().money = players[currentPlayer].GetComponent<PlayerVariables>().money - currentCost;
 					}
 				}
 			}
+			confirmButton = false;
 		}
 		
 		if (chosenPositionConfirmed) {
@@ -218,7 +272,7 @@ public class Action3Script : MonoBehaviour {
 	}
 
 	bool TestShadowPosition(Vector3 potentialShadowPosition){
-
+/*
 		//temporary holds a shadow position
 		GameObject tempShadowPosition;
 
@@ -281,63 +335,9 @@ public class Action3Script : MonoBehaviour {
 				}//else
 			}//if
 		}//for
-
+*/
 		//if the player placment is legal
 		return legalShadowPosition;
 
 	}//SpawnPlayer
-
-	void enableAction3Buttons()
-	{
-		//Enables the buttons if TestShadowPosition is a valid position
-		testPosition.x = originalPosition.x + 1;
-		
-		if (TestShadowPosition (testPosition)) 
-		{
-			
-		}
-		
-		testPosition.x = originalPosition.x - 1;
-		
-		if (TestShadowPosition (testPosition)) 
-		{
-			
-		}
-		
-		testPosition.z = originalPosition.z - 1;
-		
-		if (TestShadowPosition (testPosition)) 
-		{
-			
-		}
-		
-		testPosition.z = originalPosition.z + 1;
-		
-		if (TestShadowPosition (testPosition)) 
-		{
-			
-		}
-		
-		testPosition.y = originalPosition.y + 1;
-		
-		if (TestShadowPosition (testPosition)) 
-		{
-			
-		}
-		
-		testPosition.y = originalPosition.y - 1;
-		
-		if (TestShadowPosition (testPosition)) 
-		{
-			
-		}
-		
-	}
-
-	void disableAction3Buttons()
-	{
-		//disables the buttons for action 3 when the script finishes
-
-	}
-
 }
