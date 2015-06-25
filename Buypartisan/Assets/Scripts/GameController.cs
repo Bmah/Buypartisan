@@ -51,6 +51,7 @@ public class GameController : MonoBehaviour {
 		randomEventController.gridSize = gridSize;
 		messaged = true;
 		SpawnVoters ();
+		randomEventController.voters = voters;
 	}
 	
 	/// <summary>
