@@ -63,7 +63,7 @@ public class Action3Script : MonoBehaviour {
 	private Renderer shadowRenderer;
 
 	//holds the orignial color of the shadow position
-	private Color oldColor;
+	private Color transparentColor;
 
 	//holds the new color of shadow positon with the changed alpha
 	private Color newColor;
@@ -332,23 +332,16 @@ public class Action3Script : MonoBehaviour {
 			//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
 			shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
 
-			//changes the shadow positions transparency
-
 			//gets the shadow positoins Renderer
 			shadowRenderer	= shadowPosition.GetComponent<Renderer>();
 			
-			//makes the players paddle transparent without changing its color
-			oldColor = shadowRenderer.material.color;
-			newColor = new Color(oldColor.r/255f, oldColor.b/255f, oldColor.g/255f, 0.5f);          
-			shadowRenderer.material.SetColor("_Color", newColor);  
+			//makes the players shadow positions transparent without changing their color
+			transparentColor = shadowRenderer.material.color;
+			transparentColor.a = 0.5f;
+			shadowRenderer.material.SetColor("_Color", transparentColor);  
 
 			//adds the shadow position to the players array list of shadowpositions
-			gameController.GetComponent<GameController> ().playerTemplate.GetComponent<PlayerVariables> ().shadowPositions.Add (shadowPosition);
-
-			//I combined the above two lines into one
-			//adds the shadow position to the players array list of shadowpositions
-			//players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.
-			//	Add (Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject);
+			players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.Add(shadowPosition);
 
 			//removes the marker
 			Destroy(marker);
@@ -381,7 +374,7 @@ public class Action3Script : MonoBehaviour {
 			{//if they are on the same spot
 					legalShadowPosition = false;
 			}//if
-
+			
 			//if the count of any array list is zero, than that means there is nothing in it
 			//and it should not be looked at as it will cause a runtime error
 			if(players[i].GetComponent<PlayerVariables>().shadowPositions.Count > 0)
