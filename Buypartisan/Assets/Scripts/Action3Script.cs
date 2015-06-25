@@ -20,7 +20,6 @@ public class Action3Script : MonoBehaviour {
 
 	private Vector3 originalPosition; //this will save the original position that the player started at.
 	private bool chosenPositionConfirmed = false; //final position has been chosen and confirmed.
-	private Vector3 currentPos;
 
 	//these are to check which buttons have been pressed.
 	[System.NonSerialized]
@@ -46,9 +45,6 @@ public class Action3Script : MonoBehaviour {
 	private bool legalShadowPosition = true; //bool for checking if player is done
 
 	//These are my variables
-
-	//holds the shadow postion
-	public GameObject shadowPosition;
 
 	//holds a pontential position that shadowPostion might be spawned in
 	private Vector3 testPosition;
@@ -80,7 +76,7 @@ public class Action3Script : MonoBehaviour {
 
 		//gets the original postion of the player who is spawning a shadow positon
 		originalPosition = players[currentPlayer].transform.position;
-		
+
 		//sets the semiTestedPosition equal originalPosition so that semiTestedPosition will have a value when confirm is pressed
 		semiTestedPosition = originalPosition;
 
@@ -92,12 +88,7 @@ public class Action3Script : MonoBehaviour {
 
 		//activates the buttons for Action 3
 		uiController.GetComponent<UI_Script> ().activateAction3UI ();
-
-		//makes sure all of the players shadowPositions lists are empty at the start of the program
-		//for(int i = 0; i < playersSpawned; i++)
-		//{
-		//	players [i].GetComponent<PlayerVariables> ().shadowPositions.Clear ();
-		//}
+		
 	}
 	
 	// Update is called once per frame
@@ -110,9 +101,10 @@ public class Action3Script : MonoBehaviour {
 		//Tests to make sure that the shadow position does not overlap another player or
 		//another shadow position, and that the shadow position does not move more than 
 		//one space from the player in a given direction
-		currentPos = players [currentPlayer].transform.position;
 		if  (xPlusButton) {
 
+			//resets test position to the original position
+			testPosition = originalPosition;
 			testPosition.x = originalPosition.x + 1;
 
 			if (testPosition.x <= (gameController.GetComponent<GameController>().gridSize - 1))
@@ -128,11 +120,17 @@ public class Action3Script : MonoBehaviour {
 					Debug.Log ("Not a valid placement.");
 				}
 			}
-		
+			else
+			{
+				Debug.Log ("Off the grid.");
+			}
+
 			xPlusButton = false;
 		}
 		if (xMinusButton) {
 
+			//resets test position to the original position
+			testPosition = originalPosition;
 			testPosition.x = originalPosition.x - 1;
 
 			if (testPosition.x >= 0)
@@ -148,11 +146,17 @@ public class Action3Script : MonoBehaviour {
 					Debug.Log ("Not a valid placement.");
 				}
 			}
-		
+			else
+			{
+				Debug.Log ("Off the grid.");
+			}
+
 			xMinusButton = false;
 		}
 		if (zMinusButton) {
 
+			//resets test position to the original position
+			testPosition = originalPosition;
 			testPosition.z = originalPosition.z - 1;
 
 			if (testPosition.z >= 0)
@@ -168,10 +172,17 @@ public class Action3Script : MonoBehaviour {
 					Debug.Log ("Not a valid placement.");
 				}
 			}
+			else
+			{
+				Debug.Log ("Off the grid.");
+			}
+
 			zMinusButton = false;
 		}
 		if (zPlusButton) {
 
+			//resets test position to the original position
+			testPosition = originalPosition;
 			testPosition.z = originalPosition.z + 1;
 
 			if (testPosition.z <= (gameController.GetComponent<GameController>().gridSize - 1))
@@ -187,11 +198,17 @@ public class Action3Script : MonoBehaviour {
 					Debug.Log ("Not a valid placement.");
 				}
 			}
+			else
+			{
+				Debug.Log ("Off the grid.");
+			}
 		
 			zPlusButton = false;
 		}
 		if (yPlusButton) {
 
+			//resets test position to the original position
+			testPosition = originalPosition;
 			testPosition.y = originalPosition.y + 1;
 
 			if (testPosition.y <= (gameController.GetComponent<GameController>().gridSize - 1))
@@ -207,10 +224,17 @@ public class Action3Script : MonoBehaviour {
 					Debug.Log ("Not a valid placement.");
 				}
 			}
+			else
+			{
+				Debug.Log ("Off the grid.");
+			}
+
 			yPlusButton = false;
 		}
 		if (yMinusButton) {
 
+			//resets test position to the original position
+			testPosition = originalPosition;
 			testPosition.y = originalPosition.y - 1;
 
 			if (testPosition.y >= 0)
@@ -225,11 +249,17 @@ public class Action3Script : MonoBehaviour {
 				{
 					Debug.Log ("Not a valid placement.");
 				}
+
 			}
+			else
+			{
+				Debug.Log ("Off the grid.");
+			}
+
 			yMinusButton = false;
 		}
 		
-		//Right Now, if you press Space bar, it confirms the chosen position.
+		//Right Now, if you press the confirm button, it confirms the chosen position.
 		//You can only confirm the position if it isn't the exact same position you started at, or you are not sharing a position that another player is in
 		//You also must have enough money to move to that position.
 		if (confirmButton) {
@@ -251,13 +281,16 @@ public class Action3Script : MonoBehaviour {
 		if (chosenPositionConfirmed) {
 
 			//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
-			shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
-			
-			//changes the shadow postion transform's postion to the player who spawned it
-			//shadowPosition.transform.position =  players[currentPlayer].transform.position;
-			
+			//shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
+
 			//adds the shadow position to the players array list of shadowpositions
 			//gameController.GetComponent<GameController> ().playerTemplate.GetComponent<PlayerVariables> ().shadowPositions.Add (shadowPosition);
+
+			//I combined the above two lines into one
+			//adds the shadow position to the players array list of shadowpositions
+			players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.
+				Add (Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject);
+
 
 			EndAction ();
 		}
@@ -288,50 +321,22 @@ public class Action3Script : MonoBehaviour {
 					legalShadowPosition = false;
 			}//if
 
-			//test print
-			Debug.Log(players[i].GetComponent<PlayerVariables>().shadowPositions.Count);
-
 			//if the count of any array list is zero, than that means there is nothing in it
 			//and it should not be looked at as it will cause a runtime error
 			if(players[i].GetComponent<PlayerVariables>().shadowPositions.Count > 0)
 			{
-				//the current player will have the shadow postion stored in its arraylist and we don't want the shadow position we
-				//are creating to be compared to itself as that comparison would always fail the test
-				if(players[i].GetComponent<PlayerVariables>().transform.position != originalPosition)
+				//checks the shadow position against all other shadow postions owned by a single player to ensure that they don't overlap
+				for(int j = 0; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count && legalShadowPosition; j++)
 				{
-					//checks the shadow position against all other shadow postions owned by a single player to ensure that they don't overlap
-					for(int j = 0; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count && legalShadowPosition; j++)
+					//gets the next shadow postion in the arraylist
+					tempShadowPosition = players[i].GetComponent<PlayerVariables>().shadowPositions[j];
+
+					if(potentialShadowPosition == tempShadowPosition.transform.position)
 					{
-						//gets the next shadow postion in the arraylist
-						tempShadowPosition = players[i].GetComponent<PlayerVariables>().shadowPositions[j];
-						
-						if(potentialShadowPosition == tempShadowPosition.transform.position)
-						{
-							//if two shadow positions are on the same spot
-							legalShadowPosition = false;
-						}//if
-					}//for
-				}//if
-				else
-				{
-					//thus we have an additional test to make sure that the current player's arraylist of shadow postions is greater than one,
-					//other wise there is no point in checking
-					if(players[i].GetComponent<PlayerVariables>().shadowPositions.Count > 1)
-					{
-						//checks the shadow position against all other shadow postions owned by a single player to ensure that they don't overlap
-						for(int j = 1; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count && legalShadowPosition; j++)
-						{
-							//gets the next shadow postion in the arraylist
-							tempShadowPosition = players[i].GetComponent<PlayerVariables>().shadowPositions[j];
-							
-							if(potentialShadowPosition == tempShadowPosition.transform.position)
-							{
-								//if two shadow positions are on the same spot
-								legalShadowPosition = false;
-							}//if
-						}//for
+						//if two shadow positions are on the same spot
+						legalShadowPosition = false;
 					}//if
-				}//else
+				}//for
 			}//if
 		}//for
 
