@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿// Brian Mah
+// Game Controller
+
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-
-/// <summary>
-/// Game controller.
-/// Brian Mah
-/// </summary>
+using System.Text;
+using System.IO;
+using System.Runtime;
 
 public class GameController : MonoBehaviour {
 	public enum GameState {PlayerSpawn, ActionTurns, RoundEnd, GameEnd, AfterEnd};
@@ -19,6 +20,8 @@ public class GameController : MonoBehaviour {
 
 	public UI_Script UIController;
 
+	public RandomEventControllerScript randomEventController;
+
 	public int numberPlayers;  //number of players per game
 	public int playersSpawned = 0; //how many players have been spawned in
 	private bool spawnedNewPlayer = false; //bool for checking whether or not a new player has been spawned in
@@ -30,11 +33,17 @@ public class GameController : MonoBehaviour {
 	public bool playerTakingAction = false;
 	public bool messaged;//Checks if Player has finished taking an acti
 	
-	public GameObject[] voters = new GameObject[2];//array which houses the voters
+	public GameObject[] voters;//array which houses the voters
 	public GameObject[] players = new GameObject[2];//array which houses the players
 	
 	public GameObject currentPlayer;
-	
+
+	public MusicController gameMusic;
+	public float SFXVolume;
+
+	//does the tallying at the start of each turn (Alex Jungroth)
+	public TallyingScript tallyRoutine;
+
 	/// <summary>
 	/// Start this instance.
 	/// Adds in Voter Array
@@ -43,20 +52,68 @@ public class GameController : MonoBehaviour {
 		//VoterVariables VoterVariablesController = GameObject.FindGameObjectWithTag("Voter(Clone)").GetComponent<GameController>();
 		GridInstancedController.GridInstantiate (gridSize);
 		UIController.gridSize = gridSize;
+		UIController.SFXvolume = SFXVolume;
+		randomEventController.gridSize = gridSize;
 		messaged = true;
 		SpawnVoters ();
+		randomEventController.voters = voters;
+		gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
+		if (gameMusic == null) {
+			Debug.LogError ("The Game Controller Could not Find the Music Controller please place it in the scene.");
+		}
+
 	}
 	
 	/// <summary>
 	/// Spawns the voters according to map
 	/// </summary>
 	void SpawnVoters(){
-		Vector3 voterLocation = new Vector3(1,3,2);
-		voters[0] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
-		voters [0].GetComponent<VoterVariables> ().votes = 3;
-		voterLocation = new Vector3 (0,2,3);
-		voters[1] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
-		voters [1].GetComponent<VoterVariables> ().votes = 3;
+		Vector3 voterLocation = new Vector3 (0, 0, 0);
+		int voterNumber = 0;
+
+		try{
+			string currentLine;
+			int temp;
+			StreamReader levelReader = new StreamReader(Application.dataPath + "\\level.txt",Encoding.Default);
+			using(levelReader){
+				currentLine = levelReader.ReadLine();
+				int.TryParse(currentLine,out temp);
+				voters = new GameObject[temp];
+
+				do{
+					currentLine = levelReader.ReadLine();
+					if(currentLine != null){
+						string[] voterDataRaw = currentLine.Split(new char[]{',',' '});
+						int[] voterDataInt = new int[5];
+						if(voterDataRaw.Length == 5){
+							for(int i = 0; i < 5; i++){
+								if(int.TryParse(voterDataRaw[i], out temp)){
+									voterDataInt[i] = temp;
+								}
+								else{
+									Debug.LogError("Could not Parse string: " + voterDataRaw[i] + "into int");
+								}
+							}
+							voterLocation = new Vector3(voterDataInt[0],voterDataInt[1],voterDataInt[2]);
+							voters[voterNumber] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
+							voters [voterNumber].GetComponent<VoterVariables> ().votes = voterDataInt[3];
+							voters [voterNumber].GetComponent<VoterVariables> ().money = voterDataInt[4];
+							voterNumber++;
+						}
+						else{
+							Debug.LogError("Incorrect number of inputs into level.txt on line:\n" + currentLine);
+						}
+					}
+				}
+				while(currentLine != null);
+
+				levelReader.Close();
+			}
+
+		}
+		catch(IOException e){
+			Debug.LogError("ERROR did not load file properly Exception: " + e);
+		}
 	}
 	
 	// Update is called once per frame
@@ -72,17 +129,29 @@ public class GameController : MonoBehaviour {
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 			}
 		} else if (currentState == GameState.ActionTurns) {
+
+			//does the tallying before the players turn starts (Alex Jungroth)
+			tallyRoutine.preTurnTalling ();
+
 			// In Game Heirchy, GameController must set Number Of Rounds greater than 0 in order for this to be called
 			if (roundCounter < numberOfRounds) {
 				PlayerTurn ();
 				if (Input.GetKeyDown (KeyCode.P))
 					playerTakingAction = true;//this skips the current turn by ending the turn.
-
 			} else {
 				currentState = GameState.RoundEnd;
 			}
 			
 		} else if (currentState == GameState.RoundEnd) {
+
+			//resets the players votes and money so they can be properly be counted (Alex Jungroth)
+			for (int i = 0; i < players.Length; i++) 
+			{
+				players[i].GetComponent<PlayerVariables>().votes = 0;
+				
+				players[i].GetComponent<PlayerVariables>().money = 0;
+			}
+
 			for (int i = 0; i < voters.Length; i++) {
 				float leastDistance = 1000f;
 				int closestPlayer = 0;
@@ -98,7 +167,27 @@ public class GameController : MonoBehaviour {
 						tieDistance = distance;
 						tiePlayer = j;
 					}
-					
+
+					//This checks all of the players' shadow postions (Alex Jungroth)
+					for (int k = 0; k < players[j].GetComponent<PlayerVariables>().shadowPositions.Count; k++)
+					{
+						distanceVector = players [j].GetComponent<PlayerVariables>().shadowPositions[k].GetComponent<PlayerVariables>().transform.position - 
+							voters [i].GetComponent<VoterVariables>().transform.position;
+						distance = Mathf.Abs (distanceVector.x) + Mathf.Abs (distanceVector.y) + Mathf.Abs (distanceVector.z);
+						
+						//determines if there is a player that beat the last one
+						if (distance < leastDistance) 
+						{
+							leastDistance = distance;
+							closestPlayer = j;
+						} 
+						else if (distance == leastDistance) 
+						{
+							//creates a tie between two players (3 way ties can suck it)
+							tieDistance = distance;
+							tiePlayer = j;
+						}
+					}
 				}
 				if (tieDistance == leastDistance) {//checks if least distance is still tied with the tie player, if not, it is shorter, so don't split
 					Debug.Log ("Checking if least distance is still tied with the tied player...if not, it's shorter so don't split votes");
@@ -175,6 +264,10 @@ public class GameController : MonoBehaviour {
 			}
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
+
+				randomEventController.ActivateEvents();
+
+				//this is when the new round begins
 				roundCounter++;
 				currentPlayerTurn = 0;
 				playerTakingAction = false;

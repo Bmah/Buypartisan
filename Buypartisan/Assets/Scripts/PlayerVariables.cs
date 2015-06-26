@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerVariables : MonoBehaviour {
 
 	// Transform is already built-in
 
     public int pTag = 0;
-    public int money = 0;
+    public int money = 100;
     public int votes = 0;
 
 	public Material selectedTexture;
@@ -15,8 +16,16 @@ public class PlayerVariables : MonoBehaviour {
 
 	private bool selected = false;
 
+	//holds all of the shadow postions (Alex Jungroth)
+	public List<GameObject> shadowPositions = new List<GameObject>();
+
 	void Start () {
-		playerRenderer = this.GetComponent<Renderer>();		
+        
+		//makes sure all of the players shadowPositions lists are empty at the start of the program (Alex Jungroth)
+		this.shadowPositions.Clear ();
+
+		playerRenderer = this.GetComponent<Renderer>();
+       
 	}
 	
 	
@@ -26,6 +35,7 @@ public class PlayerVariables : MonoBehaviour {
 
 	/// <summary>
 	/// Toggles whether or not the Voter is selected.
+	/// Brian Mah
 	/// </summary>
 	public void ToggleSelected(){
 		if (selected) {
@@ -40,6 +50,7 @@ public class PlayerVariables : MonoBehaviour {
 	
 	/// <summary>
 	/// Gets whether or not the voter is selected.
+	/// Brian Mah
 	/// </summary>
 	/// <returns><c>true</c>, if selected was gotten, <c>false</c> otherwise.</returns>
 	public bool GetSelected(){

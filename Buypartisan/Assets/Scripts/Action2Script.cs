@@ -2,13 +2,16 @@
 using System.Collections;
 
 public class Action2Script : MonoBehaviour {
-	public int moneyRequired = 0;
+    public string actionName = "Move Voter";
+	public int baseCost = 15;
+    public int totalCost = 0;
+    public float costMultiplier = 1.0f;
 
-	public GameObject gameController; //this is the game controller variable. It is obtained from the PlayerTurnsManager
-	public GameObject inputManager; //this is the input manager varibale. Obtained from the PlayerTurnManager
-	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
-	private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
-	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
+	public GameObject gameController; 
+	public GameObject inputManager; 
+	public GameObject uiController; 
+	private GameObject[] voters;
+	private GameObject[] players; 
 	
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 
@@ -51,16 +54,30 @@ public class Action2Script : MonoBehaviour {
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
-		
+
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		int actionCostMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (moneyRequired + (moneyRequired * actionCostMultiplier))) {
-			Debug.Log ("Current Player doesn't have enough money to make this action.");
-			uiController.GetComponent<UI_Script>().toggleActionButtons();
-			Destroy(gameObject);
-		}
+		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
 
 		this.transform.position = voters [selectedVoter].transform.position;
+
+		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
+
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
+
+			totalCost = (int)(baseCost * costMultiplier);
+
+		}
+        else
+        {
+			Debug.Log ("Current Player doesn't have enough money to make this action.");
+
+			//If this isn't called then the buttons will not be removed (Alex Jungroth)
+			uiController.GetComponent<UI_Script>().activateAction2UI2();
+
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
+			Destroy(gameObject);
+        }
+
 	}
 	
 	// Update is called once per frame
@@ -170,7 +187,8 @@ public class Action2Script : MonoBehaviour {
 	
 	void EndAction() {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
-		this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier += 1;
+		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
+		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost; // Money is subtracted
 		Destroy(gameObject);
 	}
 }
