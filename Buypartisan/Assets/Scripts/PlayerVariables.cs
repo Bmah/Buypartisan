@@ -7,7 +7,7 @@ public class PlayerVariables : MonoBehaviour {
 	// Transform is already built-in
 
     public int pTag = 0;
-    public int money = 0;
+    public int money = 100;
     public int votes = 0;
 
 	public Material selectedTexture;
@@ -20,11 +20,12 @@ public class PlayerVariables : MonoBehaviour {
 	public List<GameObject> shadowPositions = new List<GameObject>();
 
 	void Start () {
-
+        
 		//makes sure all of the players shadowPositions lists are empty at the start of the program (Alex Jungroth)
 		this.shadowPositions.Clear ();
 
-		playerRenderer = this.GetComponent<Renderer>();		
+		playerRenderer = this.GetComponent<Renderer>();
+       
 	}
 	
 	

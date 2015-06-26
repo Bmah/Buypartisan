@@ -1,14 +1,12 @@
-﻿using UnityEngine;
+﻿// Brian Mah
+// Game Controller
+
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using System.Text;
 using System.IO;
 using System.Runtime;
-
-/// <summary>
-/// Game controller.
-/// Brian Mah
-/// </summary>
 
 public class GameController : MonoBehaviour {
 	public enum GameState {PlayerSpawn, ActionTurns, RoundEnd, GameEnd, AfterEnd};
