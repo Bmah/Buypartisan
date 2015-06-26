@@ -54,20 +54,30 @@ public class Action2Script : MonoBehaviour {
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
-		
+
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
-			Debug.Log ("Current Player doesn't have enough money to make this action.");
-			uiController.GetComponent<UI_Script>().toggleActionButtons();
-			Destroy(gameObject);
+
+		this.transform.position = voters [selectedVoter].transform.position;
+
+		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
+
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
+
+			totalCost = (int)(baseCost * costMultiplier);
+
 		}
         else
         {
-            totalCost = (int)(baseCost * costMultiplier);
+			Debug.Log ("Current Player doesn't have enough money to make this action.");
+
+			//If this isn't called then the buttons will not be removed (Alex Jungroth)
+			uiController.GetComponent<UI_Script>().activateAction2UI2();
+
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
+			Destroy(gameObject);
         }
 
-		this.transform.position = voters [selectedVoter].transform.position;
 	}
 	
 	// Update is called once per frame
