@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Action4Script : MonoBehaviour {
-    public string actionName = "I dunno what this does";
+	public string actionName = "Campaign Tour";
 	public int baseCost = 10;
     public int totalCost = 0;
     public float costMultiplier = 1.0f;
@@ -55,28 +55,33 @@ public class Action4Script : MonoBehaviour {
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
-		
-		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
-		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
-			Debug.Log ("Current Player doesn't have enough money to make this action.");
-			uiController.GetComponent<UI_Script>().toggleActionButtons();
-			Destroy(gameObject);
-		}
-        else
-        {
-            totalCost = (int)(baseCost * costMultiplier);
-        }
-		
+
 		//Disables the Action UI buttons
 		uiController.GetComponent<UI_Script>().disableActionButtons();
-
+		
 		//obtain the original positions of the voters
 		voterOriginalPositions = new Vector3[voters.Length];
 		voterFinalPositions = new Vector3[voters.Length];
+
 		for (int i = 0; i < voters.Length; i++) {
 			voterOriginalPositions[i] = voters[i].transform.position;
+
+			//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
+
+			//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
+			currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+			costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+			if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
+
+				totalCost = (int)(baseCost * costMultiplier);
+			}
+        	else
+        	{
+				Debug.Log ("Current Player doesn't have enough money to make this action.");
+				uiController.GetComponent<UI_Script>().toggleActionButtons();
+				Destroy(gameObject);
+        	}
+			
 		}
 	}
 	
