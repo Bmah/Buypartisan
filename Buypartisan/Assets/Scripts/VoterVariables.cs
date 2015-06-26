@@ -46,13 +46,23 @@ public class VoterVariables : MonoBehaviour {
 		}
 
 	}
-
+	
+	/// <summary>
+	/// Raises the mouse enter event.
+	/// Used to select the voter and display their stats on the textbox
+	/// Brian Mah
+	/// </summary>
 	void OnMouseEnter(){
 		ToggleSelected ();
 		holdingText = UIController.visualText.text;
 		UIController.alterTextBox ("Money: " + money + "\nVotes: " + votes);
 	}
 
+	/// <summary>
+	/// Raises the mouse exit event.
+	/// Used to unselect the voter and put the text back to what it was.
+	/// Brian Mah
+	/// </summary>
 	void OnMouseExit(){
 		ToggleSelected ();
 		UIController.alterTextBox (holdingText);
@@ -60,6 +70,7 @@ public class VoterVariables : MonoBehaviour {
 
 	/// <summary>
 	/// Toggles whether or not the Voter is selected.
+	/// Brian Mah
 	/// </summary>
 	public void ToggleSelected(){
 		if (selected) {
@@ -74,6 +85,7 @@ public class VoterVariables : MonoBehaviour {
 
 	/// <summary>
 	/// Gets whether or not the voter is selected.
+	/// Brian Mah
 	/// </summary>
 	/// <returns><c>true</c>, if selected was gotten, <c>false</c> otherwise.</returns>
 	public bool GetSelected(){

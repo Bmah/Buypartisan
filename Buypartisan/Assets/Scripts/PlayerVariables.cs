@@ -35,6 +35,7 @@ public class PlayerVariables : MonoBehaviour {
 
 	/// <summary>
 	/// Toggles whether or not the Voter is selected.
+	/// Brian Mah
 	/// </summary>
 	public void ToggleSelected(){
 		if (selected) {
@@ -49,6 +50,7 @@ public class PlayerVariables : MonoBehaviour {
 	
 	/// <summary>
 	/// Gets whether or not the voter is selected.
+	/// Brian Mah
 	/// </summary>
 	/// <returns><c>true</c>, if selected was gotten, <c>false</c> otherwise.</returns>
 	public bool GetSelected(){

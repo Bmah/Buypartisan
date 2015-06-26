@@ -80,43 +80,45 @@ public class Action3Script : MonoBehaviour {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
 		
-		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
-		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
-			Debug.Log ("Current Player doesn't have enough money to make this action.");
-			uiController.GetComponent<UI_Script>().toggleActionButtons();
-			Destroy(gameObject);
-		}
-        else
-        {
-            totalCost = (int)(baseCost * costMultiplier);
-        }
-
 		//gets the original postion of the player who is spawning a shadow positon
 		originalPosition = players[currentPlayer].transform.position;
-
+		
 		//sets the semiTestedPosition equal originalPosition so that semiTestedPosition will have a value when confirm is pressed
 		semiTestedPosition = originalPosition;
-
+		
 		//gets the number of spawned players
 		playersSpawned = gameController.GetComponent<GameController> ().playersSpawned;
-
+		
 		//Disables the Action UI buttons
 		uiController.GetComponent<UI_Script>().disableActionButtons();
-
+		
 		//activates the buttons for Action 3
 		uiController.GetComponent<UI_Script> ().activateAction3UI ();
-
+		
 		//creates a primitive cube to show potential positions on screen
 		marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
-
+		
 		//initializes the marker to the original position of the player spawning a shadow positon
 		marker.transform.position = originalPosition;
-
+		
 		//scales the marker so its no larger than everything else in the grid
 		marker.transform.localScale = new Vector3(0.099f, 0.099f, 0.099f);
 
+		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
+
+		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
+		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
+
+			totalCost = (int)(baseCost * costMultiplier);
+		}
+        else
+        {
+			Debug.Log ("Current Player doesn't have enough money to make this action.");
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
+			Destroy(gameObject);
+        }
 	}
 	
 	// Update is called once per frame

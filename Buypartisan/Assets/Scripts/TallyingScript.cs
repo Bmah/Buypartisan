@@ -36,12 +36,21 @@ public class TallyingScript : MonoBehaviour {
 	/// </summary>
 	public void preTurnTalling()
 	{
-/*		//gets the players
+		//gets the players
 		players = gameController.GetComponent<GameController> ().players;
 		
 		//gets the voters
 		voters = gameController.GetComponent<GameController> ().voters;
 		
+		//resets the players votes and money so they can be properly be counted 
+		for (int i = 0; i < players.Length; i++) 
+		{
+			players[i].GetComponent<PlayerVariables>().votes = 0;
+
+			players[i].GetComponent<PlayerVariables>().money = 0;
+		}
+
+
 		for (int i = 0; i < voters.Length; i++) 
 		{
 			float leastDistance = 1000f;
@@ -91,7 +100,7 @@ public class TallyingScript : MonoBehaviour {
 			//checks if least distance is still tied with the tie player, if not, it is shorter, so don't split
 			if (tieDistance == leastDistance) 
 			{
-				Debug.Log ("Checking if least distance is still tied with the tied player...if not, it's shorter so don't split votes");
+				//Debug.Log ("Checking if least distance is still tied with the tied player...if not, it's shorter so don't split votes");
 				players [closestPlayer].GetComponent<PlayerVariables> ().votes += voters [i].GetComponent<VoterVariables> ().votes / 2;
 				players [tiePlayer].GetComponent<PlayerVariables> ().votes += voters [i].GetComponent<VoterVariables> ().votes / 2;
 				players [closestPlayer].GetComponent<PlayerVariables> ().money += voters [i].GetComponent<VoterVariables> ().money / 2;
@@ -104,5 +113,5 @@ public class TallyingScript : MonoBehaviour {
 				players [closestPlayer].GetComponent<PlayerVariables> ().money += voters [i].GetComponent<VoterVariables> ().money;
 			}
 		}
-*/	}
+	}
 }
