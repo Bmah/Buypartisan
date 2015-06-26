@@ -2,7 +2,10 @@
 using System.Collections;
 
 public class Action4Script : MonoBehaviour {
-	public int moneyRequired = 0;
+    public string actionName = "I dunno what this does";
+	public int baseCost = 10;
+    public int totalCost = 0;
+    public float costMultiplier = 1.0f;
 	
 	public GameObject gameController; //this is the game controller variable. It is obtained from the scene
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the scene
@@ -55,12 +58,16 @@ public class Action4Script : MonoBehaviour {
 		
 		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		int actionCostMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (moneyRequired + (moneyRequired * actionCostMultiplier))) {
+		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
+        else
+        {
+            totalCost = (int)(baseCost * costMultiplier);
+        }
 		
 		//Disables the Action UI buttons
 		uiController.GetComponent<UI_Script>().disableActionButtons();
@@ -204,8 +211,8 @@ public class Action4Script : MonoBehaviour {
 
 	void EndAction() {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
-		this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier += 1;
-		players [currentPlayer].GetComponent<PlayerVariables> ().money -= moneyRequired + (moneyRequired * this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier);
+		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
+		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;
 		Destroy(gameObject);
 	}
 }

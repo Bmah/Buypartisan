@@ -1,14 +1,12 @@
-﻿using UnityEngine;
+﻿// Brian Mah
+// Game Controller
+
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using System.Text;
 using System.IO;
 using System.Runtime;
-
-/// <summary>
-/// Game controller.
-/// Brian Mah
-/// </summary>
 
 public class GameController : MonoBehaviour {
 	public enum GameState {PlayerSpawn, ActionTurns, RoundEnd, GameEnd, AfterEnd};
@@ -42,7 +40,10 @@ public class GameController : MonoBehaviour {
 
 	public MusicController gameMusic;
 	public float SFXVolume;
-	
+
+	//does the tallying at the start of each turn (Alex Jungroth)
+	public TallyingScript tallyRoutine;
+
 	/// <summary>
 	/// Start this instance.
 	/// Adds in Voter Array
@@ -128,6 +129,10 @@ public class GameController : MonoBehaviour {
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 			}
 		} else if (currentState == GameState.ActionTurns) {
+
+			//does the tallying before the players turn starts (Alex Jungroth)
+			tallyRoutine.preTurnTalling ();
+
 			// In Game Heirchy, GameController must set Number Of Rounds greater than 0 in order for this to be called
 			if (roundCounter < numberOfRounds) {
 				PlayerTurn ();
