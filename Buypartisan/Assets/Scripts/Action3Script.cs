@@ -6,8 +6,10 @@ using System.Collections;
 public class Action3Script : MonoBehaviour {
 
 	//This is from ActionScriptTemplate.cs and Action1Script.cs
-	public int moneyRequired = 0;
-	public int currentCost = 0;
+    public string actionName = "Move SP";
+	public int baseCost = 10;
+	public int totalCost = 0;
+    public float costMultiplier = 1.0f;
 
 	public GameObject gameController; //this is the game controller variable. It is obtained from the PlayerTurnsManager
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the PlayerTurnManager
@@ -80,12 +82,16 @@ public class Action3Script : MonoBehaviour {
 		
 		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		int actionCostMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (moneyRequired + (moneyRequired * actionCostMultiplier))) {
+		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
+        else
+        {
+            totalCost = (int)(baseCost * costMultiplier);
+        }
 
 		//gets the original postion of the player who is spawning a shadow positon
 		originalPosition = players[currentPlayer].transform.position;
@@ -135,7 +141,7 @@ public class Action3Script : MonoBehaviour {
 				{
 					semiTestedPosition = originalPosition + new Vector3(1,0,0);
 
-					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
+					Debug.Log ("Cost to place a shadow position: $" + totalCost + ".");
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
@@ -165,7 +171,7 @@ public class Action3Script : MonoBehaviour {
 				{
 					semiTestedPosition = originalPosition + new Vector3(-1,0,0);
 
-					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
+					Debug.Log ("Cost to place a shadow position: $" + totalCost + ".");
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
@@ -195,7 +201,7 @@ public class Action3Script : MonoBehaviour {
 				{
 					semiTestedPosition = originalPosition + new Vector3(0,0,-1);
 
-					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
+					Debug.Log ("Cost to place a shadow position: $" + totalCost + ".");
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
@@ -225,7 +231,7 @@ public class Action3Script : MonoBehaviour {
 				{
 					semiTestedPosition = originalPosition + new Vector3(0,0,1);
 
-					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
+					Debug.Log ("Cost to place a shadow position: $" + totalCost + ".");
 					
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
@@ -255,7 +261,7 @@ public class Action3Script : MonoBehaviour {
 				{
 					semiTestedPosition = originalPosition + new Vector3(0,1,0);
 
-					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
+					Debug.Log ("Cost to place a shadow position: $" + totalCost + ".");
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
@@ -285,7 +291,7 @@ public class Action3Script : MonoBehaviour {
 				{
 					semiTestedPosition = originalPosition + new Vector3(0,-1,0);
 
-					Debug.Log ("Cost to place a shadow position: $" + currentCost + ".");
+					Debug.Log ("Cost to place a shadow position: $" + totalCost + ".");
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
@@ -311,13 +317,12 @@ public class Action3Script : MonoBehaviour {
 		if (confirmButton) {
 			for (int i = 0; i < players.Length; i++) {
 				if (i != currentPlayer && players[i].transform.position != semiTestedPosition && semiTestedPosition != originalPosition) {
-					if (currentCost > players[currentPlayer].GetComponent<PlayerVariables>().money) {
+					if (totalCost > players[currentPlayer].GetComponent<PlayerVariables>().money) {
 						Debug.Log ("You don't have enough money to move to this spot!");
 					} 
 					else 
 					{
 						chosenPositionConfirmed = true;
-						players[currentPlayer].GetComponent<PlayerVariables>().money = players[currentPlayer].GetComponent<PlayerVariables>().money - currentCost;
 					}
 				}
 			}
@@ -350,7 +355,8 @@ public class Action3Script : MonoBehaviour {
 	
 	void EndAction() {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
-		this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier += 1;
+		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
+        players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
 		Destroy(gameObject);
 	}
 
