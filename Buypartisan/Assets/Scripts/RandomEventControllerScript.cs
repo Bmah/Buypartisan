@@ -1,6 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Random event controller script.
+/// Brian Mah
+/// </summary>
 public class RandomEventControllerScript : MonoBehaviour {
 
 	public GameObject[] voters;
@@ -24,6 +28,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 	/// <summary>
 	/// Activates the events.
 	/// only call this once
+	/// Brian Mah
 	/// </summary>
 	public void ActivateEvents(){
 		int eventChoice = Random.Range (0, 10);
@@ -76,6 +81,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	/// <summary>
 	/// Shifts all voters by magnitude length in the specified direction.
+	/// Brian Mah
 	/// </summary>
 	/// <value>The shift voters.</value>
 	void ShiftVoters(char direction, int magnitude){
@@ -144,6 +150,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	/// <summary>
 	/// Multiplies every voter's money by the boom amount.
+	/// Brian Mah
 	/// </summary>
 	/// <param name="multiplier">Multiplier.</param>
 	void EconomicBoom(int multiplier){
@@ -154,6 +161,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	/// <summary>
 	/// Divides every voter's money by the bust amount.
+	/// Brian Mah
 	/// </summary>
 	/// <param name="divisor">Divisor.</param>
 	void EconomicBust(int divisor){
