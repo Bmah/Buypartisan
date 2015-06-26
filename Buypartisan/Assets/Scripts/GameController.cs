@@ -131,12 +131,12 @@ public class GameController : MonoBehaviour {
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 			}
 		} else if (currentState == GameState.ActionTurns) {
+
+			//does the tallying before the players turn starts (Alex Jungroth)
+			tallyRoutine.preTurnTalling ();
+
 			// In Game Heirchy, GameController must set Number Of Rounds greater than 0 in order for this to be called
 			if (roundCounter < numberOfRounds) {
-
-				//does the tallying before the players turn starts (Alex Jungroth)
-				tallyRoutine.preTurnTalling ();
-
 				PlayerTurn ();
 				if (Input.GetKeyDown (KeyCode.P))
 					playerTakingAction = true;//this skips the current turn by ending the turn.
