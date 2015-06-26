@@ -536,7 +536,11 @@ public class UI_Script : MonoBehaviour {
 		instantiatedAction.GetComponent<Action2Script> ().rightButton = true;
 	}
 
-	public void OnMouseOver(){
+	/// <summary>
+	/// Sound Effect player
+	/// Brian Mah
+	/// </summary>
+	public void PlayMouseOverSound(){
 		sfx.PlayAudioClip (0, 0, SFXvolume);
 	}
 

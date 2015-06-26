@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Music controller.
+/// Brian Mah
+/// </summary>
 public class MusicController : MonoBehaviour {
 
 	public AudioClip[] musicTracks;
@@ -23,6 +27,7 @@ public class MusicController : MonoBehaviour {
 
 	/// <summary>
 	/// Loads the track onto the specified audioChannel
+	/// Brian Mah
 	/// </summary>
 	/// <param name="trackNumber">Track number.</param>
 	/// <param name="channelNumber">Channel number.</param>
