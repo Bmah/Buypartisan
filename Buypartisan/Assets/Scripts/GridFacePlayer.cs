@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿// Michael Lee
+
+using UnityEngine;
 using System.Collections;
 
 public class GridFacePlayer : MonoBehaviour { 
