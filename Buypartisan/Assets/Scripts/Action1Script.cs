@@ -156,8 +156,8 @@ public class Action1Script : MonoBehaviour {
 		zDis = Mathf.Abs (transform.position.z - currentPos.z);
 		distance = xDis + yDis + zDis;
 		
-        // Example when you're using this as 3rd power: Total Cost = $50 * 2.0 * (1.5)^3
-		totalCost = (int)((baseCost * costMultiplier) * Mathf.RoundToInt (Mathf.Pow (stepCostMultiplier, (distance - 1))));
+        // Example when you're using this as 3rd power: Total Cost = $50 * 2.0 * (1.5)^3 * 4
+		totalCost = (int)((baseCost * costMultiplier) * (Mathf.Pow (stepCostMultiplier, (distance - 1))) * distance);
 	}
 
 	void EndAction() {
