@@ -37,17 +37,24 @@ public class ActionScriptTemplate : MonoBehaviour {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
 
+		//Disables the Action UI buttons
+		uiController.GetComponent<UI_Script>().disableActionButtons();
+
+		//The start function will not end until gets to the end
+		//if you want to destroy the object in the start function,
+		//it has to be the last thing you do, otherwise the flow of
+		//controll will stay with the destroyed instance and 
+		//that will crash the game (Alex Jungroth)
+
 		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
 		if (players[currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
+
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
-
-		//Disables the Action UI buttons
-		uiController.GetComponent<UI_Script>().disableActionButtons();
 	}
 	
 	// Update is called once per frame

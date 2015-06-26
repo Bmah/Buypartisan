@@ -62,14 +62,18 @@ public class Action1Script : MonoBehaviour {
 		
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+
+		originalPosition = players[currentPlayer].transform.position;
+		this.transform.position = originalPosition;
+
+		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
+
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
-
-		originalPosition = players[currentPlayer].transform.position;
-		this.transform.position = originalPosition;
+		
 	}
 	
 	// Update is called once per frame

@@ -43,7 +43,6 @@ public class TallyingScript : MonoBehaviour {
 		voters = gameController.GetComponent<GameController> ().voters;
 		
 		//resets the players votes and money so they can be properly be counted 
-		//calculates the distance of voters from players
 		for (int i = 0; i < players.Length; i++) 
 		{
 			players[i].GetComponent<PlayerVariables>().votes = 0;

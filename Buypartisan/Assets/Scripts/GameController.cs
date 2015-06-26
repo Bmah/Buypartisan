@@ -143,6 +143,15 @@ public class GameController : MonoBehaviour {
 			}
 			
 		} else if (currentState == GameState.RoundEnd) {
+
+			//resets the players votes and money so they can be properly be counted (Alex Jungroth)
+			for (int i = 0; i < players.Length; i++) 
+			{
+				players[i].GetComponent<PlayerVariables>().votes = 0;
+				
+				players[i].GetComponent<PlayerVariables>().money = 0;
+			}
+
 			for (int i = 0; i < voters.Length; i++) {
 				float leastDistance = 1000f;
 				int closestPlayer = 0;
@@ -158,7 +167,27 @@ public class GameController : MonoBehaviour {
 						tieDistance = distance;
 						tiePlayer = j;
 					}
-					
+
+					//This checks all of the players' shadow postions (Alex Jungroth)
+					for (int k = 0; k < players[j].GetComponent<PlayerVariables>().shadowPositions.Count; k++)
+					{
+						distanceVector = players [j].GetComponent<PlayerVariables>().shadowPositions[k].GetComponent<PlayerVariables>().transform.position - 
+							voters [i].GetComponent<VoterVariables>().transform.position;
+						distance = Mathf.Abs (distanceVector.x) + Mathf.Abs (distanceVector.y) + Mathf.Abs (distanceVector.z);
+						
+						//determines if there is a player that beat the last one
+						if (distance < leastDistance) 
+						{
+							leastDistance = distance;
+							closestPlayer = j;
+						} 
+						else if (distance == leastDistance) 
+						{
+							//creates a tie between two players (3 way ties can suck it)
+							tieDistance = distance;
+							tiePlayer = j;
+						}
+					}
 				}
 				if (tieDistance == leastDistance) {//checks if least distance is still tied with the tie player, if not, it is shorter, so don't split
 					Debug.Log ("Checking if least distance is still tied with the tied player...if not, it's shorter so don't split votes");
