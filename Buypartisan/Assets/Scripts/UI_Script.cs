@@ -541,6 +541,7 @@ public class UI_Script : MonoBehaviour {
 	/// Brian Mah
 	/// </summary>
 	public void PlayMouseOverSound(){
+		Debug.Log ("stuff");
 		sfx.PlayAudioClip (0, 0, SFXvolume);
 	}
 
