@@ -50,6 +50,7 @@ public class PlayerTurnsManager : MonoBehaviour {
 				gameController.GetComponent<GameController> ().playerTakingAction = true;
 				endTurnConfirmed = false;
 				costMultiplier = 1;
+                uiController.GetComponent<UI_Script>().updateCost();
 			}
 		}
 
