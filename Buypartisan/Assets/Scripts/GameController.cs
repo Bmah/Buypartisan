@@ -127,11 +127,12 @@ public class GameController : MonoBehaviour {
 				playerTakingAction = false;
 				Debug.Log ("Round " + (roundCounter + 1) + " begin!");
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+
+				//does the tallying before the first player's turn starts (Alex Jungroth)
+				tallyRoutine.preTurnTalling ();
+			
 			}
 		} else if (currentState == GameState.ActionTurns) {
-
-			//does the tallying before the players turn starts (Alex Jungroth)
-			tallyRoutine.preTurnTalling ();
 
 			// In Game Heirchy, GameController must set Number Of Rounds greater than 0 in order for this to be called
 			if (roundCounter < numberOfRounds) {
@@ -140,6 +141,9 @@ public class GameController : MonoBehaviour {
 					playerTakingAction = true;//this skips the current turn by ending the turn.
 			} else {
 				currentState = GameState.RoundEnd;
+
+				//does the tallying after the players ends there turns (Alex Jungroth)
+				tallyRoutine.preTurnTalling ();
 			}
 			
 		} else if (currentState == GameState.RoundEnd) {
