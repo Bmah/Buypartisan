@@ -42,7 +42,10 @@ public class GameController : MonoBehaviour {
 
 	public MusicController gameMusic;
 	public float SFXVolume;
-	
+
+	//does the tallying at the start of each turn (Alex Jungroth)
+	public TallyingScript tallyRoutine;
+
 	/// <summary>
 	/// Start this instance.
 	/// Adds in Voter Array
@@ -130,6 +133,10 @@ public class GameController : MonoBehaviour {
 		} else if (currentState == GameState.ActionTurns) {
 			// In Game Heirchy, GameController must set Number Of Rounds greater than 0 in order for this to be called
 			if (roundCounter < numberOfRounds) {
+
+				//does the tallying before the players turn starts (Alex Jungroth)
+				tallyRoutine.preTurnTalling ();
+
 				PlayerTurn ();
 				if (Input.GetKeyDown (KeyCode.P))
 					playerTakingAction = true;//this skips the current turn by ending the turn.
