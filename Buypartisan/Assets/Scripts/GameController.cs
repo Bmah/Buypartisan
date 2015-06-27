@@ -137,13 +137,12 @@ public class GameController : MonoBehaviour {
 			// In Game Heirchy, GameController must set Number Of Rounds greater than 0 in order for this to be called
 			if (roundCounter < numberOfRounds) {
 				PlayerTurn ();
+
 				if (Input.GetKeyDown (KeyCode.P))
 					playerTakingAction = true;//this skips the current turn by ending the turn.
 			} else {
 				currentState = GameState.RoundEnd;
 
-				//does the tallying after the players ends there turns (Alex Jungroth)
-				tallyRoutine.preTurnTalling ();
 			}
 			
 		} else if (currentState == GameState.RoundEnd) {
@@ -267,6 +266,9 @@ public class GameController : MonoBehaviour {
 			}
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
+
+                //does the tallying after the players ends there turns (Alex Jungroth)
+                tallyRoutine.preTurnTalling();
 
 				randomEventController.ActivateEvents();
 
