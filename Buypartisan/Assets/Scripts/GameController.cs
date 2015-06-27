@@ -148,12 +148,11 @@ public class GameController : MonoBehaviour {
 			
 		} else if (currentState == GameState.RoundEnd) {
 
-			//resets the players votes and money so they can be properly be counted (Alex Jungroth)
+			//resets the players votes so they can be properly be counted (Alex Jungroth)
 			for (int i = 0; i < players.Length; i++) 
 			{
 				players[i].GetComponent<PlayerVariables>().votes = 0;
-				
-				players[i].GetComponent<PlayerVariables>().money = 0;
+
 			}
 
 			for (int i = 0; i < voters.Length; i++) {

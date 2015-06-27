@@ -42,12 +42,11 @@ public class TallyingScript : MonoBehaviour {
 		//gets the voters
 		voters = gameController.GetComponent<GameController> ().voters;
 		
-		//resets the players votes and money so they can be properly be counted 
+		//resets the players votes so they can be properly be counted 
 		for (int i = 0; i < players.Length; i++) 
 		{
 			players[i].GetComponent<PlayerVariables>().votes = 0;
 
-			players[i].GetComponent<PlayerVariables>().money = 0;
 		}
 
 
@@ -111,6 +110,7 @@ public class TallyingScript : MonoBehaviour {
 				//do normal assignments if least distance is not tied
 				players [closestPlayer].GetComponent<PlayerVariables> ().votes += voters [i].GetComponent<VoterVariables> ().votes;
 				players [closestPlayer].GetComponent<PlayerVariables> ().money += voters [i].GetComponent<VoterVariables> ().money;
+				Debug.Log ("If the code made it this far then a player's money should have increased.");
 			}
 		}
 	}
