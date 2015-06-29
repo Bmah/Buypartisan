@@ -55,6 +55,10 @@ public class ActionScriptTemplate : MonoBehaviour {
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
+        else
+        {
+            totalCost = (int)(baseCost * costMultiplier);
+        }
 	}
 	
 	// Update is called once per frame
@@ -74,7 +78,7 @@ public class ActionScriptTemplate : MonoBehaviour {
 	void EndAction() {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
-		players [currentPlayer].GetComponent<PlayerVariables> ().money -= (int)(baseCost * costMultiplier);  // Money is subtracted
+		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;  // Money is subtracted
 		Destroy(gameObject);
 	}
 }
