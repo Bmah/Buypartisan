@@ -8,10 +8,13 @@
 
 using UnityEngine;
 using System.Collections;
-
+/// <summary>
+/// Action0 script by Daniel Schlesinger
+/// 
+/// </summary>
 public class Action0Script : MonoBehaviour {
     public string actionName = "VoterSuppression";
-	public int baseCost = 0;
+	public int baseCost = 20;
     public int totalCost = 0; // Please use totalCost for any end calculation, since this will be used to display on the UI's action button
     public float costMultiplier = 1.0f; // Increased by fixed amount within same turn (in PlayerTurnsManager). This is reset to 1 after the END of your turn.
 
@@ -23,6 +26,7 @@ public class Action0Script : MonoBehaviour {
 
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 	private int selectedVoter = 0;
+	private bool voterSelected = false;
 
 	[System.NonSerialized]
 	public bool leftButton = false; //checks if left button has been pressed
@@ -62,6 +66,7 @@ public class Action0Script : MonoBehaviour {
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
 
 		this.transform.position = voters [selectedVoter].transform.position;
+
 		if (players[currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
 
@@ -76,16 +81,39 @@ public class Action0Script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (!voterSelected) {
+			if (leftButton) {
+				if (selectedVoter == 0) {
+					selectedVoter = voters.Length - 1;
+				} else {
+					selectedVoter -= 1;
+				}
+				this.transform.position = voters [selectedVoter].transform.position;
+				
+				leftButton = false;
+			}
+			if (rightButton) {
+				if (selectedVoter == (voters.Length - 1)) {
+					selectedVoter = 0;
+				} else {
+					selectedVoter += 1;
+				}
+				this.transform.position = voters [selectedVoter].transform.position;
+				
+				rightButton = false;
+			}
+			if (confirmButton) {
+				Debug.Log ("Here");
+				voterSelected = true;
+				voters [selectedVoter].GetComponent<VoterVariables> ().votes = 0;
+				confirmButton = false;
+				uiController.GetComponent<UI_Script>().activateAction0UI2();
 
+			}
+		}
+		if (voterSelected)
+			EndAction();
 
-		//This is where the action should be placed.
-		//action action action. blah blah. E.g. move a voter or player one block over.
-		//When action is finished, run this bit of code below to tell the Game Manager the turn is over, 
-		//and deletes itself so the PlayerTurnsManager knows the turn is over as well.
-
-		/*
-		EndAction ();
-		*/
 	}
 
 	void EndAction() {

@@ -362,6 +362,10 @@ public class UI_Script : MonoBehaviour {
 			//quick test of the disabling player placement buttons
 			//disablePPButtons ();
 		} else {
+			if (chosenAction == 0) {
+				instantiatedAction.GetComponent<Action0Script>().confirmButton = true;
+			}
+
 			if (chosenAction == 1) {
 				instantiatedAction.GetComponent<Action1Script>().confirmButton = true;
 			}
@@ -474,6 +478,13 @@ public class UI_Script : MonoBehaviour {
 		leftButton.SetActive (true);
 		rightButton.SetActive (true);
 		confirmButton.SetActive (true);
+	}
+
+	public void activateAction0UI2()
+	{
+		leftButton.SetActive (false);
+		rightButton.SetActive (false);
+
 	}
 
 	public void activateAction1UI()
