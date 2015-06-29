@@ -110,7 +110,6 @@ public class TallyingScript : MonoBehaviour {
 				//do normal assignments if least distance is not tied
 				players [closestPlayer].GetComponent<PlayerVariables> ().votes += voters [i].GetComponent<VoterVariables> ().votes;
 				players [closestPlayer].GetComponent<PlayerVariables> ().money += voters [i].GetComponent<VoterVariables> ().money;
-				Debug.Log ("If the code made it this far then a player's money should have increased.");
 			}
 		}
 	}
