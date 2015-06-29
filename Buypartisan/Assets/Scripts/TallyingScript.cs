@@ -42,12 +42,11 @@ public class TallyingScript : MonoBehaviour {
 		//gets the voters
 		voters = gameController.GetComponent<GameController> ().voters;
 		
-		//resets the players votes and money so they can be properly be counted 
+		//resets the players votes so they can be properly be counted 
 		for (int i = 0; i < players.Length; i++) 
 		{
 			players[i].GetComponent<PlayerVariables>().votes = 0;
 
-			players[i].GetComponent<PlayerVariables>().money = 0;
 		}
 
 
