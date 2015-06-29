@@ -147,64 +147,12 @@ public class GameController : MonoBehaviour {
 			
 		} else if (currentState == GameState.RoundEnd) {
 
-			//resets the players votes so they can be properly be counted (Alex Jungroth)
-			for (int i = 0; i < players.Length; i++) 
-			{
-				players[i].GetComponent<PlayerVariables>().votes = 0;
+			//does the tallying at the end of the game (Alex Jungroth)
+			tallyRoutine.preTurnTalling ();
 
-			}
+			//Sets the gamemode to game end, and calculates the final score
+			currentState = GameState.GameEnd;
 
-			for (int i = 0; i < voters.Length; i++) {
-				float leastDistance = 1000f;
-				int closestPlayer = 0;
-				float tieDistance = 1000f;
-				int tiePlayer = 0;
-				for (int j = 0; j < players.Length; j++) {//calculates the distance of voters from players
-					Vector3 distanceVector = players [j].transform.position - voters [i].transform.position;
-					float distance = Mathf.Abs (distanceVector.x) + Mathf.Abs (distanceVector.y) + Mathf.Abs (distanceVector.z);
-					if (distance < leastDistance) {//determines if there is a player that beat the last one
-						leastDistance = distance;
-						closestPlayer = j;
-					} else if (distance == leastDistance) {//creates a tie between two players (3 way ties can suck it)
-						tieDistance = distance;
-						tiePlayer = j;
-					}
-
-					//This checks all of the players' shadow postions (Alex Jungroth)
-					for (int k = 0; k < players[j].GetComponent<PlayerVariables>().shadowPositions.Count; k++)
-					{
-						distanceVector = players [j].GetComponent<PlayerVariables>().shadowPositions[k].GetComponent<PlayerVariables>().transform.position - 
-							voters [i].GetComponent<VoterVariables>().transform.position;
-						distance = Mathf.Abs (distanceVector.x) + Mathf.Abs (distanceVector.y) + Mathf.Abs (distanceVector.z);
-						
-						//determines if there is a player that beat the last one
-						if (distance < leastDistance) 
-						{
-							leastDistance = distance;
-							closestPlayer = j;
-						} 
-						else if (distance == leastDistance) 
-						{
-							//creates a tie between two players (3 way ties can suck it)
-							tieDistance = distance;
-							tiePlayer = j;
-						}
-					}
-				}
-				if (tieDistance == leastDistance) {//checks if least distance is still tied with the tie player, if not, it is shorter, so don't split
-					Debug.Log ("Checking if least distance is still tied with the tied player...if not, it's shorter so don't split votes");
-					players [closestPlayer].GetComponent<PlayerVariables> ().votes += voters [i].GetComponent<VoterVariables> ().votes / 2;
-					players [tiePlayer].GetComponent<PlayerVariables> ().votes += voters [i].GetComponent<VoterVariables> ().votes / 2;
-					players [closestPlayer].GetComponent<PlayerVariables> ().money += voters [i].GetComponent<VoterVariables> ().money / 2;
-					players [tiePlayer].GetComponent<PlayerVariables> ().money += voters [i].GetComponent<VoterVariables> ().money / 2;
-				} else {//do normal assignments if least distance is not tied
-					players [closestPlayer].GetComponent<PlayerVariables> ().votes += voters [i].GetComponent<VoterVariables> ().votes;
-					players [closestPlayer].GetComponent<PlayerVariables> ().money += voters [i].GetComponent<VoterVariables> ().money;
-				}
-
-				//Sets the gamemode to game end, and calculates the final score
-				currentState = GameState.GameEnd;
-			}
 		// Once the game ends and calculation is needed, this is called
 		} else if (currentState == GameState.GameEnd) {
 			CompareVotes(messaged);
