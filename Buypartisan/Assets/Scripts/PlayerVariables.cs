@@ -33,7 +33,7 @@ public class PlayerVariables : MonoBehaviour {
 		sphereController = this.gameObject.transform.GetChild (0).gameObject;
 		sphereRenderer = sphereController.GetComponent<Renderer> ();
 		transparentColor = sphereRenderer.material.color;
-		transparentColor.a = 0.5f;
+		transparentColor.a = 0.2f;
 		sphereRenderer.material.SetColor ("_Color", transparentColor);
 		sphereController.transform.localScale = new Vector3 (sphereSize, sphereSize, sphereSize);
 
