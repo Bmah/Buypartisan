@@ -27,6 +27,8 @@ public class PlayerVariables : MonoBehaviour {
         
 		//makes sure all of the players shadowPositions lists are empty at the start of the program (Alex Jungroth)
 		this.shadowPositions.Clear ();
+
+		//sets up the spheres for the players (Daniel Schlesinger)
 		sphereSize = 10 * sphereSize;
 		sphereController = this.gameObject.transform.GetChild (0).gameObject;
 		sphereRenderer = sphereController.GetComponent<Renderer> ();

@@ -362,6 +362,10 @@ public class UI_Script : MonoBehaviour {
 			//quick test of the disabling player placement buttons
 			//disablePPButtons ();
 		} else {
+			if (chosenAction == 0) {
+				instantiatedAction.GetComponent<Action0Script>().confirmButton = true;
+			}
+
 			if (chosenAction == 1) {
 				instantiatedAction.GetComponent<Action1Script>().confirmButton = true;
 			}
@@ -469,6 +473,20 @@ public class UI_Script : MonoBehaviour {
 		actionManager.endTurnConfirmed = true;
 	}
 
+	public void activateAction0UI()
+	{
+		leftButton.SetActive (true);
+		rightButton.SetActive (true);
+		confirmButton.SetActive (true);
+	}
+
+	public void activateAction0UI2()
+	{
+		leftButton.SetActive (false);
+		rightButton.SetActive (false);
+
+	}
+
 	public void activateAction1UI()
 	{
 		xPlusButton.SetActive (true);
@@ -527,13 +545,17 @@ public class UI_Script : MonoBehaviour {
 	public void leftButtonClicked()
 	{
 		if (chosenAction == 2)
-		instantiatedAction.GetComponent<Action2Script> ().leftButton = true;
+			instantiatedAction.GetComponent<Action2Script> ().leftButton = true;
+		if (chosenAction == 0)
+			instantiatedAction.GetComponent<Action0Script> ().leftButton = true;
 	}
 
 	public void rightButtonClicked()
 	{
 		if (chosenAction == 2)
-		instantiatedAction.GetComponent<Action2Script> ().rightButton = true;
+			instantiatedAction.GetComponent<Action2Script> ().rightButton = true;
+		if (chosenAction == 0)
+			instantiatedAction.GetComponent<Action0Script> ().rightButton = true;
 	}
 
 	/// <summary>
