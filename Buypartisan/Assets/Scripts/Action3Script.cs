@@ -38,6 +38,8 @@ public class Action3Script : MonoBehaviour {
 	public bool zMinusButton = false;
 	[System.NonSerialized]
 	public bool confirmButton = false;
+	[System.NonSerialized]
+	public bool cancelButton = false;
 
 	//This is from game controller
 
@@ -123,6 +125,16 @@ public class Action3Script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		//ends the action if the cancel button is pressed (Alex Jungroth)
+		if (cancelButton) 
+		{
+			//handles early canceling(Alex Jungroth)
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
+			Destroy (marker);
+			Destroy(gameObject);
+		}
+
 		//These below if statements check if the player has pressed a button down to move the character.
 		//Right now, it makes sure that the player can only move up, down, left, right, forward, and backward from its original postion.
 		//It also checks to make sure the player doesn't move outside the grid.
