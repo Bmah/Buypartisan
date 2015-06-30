@@ -23,6 +23,9 @@ public class ActionScriptTemplate : MonoBehaviour {
 
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 
+	[System.NonSerialized]
+	public bool cancelButton = false;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -64,6 +67,11 @@ public class ActionScriptTemplate : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		//ends the action if the cancel button is pressed (Alex Jungroth)
+		if (cancelButton) 
+		{
+			EndAction();
+		}
 
 		//This is where the action should be placed.
 		//action action action. blah blah. E.g. move a voter or player one block over.

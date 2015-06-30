@@ -32,6 +32,8 @@ public class Action4Script : MonoBehaviour {
 	public bool zMinusButton = false;
 	[System.NonSerialized]
 	public bool confirmButton = false;
+	[System.NonSerialized]
+	public bool cancelButton = false;
 
 	private Vector3[] voterOriginalPositions; //this is an array of the saved original positions of the voters.
 	private Vector3[] voterFinalPositions;	//this will be where the final positions of the voters will be saved.
@@ -87,6 +89,20 @@ public class Action4Script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		//ends the action if the cancel button is pressed (Alex Jungroth)
+		if (cancelButton) 
+		{
+			//handles early canceling(Alex Jungroth)
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
+			for (int i = 0; i < voters.Length; i++) 
+			{
+				voterFinalPositions[i] = voterOriginalPositions[i];
+			}
+			setFinalPosition();
+			Destroy(gameObject);
+		}
+		
 		if (xPlusButton) {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].x < (gameController.GetComponent<GameController>().gridSize - 1)) {

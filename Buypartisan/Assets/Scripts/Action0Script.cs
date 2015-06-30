@@ -34,7 +34,8 @@ public class Action0Script : MonoBehaviour {
 	public bool rightButton = false; //checks if right button has been pressed
 	[System.NonSerialized]
 	public bool confirmButton = false; //checks if confirm button has been pressed
-
+	[System.NonSerialized]
+	public bool cancelButton = false;
 
 	// Use this for initialization
 	void Start () {
@@ -81,6 +82,16 @@ public class Action0Script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		//ends the action if the cancel button is pressed (Alex Jungroth)
+		if (cancelButton) 
+		{
+			//handles early canceling(Alex Jungroth)
+			uiController.GetComponent<UI_Script>().activateAction0UI2();
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
+			Destroy(gameObject);
+		}
+
 		if (!voterSelected) {
 			if (leftButton) {
 				if (selectedVoter == 0) {
@@ -117,6 +128,7 @@ public class Action0Script : MonoBehaviour {
 	}
 
 	void EndAction() {
+		uiController.GetComponent<UI_Script>().activateAction0UI2();
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;  // Money is subtracted
