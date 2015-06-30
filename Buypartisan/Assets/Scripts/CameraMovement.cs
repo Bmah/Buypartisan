@@ -25,6 +25,8 @@ public class CameraMovement : MonoBehaviour {
 	private Vector3 pivotOriginalPosition;
 	private Vector3 cameraOriginalPosition;
 	private Vector3 gridStartingPoint;
+
+	private Camera camController;
 	
 	// Use this for initialization
 	void Start()
@@ -59,6 +61,10 @@ public class CameraMovement : MonoBehaviour {
 		float zPos = rad * Mathf.Cos (225.0f * Mathf.Deg2Rad) * Mathf.Sin (45.0f * Mathf.Deg2Rad);
 		cameraOriginalPosition = new Vector3 (xPos, yPos, zPos) + pivotOriginalPosition;
 		this.transform.position = cameraOriginalPosition;
+
+		camController = this.GetComponent<Camera> ();
+		float margin = 432f / Screen.width;
+		camController.rect = new Rect(margin, 0f, 1-margin, 1f);
 	}
 	
 	void Update () {

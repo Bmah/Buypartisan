@@ -614,6 +614,14 @@ public class UI_Script : MonoBehaviour {
 		sfx.PlayAudioClip (0, 0, SFXvolume);
 	}
 
+	/// <summary>
+	/// Plays the confirm sound.
+	/// Brian Mah
+	/// </summary>
+	public void PlayConfirmSound(){
+		sfx.PlayAudioClip (1, 0, SFXvolume);
+	}
+
     // This updates the visual cost on each action button. It shows default costs (including multiplier! =D) if no actions are spawned; if an action is spawned, then it shows the updated cost instead!
     // THIS IS LABOROUS CODE because it won't let me set the array in declaration on top. Someone pleeeeeeeease help me solve it =`( - Michael
     // This works for now but needs to be re-written because of an Action bug
