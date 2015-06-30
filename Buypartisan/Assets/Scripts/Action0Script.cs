@@ -8,10 +8,13 @@
 
 using UnityEngine;
 using System.Collections;
-
-public class ActionScriptTemplate : MonoBehaviour {
-    public string actionName = "default";
-	public int baseCost = 0;
+/// <summary>
+/// Action0 script by Daniel Schlesinger
+/// 
+/// </summary>
+public class Action0Script : MonoBehaviour {
+    public string actionName = "VoterSuppression";
+	public int baseCost = 20;
     public int totalCost = 0; // Please use totalCost for any end calculation, since this will be used to display on the UI's action button
     public float costMultiplier = 1.0f; // Increased by fixed amount within same turn (in PlayerTurnsManager). This is reset to 1 after the END of your turn.
 
@@ -22,7 +25,15 @@ public class ActionScriptTemplate : MonoBehaviour {
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 
 	private int currentPlayer; //this variable finds which player is currently using his turn.
+	private int selectedVoter = 0;
+	private bool voterSelected = false;
 
+	[System.NonSerialized]
+	public bool leftButton = false; //checks if left button has been pressed
+	[System.NonSerialized]
+	public bool rightButton = false; //checks if right button has been pressed
+	[System.NonSerialized]
+	public bool confirmButton = false; //checks if confirm button has been pressed
 	[System.NonSerialized]
 	public bool cancelButton = false;
 
@@ -32,6 +43,8 @@ public class ActionScriptTemplate : MonoBehaviour {
 		inputManager = GameObject.FindWithTag ("InputManager");
 		uiController = GameObject.Find ("UI Controller");
 
+		uiController.GetComponent<UI_Script> ().disableActionButtons ();
+		uiController.GetComponent<UI_Script>().activateAction0UI();
 		//Obtains the voter and player array from the gameController
 		if (gameController != null) {
 			voters = gameController.GetComponent<GameController> ().voters;
@@ -52,6 +65,9 @@ public class ActionScriptTemplate : MonoBehaviour {
 		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+
+		this.transform.position = voters [selectedVoter].transform.position;
+
 		if (players[currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
 
@@ -70,20 +86,49 @@ public class ActionScriptTemplate : MonoBehaviour {
 		//ends the action if the cancel button is pressed (Alex Jungroth)
 		if (cancelButton) 
 		{
-			EndAction();
+			//handles early canceling(Alex Jungroth)
+			uiController.GetComponent<UI_Script>().activateAction0UI2();
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
+			Destroy(gameObject);
 		}
 
-		//This is where the action should be placed.
-		//action action action. blah blah. E.g. move a voter or player one block over.
-		//When action is finished, run this bit of code below to tell the Game Manager the turn is over, 
-		//and deletes itself so the PlayerTurnsManager knows the turn is over as well.
+		if (!voterSelected) {
+			if (leftButton) {
+				if (selectedVoter == 0) {
+					selectedVoter = voters.Length - 1;
+				} else {
+					selectedVoter -= 1;
+				}
+				this.transform.position = voters [selectedVoter].transform.position;
+				
+				leftButton = false;
+			}
+			if (rightButton) {
+				if (selectedVoter == (voters.Length - 1)) {
+					selectedVoter = 0;
+				} else {
+					selectedVoter += 1;
+				}
+				this.transform.position = voters [selectedVoter].transform.position;
+				
+				rightButton = false;
+			}
+			if (confirmButton) {
+				Debug.Log ("Here");
+				voterSelected = true;
+				voters [selectedVoter].GetComponent<VoterVariables> ().votes = 0;
+				confirmButton = false;
+				uiController.GetComponent<UI_Script>().activateAction0UI2();
 
-		/*
-		EndAction ();
-		*/
+			}
+		}
+		if (voterSelected)
+			EndAction();
+
 	}
 
 	void EndAction() {
+		uiController.GetComponent<UI_Script>().activateAction0UI2();
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;  // Money is subtracted
