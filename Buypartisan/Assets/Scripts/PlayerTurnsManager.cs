@@ -1,4 +1,12 @@
-﻿using UnityEngine;
+﻿// Chris-chan
+// Michael's standardization notes: 
+// Cost multiplier is always calculated as percentages (1 = 100%). After every turn, the cost multiplier increases by 50% (0.5f).
+// Since the money value is always an integer full number, MAKE SURE to cast whatever final calculation your costMultiplier deals with, e.g. int num = (int)1.532f;
+// You can change that value in costMultiplierIncreaseAmount. It increases ONLY when an action is SUCCESFULLY ran.
+// If we want our own actions to decrease our own costMultiplier, add a public void alterCostMultiplier function and ONLY change costMultiplier.
+// If you want to increase the enemy's costMultiplier, add a function public void alterEnemyCostMultiplier and call it AFTER "costMultiplier = 1" under endTurnConfirmed.
+
+using UnityEngine;
 using System.Collections;
 
 public class PlayerTurnsManager : MonoBehaviour {
@@ -16,10 +24,12 @@ public class PlayerTurnsManager : MonoBehaviour {
 	public bool endTurnConfirmed; //this confirms that the player wishes to end his turn.
 
 //	public int costOfAction = 0; //this will be the variable that saves the cost of the action.
-	public int costMultiplier = 0; //this will change if the player continues to make more actions.
+	public float costMultiplier = 1.0f; //this will change if the player continues to make more actions.
+    public float costMultiplierIncreaseAmount = 0.5f;
 
 	// Use this for initialization
 	void Start () {
+
 
 	}
 	
@@ -27,6 +37,7 @@ public class PlayerTurnsManager : MonoBehaviour {
 	void Update () {
 		//If action has been chosen, play the action
 		if (actionConfirmed) {
+            uiController.GetComponent<UI_Script>().updateCost();
 			PlayAction (chosenAction);
 		}
 
@@ -38,7 +49,8 @@ public class PlayerTurnsManager : MonoBehaviour {
 			if (endTurnConfirmed) {
 				gameController.GetComponent<GameController> ().playerTakingAction = true;
 				endTurnConfirmed = false;
-				costMultiplier = 0;
+				costMultiplier = 1;
+                uiController.GetComponent<UI_Script>().updateCost();
 			}
 		}
 
@@ -64,4 +76,9 @@ public class PlayerTurnsManager : MonoBehaviour {
 			}
 		}
 	}
+
+    public void IncreaseCostMultiplier()
+    {
+        costMultiplier += costMultiplierIncreaseAmount;
+    }
 }

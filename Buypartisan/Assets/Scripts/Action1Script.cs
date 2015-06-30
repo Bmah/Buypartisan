@@ -1,30 +1,32 @@
-﻿using UnityEngine;
+﻿// Chris-chan
+// Power Summary: Move Player
+// This power will be able to move the player one unit away from his current position to be his new position.
+
+using UnityEngine;
 using System.Collections;
 
 public class Action1Script : MonoBehaviour {
-	/*
-	Power Summary: Move Player
-	This power will be able to move the player one unit away from his current position to be his new position.
-	*/
-	public int moneyRequired = 10;
-	public int currentCost = 0;
-	public int costMultiplier = 2;
+
+    public string actionName = "Move Self";
+	public int baseCost = 10;
+	public int totalCost = 10;
+	public float costMultiplier = 1.0f;
+    public float stepCostMultiplier = 1.5f; // This increases baseCost by 50% for every extra step, multiplicatively
 
 	private float xDis;
 	private float yDis;
 	private float zDis;
 	private float distance;
 	
-	public GameObject gameController; //this is the game controller variable. It is obtained from the PlayerTurnsManager
-	public GameObject inputManager; //this is the input manager varibale. Obtained from the PlayerTurnManager
-	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
-//	private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
-	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
+	public GameObject gameController;
+	public GameObject inputManager;
+	public GameObject uiController; 
+	private GameObject[] players; // Need this to search which player to move
 	
-	private int currentPlayer; //this variable finds which player is currently using his turn.
+	private int currentPlayer; // Tells you the source player who's using the action
 
-	private Vector3 originalPosition; //this will save the original position that the player started at.
-	private bool chosenPositionConfirmed = false; //final position has been chosen and confirmed.
+	private Vector3 originalPosition; // Original position that the player started at.
+	private bool chosenPositionConfirmed = false; // Destination been chosen and confirmed.
 	private Vector3 currentPos;
 
 	//these are to check which buttons have been pressed.
@@ -42,6 +44,8 @@ public class Action1Script : MonoBehaviour {
 	public bool zMinusButton = false;
 	[System.NonSerialized]
 	public bool confirmButton = false;
+	[System.NonSerialized]
+	public bool cancelButton = false;
 
 	// Use this for initialization
 	void Start () {
@@ -53,26 +57,38 @@ public class Action1Script : MonoBehaviour {
 		uiController.GetComponent<UI_Script> ().activateAction1UI ();
 		
 		if (gameController != null) {
-//			voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
 		
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		int actionCostMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (moneyRequired + (moneyRequired * actionCostMultiplier))) {
+		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+
+		originalPosition = players[currentPlayer].transform.position;
+		this.transform.position = originalPosition;
+
+		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
+
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
-
-		originalPosition = players[currentPlayer].transform.position;
-		this.transform.position = originalPosition;
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+		//ends the action if the cancel button is pressed (Alex Jungroth)
+		if (cancelButton) 
+		{
+			//handles early canceling(Alex Jungroth)
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
+			Destroy(gameObject);
+		}
+
 		//These below if statements check if the player has pressed a button down to move the character.
 		//Right now, it makes sure that the player can only move up, down, left, right, forward, and backward from its original postion.
 		//It also checks to make sure the player doesn't move outside the grid.
@@ -82,42 +98,42 @@ public class Action1Script : MonoBehaviour {
 			if (transform.position.x < (gameController.GetComponent<GameController>().gridSize - 1))
 			this.transform.position += new Vector3(1,0,0);
 			UpdateCostAndDistance();
-			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
+			Debug.Log ("Cost to move " + distance + " spaces: $" + totalCost + ".");
 			xPlusButton = false;
 		}
 		if (xMinusButton) {
 			if (transform.position.x > 0)
 			this.transform.position += new Vector3(-1,0,0);
 			UpdateCostAndDistance();
-			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
+			Debug.Log ("Cost to move " + distance + " spaces: $" + totalCost + ".");
 			xMinusButton = false;
 		}
 		if (zMinusButton) {
 			if (transform.position.z > 0)
 			this.transform.position += new Vector3(0,0,-1);
 			UpdateCostAndDistance();
-			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
+			Debug.Log ("Cost to move " + distance + " spaces: $" + totalCost + ".");
 			zMinusButton = false;
 		}
 		if (zPlusButton) {
 			if (transform.position.z < (gameController.GetComponent<GameController>().gridSize - 1))
 			this.transform.position += new Vector3(0,0,1);
 			UpdateCostAndDistance();
-			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
+			Debug.Log ("Cost to move " + distance + " spaces: $" + totalCost + ".");
 			zPlusButton = false;
 		}
 		if (yPlusButton) {
 			if (transform.position.y < (gameController.GetComponent<GameController>().gridSize - 1))
 			this.transform.position += new Vector3(0,1,0);
 			UpdateCostAndDistance();
-			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
+			Debug.Log ("Cost to move " + distance + " spaces: $" + totalCost + ".");
 			yPlusButton = false;
 		}
 		if (yMinusButton) {
 			if (transform.position.y > 0)
 			this.transform.position += new Vector3(0,-1,0);
 			UpdateCostAndDistance();
-			Debug.Log ("Cost to move " + distance + " spaces: $" + currentCost + ".");
+			Debug.Log ("Cost to move " + distance + " spaces: $" + totalCost + ".");
 			yMinusButton = false;
 		}
 
@@ -127,12 +143,11 @@ public class Action1Script : MonoBehaviour {
 		if (confirmButton) {
 			for (int i = 0; i < players.Length; i++) {
 				if (i != currentPlayer && players[i].transform.position != transform.position && transform.position != originalPosition) {
-					if (currentCost > players[currentPlayer].GetComponent<PlayerVariables>().money) {
+					if (totalCost > players[currentPlayer].GetComponent<PlayerVariables>().money) {
 						Debug.Log ("You don't have enough money to move to this spot!");
 					} else {
 						chosenPositionConfirmed = true;
 						players[currentPlayer].transform.position = transform.position;
-						players[currentPlayer].GetComponent<PlayerVariables>().money = players[currentPlayer].GetComponent<PlayerVariables>().money - currentCost;
 					}
 				}
 			}
@@ -152,12 +167,14 @@ public class Action1Script : MonoBehaviour {
 		zDis = Mathf.Abs (transform.position.z - currentPos.z);
 		distance = xDis + yDis + zDis;
 		
-		currentCost = (moneyRequired + (moneyRequired * this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier)) * Mathf.RoundToInt (Mathf.Pow (costMultiplier, (distance - 1)));
+        // Example when you're using this as 3rd power: Total Cost = $50 * 2.0 * (1.5)^3 * 4
+		totalCost = (int)((baseCost * costMultiplier) * (Mathf.Pow (stepCostMultiplier, (distance - 1))) * distance);
 	}
 
 	void EndAction() {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
-		this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier += 1;
+		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
+        players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
 		Destroy(gameObject);
 	}
 }

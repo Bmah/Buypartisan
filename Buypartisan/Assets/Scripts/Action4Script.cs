@@ -2,7 +2,10 @@
 using System.Collections;
 
 public class Action4Script : MonoBehaviour {
-	public int moneyRequired = 0;
+	public string actionName = "Campaign Tour";
+	public int baseCost = 10;
+    public int totalCost = 0;
+    public float costMultiplier = 1.0f;
 	
 	public GameObject gameController; //this is the game controller variable. It is obtained from the scene
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the scene
@@ -29,6 +32,8 @@ public class Action4Script : MonoBehaviour {
 	public bool zMinusButton = false;
 	[System.NonSerialized]
 	public bool confirmButton = false;
+	[System.NonSerialized]
+	public bool cancelButton = false;
 
 	private Vector3[] voterOriginalPositions; //this is an array of the saved original positions of the voters.
 	private Vector3[] voterFinalPositions;	//this will be where the final positions of the voters will be saved.
@@ -52,29 +57,52 @@ public class Action4Script : MonoBehaviour {
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
-		
-		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
-		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		int actionCostMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (moneyRequired + (moneyRequired * actionCostMultiplier))) {
-			Debug.Log ("Current Player doesn't have enough money to make this action.");
-			uiController.GetComponent<UI_Script>().toggleActionButtons();
-			Destroy(gameObject);
-		}
-		
+
 		//Disables the Action UI buttons
 		uiController.GetComponent<UI_Script>().disableActionButtons();
-
+		
 		//obtain the original positions of the voters
 		voterOriginalPositions = new Vector3[voters.Length];
 		voterFinalPositions = new Vector3[voters.Length];
+
 		for (int i = 0; i < voters.Length; i++) {
 			voterOriginalPositions[i] = voters[i].transform.position;
+
+			//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
+
+			//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
+			currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+			costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+			if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
+
+				totalCost = (int)(baseCost * costMultiplier);
+			}
+        	else
+        	{
+				Debug.Log ("Current Player doesn't have enough money to make this action.");
+				uiController.GetComponent<UI_Script>().toggleActionButtons();
+				Destroy(gameObject);
+        	}
+			
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+		//ends the action if the cancel button is pressed (Alex Jungroth)
+		if (cancelButton) 
+		{
+			//handles early canceling(Alex Jungroth)
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
+			for (int i = 0; i < voters.Length; i++) 
+			{
+				voterFinalPositions[i] = voterOriginalPositions[i];
+			}
+			setFinalPosition();
+			Destroy(gameObject);
+		}
+		
 		if (xPlusButton) {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].x < (gameController.GetComponent<GameController>().gridSize - 1)) {
@@ -204,8 +232,8 @@ public class Action4Script : MonoBehaviour {
 
 	void EndAction() {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
-		this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier += 1;
-		players [currentPlayer].GetComponent<PlayerVariables> ().money -= moneyRequired + (moneyRequired * this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier);
+		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
+		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;
 		Destroy(gameObject);
 	}
 }

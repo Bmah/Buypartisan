@@ -1,14 +1,12 @@
-﻿using UnityEngine;
+﻿// Brian Mah
+// Game Controller
+
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using System.Text;
 using System.IO;
 using System.Runtime;
-
-/// <summary>
-/// Game controller.
-/// Brian Mah
-/// </summary>
 
 public class GameController : MonoBehaviour {
 	public enum GameState {PlayerSpawn, ActionTurns, RoundEnd, GameEnd, AfterEnd};
@@ -40,9 +38,16 @@ public class GameController : MonoBehaviour {
 	
 	public GameObject currentPlayer;
 
-	public MusicController gameMusic;
+	private MusicController gameMusic;
+	private SFXController SFX;
 	public float SFXVolume;
-	
+
+	private bool SFXDrumrollPlaying = false;
+	private float drumrollTime = 3.7f;
+
+	//does the tallying at the start of each turn (Alex Jungroth)
+	public TallyingScript tallyRoutine;
+
 	/// <summary>
 	/// Start this instance.
 	/// Adds in Voter Array
@@ -60,6 +65,12 @@ public class GameController : MonoBehaviour {
 		if (gameMusic == null) {
 			Debug.LogError ("The Game Controller Could not Find the Music Controller please place it in the scene.");
 		}
+
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError ("The Game Controller Could not Find the SFX Controller please place it in the scene.");
+		}
+
 
 	}
 	
@@ -83,9 +94,9 @@ public class GameController : MonoBehaviour {
 					currentLine = levelReader.ReadLine();
 					if(currentLine != null){
 						string[] voterDataRaw = currentLine.Split(new char[]{',',' '});
-						int[] voterDataInt = new int[5];
-						if(voterDataRaw.Length == 5){
-							for(int i = 0; i < 5; i++){
+						int[] voterDataInt = new int[12];
+						if(voterDataRaw.Length == 12){
+							for(int i = 0; i < 12; i++){
 								if(int.TryParse(voterDataRaw[i], out temp)){
 									voterDataInt[i] = temp;
 								}
@@ -97,6 +108,16 @@ public class GameController : MonoBehaviour {
 							voters[voterNumber] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
 							voters [voterNumber].GetComponent<VoterVariables> ().votes = voterDataInt[3];
 							voters [voterNumber].GetComponent<VoterVariables> ().money = voterDataInt[4];
+
+							//These get the resistance variables for a voter (Alex Jungroth)
+							voters [voterNumber].GetComponent<VoterVariables> ().baseResistance = voterDataInt[5];
+							voters [voterNumber].GetComponent<VoterVariables> ().xPlusResistance = voterDataInt[6];
+							voters [voterNumber].GetComponent<VoterVariables> ().xMinusResistance = voterDataInt[7];
+							voters [voterNumber].GetComponent<VoterVariables> ().yPlusResistance = voterDataInt[8];
+							voters [voterNumber].GetComponent<VoterVariables> ().yMinusResistance = voterDataInt[9];
+							voters [voterNumber].GetComponent<VoterVariables> ().zPlusResistance = voterDataInt[10];
+							voters [voterNumber].GetComponent<VoterVariables> ().zMinusResistance = voterDataInt[11];
+
 							voterNumber++;
 						}
 						else{
@@ -126,49 +147,44 @@ public class GameController : MonoBehaviour {
 				playerTakingAction = false;
 				Debug.Log ("Round " + (roundCounter + 1) + " begin!");
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+
+				//does the tallying before the first player's turn starts (Alex Jungroth)
+				tallyRoutine.preTurnTalling ();
+			
 			}
 		} else if (currentState == GameState.ActionTurns) {
+
 			// In Game Heirchy, GameController must set Number Of Rounds greater than 0 in order for this to be called
 			if (roundCounter < numberOfRounds) {
 				PlayerTurn ();
+
 				if (Input.GetKeyDown (KeyCode.P))
 					playerTakingAction = true;//this skips the current turn by ending the turn.
 			} else {
 				currentState = GameState.RoundEnd;
+
 			}
 			
 		} else if (currentState == GameState.RoundEnd) {
-			for (int i = 0; i < voters.Length; i++) {
-				float leastDistance = 1000f;
-				int closestPlayer = 0;
-				float tieDistance = 1000f;
-				int tiePlayer = 0;
-				for (int j = 0; j < players.Length; j++) {//calculates the distance of voters from players
-					Vector3 distanceVector = players [j].transform.position - voters [i].transform.position;
-					float distance = Mathf.Abs (distanceVector.x) + Mathf.Abs (distanceVector.y) + Mathf.Abs (distanceVector.z);
-					if (distance < leastDistance) {//determines if there is a player that beat the last one
-						leastDistance = distance;
-						closestPlayer = j;
-					} else if (distance == leastDistance) {//creates a tie between two players (3 way ties can suck it)
-						tieDistance = distance;
-						tiePlayer = j;
-					}
-					
-				}
-				if (tieDistance == leastDistance) {//checks if least distance is still tied with the tie player, if not, it is shorter, so don't split
-					Debug.Log ("Checking if least distance is still tied with the tied player...if not, it's shorter so don't split votes");
-					players [closestPlayer].GetComponent<PlayerVariables> ().votes += voters [i].GetComponent<VoterVariables> ().votes / 2;
-					players [tiePlayer].GetComponent<PlayerVariables> ().votes += voters [i].GetComponent<VoterVariables> ().votes / 2;
-					players [closestPlayer].GetComponent<PlayerVariables> ().money += voters [i].GetComponent<VoterVariables> ().money / 2;
-					players [tiePlayer].GetComponent<PlayerVariables> ().money += voters [i].GetComponent<VoterVariables> ().money / 2;
-				} else {//do normal assignments if least distance is not tied
-					players [closestPlayer].GetComponent<PlayerVariables> ().votes += voters [i].GetComponent<VoterVariables> ().votes;
-					players [closestPlayer].GetComponent<PlayerVariables> ().money += voters [i].GetComponent<VoterVariables> ().money;
-				}
+
+			// Brian Mah
+			UIController.alterTextBox("And the Winner is...");
+
+			if(!SFXDrumrollPlaying){
+				SFX.PlayAudioClip(2,0,SFXVolume);
+				SFXDrumrollPlaying = true;
+				drumrollTime += Time.time;
+			}
+
+			if(Time.time >= drumrollTime){ // when the sound is done playing
+
+				//does the tallying at the end of the game (Alex Jungroth)
+				tallyRoutine.preTurnTalling ();
 
 				//Sets the gamemode to game end, and calculates the final score
 				currentState = GameState.GameEnd;
 			}
+
 		// Once the game ends and calculation is needed, this is called
 		} else if (currentState == GameState.GameEnd) {
 			CompareVotes(messaged);
@@ -231,6 +247,9 @@ public class GameController : MonoBehaviour {
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
 
+                //does the tallying after the players ends there turns (Alex Jungroth)
+                tallyRoutine.preTurnTalling();
+
 				randomEventController.ActivateEvents();
 
 				//this is when the new round begins
@@ -269,10 +288,12 @@ public class GameController : MonoBehaviour {
 		}
 		if(messaged && mostVotes == tieVotes){
 			Debug.Log ("Winning Players are " + winningPlayer +" and " + tieFighter + " with a tie vote of: " + tieVotes + "!");
+			UIController.alterTextBox("Winning Players are " + winningPlayer +" and " + tieFighter + " with a tie vote of: " + tieVotes + "!");
 			messaged = false;
 		}
 		else if(messaged){
 			Debug.Log("Winning Player is: " + winningPlayer + " with " + mostVotes + " votes!");
+			UIController.alterTextBox("Winning Player is: " + winningPlayer + " with " + mostVotes + " votes!");
 			messaged = false;
 		}
 
