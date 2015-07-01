@@ -84,7 +84,11 @@ public class Action3Script : MonoBehaviour {
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
-		
+
+		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
+		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+
 		//gets the original postion of the player who is spawning a shadow positon
 		originalPosition = players[currentPlayer].transform.position;
 		
@@ -110,10 +114,7 @@ public class Action3Script : MonoBehaviour {
 		marker.transform.localScale = new Vector3(0.099f, 0.099f, 0.099f);
 
 		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
-
-		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
-		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+		
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
 
 			totalCost = (int)(baseCost * costMultiplier);
@@ -349,7 +350,7 @@ public class Action3Script : MonoBehaviour {
 		if (chosenPositionConfirmed) {
 
 			//checks to see if the power succeeded (Alex Jungroth)
-			if(Random.Range(0.5f,1) >= successRate)
+			if(Random.value >= successRate)
 			{
 				//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
 				shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
