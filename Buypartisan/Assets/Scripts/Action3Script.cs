@@ -69,6 +69,9 @@ public class Action3Script : MonoBehaviour {
 	//holds the orignial color of the shadow position
 	private Color transparentColor;
 
+	//holds the number needed for this action to succeed (Alex Jungroth)
+	public float successRate = 0.5f;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -345,19 +348,23 @@ public class Action3Script : MonoBehaviour {
 		
 		if (chosenPositionConfirmed) {
 
-			//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
-			shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
+			//checks to see if the power succeeded (Alex Jungroth)
+			if(Random.Range(0.5f,1) >= successRate)
+			{
+				//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
+				shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
 
-			//gets the shadow positoins Renderer
-			shadowRenderer	= shadowPosition.GetComponent<Renderer>();
-			
-			//makes the players shadow positions transparent without changing their color
-			transparentColor = shadowRenderer.material.color;
-			transparentColor.a = 0.5f;
-			shadowRenderer.material.SetColor("_Color", transparentColor);  
+				//gets the shadow positoins Renderer
+				shadowRenderer = shadowPosition.GetComponent<Renderer>();
+				
+				//makes the players shadow positions transparent without changing their color
+				transparentColor = shadowRenderer.material.color;
+				transparentColor.a = 0.5f;
+				shadowRenderer.material.SetColor("_Color", transparentColor);  
 
-			//adds the shadow position to the players array list of shadowpositions
-			players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.Add(shadowPosition);
+				//adds the shadow position to the players array list of shadowpositions
+				players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.Add(shadowPosition);
+			}
 
 			//removes the marker
 			Destroy(marker);

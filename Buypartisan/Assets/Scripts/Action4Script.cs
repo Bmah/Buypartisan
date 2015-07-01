@@ -42,6 +42,18 @@ public class Action4Script : MonoBehaviour {
 	private int overlap1; //these two ints save which ones are overlapping.
 	private int overlap2;
 
+	//holds the direction that the voter is being moved in (Alex Jungroth)
+	private int finalDirection = 0;
+
+	//Final Direction Key (Alex Jungroth)
+	//0 = Unset
+	//1 = X+
+	//2 = X-
+	//3 = Y+
+	//4 = Y-
+	//5 = Z+
+	//6 = Z-
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -107,6 +119,9 @@ public class Action4Script : MonoBehaviour {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].x < (gameController.GetComponent<GameController>().gridSize - 1)) {
 					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(1,0,0);
+
+					//This sets final direction to X+ (Alex Jungroth)
+					finalDirection = 1;
 				} else {
 					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
@@ -119,6 +134,9 @@ public class Action4Script : MonoBehaviour {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].x > 0) {
 					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(-1,0,0);
+
+					//This sets final direction to X- (Alex Jungroth)
+					finalDirection = 2;
 				} else {
 					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
@@ -131,6 +149,9 @@ public class Action4Script : MonoBehaviour {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].y < (gameController.GetComponent<GameController>().gridSize - 1)) {
 					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,1,0);
+
+					//This sets final direction to Y+ (Alex Jungroth)
+					finalDirection = 3;
 				} else {
 					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
@@ -143,6 +164,9 @@ public class Action4Script : MonoBehaviour {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].y > 0) {
 					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,-1,0);
+
+					//This sets final direction to Y- (Alex Jungroth)
+					finalDirection = 4;
 				} else {
 					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
@@ -155,6 +179,9 @@ public class Action4Script : MonoBehaviour {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].z < (gameController.GetComponent<GameController>().gridSize - 1)) {
 					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,0,1);
+
+					//This sets final direction to Z+ (Alex Jungroth)
+					finalDirection = 5;
 				} else {
 					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
@@ -167,6 +194,9 @@ public class Action4Script : MonoBehaviour {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].z > 0){
 					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,0,-1);
+
+					//This sets final direction to Z- (Alex Jungroth)
+					finalDirection = 6;
 				} else {
 					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
@@ -226,7 +256,14 @@ public class Action4Script : MonoBehaviour {
 
 	void setFinalPosition() {
 		for (int i = 0; i < voters.Length; i++) {
-			voters[i].transform.position = voterFinalPositions[i];
+			if(compareResistance(i))
+			{
+				//tests to see if the action is successful (Alex Jungroth)
+				voters[i].transform.position = voterFinalPositions[i];
+
+				//increases the base resistance of the voter by 1% (Alex Jungroth)
+				voters[i].GetComponent<VoterVariables>().baseResistance += voters[i].GetComponent<VoterVariables>().baseResistance * 0.01f;
+			}
 		}
 	}
 
@@ -235,5 +272,65 @@ public class Action4Script : MonoBehaviour {
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;
 		Destroy(gameObject);
+	}
+
+	bool compareResistance(int i)
+	{
+		//holds wether or not the action overcame the voter's resitance
+		bool resistanceCheck = false;
+		
+		//This case statment will handle the different directions that the voter can be moved in (Alex Jungroth)
+		switch (finalDirection)
+		{
+		case 0:
+			Debug.Log ("Case 0 was chosen which means something has gone wrong!");
+			resistanceCheck = true;
+			break;
+			
+		case 1:
+			if(Random.Range(0.1f,1) > voters[i].GetComponent<VoterVariables>().xPlusResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+			
+		case 2:
+			if(Random.Range(0.1f,1) > voters[i].GetComponent<VoterVariables>().xMinusResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+			
+		case 3:
+			if(Random.Range(0.1f,1) > voters[i].GetComponent<VoterVariables>().yPlusResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+			
+		case 4:
+			if(Random.Range(0.1f,1) > voters[i].GetComponent<VoterVariables>().yMinusResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+			
+		case 5:
+			if(Random.Range(0.1f,1) > voters[i].GetComponent<VoterVariables>().zPlusResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+			
+		case 6:
+			if(Random.Range(0.1f,1) > voters[i].GetComponent<VoterVariables>().zMinusResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+		}		
+		
+		//returns the result of the test
+		return resistanceCheck;	
 	}
 }

@@ -41,6 +41,18 @@ public class Action2Script : MonoBehaviour {
 	[System.NonSerialized]
 	public bool cancelButton = false;
 
+	//holds the direction that the voter is being moved in (Alex Jungroth)
+	private int finalDirection = 0;
+
+	//Final Direction Key (Alex Jungroth)
+	//0 = Unset
+	//1 = X+
+	//2 = X-
+	//3 = Z-
+	//4 = Z+
+	//5 = Y+
+	//6 = Y-
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -95,7 +107,6 @@ public class Action2Script : MonoBehaviour {
 
 		}
 
-
 		if (!voterSelected) {
 			if (leftButton) {
 				if (selectedVoter == 0) {
@@ -130,6 +141,9 @@ public class Action2Script : MonoBehaviour {
 			if (xPlusButton) {
 				if ((originalPosition.x + 1) < (gameController.GetComponent<GameController>().gridSize)) {
 					this.transform.position = originalPosition + new Vector3(1,0,0);
+
+					//This sets final direction to X+ (Alex Jungroth)
+					finalDirection = 1;
 				} else {
 					this.transform.position = originalPosition;
 				}
@@ -139,6 +153,9 @@ public class Action2Script : MonoBehaviour {
 			if (xMinusButton) {
 				if ((originalPosition.x - 1) > -1) {
 					this.transform.position = originalPosition + new Vector3(-1,0,0);
+
+					//This sets final direction to X- (Alex Jungroth)
+					finalDirection = 2;
 				} else {
 					this.transform.position = originalPosition;
 				}
@@ -148,6 +165,9 @@ public class Action2Script : MonoBehaviour {
 			if (zMinusButton) {
 				if ((originalPosition.z - 1) > -1) {
 					this.transform.position = originalPosition + new Vector3(0,0,-1);
+
+					//This sets final direction to Z- (Alex Jungroth)
+					finalDirection = 3;
 				} else {
 					this.transform.position = originalPosition;
 				}
@@ -157,6 +177,9 @@ public class Action2Script : MonoBehaviour {
 			if (zPlusButton) {
 				if ((originalPosition.z + 1) < (gameController.GetComponent<GameController>().gridSize)) {
 					this.transform.position = originalPosition + new Vector3(0,0,1);
+
+					//This sets final direction to Z+ (Alex Jungroth)
+					finalDirection = 4;
 				} else {
 					this.transform.position = originalPosition;
 				}
@@ -166,6 +189,9 @@ public class Action2Script : MonoBehaviour {
 			if (yPlusButton) {
 				if ((originalPosition.y + 1) < (gameController.GetComponent<GameController>().gridSize)) {
 					this.transform.position = originalPosition + new Vector3(0,1,0);
+
+					//This sets final direction to Y+ (Alex Jungroth)
+					finalDirection = 5;
 				} else {
 					this.transform.position = originalPosition;
 				}
@@ -175,6 +201,9 @@ public class Action2Script : MonoBehaviour {
 			if (yMinusButton) {
 				if ((originalPosition.y - 1) > -1) {
 					this.transform.position = originalPosition + new Vector3(0,-1,0);
+
+					//This sets final direction to Y- (Alex Jungroth)
+					finalDirection = 6;
 				} else {
 					this.transform.position = originalPosition;
 				}
@@ -187,7 +216,17 @@ public class Action2Script : MonoBehaviour {
 				for (int i = 0; i < voters.Length; i++) {
 					if (i != selectedVoter && voters[i].transform.position != this.transform.position && this.transform.position != originalPosition) {
 						positionSelected = true;
-						voters[selectedVoter].transform.position = this.transform.position;
+
+						//tests to see if the action is successful (Alex Jungroth)
+						if(compareResistance())
+						{
+							voters[selectedVoter].transform.position = this.transform.position;
+
+							//increases the base resistance of the voter by 1% (Alex Jungroth)
+							voters[selectedVoter].GetComponent<VoterVariables>().baseResistance += voters[selectedVoter].GetComponent<VoterVariables>().baseResistance * 0.01f;
+
+						}
+
 					}
 				}
 				confirmButton = false;
@@ -205,5 +244,66 @@ public class Action2Script : MonoBehaviour {
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost; // Money is subtracted
 		Destroy(gameObject);
+	}
+
+	bool compareResistance()
+	{
+		//holds wether or not the action overcame the voter's resitance
+		bool resistanceCheck = false;
+
+		//This case statment will handle the different directions that the voter can be moved in (Alex Jungroth)
+		switch (finalDirection)
+		{
+		case 0:
+			Debug.Log ("Case 0 was chosen which means something has gone wrong!");
+			resistanceCheck = true;
+			break;
+
+		case 1:
+			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().xPlusResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+		
+		case 2:
+			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().xMinusResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+
+		case 3:
+			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().zMinusResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+
+		case 4:
+			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().zPlusResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+
+		case 5:
+			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().yPlusResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+
+		case 6:
+			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().yMinusResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+		}		
+
+		//returns the result of the test
+		return resistanceCheck;
+
 	}
 }
