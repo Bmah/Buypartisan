@@ -125,14 +125,17 @@ public class Action0Script : MonoBehaviour {
 				//checks to see if the power succeeded (Alex Jungroth)
 
 			}*/
+
 			if (Input.GetMouseButtonDown(0)) {
 				for (int i = 0; i < voters.Length; i++) {
 					if (voters [i].GetComponent<VoterVariables> ().GetSelected ()) {
-						if (Random.Range (0.5f, 1) >= successRate) {
-						voters [i].GetComponent<VoterVariables> ().votes = 0;
+							
+						if (Random.value >= successRate)
+						{
+							voters [i].GetComponent<VoterVariables> ().votes = 0;
+						}
 						foundVoter = true;
 						voterSelected = true;
-						}
 					}
 				}
 				if (!foundVoter) {

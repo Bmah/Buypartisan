@@ -350,7 +350,7 @@ public class Action3Script : MonoBehaviour {
 		if (chosenPositionConfirmed) {
 
 			//checks to see if the power succeeded (Alex Jungroth)
-			if(Random.Range(0.5f,1) >= successRate)
+			if(Random.value >= successRate)
 			{
 				//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
 				shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
