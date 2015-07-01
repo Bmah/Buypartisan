@@ -388,6 +388,9 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().confirmButton = true;
 			}
+			if (chosenAction == 5) {
+				instantiatedAction.GetComponent<Action5Script>().confirmButton = true;
+			}
 		}
 	}
 
@@ -422,6 +425,9 @@ public class UI_Script : MonoBehaviour {
 			
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().cancelButton = true;
+			}
+			if (chosenAction == 5) {
+				instantiatedAction.GetComponent<Action5Script>().cancelButton = true;
 			}
 		}
 	}
@@ -518,14 +524,14 @@ public class UI_Script : MonoBehaviour {
 
 	public void activateAction0UI()
 	{
-		leftButton.SetActive (true);
-		rightButton.SetActive (true);
-		confirmButton.SetActive (true);
+		//leftButton.SetActive (true);
+		//rightButton.SetActive (true);
 		cancelButton.SetActive (true);
 	}
 
 	public void activateAction0UI2()
-	{
+	{	
+		confirmButton.SetActive (true);
 		leftButton.SetActive (false);
 		rightButton.SetActive (false);
 
@@ -546,14 +552,14 @@ public class UI_Script : MonoBehaviour {
 	public void activateAction2UI1()
 	{
 		disablePPButtons ();
-		leftButton.SetActive (true);
-		rightButton.SetActive (true);
-		confirmButton.SetActive (true);
+		//leftButton.SetActive (true);
+		//rightButton.SetActive (true);
 		cancelButton.SetActive (true);
 	}
 
 	public void activateAction2UI2()
-	{
+	{	
+		confirmButton.SetActive (true);
 		leftButton.SetActive (false);
 		rightButton.SetActive (false);
 		xPlusButton.SetActive (true);
@@ -586,6 +592,11 @@ public class UI_Script : MonoBehaviour {
 		yMinusButton.SetActive (true);
 		zPlusButton.SetActive (true);
 		zMinusButton.SetActive (true);
+		confirmButton.SetActive (true);
+		cancelButton.SetActive (true);
+	}
+
+	public void activateAction5UI() {
 		confirmButton.SetActive (true);
 		cancelButton.SetActive (true);
 	}

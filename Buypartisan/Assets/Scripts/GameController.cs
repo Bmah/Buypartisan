@@ -94,9 +94,9 @@ public class GameController : MonoBehaviour {
 					currentLine = levelReader.ReadLine();
 					if(currentLine != null){
 						string[] voterDataRaw = currentLine.Split(new char[]{',',' '});
-						int[] voterDataInt = new int[5];
-						if(voterDataRaw.Length == 5){
-							for(int i = 0; i < 5; i++){
+						int[] voterDataInt = new int[12];
+						if(voterDataRaw.Length == 12){
+							for(int i = 0; i < 12; i++){
 								if(int.TryParse(voterDataRaw[i], out temp)){
 									voterDataInt[i] = temp;
 								}
@@ -108,6 +108,16 @@ public class GameController : MonoBehaviour {
 							voters[voterNumber] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
 							voters [voterNumber].GetComponent<VoterVariables> ().votes = voterDataInt[3];
 							voters [voterNumber].GetComponent<VoterVariables> ().money = voterDataInt[4];
+
+							//These get the resistance variables for a voter (Alex Jungroth)
+							voters [voterNumber].GetComponent<VoterVariables> ().baseResistance = voterDataInt[5];
+							voters [voterNumber].GetComponent<VoterVariables> ().xPlusResistance = voterDataInt[6];
+							voters [voterNumber].GetComponent<VoterVariables> ().xMinusResistance = voterDataInt[7];
+							voters [voterNumber].GetComponent<VoterVariables> ().yPlusResistance = voterDataInt[8];
+							voters [voterNumber].GetComponent<VoterVariables> ().yMinusResistance = voterDataInt[9];
+							voters [voterNumber].GetComponent<VoterVariables> ().zPlusResistance = voterDataInt[10];
+							voters [voterNumber].GetComponent<VoterVariables> ().zMinusResistance = voterDataInt[11];
+
 							voterNumber++;
 						}
 						else{

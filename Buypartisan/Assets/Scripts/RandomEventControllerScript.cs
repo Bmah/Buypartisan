@@ -8,6 +8,8 @@ using System.Collections;
 public class RandomEventControllerScript : MonoBehaviour {
 
 	public GameObject[] voters;
+	public VoterVariables[] voterVars = null;
+	private bool voterVarsSet = false;
 
 	public UI_Script UIController;
 
@@ -18,12 +20,19 @@ public class RandomEventControllerScript : MonoBehaviour {
 		if (UIController == null) {
 			Debug.LogError("UI_Script not set on RandomEventController");
 		}
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
-	}
+		if (!voterVarsSet) {
+			voterVars = new VoterVariables[voters.Length];
+			for(int i = 0; i < voters.Length; i++){
+				voterVars[i] = voters[i].GetComponent<VoterVariables>();
+			}
+			voterVarsSet = true;
+		}
+	}// update
 
 	/// <summary>
 	/// Activates the events.
@@ -86,21 +95,30 @@ public class RandomEventControllerScript : MonoBehaviour {
 	/// <value>The shift voters.</value>
 	void ShiftVoters(char direction, int magnitude){
 		direction = char.ToUpper (direction);
-		bool collision = false;
+		bool failToMove = false;
 		switch (direction) {
 		case 'X':
 			for(int i = 0; i < voters.Length; i++){
-				collision = false;
+				failToMove = false;
 				Vector3 temporaryPosition = voters[i].transform.position;
 				if((magnitude > 0 && temporaryPosition.x < gridSize - magnitude)||(magnitude < 0 && temporaryPosition.x > -1 - magnitude)){
 					temporaryPosition.x = temporaryPosition.x + magnitude;
-					for(int j = 0; j < voters.Length && !collision; j++){
+					for(int j = 0; j < voters.Length && !failToMove; j++){
 						if(voters[j].transform.position == temporaryPosition){
-							collision = true;
+							failToMove = true;
 						}
 					}
 				}
-				if(!collision)
+
+				//check to see if voter resistance prevents event from moving voter
+				if(magnitude < 0 &&  Random.value < voterVars[i].xMinusResistance + voterVars[i].baseResistance){
+					failToMove = true;
+				}
+				else if(magnitude > 0 &&  Random.value < voterVars[i].xPlusResistance + voterVars[i].baseResistance){
+					failToMove = true;
+				}
+
+				if(!failToMove)
 				{
 					voters[i].transform.position = temporaryPosition;
 				}
@@ -108,17 +126,26 @@ public class RandomEventControllerScript : MonoBehaviour {
 			break;
 		case 'Y':
 			for(int i = 0; i < voters.Length; i++){
-				collision = false;
+				failToMove = false;
 				Vector3 temporaryPosition = voters[i].transform.position;
 				if((magnitude > 0 && temporaryPosition.y < gridSize - magnitude)||(magnitude < 0 && temporaryPosition.y > -1 - magnitude)){
 					temporaryPosition.y = temporaryPosition.y + magnitude;
-					for(int j = 0; j < voters.Length && !collision; j++){
+					for(int j = 0; j < voters.Length && !failToMove; j++){
 						if(voters[j].transform.position == temporaryPosition){
-							collision = true;
+							failToMove = true;
 						}
 					}
 				}
-				if(!collision)
+
+				//check to see if voter resistance prevents event from moving voter
+				if(magnitude < 0 &&  Random.value < voterVars[i].yMinusResistance + voterVars[i].baseResistance){
+					failToMove = true;
+				}
+				else if(magnitude > 0 &&  Random.value < voterVars[i].yPlusResistance + voterVars[i].baseResistance){
+					failToMove = true;
+				}
+
+				if(!failToMove)
 				{
 					voters[i].transform.position = temporaryPosition;
 				}
@@ -126,17 +153,26 @@ public class RandomEventControllerScript : MonoBehaviour {
 			break;
 		case 'Z':
 			for(int i = 0; i < voters.Length; i++){
-				collision = false;
+				failToMove = false;
 				Vector3 temporaryPosition = voters[i].transform.position;
 				if((magnitude > 0 && temporaryPosition.z < gridSize - magnitude)||(magnitude < 0 && temporaryPosition.z > -1 - magnitude)){
 					temporaryPosition.z = temporaryPosition.z + magnitude;
-					for(int j = 0; j < voters.Length && !collision; j++){
+					for(int j = 0; j < voters.Length && !failToMove; j++){
 						if(voters[j].transform.position == temporaryPosition){
-							collision = true;
+							failToMove = true;
 						}
 					}
 				}
-				if(!collision)
+
+				//check to see if voter resistance prevents event from moving voter
+				if(magnitude < 0 &&  Random.value < voterVars[i].zMinusResistance + voterVars[i].baseResistance){
+					failToMove = true;
+				}
+				else if(magnitude > 0 &&  Random.value < voterVars[i].zPlusResistance + voterVars[i].baseResistance){
+					failToMove = true;
+				}
+
+				if(!failToMove)
 				{
 					voters[i].transform.position = temporaryPosition;
 				}
