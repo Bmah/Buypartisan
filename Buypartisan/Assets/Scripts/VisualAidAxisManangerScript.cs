@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿// Michael Lee
+// Don't touch this yet
+
+using UnityEngine;
 using System.Collections;
 
 public class VisualAidAxisManangerScript : MonoBehaviour {
@@ -11,8 +14,14 @@ public class VisualAidAxisManangerScript : MonoBehaviour {
 
 		VisualAidManager = GameObject.FindGameObjectWithTag("VisualAidManager");
 
-		spriteChildren = this.transform.GetComponentsInChildren<SpriteRenderer>();
-	
+		spriteChildren = GetComponentsInChildren<SpriteRenderer>();
+
+
+		// For now everything is invisible; leave it like this
+		for (int i = 0; i < spriteChildren.Length; i++)
+		{
+			spriteChildren[i].enabled = false;
+		}
 	}
 	
 	// Update is called once per frame

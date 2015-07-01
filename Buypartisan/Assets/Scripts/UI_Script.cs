@@ -388,6 +388,7 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().confirmButton = true;
 			}
+
 			if (chosenAction == 5) {
 				instantiatedAction.GetComponent<Action5Script>().confirmButton = true;
 			}
@@ -426,6 +427,7 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().cancelButton = true;
 			}
+
 			if (chosenAction == 5) {
 				instantiatedAction.GetComponent<Action5Script>().cancelButton = true;
 			}
@@ -638,7 +640,7 @@ public class UI_Script : MonoBehaviour {
     // This works for now but needs to be re-written because of an Action bug
     public void updateCost()
     {
-		//text0.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action1Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+		text0.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
 
         text1.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
 
@@ -647,5 +649,7 @@ public class UI_Script : MonoBehaviour {
         text3.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
 
         text4.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+
+		text5.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
     }
 }
