@@ -20,13 +20,13 @@ public class VoterVariables : MonoBehaviour {
 	string holdingText;
 
 	//These variables hold a voters resistance to being moved (Alex Jungroth)
-	public int baseResistance = 0;
-	public int xPlusResistance = 0;
-	public int xMinusResistance = 0;
-	public int yPlusResistance = 0;
-	public int yMinusResistance = 0;
-	public int zPlusResistance = 0;
-	public int zMinusResistance = 0;
+	public float baseResistance = 0;
+	public float xPlusResistance = 0;
+	public float xMinusResistance = 0;
+	public float yPlusResistance = 0;
+	public float yMinusResistance = 0;
+	public float zPlusResistance = 0;
+	public float zMinusResistance = 0;
 
 	void Start () {
 		voterRenderer = this.GetComponent<Renderer>();
@@ -48,7 +48,7 @@ public class VoterVariables : MonoBehaviour {
 			RaycastHit hit;
 			if (Coll.Raycast (ray, out hit, 100.0F)) {
 				ToggleSelected();
-				ControllerSquared.PowerCall(powerType);
+				//ControllerSquared.PowerCall(powerType);
 				ToggleSelected();
 
 			}
