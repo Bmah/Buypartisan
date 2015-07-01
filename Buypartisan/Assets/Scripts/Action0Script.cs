@@ -13,7 +13,7 @@ using System.Collections;
 /// 
 /// </summary>
 public class Action0Script : MonoBehaviour {
-    public string actionName = "VoterSuppression";
+    public string actionName = "Voter Suppression";
 	public int baseCost = 20;
     public int totalCost = 0; // Please use totalCost for any end calculation, since this will be used to display on the UI's action button
     public float costMultiplier = 1.0f; // Increased by fixed amount within same turn (in PlayerTurnsManager). This is reset to 1 after the END of your turn.
