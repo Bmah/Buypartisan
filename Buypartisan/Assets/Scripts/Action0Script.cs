@@ -27,6 +27,7 @@ public class Action0Script : MonoBehaviour {
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 	private int selectedVoter = 0;
 	private bool voterSelected = false;
+	private bool foundVoter = false;
 
 	[System.NonSerialized]
 	public bool leftButton = false; //checks if left button has been pressed
@@ -87,16 +88,15 @@ public class Action0Script : MonoBehaviour {
 	void Update () {
 
 		//ends the action if the cancel button is pressed (Alex Jungroth)
-		if (cancelButton) 
-		{
+		if (cancelButton) {
 			//handles early canceling(Alex Jungroth)
-			uiController.GetComponent<UI_Script>().activateAction0UI2();
-			uiController.GetComponent<UI_Script>().toggleActionButtons();
-			Destroy(gameObject);
+			uiController.GetComponent<UI_Script> ().activateAction0UI2 ();
+			uiController.GetComponent<UI_Script> ().toggleActionButtons ();
+			Destroy (gameObject);
 		}
 
 		if (!voterSelected) {
-			if (leftButton) {
+			/*if (leftButton) {
 				if (selectedVoter == 0) {
 					selectedVoter = voters.Length - 1;
 				} else {
@@ -120,20 +120,32 @@ public class Action0Script : MonoBehaviour {
 				Debug.Log ("Here");
 				voterSelected = true;
 				confirmButton = false;
-				uiController.GetComponent<UI_Script>().activateAction0UI2();
+				uiController.GetComponent<UI_Script> ().activateAction0UI2 ();
 
 				//checks to see if the power succeeded (Alex Jungroth)
-				if(Random.Range(0.5f,1) >= successRate)
-				{
-					voters [selectedVoter].GetComponent<VoterVariables> ().votes = 0;
+
+			}*/
+			if (Input.GetMouseButtonDown(0)) {
+				for (int i = 0; i < voters.Length; i++) {
+					if (voters [i].GetComponent<VoterVariables> ().GetSelected ()) {
+						if (Random.Range (0.5f, 1) >= successRate) {
+						voters [i].GetComponent<VoterVariables> ().votes = 0;
+						foundVoter = true;
+						voterSelected = true;
+						}
+					}
 				}
+				if (!foundVoter) {
+					Debug.Log ("Please Select A Voter by Mousing Over Them and Clicking");
+				}
+
 			}
 		}
 		if (voterSelected)
-			EndAction();
+			EndAction ();
 
+	
 	}
-
 	void EndAction() {
 		uiController.GetComponent<UI_Script>().activateAction0UI2();
 		uiController.GetComponent<UI_Script>().toggleActionButtons();

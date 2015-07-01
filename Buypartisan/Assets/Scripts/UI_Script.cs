@@ -518,14 +518,14 @@ public class UI_Script : MonoBehaviour {
 
 	public void activateAction0UI()
 	{
-		leftButton.SetActive (true);
-		rightButton.SetActive (true);
-		confirmButton.SetActive (true);
+		//leftButton.SetActive (true);
+		//rightButton.SetActive (true);
 		cancelButton.SetActive (true);
 	}
 
 	public void activateAction0UI2()
-	{
+	{	
+		confirmButton.SetActive (true);
 		leftButton.SetActive (false);
 		rightButton.SetActive (false);
 
@@ -546,14 +546,14 @@ public class UI_Script : MonoBehaviour {
 	public void activateAction2UI1()
 	{
 		disablePPButtons ();
-		leftButton.SetActive (true);
-		rightButton.SetActive (true);
-		confirmButton.SetActive (true);
+		//leftButton.SetActive (true);
+		//rightButton.SetActive (true);
 		cancelButton.SetActive (true);
 	}
 
 	public void activateAction2UI2()
-	{
+	{	
+		confirmButton.SetActive (true);
 		leftButton.SetActive (false);
 		rightButton.SetActive (false);
 		xPlusButton.SetActive (true);

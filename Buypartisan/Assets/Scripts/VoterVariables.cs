@@ -48,7 +48,7 @@ public class VoterVariables : MonoBehaviour {
 			RaycastHit hit;
 			if (Coll.Raycast (ray, out hit, 100.0F)) {
 				ToggleSelected();
-				ControllerSquared.PowerCall(powerType);
+				//ControllerSquared.PowerCall(powerType);
 				ToggleSelected();
 
 			}
