@@ -38,8 +38,12 @@ public class GameController : MonoBehaviour {
 	
 	public GameObject currentPlayer;
 
-	public MusicController gameMusic;
+	private MusicController gameMusic;
+	private SFXController SFX;
 	public float SFXVolume;
+
+	private bool SFXDrumrollPlaying = false;
+	private float drumrollTime = 3.7f;
 
 	//does the tallying at the start of each turn (Alex Jungroth)
 	public TallyingScript tallyRoutine;
@@ -61,6 +65,12 @@ public class GameController : MonoBehaviour {
 		if (gameMusic == null) {
 			Debug.LogError ("The Game Controller Could not Find the Music Controller please place it in the scene.");
 		}
+
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError ("The Game Controller Could not Find the SFX Controller please place it in the scene.");
+		}
+
 
 	}
 	
@@ -84,9 +94,9 @@ public class GameController : MonoBehaviour {
 					currentLine = levelReader.ReadLine();
 					if(currentLine != null){
 						string[] voterDataRaw = currentLine.Split(new char[]{',',' '});
-						int[] voterDataInt = new int[5];
-						if(voterDataRaw.Length == 5){
-							for(int i = 0; i < 5; i++){
+						int[] voterDataInt = new int[12];
+						if(voterDataRaw.Length == 12){
+							for(int i = 0; i < 12; i++){
 								if(int.TryParse(voterDataRaw[i], out temp)){
 									voterDataInt[i] = temp;
 								}
@@ -98,6 +108,16 @@ public class GameController : MonoBehaviour {
 							voters[voterNumber] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
 							voters [voterNumber].GetComponent<VoterVariables> ().votes = voterDataInt[3];
 							voters [voterNumber].GetComponent<VoterVariables> ().money = voterDataInt[4];
+
+							//These get the resistance variables for a voter (Alex Jungroth)
+							voters [voterNumber].GetComponent<VoterVariables> ().baseResistance = voterDataInt[5];
+							voters [voterNumber].GetComponent<VoterVariables> ().xPlusResistance = voterDataInt[6];
+							voters [voterNumber].GetComponent<VoterVariables> ().xMinusResistance = voterDataInt[7];
+							voters [voterNumber].GetComponent<VoterVariables> ().yPlusResistance = voterDataInt[8];
+							voters [voterNumber].GetComponent<VoterVariables> ().yMinusResistance = voterDataInt[9];
+							voters [voterNumber].GetComponent<VoterVariables> ().zPlusResistance = voterDataInt[10];
+							voters [voterNumber].GetComponent<VoterVariables> ().zMinusResistance = voterDataInt[11];
+
 							voterNumber++;
 						}
 						else{
@@ -147,11 +167,23 @@ public class GameController : MonoBehaviour {
 			
 		} else if (currentState == GameState.RoundEnd) {
 
-			//does the tallying at the end of the game (Alex Jungroth)
-			tallyRoutine.preTurnTalling ();
+			// Brian Mah
+			UIController.alterTextBox("And the Winner is...");
 
-			//Sets the gamemode to game end, and calculates the final score
-			currentState = GameState.GameEnd;
+			if(!SFXDrumrollPlaying){
+				SFX.PlayAudioClip(2,0,SFXVolume);
+				SFXDrumrollPlaying = true;
+				drumrollTime += Time.time;
+			}
+
+			if(Time.time >= drumrollTime){ // when the sound is done playing
+
+				//does the tallying at the end of the game (Alex Jungroth)
+				tallyRoutine.preTurnTalling ();
+
+				//Sets the gamemode to game end, and calculates the final score
+				currentState = GameState.GameEnd;
+			}
 
 		// Once the game ends and calculation is needed, this is called
 		} else if (currentState == GameState.GameEnd) {
@@ -256,10 +288,12 @@ public class GameController : MonoBehaviour {
 		}
 		if(messaged && mostVotes == tieVotes){
 			Debug.Log ("Winning Players are " + winningPlayer +" and " + tieFighter + " with a tie vote of: " + tieVotes + "!");
+			UIController.alterTextBox("Winning Players are " + winningPlayer +" and " + tieFighter + " with a tie vote of: " + tieVotes + "!");
 			messaged = false;
 		}
 		else if(messaged){
 			Debug.Log("Winning Player is: " + winningPlayer + " with " + mostVotes + " votes!");
+			UIController.alterTextBox("Winning Player is: " + winningPlayer + " with " + mostVotes + " votes!");
 			messaged = false;
 		}
 

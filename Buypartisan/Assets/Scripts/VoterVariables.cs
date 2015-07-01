@@ -19,6 +19,15 @@ public class VoterVariables : MonoBehaviour {
 
 	string holdingText;
 
+	//These variables hold a voters resistance to being moved (Alex Jungroth)
+	public int baseResistance = 0;
+	public int xPlusResistance = 0;
+	public int xMinusResistance = 0;
+	public int yPlusResistance = 0;
+	public int yMinusResistance = 0;
+	public int zPlusResistance = 0;
+	public int zMinusResistance = 0;
+
 	void Start () {
 		voterRenderer = this.GetComponent<Renderer>();
 		Coll = this.GetComponent<Collider> ();

@@ -19,6 +19,8 @@ public class Action5Script : MonoBehaviour
 
     private int currentPlayer; 
 
+	[System.NonSerialized]
+	public bool cancelButton = false;
   
     void Start()
     {
@@ -66,6 +68,13 @@ public class Action5Script : MonoBehaviour
     void Update()
     {
 
+		//ends the action if the cancel button is pressed (Alex Jungroth)
+		if (cancelButton) 
+		{
+			//handles early canceling(Alex Jungroth)
+			uiController.GetComponent<UI_Script>().toggleActionButtons();
+			Destroy(gameObject);
+		}
 
         //This is where the action should be placed.
         //action action action. blah blah. E.g. move a voter or player one block over.

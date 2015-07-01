@@ -36,6 +36,9 @@ public class UI_Script : MonoBehaviour {
 	public GameObject leftButton;
 	public GameObject rightButton;
 
+	//holds the cancel button
+	public GameObject cancelButton;
+
 	//holds the button for displaying player's stats
 	public GameObject displayStatsButton;
 
@@ -115,6 +118,7 @@ public class UI_Script : MonoBehaviour {
 		endTurnButton = GameObject.Find ("End Turn");
 		leftButton = GameObject.Find ("Left");
 		rightButton = GameObject.Find ("Right");
+		cancelButton = GameObject.Find ("Cancel");
 
 		//gets the button for displaying the players stats
 		displayStatsButton = GameObject.FindGameObjectWithTag ("DisplayStats");
@@ -132,6 +136,9 @@ public class UI_Script : MonoBehaviour {
 		endTurnButton.SetActive (false);
 		leftButton.SetActive (false);
 		rightButton.SetActive (false);
+
+		//disables the cancel button
+		cancelButton.SetActive (false);
 
 		//disables the display stats button at the start
 		displayStatsButton.SetActive (false);
@@ -384,6 +391,41 @@ public class UI_Script : MonoBehaviour {
 		}
 	}
 
+	//calls the cancel function
+	public void Cancel()
+	{
+		if (!turnPhase) {
+			controller.playerConfirmsPlacment = true;
+			//Debug.Log ("Cancel Clicked");
+			
+			//another test of the new text box code
+			alterTextBox ("Cancel Clicked");
+			
+			//quick test of the disabling player placement buttons
+			//disablePPButtons ();
+		} else {
+			if (chosenAction == 0) {
+				instantiatedAction.GetComponent<Action0Script>().cancelButton = true;
+			}
+			
+			if (chosenAction == 1) {
+				instantiatedAction.GetComponent<Action1Script>().cancelButton = true;
+			}
+			
+			if (chosenAction == 2) {
+				instantiatedAction.GetComponent<Action2Script>().cancelButton = true;
+			}
+			
+			if (chosenAction == 3) {
+				instantiatedAction.GetComponent<Action3Script>().cancelButton = true;
+			}
+			
+			if (chosenAction == 4) {
+				instantiatedAction.GetComponent<Action4Script>().cancelButton = true;
+			}
+		}
+	}
+
 	public void alterTextBox(string inputText)
 	{
 		visualText.text = inputText;
@@ -393,7 +435,7 @@ public class UI_Script : MonoBehaviour {
 	public void disablePPButtons()
 	{
 		//Debug.Log("Pressed");
-		//disables the Player Placement buttons
+		//disables the Player Placement buttons and the cancel button
 		xPlusButton.SetActive (false);
 		xMinusButton.SetActive (false);
 		yPlusButton.SetActive (false);
@@ -401,6 +443,7 @@ public class UI_Script : MonoBehaviour {
 		zPlusButton.SetActive (false);
 		zMinusButton.SetActive (false);
 		confirmButton.SetActive (false);
+		cancelButton.SetActive (false);
 	}
 
 	public void toggleActionButtons()
@@ -478,6 +521,7 @@ public class UI_Script : MonoBehaviour {
 		leftButton.SetActive (true);
 		rightButton.SetActive (true);
 		confirmButton.SetActive (true);
+		cancelButton.SetActive (true);
 	}
 
 	public void activateAction0UI2()
@@ -496,6 +540,7 @@ public class UI_Script : MonoBehaviour {
 		zPlusButton.SetActive (true);
 		zMinusButton.SetActive (true);
 		confirmButton.SetActive (true);
+		cancelButton.SetActive (true);
 	}
 
 	public void activateAction2UI1()
@@ -504,6 +549,7 @@ public class UI_Script : MonoBehaviour {
 		leftButton.SetActive (true);
 		rightButton.SetActive (true);
 		confirmButton.SetActive (true);
+		cancelButton.SetActive (true);
 	}
 
 	public void activateAction2UI2()
@@ -527,6 +573,7 @@ public class UI_Script : MonoBehaviour {
 		zPlusButton.SetActive (true);
 		zMinusButton.SetActive (true);
 		confirmButton.SetActive (true);
+		cancelButton.SetActive (true);
 	}
 
 	public void activateAction4UI()
@@ -540,6 +587,7 @@ public class UI_Script : MonoBehaviour {
 		zPlusButton.SetActive (true);
 		zMinusButton.SetActive (true);
 		confirmButton.SetActive (true);
+		cancelButton.SetActive (true);
 	}
 
 	public void leftButtonClicked()
@@ -566,11 +614,20 @@ public class UI_Script : MonoBehaviour {
 		sfx.PlayAudioClip (0, 0, SFXvolume);
 	}
 
+	/// <summary>
+	/// Plays the confirm sound.
+	/// Brian Mah
+	/// </summary>
+	public void PlayConfirmSound(){
+		sfx.PlayAudioClip (1, 0, SFXvolume);
+	}
+
     // This updates the visual cost on each action button. It shows default costs (including multiplier! =D) if no actions are spawned; if an action is spawned, then it shows the updated cost instead!
     // THIS IS LABOROUS CODE because it won't let me set the array in declaration on top. Someone pleeeeeeeease help me solve it =`( - Michael
     // This works for now but needs to be re-written because of an Action bug
     public void updateCost()
     {
+		//text0.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action1Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
 
         text1.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
 
