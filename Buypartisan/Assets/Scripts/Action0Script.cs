@@ -37,6 +37,9 @@ public class Action0Script : MonoBehaviour {
 	[System.NonSerialized]
 	public bool cancelButton = false;
 
+	//holds the number needed for this action to succeed (Alex Jungroth)
+	public float successRate = 0.5f;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -110,16 +113,20 @@ public class Action0Script : MonoBehaviour {
 					selectedVoter += 1;
 				}
 				this.transform.position = voters [selectedVoter].transform.position;
-				
+
 				rightButton = false;
 			}
 			if (confirmButton) {
 				Debug.Log ("Here");
 				voterSelected = true;
-				voters [selectedVoter].GetComponent<VoterVariables> ().votes = 0;
 				confirmButton = false;
 				uiController.GetComponent<UI_Script>().activateAction0UI2();
 
+				//checks to see if the power succeeded (Alex Jungroth)
+				if(Random.Range(0.5f,1) >= successRate)
+				{
+					voters [selectedVoter].GetComponent<VoterVariables> ().votes = 0;
+				}
 			}
 		}
 		if (voterSelected)
