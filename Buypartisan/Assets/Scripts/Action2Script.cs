@@ -18,7 +18,8 @@ public class Action2Script : MonoBehaviour {
 	private int selectedVoter = 0; //this will keep track of which voter is selected.
 	public bool voterSelected = false; //this confirms if voter has been selected.
 	private bool positionSelected = false; //this confirms if the correct position has been selected.
-	private Vector3 originalPosition; //this saves the original position of the voter.
+	private Vector3 originalPosition;//this saves the original position of the voter.
+	private bool foundVoter = false;
 
 	[System.NonSerialized]
 	public bool leftButton = false; //checks if left button has been pressed
@@ -108,7 +109,7 @@ public class Action2Script : MonoBehaviour {
 		}
 
 		if (!voterSelected) {
-			if (leftButton) {
+			/*if (leftButton) {
 				if (selectedVoter == 0) {
 					selectedVoter = voters.Length - 1;
 				} else {
@@ -134,6 +135,21 @@ public class Action2Script : MonoBehaviour {
 				originalPosition = voters[selectedVoter].transform.position;
 				confirmButton = false;
 				uiController.GetComponent<UI_Script>().activateAction2UI2();
+			}*/
+			if(Input.GetMouseButtonDown(0)) {
+			   for (selectedVoter = 0; selectedVoter < voters.Length; selectedVoter++) {
+					if (voters [selectedVoter].GetComponent<VoterVariables> ().GetSelected ()) {
+						voterSelected = true;
+						this.GetComponent<MeshRenderer>().enabled = true;
+						originalPosition = voters[selectedVoter].transform.position;
+						confirmButton = false;
+						uiController.GetComponent<UI_Script>().activateAction2UI2();
+						foundVoter = true;
+						break;
+					}
+				}
+				if(!foundVoter)
+					Debug.Log ("Please Select A Voter By Mousing Over Them and Clicking Them");
 			}
 		} else {
 			//This is the state in which the player has now chosen which voter to act upon.
@@ -267,6 +283,7 @@ public class Action2Script : MonoBehaviour {
 			break;
 		
 		case 2:
+			Debug.Log (selectedVoter);
 			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().xMinusResistance)
 			{
 				resistanceCheck = true;
