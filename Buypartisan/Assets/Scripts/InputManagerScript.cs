@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class InputManagerScript : MonoBehaviour {
@@ -35,6 +35,22 @@ public class InputManagerScript : MonoBehaviour {
 	public bool eButtonDown = false;
 	public bool eButtonHold = false;
 	public bool eButtonUp = false;
+
+	public bool zButtonUp = false;
+	public bool zButtonDown = false;
+	public bool zButtonHold = false;
+	public bool xButtonUp = false;
+	public bool xButtonDown = false;
+	public bool xButtonHold = false;
+	public bool cButtonUp = false;
+	public bool cButtonDown = false;
+	public bool cButtonHold = false;
+	public bool vButtonDown = false;
+	public bool vButtonHold = false;
+	public bool vButtonUp = false;
+	public bool bButtonDown = false;
+	public bool bButtonHold = false;
+	public bool bButtonUp = false;
 
 	// Use this for initialization
 	void Start () {
@@ -203,6 +219,91 @@ public class InputManagerScript : MonoBehaviour {
 		if (Input.GetKeyUp (KeyCode.Q)) {
 			qButtonDown = false;
 			qButtonHold = false;
+		}
+
+		if (zButtonUp) {
+			zButtonUp = false;
+		} else if (Input.GetKeyUp (KeyCode.Z)) {
+			zButtonUp = true;
+		}
+		if (Input.GetKey (KeyCode.Z)) {
+			zButtonHold = true;
+			zButtonDown = false;
+		}
+		if (Input.GetKeyDown (KeyCode.Z)) {
+			zButtonDown = true;
+		}
+		if (Input.GetKeyUp (KeyCode.Z)) {
+			zButtonDown = false;
+			zButtonHold = false;
+		}
+
+		if (xButtonUp) {
+			xButtonUp = false;
+		} else if (Input.GetKeyUp (KeyCode.X)) {
+			xButtonUp = true;
+		}
+		if (Input.GetKey (KeyCode.X)) {
+			xButtonHold = true;
+			xButtonDown = false;
+		}
+		if (Input.GetKeyDown (KeyCode.X)) {
+			xButtonDown = true;
+		}
+		if (Input.GetKeyUp (KeyCode.X)) {
+			xButtonDown = false;
+			xButtonHold = false;
+		}
+
+		if (cButtonUp) {
+			cButtonUp = false;
+		} else if (Input.GetKeyUp (KeyCode.C)) {
+			cButtonUp = true;
+		}
+		if (Input.GetKey (KeyCode.C)) {
+			cButtonHold = true;
+			cButtonDown = false;
+		}
+		if (Input.GetKeyDown (KeyCode.C)) {
+			cButtonDown = true;
+		}
+		if (Input.GetKeyUp (KeyCode.C)) {
+			cButtonDown = false;
+			cButtonHold = false;
+		}
+
+		if (vButtonUp) {
+			vButtonUp = false;
+		} else if (Input.GetKeyUp (KeyCode.V)) {
+			vButtonUp = true;
+		}
+		if (Input.GetKey (KeyCode.V)) {
+			vButtonHold = true;
+			vButtonDown = false;
+		}
+		if (Input.GetKeyDown (KeyCode.V)) {
+			vButtonDown = true;
+		}
+		if (Input.GetKeyUp (KeyCode.V)) {
+			vButtonDown = false;
+			vButtonHold = false;
+		}
+
+		if (bButtonUp) {
+			bButtonUp = false;
+		} else if (Input.GetKeyUp (KeyCode.B)) {
+			bButtonUp = true;
+		}
+		if (Input.GetKey (KeyCode.B)) {
+			bButtonHold = true;
+			bButtonDown = false;
+		}
+		if (Input.GetKeyDown (KeyCode.B)) {
+			bButtonDown = true;
+		}
+		if (Input.GetKeyUp (KeyCode.B)) {
+			bButtonDown = false;
+			bButtonHold = false;
 		}
 	}
 }

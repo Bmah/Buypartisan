@@ -276,7 +276,7 @@ public class Action2Script : MonoBehaviour {
 			break;
 
 		case 1:
-			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().xPlusResistance)
+			if(Random.value > voters[selectedVoter].GetComponent<VoterVariables>().xPlusResistance + voters[selectedVoter].GetComponent<VoterVariables>().baseResistance)
 			{
 				resistanceCheck = true;
 			}
@@ -284,35 +284,35 @@ public class Action2Script : MonoBehaviour {
 		
 		case 2:
 			Debug.Log (selectedVoter);
-			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().xMinusResistance)
+			if(Random.value > voters[selectedVoter].GetComponent<VoterVariables>().xMinusResistance + voters[selectedVoter].GetComponent<VoterVariables>().baseResistance)
 			{
 				resistanceCheck = true;
 			}
 			break;
 
 		case 3:
-			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().zMinusResistance)
+			if(Random.value > voters[selectedVoter].GetComponent<VoterVariables>().zMinusResistance + voters[selectedVoter].GetComponent<VoterVariables>().baseResistance)
 			{
 				resistanceCheck = true;
 			}
 			break;
 
 		case 4:
-			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().zPlusResistance)
+			if(Random.value > voters[selectedVoter].GetComponent<VoterVariables>().zPlusResistance + voters[selectedVoter].GetComponent<VoterVariables>().baseResistance)
 			{
 				resistanceCheck = true;
 			}
 			break;
 
 		case 5:
-			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().yPlusResistance)
+			if(Random.value > voters[selectedVoter].GetComponent<VoterVariables>().yPlusResistance + voters[selectedVoter].GetComponent<VoterVariables>().baseResistance)
 			{
 				resistanceCheck = true;
 			}
 			break;
 
 		case 6:
-			if(Random.Range(0.1f,1) > voters[selectedVoter].GetComponent<VoterVariables>().yMinusResistance)
+			if(Random.value > voters[selectedVoter].GetComponent<VoterVariables>().yMinusResistance + voters[selectedVoter].GetComponent<VoterVariables>().baseResistance)
 			{
 				resistanceCheck = true;
 			}

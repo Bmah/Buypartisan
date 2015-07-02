@@ -256,18 +256,31 @@ public class Action4Script : MonoBehaviour {
 
 	void setFinalPosition() {
 		for (int i = 0; i < voters.Length; i++) {
-			if(compareResistance(i))
-			{
-				//tests to see if the action is successful (Alex Jungroth)
-				voters[i].transform.position = voterFinalPositions[i];
 
-				//increases the base resistance of the voter by 1% (Alex Jungroth)
-				voters[i].GetComponent<VoterVariables>().baseResistance += voters[i].GetComponent<VoterVariables>().baseResistance * 0.01f;
-			}
+			voters[i].transform.position = voterFinalPositions[i];
 		}
 	}
 
 	void EndAction() {
+
+		for (int i = 0; i < voters.Length; i++) 
+		{
+			//tests to see if the action is successful (Alex Jungroth)
+			if(compareResistance(i))
+			{
+				//increases the base resistance of the voter by 1% (Alex Jungroth)
+				voters[i].GetComponent<VoterVariables>().baseResistance += voters[i].GetComponent<VoterVariables>().baseResistance * 0.01f;
+			}
+			else
+			{
+				//resets the voters postions if they resist the action (Alex Jungroth)
+				voterFinalPositions[i] = voterOriginalPositions[i];
+			}
+		}
+
+		//alligns the voters to their action finishing postions (Alex Jungroth)
+		setFinalPosition ();
+
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;
@@ -288,42 +301,42 @@ public class Action4Script : MonoBehaviour {
 			break;
 			
 		case 1:
-			if(Random.Range(0.1f,1) > voters[i].GetComponent<VoterVariables>().xPlusResistance)
+			if(Random.value > voters[i].GetComponent<VoterVariables>().xPlusResistance + (int)voters[i].GetComponent<VoterVariables>().baseResistance)
 			{
 				resistanceCheck = true;
 			}
 			break;
 			
 		case 2:
-			if(Random.Range(0.1f,1) > voters[i].GetComponent<VoterVariables>().xMinusResistance)
+			if(Random.value > voters[i].GetComponent<VoterVariables>().xMinusResistance + (int)voters[i].GetComponent<VoterVariables>().baseResistance)
 			{
 				resistanceCheck = true;
 			}
 			break;
 			
 		case 3:
-			if(Random.Range(0.1f,1) > voters[i].GetComponent<VoterVariables>().yPlusResistance)
+			if(Random.value > voters[i].GetComponent<VoterVariables>().yPlusResistance + (int)voters[i].GetComponent<VoterVariables>().baseResistance)
 			{
 				resistanceCheck = true;
 			}
 			break;
 			
 		case 4:
-			if(Random.Range(0.1f,1) > voters[i].GetComponent<VoterVariables>().yMinusResistance)
+			if(Random.value > voters[i].GetComponent<VoterVariables>().yMinusResistance + (int)voters[i].GetComponent<VoterVariables>().baseResistance)
 			{
 				resistanceCheck = true;
 			}
 			break;
 			
 		case 5:
-			if(Random.Range(0.1f,1) > voters[i].GetComponent<VoterVariables>().zPlusResistance)
+			if(Random.value > voters[i].GetComponent<VoterVariables>().zPlusResistance + (int)voters[i].GetComponent<VoterVariables>().baseResistance)
 			{
 				resistanceCheck = true;
 			}
 			break;
 			
 		case 6:
-			if(Random.Range(0.1f,1) > voters[i].GetComponent<VoterVariables>().zMinusResistance)
+			if(Random.value > voters[i].GetComponent<VoterVariables>().zMinusResistance + (int)voters[i].GetComponent<VoterVariables>().baseResistance)
 			{
 				resistanceCheck = true;
 			}

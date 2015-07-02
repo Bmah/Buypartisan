@@ -13,7 +13,7 @@ using System.Collections;
 /// 
 /// </summary>
 public class Action0Script : MonoBehaviour {
-    public string actionName = "VoterSuppression";
+    public string actionName = "Voter Suppression";
 	public int baseCost = 20;
     public int totalCost = 0; // Please use totalCost for any end calculation, since this will be used to display on the UI's action button
     public float costMultiplier = 1.0f; // Increased by fixed amount within same turn (in PlayerTurnsManager). This is reset to 1 after the END of your turn.
@@ -125,14 +125,17 @@ public class Action0Script : MonoBehaviour {
 				//checks to see if the power succeeded (Alex Jungroth)
 
 			}*/
+
 			if (Input.GetMouseButtonDown(0)) {
 				for (int i = 0; i < voters.Length; i++) {
 					if (voters [i].GetComponent<VoterVariables> ().GetSelected ()) {
-						if (Random.Range (0.5f, 1) >= successRate) {
-						voters [i].GetComponent<VoterVariables> ().votes = 0;
+							
+						if (Random.value >= successRate)
+						{
+							voters [i].GetComponent<VoterVariables> ().votes = 0;
+						}
 						foundVoter = true;
 						voterSelected = true;
-						}
 					}
 				}
 				if (!foundVoter) {
