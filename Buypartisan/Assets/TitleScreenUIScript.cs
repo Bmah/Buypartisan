@@ -14,7 +14,7 @@ public class TitleScreenUIScript : MonoBehaviour {
 	}
 
 	public void PlayGame(){
-		Application.LoadLevel("TestScene");
+		Application.LoadLevel("PrototypeScene");
 	}
 
 	public void QuitGame(){
