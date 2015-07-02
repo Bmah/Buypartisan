@@ -109,13 +109,13 @@ public class CameraMovement : MonoBehaviour {
 			target.transform.Translate(Vector3.back * Time.deltaTime);
 		}
 		// Camera pans up
-		if (inputManager.qButtonHold == true)
+		if (inputManager.eButtonHold == true)
 		{
 			transform.Translate(new Vector3(0,1,0) * Time.deltaTime);
 			target.transform.Translate(new Vector3(0,1,0) * Time.deltaTime);
 		}
 		// Camera pans down
-		if (inputManager.eButtonHold == true)
+		if (inputManager.qButtonHold == true)
 		{
 			transform.Translate(new Vector3(0,-1,0) * Time.deltaTime);
 			target.transform.Translate(new Vector3(0,-1,0) * Time.deltaTime);
