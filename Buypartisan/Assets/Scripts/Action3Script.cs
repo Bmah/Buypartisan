@@ -15,6 +15,7 @@ public class Action3Script : MonoBehaviour {
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the PlayerTurnManager
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
+    private GameObject visualAid;
 
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 
@@ -77,6 +78,7 @@ public class Action3Script : MonoBehaviour {
 		gameController = GameObject.FindWithTag ("GameController");
 		inputManager = GameObject.FindWithTag ("InputManager");
 		uiController = GameObject.Find ("UI Controller");
+        visualAid = GameObject.FindWithTag("VisualAidManager");
 
 		if (gameController != null) {
 			//			voters = gameController.GetComponent<GameController> ().voters;
@@ -118,6 +120,7 @@ public class Action3Script : MonoBehaviour {
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
 
 			totalCost = (int)(baseCost * costMultiplier);
+            visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject);
 		}
         else
         {
@@ -134,6 +137,7 @@ public class Action3Script : MonoBehaviour {
 		if (cancelButton) 
 		{
 			//handles early canceling(Alex Jungroth)
+            visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy (marker);
 			Destroy(gameObject);
@@ -376,6 +380,7 @@ public class Action3Script : MonoBehaviour {
 	}
 	
 	void EndAction() {
+        visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
         players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
