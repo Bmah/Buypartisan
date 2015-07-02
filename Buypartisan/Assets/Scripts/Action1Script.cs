@@ -22,6 +22,7 @@ public class Action1Script : MonoBehaviour {
 	public GameObject inputManager;
 	public GameObject uiController; 
 	private GameObject[] players; // Need this to search which player to move
+    private GameObject visualAid;
 	
 	private int currentPlayer; // Tells you the source player who's using the action
 
@@ -52,6 +53,7 @@ public class Action1Script : MonoBehaviour {
 		gameController = GameObject.FindWithTag ("GameController");
 		inputManager = GameObject.FindWithTag ("InputManager");
 		uiController = GameObject.Find ("UI Controller");
+        visualAid = GameObject.FindWithTag("VisualAidManager");
 
 		uiController.GetComponent<UI_Script>().disableActionButtons();
 		uiController.GetComponent<UI_Script> ().activateAction1UI ();
@@ -68,13 +70,17 @@ public class Action1Script : MonoBehaviour {
 		originalPosition = players[currentPlayer].transform.position;
 		this.transform.position = originalPosition;
 
-		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
+		//see ActionScriptTemplate.cs for my explanation on this change (Alex Jungroth)
 
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
+        else
+        {
+            visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject);
+        }
 		
 	}
 	
@@ -85,6 +91,7 @@ public class Action1Script : MonoBehaviour {
 		if (cancelButton) 
 		{
 			//handles early canceling(Alex Jungroth)
+            visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
@@ -172,6 +179,7 @@ public class Action1Script : MonoBehaviour {
 	}
 
 	void EndAction() {
+        visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
         players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
