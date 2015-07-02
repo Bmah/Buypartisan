@@ -48,6 +48,8 @@ public class GameController : MonoBehaviour {
 	//does the tallying at the start of each turn (Alex Jungroth)
 	public TallyingScript tallyRoutine;
 
+	private InputManagerScript inputManager;
+
 	/// <summary>
 	/// Start this instance.
 	/// Adds in Voter Array
@@ -63,15 +65,18 @@ public class GameController : MonoBehaviour {
 		randomEventController.voters = voters;
 		gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
 		if (gameMusic == null) {
-			Debug.LogError ("The Game Controller Could not Find the Music Controller please place it in the scene.");
+			Debug.LogError ("The Game Controller could not find the Music Controller please place it in the scene.");
 		}
 
 		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
 		if (SFX == null) {
-			Debug.LogError ("The Game Controller Could not Find the SFX Controller please place it in the scene.");
+			Debug.LogError ("The Game Controller could not find the SFX Controller please place it in the scene.");
 		}
 
-
+		inputManager = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManagerScript>();
+		if (inputManager == null) {
+			Debug.LogError ("The Game Controller could not find the Input manager please place it in the scene.");
+		}
 	}
 	
 	/// <summary>
@@ -188,6 +193,10 @@ public class GameController : MonoBehaviour {
 		// Once the game ends and calculation is needed, this is called
 		} else if (currentState == GameState.GameEnd) {
 			CompareVotes(messaged);
+		}
+		
+		if (inputManager.escButtonDown) {
+			Application.LoadLevel("TitleScene");
 		}
 
 	}// Update
