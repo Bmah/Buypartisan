@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Action4Script : MonoBehaviour {
 	public string actionName = "Campaign Tour";
-	public int baseCost = 10;
+	public int baseCost = 400;
     public int totalCost = 0;
     public float costMultiplier = 1.0f;
 	
