@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Action2Script : MonoBehaviour {
     public string actionName = "Move Voter";
-	public int baseCost = 15;
+	public int baseCost = 200;
     public int totalCost = 0;
     public float costMultiplier = 1.0f;
 

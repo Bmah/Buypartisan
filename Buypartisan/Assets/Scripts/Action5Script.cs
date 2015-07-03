@@ -6,7 +6,7 @@ using System.Collections;
 
 public class Action5Script : MonoBehaviour {
 	public string actionName = "Sphere of Influence";
-	public int baseCost = 400;
+	public int baseCost = 350;
 	public int totalCost = 0; // Please use totalCost for any end calculation, since this will be used to display on the UI's action button
 	public float costMultiplier = 1.0f; // Increased by fixed amount within same turn (in PlayerTurnsManager). This is reset to 1 after the END of your turn.
 	

@@ -8,7 +8,7 @@ using System.Collections;
 public class Action1Script : MonoBehaviour {
 
     public string actionName = "Move Self";
-	public int baseCost = 10;
+	public int baseCost = 50;
 	public int totalCost = 10;
 	public float costMultiplier = 1.0f;
     public float stepCostMultiplier = 1.5f; // This increases baseCost by 50% for every extra step, multiplicatively
