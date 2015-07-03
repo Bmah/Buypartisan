@@ -51,6 +51,9 @@ public class InputManagerScript : MonoBehaviour {
 	public bool bButtonDown = false;
 	public bool bButtonHold = false;
 	public bool bButtonUp = false;
+	public bool escButtonDown = false;
+	public bool escButtonHold = false;
+	public bool escButtonUp = false;
 
 	// Use this for initialization
 	void Start () {
@@ -304,6 +307,24 @@ public class InputManagerScript : MonoBehaviour {
 		if (Input.GetKeyUp (KeyCode.B)) {
 			bButtonDown = false;
 			bButtonHold = false;
+		}
+
+
+		if (escButtonUp) {
+			escButtonUp = false;
+		} else if (Input.GetKeyUp (KeyCode.B)) {
+			escButtonUp = true;
+		}
+		if (Input.GetKey (KeyCode.Escape)) {
+			escButtonDown = false;
+			escButtonHold = true;
+		}
+		if (Input.GetKeyDown(KeyCode.Escape)) {
+			escButtonDown = true;
+		}
+		if(Input.GetKeyUp(KeyCode.Escape)){
+			escButtonDown = false;
+			escButtonHold = false;
 		}
 	}
 }
