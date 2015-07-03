@@ -112,8 +112,11 @@ public class Action3Script : MonoBehaviour {
 		//initializes the marker to the original position of the player spawning a shadow positon
 		marker.transform.position = originalPosition;
 		
-		//scales the marker so its no larger than everything else in the grid
+		//scales the marker so its not larger than everything else on the grid
 		marker.transform.localScale = new Vector3(0.099f, 0.099f, 0.099f);
+
+		//scales this prefab so its not larger than everything else on the grid
+		transform.localScale = new Vector3 (0.098f, 0.098f, 0.098f);
 
 		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
 		
@@ -168,6 +171,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -198,6 +204,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -227,6 +236,9 @@ public class Action3Script : MonoBehaviour {
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
+
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
 				
 				}
 				else
@@ -258,6 +270,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -288,6 +303,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -317,6 +335,9 @@ public class Action3Script : MonoBehaviour {
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
+
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
 
 				}
 				else
