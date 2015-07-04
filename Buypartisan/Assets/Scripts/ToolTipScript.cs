@@ -52,6 +52,15 @@ public class ToolTipScript : MonoBehaviour {
 		uiController.alterTextBox (origninalMessage);
 	}
 
+	/// <summary>
+	/// Clearses the text box when you click the cancel button.
+	/// </summary>
+	public void ClearsTextBox()
+	{
+		//clears the text box by loading in a blank message
+		uiController.alterTextBox ("");
+	}
+
 	//these functions load their message on mouse on.
 	public void LoadMessageAction0()
 	{
