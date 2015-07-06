@@ -32,11 +32,13 @@ public class GameController : MonoBehaviour {
 	private int roundCounter = 0;//will be used to keep track of rounds
 	public bool playerTakingAction = false;
 	public bool messaged;//Checks if Player has finished taking an acti
+	public bool player2Spawning = false;
 	
 	public GameObject[] voters;//array which houses the voters
 	public GameObject[] players = new GameObject[2];//array which houses the players
 	
 	public GameObject currentPlayer;
+	public Material Player2Material;
 
 	private MusicController gameMusic;
 	private SFXController SFX;
@@ -277,7 +279,8 @@ public class GameController : MonoBehaviour {
 		}
 
 		//Player Uses Buttons to choose where the player goes in the scene
-		
+		if (player2Spawning)
+			players [playersSpawned].GetComponent<Renderer> ().material = Player2Material;
 		if (playerConfirmsPlacment) {
 			//checks the player against all of the previous players to ensure no duplicates
 			for(int i = 0; i < playersSpawned; i++){
@@ -288,6 +291,7 @@ public class GameController : MonoBehaviour {
 			if(playerConfirmsPlacment){ //if the player placment is legal
 				playersSpawned++;
 				spawnedNewPlayer = false;
+				player2Spawning = true;
 				playerConfirmsPlacment = false;
 				if(!(playersSpawned < numberPlayers)){
 					UIController.disablePPButtons();

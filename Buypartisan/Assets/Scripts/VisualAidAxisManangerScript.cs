@@ -30,7 +30,7 @@ public class VisualAidAxisManangerScript : MonoBehaviour {
 	}
 
 
-	void Attach(GameObject parent){
+	public void Attach(GameObject parent){
 
 		for (int i = 0; i < spriteChildren.Length; i++)
 		{
@@ -40,7 +40,7 @@ public class VisualAidAxisManangerScript : MonoBehaviour {
 		transform.localPosition = new Vector3(0, 0, 0);
 	}
 
-	void Detach(){
+	public void Detach(){
 
 		for (int i = 0; i < spriteChildren.Length; i++)
 		{
@@ -49,7 +49,7 @@ public class VisualAidAxisManangerScript : MonoBehaviour {
 		transform.parent = null;
 	}
 
-	void MoveTo(Vector3 position){
+	public void MoveTo(Vector3 position){
 
 		transform.position = position;
 	}

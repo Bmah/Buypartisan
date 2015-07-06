@@ -7,7 +7,7 @@ public class Action3Script : MonoBehaviour {
 
 	//This is from ActionScriptTemplate.cs and Action1Script.cs
     public string actionName = "Move SP";
-	public int baseCost = 10;
+	public int baseCost = 125;
 	public int totalCost = 0;
     public float costMultiplier = 1.0f;
 
@@ -15,6 +15,7 @@ public class Action3Script : MonoBehaviour {
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the PlayerTurnManager
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
+    private GameObject visualAid;
 
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 
@@ -77,6 +78,7 @@ public class Action3Script : MonoBehaviour {
 		gameController = GameObject.FindWithTag ("GameController");
 		inputManager = GameObject.FindWithTag ("InputManager");
 		uiController = GameObject.Find ("UI Controller");
+        visualAid = GameObject.FindWithTag("VisualAidManager");
 
 		if (gameController != null) {
 			//			voters = gameController.GetComponent<GameController> ().voters;
@@ -110,14 +112,18 @@ public class Action3Script : MonoBehaviour {
 		//initializes the marker to the original position of the player spawning a shadow positon
 		marker.transform.position = originalPosition;
 		
-		//scales the marker so its no larger than everything else in the grid
+		//scales the marker so its not larger than everything else on the grid
 		marker.transform.localScale = new Vector3(0.099f, 0.099f, 0.099f);
+
+		//scales this prefab so its not larger than everything else on the grid
+		transform.localScale = new Vector3 (0.098f, 0.098f, 0.098f);
 
 		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
 		
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
 
 			totalCost = (int)(baseCost * costMultiplier);
+            visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject);
 		}
         else
         {
@@ -134,6 +140,7 @@ public class Action3Script : MonoBehaviour {
 		if (cancelButton) 
 		{
 			//handles early canceling(Alex Jungroth)
+            visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy (marker);
 			Destroy(gameObject);
@@ -163,6 +170,9 @@ public class Action3Script : MonoBehaviour {
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
+
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
 
 				}
 				else
@@ -194,6 +204,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -223,6 +236,9 @@ public class Action3Script : MonoBehaviour {
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
+
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
 				
 				}
 				else
@@ -254,6 +270,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -284,6 +303,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -313,6 +335,9 @@ public class Action3Script : MonoBehaviour {
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
+
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
 
 				}
 				else
@@ -376,6 +401,7 @@ public class Action3Script : MonoBehaviour {
 	}
 	
 	void EndAction() {
+        visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
         players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
