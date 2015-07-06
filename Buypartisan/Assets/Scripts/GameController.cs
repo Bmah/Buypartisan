@@ -42,6 +42,13 @@ public class GameController : MonoBehaviour {
 	private SFXController SFX;
 	public float SFXVolume;
 
+	public bool SpawnUsingTXT = true;
+	public int NumVoters = 10;
+	public float VoterDistanceCheck = 1f;
+	public int voterMaxMoney = 100;
+	public int voterMaxVotes = 100;
+	public float IgnoreNearestVoter = 0.3f;
+
 	private bool SFXDrumrollPlaying = false;
 	private float drumrollTime = 3.7f;
 
@@ -61,7 +68,13 @@ public class GameController : MonoBehaviour {
 		UIController.SFXvolume = SFXVolume;
 		randomEventController.gridSize = gridSize;
 		messaged = true;
-		SpawnVoters ();
+
+		if (SpawnUsingTXT) {
+			SpawnVotersFromTXT ();
+		} else {
+			SpawnUsingProbabilityMap(NumVoters,VoterDistanceCheck,voterMaxMoney,voterMaxVotes,IgnoreNearestVoter);
+		}
+
 		randomEventController.voters = voters;
 		gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
 		if (gameMusic == null) {
@@ -82,7 +95,7 @@ public class GameController : MonoBehaviour {
 	/// <summary>
 	/// Spawns the voters according to map
 	/// </summary>
-	void SpawnVoters(){
+	void SpawnVotersFromTXT(){
 		Vector3 voterLocation = new Vector3 (0, 0, 0);
 		int voterNumber = 0;
 
@@ -140,6 +153,55 @@ public class GameController : MonoBehaviour {
 			Debug.LogError("ERROR did not load file properly Exception: " + e);
 		}
 	}
+
+	private void SpawnUsingProbabilityMap(int numberofVoters, float distanceToNearestVoter, int voterMaxMoney, int voterMaxVotes,
+	                                      float probabilityToIgnoreNearestVoter){
+		Vector3 voterLocation = new Vector3 (0, 0, 0);
+		VoterVariables voterInfoTemp;
+		bool uniqueLocation = false;
+		float moneyToVotesRatio;
+
+		voters = new GameObject[numberofVoters];
+
+		for (int i = 0; i < numberofVoters; i++) {
+			//until a unique location is found continually search for a new position.
+			uniqueLocation = false;
+			while(!uniqueLocation){
+				voterLocation = new Vector3(Random.Range(0,gridSize),Random.Range(0,gridSize),Random.Range(0,gridSize));
+				uniqueLocation = true;
+				for(int j = 0; j < i; j++){
+					if ((voters[j].transform.position - voterLocation).magnitude < distanceToNearestVoter){
+						uniqueLocation = false;
+					}
+				}
+				if(Random.value < probabilityToIgnoreNearestVoter){
+					uniqueLocation = true;
+				}
+				for(int j = 0; j < i; j++){
+					if (voters[j].transform.position == voterLocation){
+						uniqueLocation = false;
+					}
+				}
+			}
+
+			voters[i] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
+			voterInfoTemp = voters[i].GetComponent<VoterVariables>();
+			moneyToVotesRatio = Random.value;
+			voterInfoTemp.money = Mathf.RoundToInt(voterMaxMoney*moneyToVotesRatio);
+			voterInfoTemp.votes = Mathf.RoundToInt(voterMaxVotes*(1-moneyToVotesRatio));
+
+			voterInfoTemp.xMinusResistance = Random.value*Random.value;
+			voterInfoTemp.xPlusResistance = Random.value*Random.value;
+			voterInfoTemp.yMinusResistance = Random.value*Random.value;
+			voterInfoTemp.yPlusResistance = Random.value*Random.value;
+			voterInfoTemp.zMinusResistance = Random.value*Random.value;
+			voterInfoTemp.zPlusResistance = Random.value*Random.value;
+			voterInfoTemp.baseResistance = 0;
+
+		}
+
+	}
+
 	
 	// Update is called once per frame
 	void Update () {
