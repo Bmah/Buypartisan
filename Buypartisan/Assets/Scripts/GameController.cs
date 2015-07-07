@@ -32,21 +32,33 @@ public class GameController : MonoBehaviour {
 	private int roundCounter = 0;//will be used to keep track of rounds
 	public bool playerTakingAction = false;
 	public bool messaged;//Checks if Player has finished taking an acti
+	public bool player2Spawning = false;
 	
 	public GameObject[] voters;//array which houses the voters
 	public GameObject[] players = new GameObject[2];//array which houses the players
 	
 	public GameObject currentPlayer;
+	public Material Player2Material;
 
 	private MusicController gameMusic;
 	private SFXController SFX;
 	public float SFXVolume;
 
+	public bool SpawnUsingTXT = true;
+	public int NumVoters = 10;
+	public float VoterDistanceCheck = 1f;
+	public int voterMaxMoney = 100;
+	public int voterMaxVotes = 100;
+	public float IgnoreNearestVoter = 0.3f;
+
 	private bool SFXDrumrollPlaying = false;
 	private float drumrollTime = 3.7f;
+	public enum Party {Party0, Party1, Party2, Party3};
 
 	//does the tallying at the start of each turn (Alex Jungroth)
 	public TallyingScript tallyRoutine;
+
+	private InputManagerScript inputManager;
 
 	/// <summary>
 	/// Start this instance.
@@ -59,25 +71,34 @@ public class GameController : MonoBehaviour {
 		UIController.SFXvolume = SFXVolume;
 		randomEventController.gridSize = gridSize;
 		messaged = true;
-		SpawnVoters ();
+
+		if (SpawnUsingTXT) {
+			SpawnVotersFromTXT ();
+		} else {
+			SpawnUsingProbabilityMap(NumVoters,VoterDistanceCheck,voterMaxMoney,voterMaxVotes,IgnoreNearestVoter);
+		}
+
 		randomEventController.voters = voters;
 		gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
 		if (gameMusic == null) {
-			Debug.LogError ("The Game Controller Could not Find the Music Controller please place it in the scene.");
+			Debug.LogError ("The Game Controller could not find the Music Controller please place it in the scene.");
 		}
 
 		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
 		if (SFX == null) {
-			Debug.LogError ("The Game Controller Could not Find the SFX Controller please place it in the scene.");
+			Debug.LogError ("The Game Controller could not find the SFX Controller please place it in the scene.");
 		}
 
-
+		inputManager = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManagerScript>();
+		if (inputManager == null) {
+			Debug.LogError ("The Game Controller could not find the Input manager please place it in the scene.");
+		}
 	}
 	
 	/// <summary>
 	/// Spawns the voters according to map
 	/// </summary>
-	void SpawnVoters(){
+	void SpawnVotersFromTXT(){
 		Vector3 voterLocation = new Vector3 (0, 0, 0);
 		int voterNumber = 0;
 
@@ -135,6 +156,55 @@ public class GameController : MonoBehaviour {
 			Debug.LogError("ERROR did not load file properly Exception: " + e);
 		}
 	}
+
+	private void SpawnUsingProbabilityMap(int numberofVoters, float distanceToNearestVoter, int voterMaxMoney, int voterMaxVotes,
+	                                      float probabilityToIgnoreNearestVoter){
+		Vector3 voterLocation = new Vector3 (0, 0, 0);
+		VoterVariables voterInfoTemp;
+		bool uniqueLocation = false;
+		float moneyToVotesRatio;
+
+		voters = new GameObject[numberofVoters];
+
+		for (int i = 0; i < numberofVoters; i++) {
+			//until a unique location is found continually search for a new position.
+			uniqueLocation = false;
+			while(!uniqueLocation){
+				voterLocation = new Vector3(Random.Range(0,gridSize),Random.Range(0,gridSize),Random.Range(0,gridSize));
+				uniqueLocation = true;
+				for(int j = 0; j < i; j++){
+					if ((voters[j].transform.position - voterLocation).magnitude < distanceToNearestVoter){
+						uniqueLocation = false;
+					}
+				}
+				if(Random.value < probabilityToIgnoreNearestVoter){
+					uniqueLocation = true;
+				}
+				for(int j = 0; j < i; j++){
+					if (voters[j].transform.position == voterLocation){
+						uniqueLocation = false;
+					}
+				}
+			}
+
+			voters[i] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
+			voterInfoTemp = voters[i].GetComponent<VoterVariables>();
+			moneyToVotesRatio = Random.value;
+			voterInfoTemp.money = Mathf.RoundToInt(voterMaxMoney*moneyToVotesRatio);
+			voterInfoTemp.votes = Mathf.RoundToInt(voterMaxVotes*(1-moneyToVotesRatio));
+
+			voterInfoTemp.xMinusResistance = Random.value*Random.value;
+			voterInfoTemp.xPlusResistance = Random.value*Random.value;
+			voterInfoTemp.yMinusResistance = Random.value*Random.value;
+			voterInfoTemp.yPlusResistance = Random.value*Random.value;
+			voterInfoTemp.zMinusResistance = Random.value*Random.value;
+			voterInfoTemp.zPlusResistance = Random.value*Random.value;
+			voterInfoTemp.baseResistance = 0;
+
+		}
+
+	}
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -189,6 +259,10 @@ public class GameController : MonoBehaviour {
 		} else if (currentState == GameState.GameEnd) {
 			CompareVotes(messaged);
 		}
+		
+		if (inputManager.escButtonDown) {
+			Application.LoadLevel("TitleScene");
+		}
 
 	}// Update
 	
@@ -199,6 +273,15 @@ public class GameController : MonoBehaviour {
 	/// </summary>
 	void SpawnPlayer(){
 		if (!spawnedNewPlayer) {
+			/*switch (Party){//this is code for spawning different parites.  Parties are set as an enum, and assigned at title
+				//from here, depending on what party the player chose, this is what they will spawn as
+			case 0 : currentPlayer = Instantiate(Party1,new Vector3(0,0,0), Quaternion.identity) as GameObject; break;
+			case 1 : currentPlayer = Instantiate(Party2,new Vector3(0,0,0), Quaternion.identity) as GameObject; break;
+				//ect
+			//this code block is commented out right now because it is the template for more stuff in the future, but it will break our game if we 
+			//do it right now
+			}
+			*/
 			currentPlayer = Instantiate(playerTemplate,new Vector3(0,0,0), Quaternion.identity) as GameObject;
 			players[playersSpawned] = currentPlayer;
 			spawnedNewPlayer = true;
@@ -206,7 +289,14 @@ public class GameController : MonoBehaviour {
 		}
 
 		//Player Uses Buttons to choose where the player goes in the scene
-		
+		if (player2Spawning) {
+			players [playersSpawned].GetComponent<Renderer> ().material = Player2Material;
+
+			//players [playersSpawned].GetComponent<PlayerVariables> ().transparentColor = players [playersSpawned].GetComponent<PlayerVariables> ().sphereRenderer.material.color;
+			//players [playersSpawned].GetComponent<PlayerVariables> ().transparentColor.a = 0.2f;
+			//players [playersSpawned].GetComponent<PlayerVariables> ().sphereRenderer.material.SetColor ("_Color", players [playersSpawned].GetComponent<PlayerVariables> ().transparentColor);
+			//players [playersSpawned].GetComponent<PlayerVariables> ().sphereController.transform.localScale = new Vector3 (players [playersSpawned].GetComponent<PlayerVariables> ().sphereSize, players [playersSpawned].GetComponent<PlayerVariables> ().sphereSize, players [playersSpawned].GetComponent<PlayerVariables> ().sphereSize);
+		}
 		if (playerConfirmsPlacment) {
 			//checks the player against all of the previous players to ensure no duplicates
 			for(int i = 0; i < playersSpawned; i++){
@@ -217,6 +307,7 @@ public class GameController : MonoBehaviour {
 			if(playerConfirmsPlacment){ //if the player placment is legal
 				playersSpawned++;
 				spawnedNewPlayer = false;
+				player2Spawning = true;
 				playerConfirmsPlacment = false;
 				if(!(playersSpawned < numberPlayers)){
 					UIController.disablePPButtons();

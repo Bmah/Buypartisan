@@ -14,9 +14,9 @@ public class PlayerVariables : MonoBehaviour {
 	public Material selectedTexture;
 	public Material unselectedTexture;
 	private Renderer playerRenderer;
-	private Renderer sphereRenderer;
-	private GameObject sphereController;
-	private Color transparentColor;
+	public Renderer sphereRenderer;
+	public GameObject sphereController;
+	public Color transparentColor;
 
 	private bool selected = false;
 

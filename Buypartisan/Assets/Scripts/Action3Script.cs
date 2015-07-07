@@ -7,7 +7,7 @@ public class Action3Script : MonoBehaviour {
 
 	//This is from ActionScriptTemplate.cs and Action1Script.cs
     public string actionName = "Move SP";
-	public int baseCost = 10;
+	public int baseCost = 200;
 	public int totalCost = 0;
     public float costMultiplier = 1.0f;
 
@@ -15,6 +15,7 @@ public class Action3Script : MonoBehaviour {
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the PlayerTurnManager
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
+    private GameObject visualAid;
 
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 
@@ -69,11 +70,15 @@ public class Action3Script : MonoBehaviour {
 	//holds the orignial color of the shadow position
 	private Color transparentColor;
 
+	//holds the number needed for this action to succeed (Alex Jungroth)
+	public float successRate = 0.5f;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
 		inputManager = GameObject.FindWithTag ("InputManager");
 		uiController = GameObject.Find ("UI Controller");
+        visualAid = GameObject.FindWithTag("VisualAidManager");
 
 		if (gameController != null) {
 			//			voters = gameController.GetComponent<GameController> ().voters;
@@ -81,7 +86,11 @@ public class Action3Script : MonoBehaviour {
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
-		
+
+		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
+		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+
 		//gets the original postion of the player who is spawning a shadow positon
 		originalPosition = players[currentPlayer].transform.position;
 		
@@ -103,17 +112,18 @@ public class Action3Script : MonoBehaviour {
 		//initializes the marker to the original position of the player spawning a shadow positon
 		marker.transform.position = originalPosition;
 		
-		//scales the marker so its no larger than everything else in the grid
+		//scales the marker so its not larger than everything else on the grid
 		marker.transform.localScale = new Vector3(0.099f, 0.099f, 0.099f);
 
-		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
+		//scales this prefab so its not larger than everything else on the grid
+		transform.localScale = new Vector3 (0.098f, 0.098f, 0.098f);
 
-		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
-		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
+		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
+		
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
 
 			totalCost = (int)(baseCost * costMultiplier);
+            visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject);
 		}
         else
         {
@@ -130,6 +140,7 @@ public class Action3Script : MonoBehaviour {
 		if (cancelButton) 
 		{
 			//handles early canceling(Alex Jungroth)
+            visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy (marker);
 			Destroy(gameObject);
@@ -159,6 +170,9 @@ public class Action3Script : MonoBehaviour {
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
+
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
 
 				}
 				else
@@ -190,6 +204,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -219,6 +236,9 @@ public class Action3Script : MonoBehaviour {
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
+
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
 				
 				}
 				else
@@ -250,6 +270,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -280,6 +303,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -309,6 +335,9 @@ public class Action3Script : MonoBehaviour {
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
+
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
 
 				}
 				else
@@ -345,19 +374,23 @@ public class Action3Script : MonoBehaviour {
 		
 		if (chosenPositionConfirmed) {
 
-			//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
-			shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
+			//checks to see if the power succeeded (Alex Jungroth)
+			if(Random.value >= successRate)
+			{
+				//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
+				shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
 
-			//gets the shadow positoins Renderer
-			shadowRenderer	= shadowPosition.GetComponent<Renderer>();
-			
-			//makes the players shadow positions transparent without changing their color
-			transparentColor = shadowRenderer.material.color;
-			transparentColor.a = 0.5f;
-			shadowRenderer.material.SetColor("_Color", transparentColor);  
+				//gets the shadow positoins Renderer
+				shadowRenderer = shadowPosition.GetComponent<Renderer>();
+				
+				//makes the players shadow positions transparent without changing their color
+				transparentColor = shadowRenderer.material.color;
+				transparentColor.a = 0.5f;
+				shadowRenderer.material.SetColor("_Color", transparentColor);  
 
-			//adds the shadow position to the players array list of shadowpositions
-			players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.Add(shadowPosition);
+				//adds the shadow position to the players array list of shadowpositions
+				players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.Add(shadowPosition);
+			}
 
 			//removes the marker
 			Destroy(marker);
@@ -368,6 +401,7 @@ public class Action3Script : MonoBehaviour {
 	}
 	
 	void EndAction() {
+        visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
         players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted

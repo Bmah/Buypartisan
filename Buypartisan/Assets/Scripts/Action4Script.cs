@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Action4Script : MonoBehaviour {
 	public string actionName = "Campaign Tour";
-	public int baseCost = 10;
+	public int baseCost = 400;
     public int totalCost = 0;
     public float costMultiplier = 1.0f;
 	
@@ -41,6 +41,18 @@ public class Action4Script : MonoBehaviour {
 	private bool noOverlap = true; //this boolean will be used to check if theres any overlaps with other voters
 	private int overlap1; //these two ints save which ones are overlapping.
 	private int overlap2;
+
+	//holds the direction that the voter is being moved in (Alex Jungroth)
+	private int finalDirection = 0;
+
+	//Final Direction Key (Alex Jungroth)
+	//0 = Unset
+	//1 = X+
+	//2 = X-
+	//3 = Y+
+	//4 = Y-
+	//5 = Z+
+	//6 = Z-
 
 	// Use this for initialization
 	void Start () {
@@ -107,6 +119,9 @@ public class Action4Script : MonoBehaviour {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].x < (gameController.GetComponent<GameController>().gridSize - 1)) {
 					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(1,0,0);
+
+					//This sets final direction to X+ (Alex Jungroth)
+					finalDirection = 1;
 				} else {
 					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
@@ -119,6 +134,9 @@ public class Action4Script : MonoBehaviour {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].x > 0) {
 					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(-1,0,0);
+
+					//This sets final direction to X- (Alex Jungroth)
+					finalDirection = 2;
 				} else {
 					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
@@ -131,6 +149,9 @@ public class Action4Script : MonoBehaviour {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].y < (gameController.GetComponent<GameController>().gridSize - 1)) {
 					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,1,0);
+
+					//This sets final direction to Y+ (Alex Jungroth)
+					finalDirection = 3;
 				} else {
 					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
@@ -143,6 +164,9 @@ public class Action4Script : MonoBehaviour {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].y > 0) {
 					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,-1,0);
+
+					//This sets final direction to Y- (Alex Jungroth)
+					finalDirection = 4;
 				} else {
 					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
@@ -155,6 +179,9 @@ public class Action4Script : MonoBehaviour {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].z < (gameController.GetComponent<GameController>().gridSize - 1)) {
 					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,0,1);
+
+					//This sets final direction to Z+ (Alex Jungroth)
+					finalDirection = 5;
 				} else {
 					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
@@ -167,6 +194,9 @@ public class Action4Script : MonoBehaviour {
 			for (int i = 0; i < voters.Length; i++) {
 				if (voterOriginalPositions[i].z > 0){
 					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,0,-1);
+
+					//This sets final direction to Z- (Alex Jungroth)
+					finalDirection = 6;
 				} else {
 					voterFinalPositions[i] = voterOriginalPositions[i];
 				}
@@ -226,14 +256,94 @@ public class Action4Script : MonoBehaviour {
 
 	void setFinalPosition() {
 		for (int i = 0; i < voters.Length; i++) {
+
 			voters[i].transform.position = voterFinalPositions[i];
 		}
 	}
 
 	void EndAction() {
+
+		for (int i = 0; i < voters.Length; i++) 
+		{
+			//tests to see if the action is successful (Alex Jungroth)
+			if(compareResistance(i))
+			{
+				//increases the base resistance of the voter by 1% (Alex Jungroth)
+				voters[i].GetComponent<VoterVariables>().baseResistance += voters[i].GetComponent<VoterVariables>().baseResistance * 0.01f;
+			}
+			else
+			{
+				//resets the voters postions if they resist the action (Alex Jungroth)
+				voterFinalPositions[i] = voterOriginalPositions[i];
+			}
+		}
+
+		//alligns the voters to their action finishing postions (Alex Jungroth)
+		setFinalPosition ();
+
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;
 		Destroy(gameObject);
+	}
+
+	bool compareResistance(int i)
+	{
+		//holds wether or not the action overcame the voter's resitance
+		bool resistanceCheck = false;
+		
+		//This case statment will handle the different directions that the voter can be moved in (Alex Jungroth)
+		switch (finalDirection)
+		{
+		case 0:
+			Debug.Log ("Case 0 was chosen which means something has gone wrong!");
+			resistanceCheck = true;
+			break;
+			
+		case 1:
+			if(Random.value > voters[i].GetComponent<VoterVariables>().xPlusResistance + (int)voters[i].GetComponent<VoterVariables>().baseResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+			
+		case 2:
+			if(Random.value > voters[i].GetComponent<VoterVariables>().xMinusResistance + (int)voters[i].GetComponent<VoterVariables>().baseResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+			
+		case 3:
+			if(Random.value > voters[i].GetComponent<VoterVariables>().yPlusResistance + (int)voters[i].GetComponent<VoterVariables>().baseResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+			
+		case 4:
+			if(Random.value > voters[i].GetComponent<VoterVariables>().yMinusResistance + (int)voters[i].GetComponent<VoterVariables>().baseResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+			
+		case 5:
+			if(Random.value > voters[i].GetComponent<VoterVariables>().zPlusResistance + (int)voters[i].GetComponent<VoterVariables>().baseResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+			
+		case 6:
+			if(Random.value > voters[i].GetComponent<VoterVariables>().zMinusResistance + (int)voters[i].GetComponent<VoterVariables>().baseResistance)
+			{
+				resistanceCheck = true;
+			}
+			break;
+		}		
+		
+		//returns the result of the test
+		return resistanceCheck;	
 	}
 }

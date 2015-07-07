@@ -18,6 +18,7 @@ public class ActionScriptTemplate : MonoBehaviour {
 	public GameObject gameController; //this is the game controller variable. It is obtained from the scene
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the scene
 	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
+    private GameObject visualAid; //this is if you need the visual aid on whatever object you're moving
 	private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 
@@ -61,6 +62,7 @@ public class ActionScriptTemplate : MonoBehaviour {
         else
         {
             totalCost = (int)(baseCost * costMultiplier);
+            visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject); // Only if you need visual aid, or else remove this. Make sure to remove the Detach under Cancel() and EndAction() too.
         }
 	}
 	
@@ -70,7 +72,8 @@ public class ActionScriptTemplate : MonoBehaviour {
 		//ends the action if the cancel button is pressed (Alex Jungroth)
 		if (cancelButton) 
 		{
-			EndAction();
+            visualAid.GetComponent<VisualAidAxisManangerScript>().Detach(); // Remove if no need visual aid
+            Destroy(gameObject);
 		}
 
 		//This is where the action should be placed.
@@ -84,6 +87,7 @@ public class ActionScriptTemplate : MonoBehaviour {
 	}
 
 	void EndAction() {
+        visualAid.GetComponent<VisualAidAxisManangerScript>().Detach(); // Remove if no need visual aid
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;  // Money is subtracted
