@@ -53,6 +53,7 @@ public class GameController : MonoBehaviour {
 
 	private bool SFXDrumrollPlaying = false;
 	private float drumrollTime = 3.7f;
+	public enum Party {Party0, Party1, Party2, Party3};
 
 	//does the tallying at the start of each turn (Alex Jungroth)
 	public TallyingScript tallyRoutine;
@@ -272,6 +273,15 @@ public class GameController : MonoBehaviour {
 	/// </summary>
 	void SpawnPlayer(){
 		if (!spawnedNewPlayer) {
+			/*switch (Party){//this is code for spawning different parites.  Parties are set as an enum, and assigned at title
+				//from here, depending on what party the player chose, this is what they will spawn as
+			case 0 : currentPlayer = Instantiate(Party1,new Vector3(0,0,0), Quaternion.identity) as GameObject; break;
+			case 1 : currentPlayer = Instantiate(Party2,new Vector3(0,0,0), Quaternion.identity) as GameObject; break;
+				//ect
+			//this code block is commented out right now because it is the template for more stuff in the future, but it will break our game if we 
+			//do it right now
+			}
+			*/
 			currentPlayer = Instantiate(playerTemplate,new Vector3(0,0,0), Quaternion.identity) as GameObject;
 			players[playersSpawned] = currentPlayer;
 			spawnedNewPlayer = true;
@@ -279,8 +289,14 @@ public class GameController : MonoBehaviour {
 		}
 
 		//Player Uses Buttons to choose where the player goes in the scene
-		if (player2Spawning)
+		if (player2Spawning) {
 			players [playersSpawned].GetComponent<Renderer> ().material = Player2Material;
+
+			//players [playersSpawned].GetComponent<PlayerVariables> ().transparentColor = players [playersSpawned].GetComponent<PlayerVariables> ().sphereRenderer.material.color;
+			//players [playersSpawned].GetComponent<PlayerVariables> ().transparentColor.a = 0.2f;
+			//players [playersSpawned].GetComponent<PlayerVariables> ().sphereRenderer.material.SetColor ("_Color", players [playersSpawned].GetComponent<PlayerVariables> ().transparentColor);
+			//players [playersSpawned].GetComponent<PlayerVariables> ().sphereController.transform.localScale = new Vector3 (players [playersSpawned].GetComponent<PlayerVariables> ().sphereSize, players [playersSpawned].GetComponent<PlayerVariables> ().sphereSize, players [playersSpawned].GetComponent<PlayerVariables> ().sphereSize);
+		}
 		if (playerConfirmsPlacment) {
 			//checks the player against all of the previous players to ensure no duplicates
 			for(int i = 0; i < playersSpawned; i++){
