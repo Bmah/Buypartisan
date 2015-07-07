@@ -7,7 +7,7 @@ public class Action3Script : MonoBehaviour {
 
 	//This is from ActionScriptTemplate.cs and Action1Script.cs
     public string actionName = "Move SP";
-	public int baseCost = 125;
+	public int baseCost = 200;
 	public int totalCost = 0;
     public float costMultiplier = 1.0f;
 
