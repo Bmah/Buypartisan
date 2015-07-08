@@ -65,7 +65,7 @@ public class CameraMovement : MonoBehaviour {
 		this.transform.position = cameraOriginalPosition;
 
 		camController = this.GetComponent<Camera> ();
-		float margin = 432f / Screen.width;
+		float margin = 360f / Screen.width;
 		camController.rect = new Rect(margin, 0f, 1-margin, 1f);
 	}
 	
