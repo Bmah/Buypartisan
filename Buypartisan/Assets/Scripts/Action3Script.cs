@@ -7,7 +7,7 @@ public class Action3Script : MonoBehaviour {
 
 	//This is from ActionScriptTemplate.cs and Action1Script.cs
     public string actionName = "Move SP";
-	public int baseCost = 10;
+	public int baseCost = 200;
 	public int totalCost = 0;
     public float costMultiplier = 1.0f;
 
@@ -64,11 +64,23 @@ public class Action3Script : MonoBehaviour {
 	//so I can change its transparency
 	private GameObject shadowPosition;
 
-	//holds the shadow positoins Renderer
+	//holds the shadow postion's renderer
 	private Renderer shadowRenderer;
+
+	//holds the player's renderer
+	private Renderer playerRenderer;
 
 	//holds the orignial color of the shadow position
 	private Color transparentColor;
+
+	//holds the player's shadow position sphere's color
+	private Color transparentSphereColor;
+
+	//holds the player's shadow position sphere's renderer
+	private Renderer playerSphereRenderer;
+
+	//holds the player's shadow postion sphere's local scale
+	private Vector3 playerShadowSphereScale;
 
 	//holds the number needed for this action to succeed (Alex Jungroth)
 	public float successRate = 0.5f;
@@ -112,8 +124,11 @@ public class Action3Script : MonoBehaviour {
 		//initializes the marker to the original position of the player spawning a shadow positon
 		marker.transform.position = originalPosition;
 		
-		//scales the marker so its no larger than everything else in the grid
+		//scales the marker so its not larger than everything else on the grid
 		marker.transform.localScale = new Vector3(0.099f, 0.099f, 0.099f);
+
+		//scales this prefab so its not larger than everything else on the grid
+		transform.localScale = new Vector3 (0.098f, 0.098f, 0.098f);
 
 		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
 		
@@ -126,6 +141,7 @@ public class Action3Script : MonoBehaviour {
         {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
+			Destroy (marker);
 			Destroy(gameObject);
         }
 	}
@@ -168,6 +184,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -198,6 +217,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -227,6 +249,9 @@ public class Action3Script : MonoBehaviour {
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
+
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
 				
 				}
 				else
@@ -258,6 +283,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -288,6 +316,9 @@ public class Action3Script : MonoBehaviour {
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
 
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
+
 				}
 				else
 				{
@@ -317,6 +348,9 @@ public class Action3Script : MonoBehaviour {
 
 					//updates the positon of the marker
 					marker.transform.position = testPosition;
+
+					//updates the postion of the prefab, which the axis arrows will follow
+					transform.position = testPosition;
 
 				}
 				else
@@ -359,13 +393,30 @@ public class Action3Script : MonoBehaviour {
 				//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
 				shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
 
-				//gets the shadow positoins Renderer
+				//gets the players Renderer
+				playerRenderer = players[currentPlayer].GetComponent<Renderer>();
+
+				//gets the shadows position's renderer
 				shadowRenderer = shadowPosition.GetComponent<Renderer>();
-				
+
+				//sets the shadow position's color equal to the player's render color
+				shadowRenderer.material.color = playerRenderer.material.color;
+
 				//makes the players shadow positions transparent without changing their color
 				transparentColor = shadowRenderer.material.color;
 				transparentColor.a = 0.5f;
 				shadowRenderer.material.SetColor("_Color", transparentColor);  
+
+				//makes the shadow positions sphere of influence the same color as the players sphere of inclufence
+				playerSphereRenderer = players[currentPlayer].GetComponent<PlayerVariables>().sphereController.GetComponent<Renderer>();
+				transparentSphereColor = playerSphereRenderer.material.color;
+				transparentSphereColor.a = 0.2f;
+				shadowPosition.GetComponent<PlayerVariables>().sphereController.GetComponent<Renderer>().material.SetColor("_Color", transparentSphereColor);
+
+				//sets the shadow position's sphere of influence equal to the player's sphere of influence (doesn't work for some reason)
+				//playerShadowSphereScale = players[currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale;
+
+				//shadowPosition.GetComponent<PlayerVariables>().sphereController.transform.localScale = playerShadowSphereScale;
 
 				//adds the shadow position to the players array list of shadowpositions
 				players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.Add(shadowPosition);

@@ -1,4 +1,5 @@
 ﻿//Alex Jungroth
+//edits by Brian Mah
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -80,6 +81,14 @@ public class UI_Script : MonoBehaviour {
 	private SFXController sfx;
 	public float SFXvolume = 1;
 
+	//this code takes care of the scaling of the scroll rect dynamically.
+	//Brian Mah
+	public RectTransform rectScrollView;
+	public RectTransform rectScrollBar;
+	public float scrollViewWidth = 360f;
+	public float titleHeight = 114f;
+	public float bottomTVHeight = 300f;
+
 	// Use this for initialization
 	void Start () {
 		controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
@@ -154,10 +163,27 @@ public class UI_Script : MonoBehaviour {
         // Initializes cost
         updateCost();
 
+
+		//set size and position of scrollview and scrollBar
+		//Brian Mah
+		float scrollViewHeight = Screen.height - (titleHeight + bottomTVHeight);
+		float heightToMove = scrollViewHeight - rectScrollBar.sizeDelta.y;
+		heightToMove /= 2;
+		if (scrollViewHeight < 1f) {
+			Debug.LogError("Screen Height not supported");
+			scrollViewHeight = 100f;
+		}
+		rectScrollView.sizeDelta = new Vector2 (scrollViewWidth, scrollViewHeight);
+		rectScrollBar.sizeDelta = new Vector2(rectScrollBar.rect.width,scrollViewHeight);
+		rectScrollView.anchoredPosition = new Vector2 (rectScrollView.anchoredPosition.x, rectScrollView.anchoredPosition.y - heightToMove);
+		rectScrollBar.anchoredPosition = new Vector2 (rectScrollBar.anchoredPosition.x, rectScrollBar.anchoredPosition.y - heightToMove);
+		//rectScrollView.position = new Vector3 (rectScrollView.position.x, 0, rectScrollView.position.z);
+		//rectScrollBar.position = new Vector3 (rectScrollBar.position.x, 0, rectScrollBar.position.z);
+		//Debug.Log ("The Height is: " + rectScrollView.localPosition.y);
+		//Debug.Log ("Height move is: " + heightToMove);
 	}
-
-
 	
+
 	// Update is called once per frame
 	void Update () {
 		

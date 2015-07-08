@@ -8,7 +8,7 @@ using System.Collections;
 public class Action1Script : MonoBehaviour {
 
     public string actionName = "Move Self";
-	public int baseCost = 10;
+	public int baseCost = 50;
 	public int totalCost = 10;
 	public float costMultiplier = 1.0f;
     public float stepCostMultiplier = 1.5f; // This increases baseCost by 50% for every extra step, multiplicatively
@@ -29,6 +29,9 @@ public class Action1Script : MonoBehaviour {
 	private Vector3 originalPosition; // Original position that the player started at.
 	private bool chosenPositionConfirmed = false; // Destination been chosen and confirmed.
 	private Vector3 currentPos;
+
+	//keeps track of whether or not there is a shadow position where the player is trying to move (Alex Jungroth)
+	bool occupiedByShadow = false;
 
 	//these are to check which buttons have been pressed.
 	[System.NonSerialized]
@@ -153,8 +156,25 @@ public class Action1Script : MonoBehaviour {
 					if (totalCost > players[currentPlayer].GetComponent<PlayerVariables>().money) {
 						Debug.Log ("You don't have enough money to move to this spot!");
 					} else {
-						chosenPositionConfirmed = true;
-						players[currentPlayer].transform.position = transform.position;
+
+						//prevents players from moving onto shadow positions (Alex Jungroth)
+						for(int j = 0; j < players.Length; j++)
+						{
+							for(int k = 0; k < players[j].GetComponent<PlayerVariables>().shadowPositions.Count; k++)
+							{
+								if(transform.position == players[j].GetComponent<PlayerVariables>().shadowPositions[k].GetComponent<PlayerVariables>().transform.position)
+								{
+									occupiedByShadow = true;
+								}
+							}
+						}
+
+						//only allows the player to move if there is no shadow position occupying that position
+						if(!occupiedByShadow)
+						{
+							chosenPositionConfirmed = true;
+							players[currentPlayer].transform.position = transform.position;
+						}
 					}
 				}
 			}
