@@ -43,6 +43,14 @@ public class UI_Script : MonoBehaviour {
 	//holds the button for displaying player's stats
 	public GameObject displayStatsButton;
 
+	public GameObject party1Button;
+
+	public GameObject party2Button;
+
+	public GameObject party3Button;
+
+	public GameObject party4Button;
+
 	//holds the Action Buttons by the tag ActionButton
 	public GameObject[] ActionButtonObject;
 
@@ -151,6 +159,11 @@ public class UI_Script : MonoBehaviour {
 
 		//disables the display stats button at the start
 		displayStatsButton.SetActive (false);
+
+		party1Button.SetActive (false);
+		party2Button.SetActive (false);
+		party3Button.SetActive (false);
+		party4Button.SetActive (false);
 
 		//gets the current player
 		currentPlayerPrefab = controller.GetComponent<GameController> ().players;
@@ -460,6 +473,12 @@ public class UI_Script : MonoBehaviour {
 		}
 	}
 
+	public void PartyEnable () {
+		party1Button.SetActive (true);
+		party2Button.SetActive (true);
+		party3Button.SetActive (true);
+		party4Button.SetActive (true);
+	}
 	public void alterTextBox(string inputText)
 	{
 		visualText.text = inputText;
