@@ -62,7 +62,7 @@ public class Action5Script : MonoBehaviour {
 			totalCost = (int)(baseCost * costMultiplier);
 		}
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		//Debug.Log ("here");

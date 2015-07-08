@@ -40,6 +40,12 @@ public class GameController : MonoBehaviour {
 	public GameObject currentPlayer;
 	public Material Player2Material;
 
+	//holds player2's sphere renderer (Alex Jungroth)
+	private Renderer player2Renderer;
+
+	//holds player2 sphere's transparency (Alex Jungroth)
+	private Color player2SphereTransparency;
+
 	private MusicController gameMusic;
 	private SFXController SFX;
 	public float SFXVolume;
@@ -291,6 +297,13 @@ public class GameController : MonoBehaviour {
 		//Player Uses Buttons to choose where the player goes in the scene
 		if (player2Spawning) {
 			players [playersSpawned].GetComponent<Renderer> ().material = Player2Material;
+
+			//trying an alternate way of changing the sphere's color (Alex Jungroth)
+			player2Renderer = players[playersSpawned].GetComponent<PlayerVariables>().sphereController.GetComponent<Renderer>();
+			player2Renderer.material = Player2Material;
+			player2SphereTransparency = player2Renderer.material.color;
+			player2SphereTransparency.a = 0.2f;
+			player2Renderer.material.SetColor("_Color", player2SphereTransparency);
 
 			//players [playersSpawned].GetComponent<PlayerVariables> ().transparentColor = players [playersSpawned].GetComponent<PlayerVariables> ().sphereRenderer.material.color;
 			//players [playersSpawned].GetComponent<PlayerVariables> ().transparentColor.a = 0.2f;
