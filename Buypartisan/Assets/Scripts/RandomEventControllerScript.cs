@@ -8,6 +8,7 @@ using System.Collections;
 public class RandomEventControllerScript : MonoBehaviour {
 
 	public GameObject[] voters;
+	public GameObject[] players;
 	public VoterVariables[] voterVars = null;
 	private bool voterVarsSet = false;
 
@@ -86,6 +87,12 @@ public class RandomEventControllerScript : MonoBehaviour {
 			UIController.alterTextBox("Newsflash! Little Timmy fell down the well!");
 			break;
 		}
+
+		CheckForTriggeredEvents();
+	}
+
+	void CheckForTriggeredEvents(){
+	
 	}
 
 	/// <summary>
