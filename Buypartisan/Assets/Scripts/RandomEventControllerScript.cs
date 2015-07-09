@@ -8,6 +8,13 @@ using System.Collections;
 public class RandomEventControllerScript : MonoBehaviour {
 
 	public GameObject[] voters;
+	public GameObject[] players;
+	public bool playersSpawned = false;
+	public int numberOfActions = 6;
+	private bool ActionCounterSetup = false;
+
+	private int[][] actionCounter;
+
 	public VoterVariables[] voterVars = null;
 	private bool voterVarsSet = false;
 
@@ -31,6 +38,15 @@ public class RandomEventControllerScript : MonoBehaviour {
 				voterVars[i] = voters[i].GetComponent<VoterVariables>();
 			}
 			voterVarsSet = true;
+		}
+
+		if (playersSpawned && !ActionCounterSetup) {
+			//setup the array to have counters for all actions for all players
+			ActionCounterSetup = true;
+			actionCounter = new int[players.Length][];
+			for (int i = 0; i < actionCounter.Length; i++){
+				actionCounter[i] = new int[numberOfActions];
+			}
 		}
 	}// update
 
@@ -86,6 +102,12 @@ public class RandomEventControllerScript : MonoBehaviour {
 			UIController.alterTextBox("Newsflash! Little Timmy fell down the well!");
 			break;
 		}
+
+		CheckForTriggeredEvents();
+	}
+
+	void CheckForTriggeredEvents(){
+	
 	}
 
 	/// <summary>

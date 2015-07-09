@@ -85,6 +85,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		randomEventController.voters = voters;
+
 		gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
 		if (gameMusic == null) {
 			Debug.LogError ("The Game Controller could not find the Music Controller please place it in the scene.");
@@ -226,6 +227,11 @@ public class GameController : MonoBehaviour {
 
 				//does the tallying before the first player's turn starts (Alex Jungroth)
 				tallyRoutine.preTurnTalling ();
+
+				//Gives the randomEventController the list of newly spawned players
+				//Brian Mah
+				randomEventController.players = players;
+				randomEventController.playersSpawned = true;
 			
 			}
 		} else if (currentState == GameState.ActionTurns) {
