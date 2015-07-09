@@ -14,6 +14,8 @@ public class RandomEventControllerScript : MonoBehaviour {
 	private bool ActionCounterSetup = false;
 
 	private int[][] actionCounter;
+	public int[] actionThreshold = {3,3,3,3,3,3};
+	private bool[] eventTriggerList;
 
 	public VoterVariables[] voterVars = null;
 	private bool voterVarsSet = false;
@@ -24,6 +26,17 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		//the actionthreshold is set manually but must match with the number of actions
+		if (actionThreshold.Length != numberOfActions) {
+			Debug.LogError("ActionThresholdDoes not match with the number of actions");
+		}
+
+		//initializing the event trigger list
+		eventTriggerList = new bool[numberOfActions];
+		for(int i = 0; i < eventTriggerList.Length; i++){
+			eventTriggerList[i] = false;
+		}
+
 		if (UIController == null) {
 			Debug.LogError("UI_Script not set on RandomEventController");
 		}
@@ -106,8 +119,48 @@ public class RandomEventControllerScript : MonoBehaviour {
 		CheckForTriggeredEvents();
 	}
 
+
 	void CheckForTriggeredEvents(){
-	
+		for (int i = 0; i < actionCounter.Length; i++) {
+			for(int j = 0; j < actionCounter[0].Length; j++){
+				if (actionCounter[i][j] >= actionThreshold[j] &&  //if you have reached the threshold
+				    (Random.value < ((actionCounter[i][j] - actionThreshold[j]) * 0.1f + 0.3f))){ //and rng decides you 
+					//activate triggered event j with probability of 30% plus 10% * amount you have gone over threshold
+					eventTriggerList[j] = true;
+				}
+
+				//After checking to see if the event is triggered cool down the check
+				if(actionCounter[i][j] > 0){
+					actionCounter[i][j]--;
+				}
+			}
+
+			if(eventTriggerList[0]){
+				eventTriggerList[0] = false;
+				//VoterSupression
+			}
+			if(eventTriggerList[1]){
+				eventTriggerList[1] = false;
+				//MoveParty
+			}
+			if(eventTriggerList[2]){
+				eventTriggerList[2] = false;
+				//InfluenceVoters
+			}
+			if(eventTriggerList[3]){
+				eventTriggerList[3] = false;
+				//ShadowPosition
+			}
+			if(eventTriggerList[4]){
+				eventTriggerList[4] = false;
+				//CampaignTour
+			}
+			if(eventTriggerList[5]){
+				eventTriggerList[5] = false;
+				//SphereOfInfluence
+			}
+
+		}
 	}
 
 	/// <summary>
@@ -227,6 +280,4 @@ public class RandomEventControllerScript : MonoBehaviour {
 			voters[i].GetComponent<VoterVariables>().money /= divisor;
 		}
 	}
-
-
 }
