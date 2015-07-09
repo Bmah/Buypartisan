@@ -151,33 +151,42 @@ public class Action1Script : MonoBehaviour {
 		//You can only confirm the position if it isn't the exact same position you started at, or you are not sharing a position that another player is in
 		//You also must have enough money to move to that position.
 		if (confirmButton) {
+			chosenPositionConfirmed = true;
+
+			if (transform.position == originalPosition)
+				chosenPositionConfirmed = false;
+
 			for (int i = 0; i < players.Length; i++) {
-				if (i != currentPlayer && players[i].transform.position != transform.position && transform.position != originalPosition) {
-					if (totalCost > players[currentPlayer].GetComponent<PlayerVariables>().money) {
-						Debug.Log ("You don't have enough money to move to this spot!");
-					} else {
+				if (i != currentPlayer && players[i].transform.position == transform.position) {
+					chosenPositionConfirmed = false;
+				}
+			}
 
-						//prevents players from moving onto shadow positions (Alex Jungroth)
-						for(int j = 0; j < players.Length; j++)
+			if (totalCost > players[currentPlayer].GetComponent<PlayerVariables>().money) {
+				Debug.Log ("You don't have enough money to move to this spot!");
+				chosenPositionConfirmed = false;
+			} else {
+				//prevents players from moving onto shadow positions (Alex Jungroth)
+				for(int j = 0; j < players.Length; j++)
+				{
+					for(int k = 0; k < players[j].GetComponent<PlayerVariables>().shadowPositions.Count; k++)
+					{
+						if(transform.position == players[j].GetComponent<PlayerVariables>().shadowPositions[k].GetComponent<PlayerVariables>().transform.position)
 						{
-							for(int k = 0; k < players[j].GetComponent<PlayerVariables>().shadowPositions.Count; k++)
-							{
-								if(transform.position == players[j].GetComponent<PlayerVariables>().shadowPositions[k].GetComponent<PlayerVariables>().transform.position)
-								{
-									occupiedByShadow = true;
-								}
-							}
-						}
-
-						//only allows the player to move if there is no shadow position occupying that position
-						if(!occupiedByShadow)
-						{
-							chosenPositionConfirmed = true;
-							players[currentPlayer].transform.position = transform.position;
+							occupiedByShadow = true;
 						}
 					}
 				}
+				
+				
 			}
+
+			//only allows the player to move if there is no shadow position occupying that position
+			if(!occupiedByShadow && chosenPositionConfirmed)
+			{
+				players[currentPlayer].transform.position = transform.position;
+			}
+
 			confirmButton = false;
 		}
 		

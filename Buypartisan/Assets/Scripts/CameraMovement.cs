@@ -2,12 +2,15 @@
 using System.Collections;
 
 public class CameraMovement : MonoBehaviour {
-	
+	//Created by Michael, with lots of edits by Chris.
+	//7/9/15, added "Radius" variable that adds to the distance of the orbit by a flat float.
+
 	private InputManagerScript inputManager;
 	private GameController gameController;
 	
 	public Transform target;
 	private float distance = 5.0f;
+	public float radius = 5.0f;
 	public float xSpeed = 120.0f;
 	public float ySpeed = 120.0f;
 	
@@ -56,7 +59,7 @@ public class CameraMovement : MonoBehaviour {
 
 		//This is the calculation to find where the Camera should be according to grid size.
 		float rad = Vector3.Distance(pivotOriginalPosition, gridStartingPoint);
-		rad += 2.0f;
+		rad += radius;
 		distance = rad;
 		float xPos = rad * Mathf.Sin (225.0f * Mathf.Deg2Rad) * Mathf.Sin (45.0f * Mathf.Deg2Rad);
 		float yPos = rad * Mathf.Cos (45.0f * Mathf.Deg2Rad);
