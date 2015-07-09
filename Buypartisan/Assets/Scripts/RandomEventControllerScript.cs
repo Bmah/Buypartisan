@@ -119,50 +119,6 @@ public class RandomEventControllerScript : MonoBehaviour {
 		CheckForTriggeredEvents();
 	}
 
-
-	void CheckForTriggeredEvents(){
-		for (int i = 0; i < actionCounter.Length; i++) {
-			for(int j = 0; j < actionCounter[0].Length; j++){
-				if (actionCounter[i][j] >= actionThreshold[j] &&  //if you have reached the threshold
-				    (Random.value < ((actionCounter[i][j] - actionThreshold[j]) * 0.1f + 0.3f))){ //and rng decides you 
-					//activate triggered event j with probability of 30% plus 10% * amount you have gone over threshold
-					eventTriggerList[j] = true;
-				}
-
-				//After checking to see if the event is triggered cool down the check
-				if(actionCounter[i][j] > 0){
-					actionCounter[i][j]--;
-				}
-			}
-
-			if(eventTriggerList[0]){
-				eventTriggerList[0] = false;
-				//VoterSupression
-			}
-			if(eventTriggerList[1]){
-				eventTriggerList[1] = false;
-				//MoveParty
-			}
-			if(eventTriggerList[2]){
-				eventTriggerList[2] = false;
-				//InfluenceVoters
-			}
-			if(eventTriggerList[3]){
-				eventTriggerList[3] = false;
-				//ShadowPosition
-			}
-			if(eventTriggerList[4]){
-				eventTriggerList[4] = false;
-				//CampaignTour
-			}
-			if(eventTriggerList[5]){
-				eventTriggerList[5] = false;
-				//SphereOfInfluence
-			}
-
-		}
-	}
-
 	/// <summary>
 	/// Shifts all voters by magnitude length in the specified direction.
 	/// Brian Mah
@@ -184,7 +140,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 						}
 					}
 				}
-
+				
 				//check to see if voter resistance prevents event from moving voter
 				if(magnitude < 0 &&  Random.value < voterVars[i].xMinusResistance + voterVars[i].baseResistance){
 					failToMove = true;
@@ -192,7 +148,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				else if(magnitude > 0 &&  Random.value < voterVars[i].xPlusResistance + voterVars[i].baseResistance){
 					failToMove = true;
 				}
-
+				
 				if(!failToMove)
 				{
 					voters[i].transform.position = temporaryPosition;
@@ -211,7 +167,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 						}
 					}
 				}
-
+				
 				//check to see if voter resistance prevents event from moving voter
 				if(magnitude < 0 &&  Random.value < voterVars[i].yMinusResistance + voterVars[i].baseResistance){
 					failToMove = true;
@@ -219,7 +175,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				else if(magnitude > 0 &&  Random.value < voterVars[i].yPlusResistance + voterVars[i].baseResistance){
 					failToMove = true;
 				}
-
+				
 				if(!failToMove)
 				{
 					voters[i].transform.position = temporaryPosition;
@@ -238,7 +194,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 						}
 					}
 				}
-
+				
 				//check to see if voter resistance prevents event from moving voter
 				if(magnitude < 0 &&  Random.value < voterVars[i].zMinusResistance + voterVars[i].baseResistance){
 					failToMove = true;
@@ -246,7 +202,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				else if(magnitude > 0 &&  Random.value < voterVars[i].zPlusResistance + voterVars[i].baseResistance){
 					failToMove = true;
 				}
-
+				
 				if(!failToMove)
 				{
 					voters[i].transform.position = temporaryPosition;
@@ -258,7 +214,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			break;
 		}
 	}
-
+	
 	/// <summary>
 	/// Multiplies every voter's money by the boom amount.
 	/// Brian Mah
@@ -269,7 +225,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			voters[i].GetComponent<VoterVariables>().money *= multiplier;
 		}
 	}
-
+	
 	/// <summary>
 	/// Divides every voter's money by the bust amount.
 	/// Brian Mah
@@ -280,4 +236,102 @@ public class RandomEventControllerScript : MonoBehaviour {
 			voters[i].GetComponent<VoterVariables>().money /= divisor;
 		}
 	}
-}
+
+
+	void CheckForTriggeredEvents(){
+		for (int i = 0; i < actionCounter.Length; i++) {
+			for(int j = 0; j < actionCounter[0].Length; j++){
+				if (actionCounter[i][j] >= actionThreshold[j] &&  //if you have reached the threshold
+				    (Random.value < ((actionCounter[i][j] - actionThreshold[j]) * 0.1f + 0.3f))){ //and rng decides you 
+					//activate triggered event j with probability of 30% plus 10% * amount you have gone over threshold
+					eventTriggerList[j] = true;
+				}
+
+				//After checking to see if the event is triggered cool down the check
+				if(actionCounter[i][j] > 0){
+					actionCounter[i][j]--;
+				}
+			}
+
+			if(eventTriggerList[0]){
+				eventTriggerList[0] = false;
+				//VoterSupression
+				VoterOutrage(players[i]);
+				UIController.alterTextBox("Newsflash! Voters outraged at supression by player "+ (i+1) +
+				                          " Voters gather at the polls to vote against them!");
+			}
+			if(eventTriggerList[1]){
+				eventTriggerList[1] = false;
+				//MoveParty
+				FlipFlopping(players[i]);
+			}
+			if(eventTriggerList[2]){
+				eventTriggerList[2] = false;
+				//InfluenceVoters
+				VoterManipulation(players[i]);
+			}
+			if(eventTriggerList[3]){
+				eventTriggerList[3] = false;
+				//ShadowPosition
+				ContradictoryPositions (players[i]);
+			}
+			if(eventTriggerList[4]){
+				eventTriggerList[4] = false;
+				//CampaignTour
+				AdBurnout(players[i]);
+				//smaller size sphere
+			}
+			if(eventTriggerList[5]){
+				eventTriggerList[5] = false;
+				//SphereOfInfluence
+				OverreachingCampeign(players[i]);
+			}
+		}//for each player
+	}//Check For Triggered events
+
+	/// <summary>
+	/// Voters the outrage.
+	/// </summary>
+	void VoterOutrage(GameObject TargetPlayer){
+		for (int i = 0; i < voters.Length; i++) {
+		
+		}
+	}
+
+	/// <summary>
+	/// Flips the flopping.
+	/// </summary>
+	void FlipFlopping(GameObject TargetPlayer){
+	
+	}
+
+	/// <summary>
+	/// Voters the manipulation.
+	/// </summary>
+	void VoterManipulation(GameObject TargetPlayer){
+
+	}
+
+	/// <summary>
+	/// Contradictories the positions.
+	/// </summary>
+	void ContradictoryPositions(GameObject TargetPlayer){
+
+	}
+
+	/// <summary>
+	/// Ads the burnout.
+	/// </summary>
+	void AdBurnout(GameObject TargetPlayer){
+
+	}
+
+	/// <summary>
+	/// Overreachings the campeign.
+	/// </summary>
+	void OverreachingCampeign(GameObject TargetPlayer){
+
+	}
+
+
+}//RandomEventController script
