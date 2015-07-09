@@ -1,7 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class TitleScreenUIScript : MonoBehaviour {
+
+	//holds the music controller
+	public MusicController musicPlayer;
+
+	//holds the SFX controller
+	public SFXController sFXPlayer;
 
 	//holds the title screen buttons (Alex Jungroth)
 	public GameObject backButton;
@@ -10,10 +17,19 @@ public class TitleScreenUIScript : MonoBehaviour {
 	public GameObject settingsButton;
 	public GameObject quitButton;
 
-	//holds the text for the grid, rounds, and election settings (Alex Jungroth)
+	//holds the button that is acting as a background for the text (Alex Jungroth)
+	public GameObject voterCounterButton;
+
+	//holds the text of a button thats being used as text box for its aesthetic qualities (Alex Jungroth)
+	public Text voterCounterButtonText;
+
+	//holds the text the title screens text elements (Alex Jungroth)
 	public GameObject gridText;
 	public GameObject roundsText;
 	public GameObject electionText;
+	public GameObject voterCounterText;
+	public GameObject sFXText;
+	public GameObject musicText;
 
 	//holds the toggle group for grid size (Alex Jungroth)
 	public GameObject[] toggleGridSize;
@@ -23,6 +39,19 @@ public class TitleScreenUIScript : MonoBehaviour {
 
 	//holds the toggle group for elections (Alex Jungroth)
 	public GameObject[] toggleElection;
+
+	//holds the title screen sliders (Alex Jungroth)
+	public GameObject voterCounterSlider;
+	public GameObject sFXSlider;
+	public GameObject musicSlider;
+
+	//holds the values that the gameController will get in the next scene
+	public int gridSize = 7;
+	public int totalRounds = 5;
+	public int totalElections = 2;
+	public float totalVoters = 40;
+	public float musicVolume = 1;
+	public float sFXVolume = 1;
 
 	// Use this for initialization
 	void Start () {
@@ -37,8 +66,11 @@ public class TitleScreenUIScript : MonoBehaviour {
 		toggleElection = GameObject.FindGameObjectsWithTag ("Election");
 
 		//disables the back button and the reset button (Alex Jungroth)
-		backButton.SetActive (false);
-		resetButton.SetActive (false);
+		backButton.SetActive(false);
+		resetButton.SetActive(false);
+
+		//disables the voter counter (Alex Jungroth)
+		voterCounterButton.SetActive(false);
 
 		//disables the toggles for grid size, rounds, and election settings (Alex Jungroth)
 		for (int i = 0; i < 8; i++) 
@@ -49,19 +81,60 @@ public class TitleScreenUIScript : MonoBehaviour {
 
 		for (int i = 0; i < 10; i++)
 		{
-			toggleElection [i].SetActive (false);
+			toggleElection [i].SetActive(false);
 		}
 		
-		//disables the text for the grid size, rounds, and election settings (Alex Jungroth)
+		//disables the text for the title screen (Alex Jungroth)
 		gridText.SetActive(false);
 		roundsText.SetActive(false);
 		electionText.SetActive(false);
-		
+		voterCounterText.SetActive(false);
+		sFXText.SetActive(false);
+		musicText.SetActive(false);
+
+		//disables the sliders for the title screen (Alex Jungroth)
+		voterCounterSlider.SetActive(false);
+		sFXSlider.SetActive(false);
+		musicSlider.SetActive(false);
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void Update () 
+	{
+		//sets the grid size and number of rounds based on the toggle the player checked (Alex Jungroth)
+		for (int i = 0; i < 8; i++) 
+		{
+			if(toggleGridSize[i].GetComponent<Toggle>().isOn == true)
+			{
+				gridSize = i;
+			}
+
+			if(toggleRounds[i].GetComponent<Toggle>().isOn == true)
+			{
+				totalRounds = i;
+			}
+		}
+		
+		//sets the number of elections based on the toggle the player checked (Alex Jungroth)
+		for (int i = 0; i < 10; i++) 
+		{
+			if(toggleElection[i].GetComponent<Toggle>().isOn == true)
+			{
+				totalElections = i;
+			}
+		}
+
+		//adjusts the number of voters as the user moves the handle on the slide bar (Alex Jungroth)
+		voterCounterButtonText.text = voterCounterSlider.GetComponent<Slider>().value.ToString();
+		totalVoters = voterCounterSlider.GetComponent<Slider>().value;
+
+		//adjusts the music volume as the user moves the handle on the slide bar (Alex Jungroth)
+		musicPlayer.audioChannels [0].volume = musicSlider.GetComponent<Slider>().value;
+		musicVolume = musicSlider.GetComponent<Slider>().value;
+
+		//adjusts the SFX volume as the user moves the handle on the slide bar (Alex Jungroth)
+		sFXPlayer.AudioChannels [0].volume = sFXSlider.GetComponent<Slider>().value;
+		sFXVolume = sFXSlider.GetComponent<Slider>().value;
 	}
 
 	public void PlayGame(){
@@ -75,30 +148,41 @@ public class TitleScreenUIScript : MonoBehaviour {
 	/// </summary>
 	public void SettingsMenu()
 	{
+		//disables the play, settings, and quit button (Alex Jungroth)
+		playButton.SetActive(false);
+		settingsButton.SetActive(false);
+		quitButton.SetActive(false);
+
 		//enables the back button and the reset button (Alex Jungroth)
-		backButton.SetActive (true);
-		resetButton.SetActive (true);
-		
+		backButton.SetActive(true);
+		resetButton.SetActive(true);
+
+		//enables the voter counter (Alex Jungroth)
+		voterCounterButton.SetActive(true);
+
 		//enables  the toggles for grid size, rounds, and election settings (Alex Jungroth)
 		for (int i = 0; i < 8; i++) {
-			toggleGridSize [i].SetActive (true);
-			toggleRounds [i].SetActive (true);
+			toggleGridSize [i].SetActive(true);
+			toggleRounds [i].SetActive(true);
 		}
 
 		for (int i = 0; i < 10; i++)
 		{
-			toggleElection [i].SetActive (true);
+			toggleElection [i].SetActive(true);
 		}
 
-		//enables  the text for the grid size, rounds, and election settings (Alex Jungroth)
-		gridText.SetActive (true);
+		//enables the text for the title screen (Alex Jungroth)
+		gridText.SetActive(true);
 		roundsText.SetActive(true);
-		electionText.SetActive (true);
-
-		//disables the play button, settings button, and quit button (Alex Jungroth)
-		playButton.SetActive (false);
-		settingsButton.SetActive (false);
-		quitButton.SetActive (false);
+		electionText.SetActive(true);
+		voterCounterText.SetActive(true);
+		sFXText.SetActive(true);
+		musicText.SetActive(true);
+		
+		//enables the sliders for the title screen (Alex Jungroth)
+		voterCounterSlider.SetActive(true);
+		sFXSlider.SetActive(true);
+		musicSlider.SetActive(true);
 	}
 
 	/// <summary>
@@ -108,10 +192,18 @@ public class TitleScreenUIScript : MonoBehaviour {
 	/// </summary>
 	public void ExitSettings()
 	{
+		//enables the play, settings, and quit button (Alex Jungroth)
+		playButton.SetActive(true);
+		settingsButton.SetActive(true);
+		quitButton.SetActive(true);
+
 		//disables the back button and the reset button (Alex Jungroth)
-		backButton.SetActive (false);
-		resetButton.SetActive (false);
-		
+		backButton.SetActive(false);
+		resetButton.SetActive(false);
+
+		//disables the voter counter (Alex Jungroth)
+		voterCounterButton.SetActive(false);
+
 		//disables  the toggles for grid size, rounds, and election settings (Alex Jungroth)
 		for (int i = 0; i < 8; i++) 
 		{
@@ -121,18 +213,21 @@ public class TitleScreenUIScript : MonoBehaviour {
 
 		for (int i = 0; i < 10; i++)
 		{
-			toggleElection [i].SetActive (false);
+			toggleElection [i].SetActive(false);
 		}
 		
-		//disables the text for the grid size, rounds, and election settings (Alex Jungroth)
-		gridText.SetActive (false);
+		//disables the text for the title screen (Alex Jungroth)
+		gridText.SetActive(false);
 		roundsText.SetActive(false);
-		electionText.SetActive (false);
+		electionText.SetActive(false);
+		voterCounterText.SetActive(false);
+		sFXText.SetActive(false);
+		musicText.SetActive(false);
 		
-		//enables the play button, settings button, and quit button (Alex Jungroth)
-		playButton.SetActive (true);
-		settingsButton.SetActive (true);
-		quitButton.SetActive (true);
+		//disables the sliders for the title screen (Alex Jungroth)
+		voterCounterSlider.SetActive(false);
+		sFXSlider.SetActive(false);
+		musicSlider.SetActive(false);
 	}
 
 	/// <summary>
@@ -140,11 +235,18 @@ public class TitleScreenUIScript : MonoBehaviour {
 	/// </summary>
 	public void resetSettings()
 	{
-		//toggleGridSize[4] = true;
+		//resets the toggles to the default settings (Alex Jungroth)
+		toggleGridSize[5].GetComponent<Toggle>().isOn = true;
+		toggleRounds[6].GetComponent<Toggle>().isOn = true;
+		toggleElection[0].GetComponent<Toggle>().isOn = true;
 
-		//toggleRounds[2] = true;
+		//resets the number of voters to the default settings (Alex Jungroth)
+		voterCounterButtonText.text = "40";
 
-		//toggleElection[1] = true;
+		//resets the sliders
+		voterCounterSlider.GetComponent<Slider>().value = 40;
+		sFXSlider.GetComponent<Slider>().value = 0.5f;
+		musicSlider.GetComponent<Slider>().value = 0.5f;
 	}
 
 	public void QuitGame(){
