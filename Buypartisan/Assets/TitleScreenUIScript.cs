@@ -108,6 +108,22 @@ public class TitleScreenUIScript : MonoBehaviour
 			if(toggleGridSize[i].isOn == true)
 			{
 				gridSize = i + 3;
+
+				//adjusts the max value of the slider so that user cannot have a 3X3X3 grid with more than 27 voters (Alex Jungroth)
+				if(i == 0)
+				{
+					if(voterCounterSlider.GetComponent<Slider>().value > 27)
+					{
+						//prevents the settings from defaulting to 27 if the user picks a 3X3X3 grid and a voter total greater than 27 (Alex Jungroth)
+						voterCounterSlider.GetComponent<Slider>().value = 12;
+					}
+
+					voterCounterSlider.GetComponent<Slider>().maxValue = 27;
+				}
+				else
+				{
+					voterCounterSlider.GetComponent<Slider>().maxValue = 50;
+				}
 			}
 
 			if(toggleRounds[i].isOn == true)
@@ -236,6 +252,7 @@ public class TitleScreenUIScript : MonoBehaviour
 		voterCounterButtonText.text = "40";
 
 		//resets the sliders (Alex Jungroth)
+		voterCounterSlider.GetComponent<Slider>().maxValue = 50;
 		voterCounterSlider.GetComponent<Slider>().value = 40;
 		sFXSlider.GetComponent<Slider>().value = 0.5f;
 		musicSlider.GetComponent<Slider>().value = 0.5f;
