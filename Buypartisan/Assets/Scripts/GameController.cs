@@ -232,7 +232,15 @@ public class GameController : MonoBehaviour {
 				//Brian Mah
 				randomEventController.players = players;
 				randomEventController.playersSpawned = true;
-			
+
+				//lets the voters know what the players are
+				for(int i = 0; i < voters.Length; i++){
+					voters[i].GetComponent<VoterVariables>().players = players;
+				}
+
+				//Brian Mah
+				//Makes voters the right colors
+				UpdateVoterCanidates();
 			}
 		} else if (currentState == GameState.ActionTurns) {
 
@@ -425,6 +433,14 @@ public class GameController : MonoBehaviour {
 			}
 		}
 		//TODO: implement the rest of the powers, which will be further increments of power
+	}
+
+	//function to make all voters check who they are closest to
+	public void UpdateVoterCanidates(){
+		Debug.Log("voters updated");
+		for (int i = 0; i < voters.Length; i++) {
+			voters[i].GetComponent<VoterVariables>().FindCanidate();
+		}
 	}
 	
 }//Gamecontroller Class
