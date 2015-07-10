@@ -235,22 +235,32 @@ public class Action2Script : MonoBehaviour {
 
 			//This is where the player confirms he has chosen the spot he wants to move the voter to.
 			if (confirmButton){
+				//Set initial bool to true, and if it fails any of the checks below, positionSelected becomes false;
+				positionSelected = true;
+
+				//Checks if chosen position is the same as the original position, hence not moved at all.
+				if (this.transform.position == originalPosition)
+					positionSelected = false;
+
+				//Checks if theres any other voters that are in the same position as the chosen position, except for itself.
 				for (int i = 0; i < voters.Length; i++) {
-					if (i != selectedVoter && voters[i].transform.position != this.transform.position && this.transform.position != originalPosition) {
-						positionSelected = true;
-
-						//tests to see if the action is successful (Alex Jungroth)
-						if(compareResistance())
-						{
-							voters[selectedVoter].transform.position = this.transform.position;
-
-							//increases the base resistance of the voter by 1% (Alex Jungroth)
-							voters[selectedVoter].GetComponent<VoterVariables>().baseResistance += voters[selectedVoter].GetComponent<VoterVariables>().baseResistance * 0.01f;
-
-						}
-
+					if (i != selectedVoter && voters[i].transform.position == this.transform.position) {
+						positionSelected = false;
 					}
 				}
+
+				if (positionSelected) {
+					//tests to see if the action is successful (Alex Jungroth)
+					if(compareResistance())
+					{
+						voters[selectedVoter].transform.position = this.transform.position;
+						
+						//increases the base resistance of the voter by 1% (Alex Jungroth)
+						voters[selectedVoter].GetComponent<VoterVariables>().baseResistance += voters[selectedVoter].GetComponent<VoterVariables>().baseResistance * 0.01f;
+						
+					}
+				}
+
 				confirmButton = false;
 			}
 		}
