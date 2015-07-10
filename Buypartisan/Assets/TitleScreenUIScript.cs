@@ -2,12 +2,15 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class TitleScreenUIScript : MonoBehaviour {
+public class TitleScreenUIScript : MonoBehaviour 
+{
+	//holds the script that the gameController will take the setting values from (Alex Jungroth)
+	public TitleScreenSettings gameSettings;
 
-	//holds the music controller
+	//holds the music controller (Alex Jungroth)
 	public MusicController musicPlayer;
 
-	//holds the SFX controller
+	//holds the SFX controller (Alex Jungroth)
 	public SFXController sFXPlayer;
 
 	//holds the title screen buttons (Alex Jungroth)
@@ -31,39 +34,44 @@ public class TitleScreenUIScript : MonoBehaviour {
 	public GameObject sFXText;
 	public GameObject musicText;
 
+	//holds the	parents of the toggles (Alex Jungroth)
+	public GameObject parentGridSize;
+	public GameObject parentRounds;
+	public GameObject parentElection;
+
 	//holds the toggle group for grid size (Alex Jungroth)
-	public GameObject[] toggleGridSize;
+	private Toggle[] toggleGridSize;
 
 	//holds the toggle group for rounds (Alex Jungroth)
-	public GameObject[] toggleRounds;
+	private Toggle[] toggleRounds;
 
 	//holds the toggle group for elections (Alex Jungroth)
-	public GameObject[] toggleElection;
+	private Toggle[] toggleElection;
 
 	//holds the title screen sliders (Alex Jungroth)
 	public GameObject voterCounterSlider;
 	public GameObject sFXSlider;
 	public GameObject musicSlider;
 
-	//holds the values that the gameController will get in the next scene
+	//holds the values that the gameController will get in the next scene (Alex Jungroth)
 	public int gridSize = 7;
 	public int totalRounds = 5;
 	public int totalElections = 2;
 	public float totalVoters = 40;
-	public float musicVolume = 1;
-	public float sFXVolume = 1;
+	public float musicVolume = 0.5f;
+	public float sFXVolume = 0.5f;
 
 	// Use this for initialization
 	void Start () {
 
 		//gets the toggles for altering the grid size (Alex Jungroth)
-		toggleGridSize = GameObject.FindGameObjectsWithTag("Grid");
+		toggleGridSize = parentGridSize.GetComponentsInChildren<Toggle>();
 
 		//gets the toggles for altering the number of rounds (Alex Jungroth)
-		toggleRounds = GameObject.FindGameObjectsWithTag("Rounds");
+		toggleRounds = parentRounds.GetComponentsInChildren<Toggle>();
 
 		//gets the toggles for altering the number of elections (Alex Jungroth)
-		toggleElection = GameObject.FindGameObjectsWithTag ("Election");
+		toggleElection = parentElection.GetComponentsInChildren<Toggle>();
 
 		//disables the back button and the reset button (Alex Jungroth)
 		backButton.SetActive(false);
@@ -73,17 +81,10 @@ public class TitleScreenUIScript : MonoBehaviour {
 		voterCounterButton.SetActive(false);
 
 		//disables the toggles for grid size, rounds, and election settings (Alex Jungroth)
-		for (int i = 0; i < 8; i++) 
-		{
-			toggleGridSize[i].SetActive(false);
-			toggleRounds[i].SetActive(false);
-		}
+		parentGridSize.SetActive(false);
+		parentRounds.SetActive(false);
+		parentElection.SetActive(false);
 
-		for (int i = 0; i < 10; i++)
-		{
-			toggleElection [i].SetActive(false);
-		}
-		
 		//disables the text for the title screen (Alex Jungroth)
 		gridText.SetActive(false);
 		roundsText.SetActive(false);
@@ -104,23 +105,23 @@ public class TitleScreenUIScript : MonoBehaviour {
 		//sets the grid size and number of rounds based on the toggle the player checked (Alex Jungroth)
 		for (int i = 0; i < 8; i++) 
 		{
-			if(toggleGridSize[i].GetComponent<Toggle>().isOn == true)
+			if(toggleGridSize[i].isOn == true)
 			{
-				gridSize = i;
+				gridSize = i + 3;
 			}
 
-			if(toggleRounds[i].GetComponent<Toggle>().isOn == true)
+			if(toggleRounds[i].isOn == true)
 			{
-				totalRounds = i;
+				totalRounds = i + 3;
 			}
 		}
 		
 		//sets the number of elections based on the toggle the player checked (Alex Jungroth)
 		for (int i = 0; i < 10; i++) 
 		{
-			if(toggleElection[i].GetComponent<Toggle>().isOn == true)
+			if(toggleElection[i].isOn == true)
 			{
-				totalElections = i;
+				totalElections = i + 1;
 			}
 		}
 
@@ -137,7 +138,11 @@ public class TitleScreenUIScript : MonoBehaviour {
 		sFXVolume = sFXSlider.GetComponent<Slider>().value;
 	}
 
-	public void PlayGame(){
+	public void PlayGame()
+	{
+		//sends the decided game settings to the object that the gameController will see (Alex Jungroth)
+		gameSettings.FinalizeSettings (gridSize, totalRounds,totalElections, totalVoters, musicVolume, sFXVolume);
+
 		Application.LoadLevel("PrototypeScene");
 	}
 
@@ -161,15 +166,9 @@ public class TitleScreenUIScript : MonoBehaviour {
 		voterCounterButton.SetActive(true);
 
 		//enables  the toggles for grid size, rounds, and election settings (Alex Jungroth)
-		for (int i = 0; i < 8; i++) {
-			toggleGridSize [i].SetActive(true);
-			toggleRounds [i].SetActive(true);
-		}
-
-		for (int i = 0; i < 10; i++)
-		{
-			toggleElection [i].SetActive(true);
-		}
+		parentGridSize.SetActive(true);
+		parentRounds.SetActive(true);
+		parentElection.SetActive(true);
 
 		//enables the text for the title screen (Alex Jungroth)
 		gridText.SetActive(true);
@@ -205,16 +204,9 @@ public class TitleScreenUIScript : MonoBehaviour {
 		voterCounterButton.SetActive(false);
 
 		//disables  the toggles for grid size, rounds, and election settings (Alex Jungroth)
-		for (int i = 0; i < 8; i++) 
-		{
-			toggleGridSize[i].SetActive(false);
-			toggleRounds[i].SetActive(false);
-		}
-
-		for (int i = 0; i < 10; i++)
-		{
-			toggleElection [i].SetActive(false);
-		}
+		parentGridSize.SetActive(false);
+		parentRounds.SetActive(false);
+		parentElection.SetActive(false);
 		
 		//disables the text for the title screen (Alex Jungroth)
 		gridText.SetActive(false);
@@ -236,14 +228,14 @@ public class TitleScreenUIScript : MonoBehaviour {
 	public void resetSettings()
 	{
 		//resets the toggles to the default settings (Alex Jungroth)
-		toggleGridSize[5].GetComponent<Toggle>().isOn = true;
-		toggleRounds[6].GetComponent<Toggle>().isOn = true;
-		toggleElection[0].GetComponent<Toggle>().isOn = true;
+		toggleGridSize[4].isOn = true;
+		toggleRounds[2].isOn = true;
+		toggleElection[1].isOn = true;
 
 		//resets the number of voters to the default settings (Alex Jungroth)
 		voterCounterButtonText.text = "40";
 
-		//resets the sliders
+		//resets the sliders (Alex Jungroth)
 		voterCounterSlider.GetComponent<Slider>().value = 40;
 		sFXSlider.GetComponent<Slider>().value = 0.5f;
 		musicSlider.GetComponent<Slider>().value = 0.5f;
