@@ -85,6 +85,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		randomEventController.voters = voters;
+
 		gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
 		if (gameMusic == null) {
 			Debug.LogError ("The Game Controller could not find the Music Controller please place it in the scene.");
@@ -226,7 +227,20 @@ public class GameController : MonoBehaviour {
 
 				//does the tallying before the first player's turn starts (Alex Jungroth)
 				tallyRoutine.preTurnTalling ();
-			
+
+				//Gives the randomEventController the list of newly spawned players
+				//Brian Mah
+				randomEventController.players = players;
+				randomEventController.playersSpawned = true;
+
+				//lets the voters know what the players are
+				for(int i = 0; i < voters.Length; i++){
+					voters[i].GetComponent<VoterVariables>().players = players;
+				}
+
+				//Brian Mah
+				//Makes voters the right colors
+				UpdateVoterCanidates();
 			}
 		} else if (currentState == GameState.ActionTurns) {
 
@@ -419,6 +433,14 @@ public class GameController : MonoBehaviour {
 			}
 		}
 		//TODO: implement the rest of the powers, which will be further increments of power
+	}
+
+	//function to make all voters check who they are closest to
+	public void UpdateVoterCanidates(){
+		Debug.Log("voters updated");
+		for (int i = 0; i < voters.Length; i++) {
+			voters[i].GetComponent<VoterVariables>().FindCanidate();
+		}
 	}
 	
 }//Gamecontroller Class

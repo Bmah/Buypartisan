@@ -23,6 +23,12 @@ public class PlayerVariables : MonoBehaviour {
 	//holds all of the shadow postions (Alex Jungroth)
 	public List<GameObject> shadowPositions = new List<GameObject>();
 
+	//Brian Mah
+	//code for voter's canidate color
+	private GameController gameController;
+	private Vector3 prevPosition;
+	private int prevSphereSize;
+
 	void Start () {
         
 		//makes sure all of the players shadowPositions lists are empty at the start of the program (Alex Jungroth)
@@ -37,6 +43,17 @@ public class PlayerVariables : MonoBehaviour {
 		sphereRenderer.material.SetColor ("_Color", transparentColor);
 		sphereController.transform.localScale = new Vector3 (sphereSize, sphereSize, sphereSize);
 
+		//Brian Mah
+		//previous position initialization
+		prevPosition = this.transform.position;
+		prevSphereSize = sphereSize;
+		gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+		if (gameController == null) {
+			Debug.LogError("Could not find the Game controller");
+		}
+		//does an initial check for when shadow positions spawn
+		gameController.UpdateVoterCanidates ();
+
 		//playerRenderer = this.GetComponent<Renderer>();
 	//	GameObject sphere = GameObject.CreatePrimitive (PrimitiveType.Sphere);
 		//sphere.transform.position = this.transform.position;
@@ -46,7 +63,12 @@ public class PlayerVariables : MonoBehaviour {
 	
 	
 	void Update () {
-	
+		//checks if the position has changed from previous update
+		if (prevPosition != this.transform.position || prevSphereSize != sphereSize) {
+			gameController.UpdateVoterCanidates ();
+		}// if position is not the previous position
+		prevPosition = this.transform.position;
+		prevSphereSize = sphereSize;
 	}
 
 	/// <summary>

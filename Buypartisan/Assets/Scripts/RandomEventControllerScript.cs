@@ -8,6 +8,15 @@ using System.Collections;
 public class RandomEventControllerScript : MonoBehaviour {
 
 	public GameObject[] voters;
+	public GameObject[] players;
+	public bool playersSpawned = false;
+	public int numberOfActions = 6;
+	private bool ActionCounterSetup = false;
+
+	private int[][] actionCounter;
+	public int[] actionThreshold = {3,3,3,3,3,3};
+	private bool[] eventTriggerList;
+
 	public VoterVariables[] voterVars = null;
 	private bool voterVarsSet = false;
 
@@ -17,6 +26,17 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		//the actionthreshold is set manually but must match with the number of actions
+		if (actionThreshold.Length != numberOfActions) {
+			Debug.LogError("ActionThresholdDoes not match with the number of actions");
+		}
+
+		//initializing the event trigger list
+		eventTriggerList = new bool[numberOfActions];
+		for(int i = 0; i < eventTriggerList.Length; i++){
+			eventTriggerList[i] = false;
+		}
+
 		if (UIController == null) {
 			Debug.LogError("UI_Script not set on RandomEventController");
 		}
@@ -31,6 +51,15 @@ public class RandomEventControllerScript : MonoBehaviour {
 				voterVars[i] = voters[i].GetComponent<VoterVariables>();
 			}
 			voterVarsSet = true;
+		}
+
+		if (playersSpawned && !ActionCounterSetup) {
+			//setup the array to have counters for all actions for all players
+			ActionCounterSetup = true;
+			actionCounter = new int[players.Length][];
+			for (int i = 0; i < actionCounter.Length; i++){
+				actionCounter[i] = new int[numberOfActions];
+			}
 		}
 	}// update
 
@@ -86,6 +115,8 @@ public class RandomEventControllerScript : MonoBehaviour {
 			UIController.alterTextBox("Newsflash! Little Timmy fell down the well!");
 			break;
 		}
+
+		CheckForTriggeredEvents();
 	}
 
 	/// <summary>
@@ -109,7 +140,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 						}
 					}
 				}
-
+				
 				//check to see if voter resistance prevents event from moving voter
 				if(magnitude < 0 &&  Random.value < voterVars[i].xMinusResistance + voterVars[i].baseResistance){
 					failToMove = true;
@@ -117,7 +148,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				else if(magnitude > 0 &&  Random.value < voterVars[i].xPlusResistance + voterVars[i].baseResistance){
 					failToMove = true;
 				}
-
+				
 				if(!failToMove)
 				{
 					voters[i].transform.position = temporaryPosition;
@@ -136,7 +167,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 						}
 					}
 				}
-
+				
 				//check to see if voter resistance prevents event from moving voter
 				if(magnitude < 0 &&  Random.value < voterVars[i].yMinusResistance + voterVars[i].baseResistance){
 					failToMove = true;
@@ -144,7 +175,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				else if(magnitude > 0 &&  Random.value < voterVars[i].yPlusResistance + voterVars[i].baseResistance){
 					failToMove = true;
 				}
-
+				
 				if(!failToMove)
 				{
 					voters[i].transform.position = temporaryPosition;
@@ -163,7 +194,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 						}
 					}
 				}
-
+				
 				//check to see if voter resistance prevents event from moving voter
 				if(magnitude < 0 &&  Random.value < voterVars[i].zMinusResistance + voterVars[i].baseResistance){
 					failToMove = true;
@@ -171,7 +202,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				else if(magnitude > 0 &&  Random.value < voterVars[i].zPlusResistance + voterVars[i].baseResistance){
 					failToMove = true;
 				}
-
+				
 				if(!failToMove)
 				{
 					voters[i].transform.position = temporaryPosition;
@@ -183,7 +214,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			break;
 		}
 	}
-
+	
 	/// <summary>
 	/// Multiplies every voter's money by the boom amount.
 	/// Brian Mah
@@ -194,7 +225,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			voters[i].GetComponent<VoterVariables>().money *= multiplier;
 		}
 	}
-
+	
 	/// <summary>
 	/// Divides every voter's money by the bust amount.
 	/// Brian Mah
@@ -207,4 +238,100 @@ public class RandomEventControllerScript : MonoBehaviour {
 	}
 
 
-}
+	void CheckForTriggeredEvents(){
+		for (int i = 0; i < actionCounter.Length; i++) {
+			for(int j = 0; j < actionCounter[0].Length; j++){
+				if (actionCounter[i][j] >= actionThreshold[j] &&  //if you have reached the threshold
+				    (Random.value < ((actionCounter[i][j] - actionThreshold[j]) * 0.1f + 0.3f))){ //and rng decides you 
+					//activate triggered event j with probability of 30% plus 10% * amount you have gone over threshold
+					eventTriggerList[j] = true;
+				}
+
+				//After checking to see if the event is triggered cool down the check
+				if(actionCounter[i][j] > 0){
+					actionCounter[i][j]--;
+				}
+			}
+
+			if(eventTriggerList[0]){
+				eventTriggerList[0] = false;
+				//VoterSupression
+				VoterOutrage(players[i]);
+				UIController.alterTextBox("Newsflash! Voters outraged at supression by player "+ (i+1) +
+				                          " Voters gather at the polls to vote against them!");
+			}
+			if(eventTriggerList[1]){
+				eventTriggerList[1] = false;
+				//MoveParty
+				FlipFlopping(players[i]);
+			}
+			if(eventTriggerList[2]){
+				eventTriggerList[2] = false;
+				//InfluenceVoters
+				VoterManipulation(players[i]);
+			}
+			if(eventTriggerList[3]){
+				eventTriggerList[3] = false;
+				//ShadowPosition
+				ContradictoryPositions (players[i]);
+			}
+			if(eventTriggerList[4]){
+				eventTriggerList[4] = false;
+				//CampaignTour
+				AdBurnout(players[i]);
+				//smaller size sphere
+			}
+			if(eventTriggerList[5]){
+				eventTriggerList[5] = false;
+				//SphereOfInfluence
+				OverreachingCampeign(players[i]);
+			}
+		}//for each player
+	}//Check For Triggered events
+
+	/// <summary>
+	/// Voters the outrage.
+	/// </summary>
+	void VoterOutrage(GameObject TargetPlayer){
+		for (int i = 0; i < voters.Length; i++) {
+		
+		}
+	}
+
+	/// <summary>
+	/// Flips the flopping.
+	/// </summary>
+	void FlipFlopping(GameObject TargetPlayer){
+	
+	}
+
+	/// <summary>
+	/// Voters the manipulation.
+	/// </summary>
+	void VoterManipulation(GameObject TargetPlayer){
+
+	}
+
+	/// <summary>
+	/// Contradictories the positions.
+	/// </summary>
+	void ContradictoryPositions(GameObject TargetPlayer){
+
+	}
+
+	/// <summary>
+	/// Ads the burnout.
+	/// </summary>
+	void AdBurnout(GameObject TargetPlayer){
+
+	}
+
+	/// <summary>
+	/// Overreachings the campeign.
+	/// </summary>
+	void OverreachingCampeign(GameObject TargetPlayer){
+
+	}
+
+
+}//RandomEventController script
