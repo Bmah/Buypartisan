@@ -88,7 +88,7 @@ public class VoterVariables : MonoBehaviour {
 				currentCanidateDistance = (this.transform.position - players[i].GetComponent<PlayerVariables>().shadowPositions[j].transform.position).magnitude;
 				
 				//if that is closer than the previous closestDistance
-				if(currentCanidateDistance < closestDistance && currentCanidateDistance <= players[i].GetComponent<PlayerVariables>().shadowPositions[j].GetComponent<PlayerVariables>().sphereSize / 20){
+				if(currentCanidateDistance < closestDistance && currentCanidateDistance <= players[i].GetComponent<PlayerVariables>().shadowPositions[j].GetComponent<PlayerVariables>().sphereController.transform.localScale.x / 20f){
 					closestDistance = currentCanidateDistance;
 					CanidateChoice = players[i];
 				}
@@ -101,7 +101,7 @@ public class VoterVariables : MonoBehaviour {
 			currentCanidateDistance = (this.transform.position - players[i].transform.position).magnitude;
 			
 			//if that is closer than the previous closestDistance
-			if(currentCanidateDistance < closestDistance && currentCanidateDistance <= players[i].GetComponent<PlayerVariables>().sphereSize / 20){
+			if(currentCanidateDistance < closestDistance && currentCanidateDistance <= players[i].GetComponent<PlayerVariables>().sphereController.transform.localScale.x / 20f){
 				closestDistance = currentCanidateDistance;
 				CanidateChoice = players[i];
 			}
