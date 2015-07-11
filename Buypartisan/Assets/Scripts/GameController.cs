@@ -18,6 +18,9 @@ public class GameController : MonoBehaviour {
 	public int gridSize;
 	public GridInstanced GridInstancedController;
 
+	//holds the title screen settings (Alex Jungroth)
+	private TitleScreenSettings gameSettings;
+
 	public UI_Script UIController;
 
 	public RandomEventControllerScript randomEventController;
@@ -31,7 +34,7 @@ public class GameController : MonoBehaviour {
 	public int numberOfRounds; //this is a variable that you can change to however many number if rounds we want.
 	private int roundCounter = 0;//will be used to keep track of rounds
 	public bool playerTakingAction = false;
-	public bool messaged;//Checks if Player has finished taking an acti
+	public bool messaged;//Checks if Player has finished taking an action
 	public bool player2Spawning = false;
 	
 	public GameObject[] voters;//array which houses the voters
@@ -47,6 +50,8 @@ public class GameController : MonoBehaviour {
 	private Color player2SphereTransparency;
 
 	private MusicController gameMusic;
+	//holds wether or not the gameController got the music volume settings (Alex Jungroth)
+	private bool musicSettingsReceived = false;
 	private SFXController SFX;
 	public float SFXVolume;
 
@@ -72,6 +77,29 @@ public class GameController : MonoBehaviour {
 	/// </summary>
 	void Start () {
 		//VoterVariables VoterVariablesController = GameObject.FindGameObjectWithTag("Voter(Clone)").GetComponent<GameController>();
+
+		//gets the title screen settings script (Alex Jungroth)
+		gameSettings = GameObject.FindGameObjectWithTag ("TitleSettings").GetComponent<TitleScreenSettings>();
+
+		if (gameSettings == null) 
+		{
+			//throws an error if the gameController did not receive the title screen settings (Alex Jungroth)
+			Debug.LogError("Could not find the title screen settings!");
+
+		} 
+		else 
+		{
+			//gets the following variables from the title UI settings (Alex Jungroth)
+			gridSize = gameSettings.gridSize;
+			numberOfRounds = gameSettings.totalRounds;
+			//the number of elections will be added later when presistant elections have been addded (Alex Jungroth)
+			//some variable for holding the total number of elections = gameSettings.totalElections;
+			NumVoters = gameSettings.totalVoters;
+			//the music has to set during the update function (Alex Jungroth)
+			musicSettingsReceived = true;
+			SFXVolume = gameSettings.sFXVolume;
+		}
+
 		GridInstancedController.GridInstantiate (gridSize);
 		UIController.gridSize = gridSize;
 		UIController.SFXvolume = SFXVolume;
@@ -217,6 +245,13 @@ public class GameController : MonoBehaviour {
 	void Update () {
 
 		if (currentState == GameState.PlayerSpawn) {
+
+			//sets the music volume at the start of the game (Alex Jungroth)
+			if(musicSettingsReceived == true)
+			{
+				gameMusic.audioChannels[0].volume = gameSettings.musicVolume;
+			}
+
 			if (playersSpawned < numberPlayers) { //Players are still spawning in
 				SpawnPlayer ();
 			} else {
@@ -248,8 +283,6 @@ public class GameController : MonoBehaviour {
 			if (roundCounter < numberOfRounds) {
 				PlayerTurn ();
 
-				if (Input.GetKeyDown (KeyCode.P))
-					playerTakingAction = true;//this skips the current turn by ending the turn.
 			} else {
 				currentState = GameState.RoundEnd;
 
