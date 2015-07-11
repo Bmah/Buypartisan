@@ -34,7 +34,7 @@ public class Action6Script : MonoBehaviour {
 		uiController = GameObject.Find ("UI Controller");
 
 		uiController.GetComponent<UI_Script> ().disableActionButtons ();
-		uiController.GetComponent<UI_Script>().activateAction5UI();
+		uiController.GetComponent<UI_Script>().activateAction0UI();
 		//Obtains the voter and player array from the gameController
 		if (gameController != null) {
 			voters = gameController.GetComponent<GameController> ().voters;

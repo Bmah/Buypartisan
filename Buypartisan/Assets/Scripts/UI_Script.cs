@@ -470,6 +470,10 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 5) {
 				instantiatedAction.GetComponent<Action5Script>().cancelButton = true;
 			}
+
+			if (chosenAction == 6) {
+				instantiatedAction.GetComponent<Action6Script>().cancelButton = true;
+			}
 		}
 	}
 
