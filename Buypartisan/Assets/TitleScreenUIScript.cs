@@ -19,6 +19,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	public GameObject playButton;
 	public GameObject settingsButton;
 	public GameObject quitButton;
+    public GameObject creditsButton;
 
 	//holds the button that is acting as a background for the text (Alex Jungroth)
 	public GameObject voterCounterButton;
@@ -33,6 +34,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	public GameObject voterCounterText;
 	public GameObject sFXText;
 	public GameObject musicText;
+    public GameObject creditsText;
 
 	//holds the	parents of the toggles (Alex Jungroth)
 	public GameObject parentGridSize;
@@ -60,6 +62,8 @@ public class TitleScreenUIScript : MonoBehaviour
 	public float totalVoters = 40;
 	public float musicVolume = 0.5f;
 	public float sFXVolume = 0.5f;
+
+    private bool inCredits = false;
 
 	// Use this for initialization
 	void Start () {
@@ -92,6 +96,7 @@ public class TitleScreenUIScript : MonoBehaviour
 		voterCounterText.SetActive(false);
 		sFXText.SetActive(false);
 		musicText.SetActive(false);
+        creditsText.SetActive(false);
 
 		//disables the sliders for the title screen (Alex Jungroth)
 		voterCounterSlider.SetActive(false);
@@ -152,6 +157,11 @@ public class TitleScreenUIScript : MonoBehaviour
 		//adjusts the SFX volume as the user moves the handle on the slide bar (Alex Jungroth)
 		sFXPlayer.AudioChannels [0].volume = sFXSlider.GetComponent<Slider>().value;
 		sFXVolume = sFXSlider.GetComponent<Slider>().value;
+
+        if (inCredits && Input.GetMouseButtonDown(0))
+        {
+            toggleCredits(false);
+        }
 	}
 
 	public void PlayGame()
@@ -173,6 +183,7 @@ public class TitleScreenUIScript : MonoBehaviour
 		playButton.SetActive(false);
 		settingsButton.SetActive(false);
 		quitButton.SetActive(false);
+        creditsButton.SetActive(false);
 
 		//enables the back button and the reset button (Alex Jungroth)
 		backButton.SetActive(true);
@@ -211,6 +222,7 @@ public class TitleScreenUIScript : MonoBehaviour
 		playButton.SetActive(true);
 		settingsButton.SetActive(true);
 		quitButton.SetActive(true);
+        creditsButton.SetActive(true);
 
 		//disables the back button and the reset button (Alex Jungroth)
 		backButton.SetActive(false);
@@ -261,4 +273,33 @@ public class TitleScreenUIScript : MonoBehaviour
 	public void QuitGame(){
 		Application.Quit ();
 	}
+
+    // Michael Lee
+    public void toggleCredits(bool buttonClick)
+    {
+        // If button click, show credits
+        if (buttonClick)
+        {
+            // Hides main menu buttons
+            inCredits = true;
+            playButton.SetActive(false);
+            settingsButton.SetActive(false);
+            quitButton.SetActive(false);
+            creditsButton.SetActive(false);
+            // Show credits
+            creditsText.SetActive(true);
+        }
+        // If mouse left click, then go back to main menu
+        else
+        {
+            // Show main menu
+            inCredits = false;
+            playButton.SetActive(true);
+            settingsButton.SetActive(true);
+            quitButton.SetActive(true);
+            creditsButton.SetActive(true);
+            // Hide credits
+            creditsText.SetActive(false);
+        }
+    }
 }
