@@ -1,4 +1,5 @@
 ﻿//Alex Jungroth
+//edits by Brian Mah
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -42,6 +43,14 @@ public class UI_Script : MonoBehaviour {
 	//holds the button for displaying player's stats
 	public GameObject displayStatsButton;
 
+	public GameObject party1Button;
+
+	public GameObject party2Button;
+
+	public GameObject party3Button;
+
+	public GameObject party4Button;
+
 	//holds the Action Buttons by the tag ActionButton
 	public GameObject[] ActionButtonObject;
 
@@ -79,6 +88,14 @@ public class UI_Script : MonoBehaviour {
 	//this allows the UI to talk to the SFX controller to play sounds
 	private SFXController sfx;
 	public float SFXvolume = 1;
+
+	//this code takes care of the scaling of the scroll rect dynamically.
+	//Brian Mah
+	public RectTransform rectScrollView;
+	public RectTransform rectScrollBar;
+	public float scrollViewWidth = 360f;
+	public float titleHeight = 114f;
+	public float bottomTVHeight = 300f;
 
 	// Use this for initialization
 	void Start () {
@@ -143,6 +160,11 @@ public class UI_Script : MonoBehaviour {
 		//disables the display stats button at the start
 		displayStatsButton.SetActive (false);
 
+		party1Button.SetActive (false);
+		party2Button.SetActive (false);
+		party3Button.SetActive (false);
+		party4Button.SetActive (false);
+
 		//gets the current player
 		currentPlayerPrefab = controller.GetComponent<GameController> ().players;
 
@@ -154,10 +176,27 @@ public class UI_Script : MonoBehaviour {
         // Initializes cost
         updateCost();
 
+
+		//set size and position of scrollview and scrollBar
+		//Brian Mah
+		float scrollViewHeight = Screen.height - (titleHeight + bottomTVHeight);
+		float heightToMove = scrollViewHeight - rectScrollBar.sizeDelta.y;
+		heightToMove /= 2;
+		if (scrollViewHeight < 1f) {
+			Debug.LogError("Screen Height not supported");
+			scrollViewHeight = 100f;
+		}
+		rectScrollView.sizeDelta = new Vector2 (scrollViewWidth, scrollViewHeight);
+		rectScrollBar.sizeDelta = new Vector2(rectScrollBar.rect.width,scrollViewHeight);
+		rectScrollView.anchoredPosition = new Vector2 (rectScrollView.anchoredPosition.x, rectScrollView.anchoredPosition.y - heightToMove);
+		rectScrollBar.anchoredPosition = new Vector2 (rectScrollBar.anchoredPosition.x, rectScrollBar.anchoredPosition.y - heightToMove);
+		//rectScrollView.position = new Vector3 (rectScrollView.position.x, 0, rectScrollView.position.z);
+		//rectScrollBar.position = new Vector3 (rectScrollBar.position.x, 0, rectScrollBar.position.z);
+		//Debug.Log ("The Height is: " + rectScrollView.localPosition.y);
+		//Debug.Log ("Height move is: " + heightToMove);
 	}
-
-
 	
+
 	// Update is called once per frame
 	void Update () {
 		
@@ -388,6 +427,14 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().confirmButton = true;
 			}
+
+			if (chosenAction == 5) {
+				instantiatedAction.GetComponent<Action5Script>().confirmButton = true;
+			}
+
+			if (chosenAction == 7) {
+				instantiatedAction.GetComponent<Action7Script>().confirmButton = true;
+			}
 		}
 	}
 
@@ -423,7 +470,33 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 4) {
 				instantiatedAction.GetComponent<Action4Script>().cancelButton = true;
 			}
+
+			if (chosenAction == 5) {
+				instantiatedAction.GetComponent<Action5Script>().cancelButton = true;
+			}
+
+			if (chosenAction == 6) {
+				instantiatedAction.GetComponent<Action6Script>().cancelButton = true;
+			}
+
+			if (chosenAction == 7) {
+				instantiatedAction.GetComponent<Action7Script>().cancelButton = true;
+			}
 		}
+	}
+
+	public void PartyEnable () {
+		party1Button.SetActive (true);
+		party2Button.SetActive (true);
+		party3Button.SetActive (true);
+		party4Button.SetActive (true);
+	}
+
+	public void PartyDisable () {
+		party1Button.SetActive (false);
+		party2Button.SetActive (false);
+		party3Button.SetActive (false);
+		party4Button.SetActive (false);
 	}
 
 	public void alterTextBox(string inputText)
@@ -446,6 +519,19 @@ public class UI_Script : MonoBehaviour {
 		cancelButton.SetActive (false);
 	}
 
+	public void enablePPButtons()
+	{
+		//Debug.Log("Pressed");
+		//disables the Player Placement buttons and the cancel button
+		xPlusButton.SetActive (true);
+		xMinusButton.SetActive (true);
+		yPlusButton.SetActive (true);
+		yMinusButton.SetActive (true);
+		zPlusButton.SetActive (true);
+		zMinusButton.SetActive (true);
+		confirmButton.SetActive (true);
+		cancelButton.SetActive (true);
+	}
 	public void toggleActionButtons()
 	{
 		//this enables the action buttons
@@ -518,14 +604,14 @@ public class UI_Script : MonoBehaviour {
 
 	public void activateAction0UI()
 	{
-		leftButton.SetActive (true);
-		rightButton.SetActive (true);
-		confirmButton.SetActive (true);
+		//leftButton.SetActive (true);
+		//rightButton.SetActive (true);
 		cancelButton.SetActive (true);
 	}
 
 	public void activateAction0UI2()
-	{
+	{	
+		confirmButton.SetActive (true);
 		leftButton.SetActive (false);
 		rightButton.SetActive (false);
 
@@ -546,14 +632,14 @@ public class UI_Script : MonoBehaviour {
 	public void activateAction2UI1()
 	{
 		disablePPButtons ();
-		leftButton.SetActive (true);
-		rightButton.SetActive (true);
-		confirmButton.SetActive (true);
+		//leftButton.SetActive (true);
+		//rightButton.SetActive (true);
 		cancelButton.SetActive (true);
 	}
 
 	public void activateAction2UI2()
-	{
+	{	
+		confirmButton.SetActive (true);
 		leftButton.SetActive (false);
 		rightButton.SetActive (false);
 		xPlusButton.SetActive (true);
@@ -586,6 +672,11 @@ public class UI_Script : MonoBehaviour {
 		yMinusButton.SetActive (true);
 		zPlusButton.SetActive (true);
 		zMinusButton.SetActive (true);
+		confirmButton.SetActive (true);
+		cancelButton.SetActive (true);
+	}
+
+	public void activateAction5UI() {
 		confirmButton.SetActive (true);
 		cancelButton.SetActive (true);
 	}
@@ -627,14 +718,16 @@ public class UI_Script : MonoBehaviour {
     // This works for now but needs to be re-written because of an Action bug
     public void updateCost()
     {
-		//text0.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action1Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+		text0.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 
-        text1.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+        text1.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 
-        text2.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+        text2.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 
-        text3.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+        text3.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 
-        text4.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+        text4.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+
+        text5.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
     }
 }

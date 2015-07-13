@@ -2,12 +2,15 @@
 using System.Collections;
 
 public class CameraMovement : MonoBehaviour {
-	
+	//Created by Michael, with lots of edits by Chris.
+	//7/9/15, added "Radius" variable that adds to the distance of the orbit by a flat float.
+
 	private InputManagerScript inputManager;
 	private GameController gameController;
 	
 	public Transform target;
 	private float distance = 5.0f;
+	public float radius = 5.0f;
 	public float xSpeed = 120.0f;
 	public float ySpeed = 120.0f;
 	
@@ -16,6 +19,8 @@ public class CameraMovement : MonoBehaviour {
 	
 	public float distanceMin = .5f;
 	public float distanceMax = 15f;
+
+    public float WASDQEspeed = 2f;
 	
 	private Rigidbody cameraRigidbody;
 	
@@ -54,7 +59,7 @@ public class CameraMovement : MonoBehaviour {
 
 		//This is the calculation to find where the Camera should be according to grid size.
 		float rad = Vector3.Distance(pivotOriginalPosition, gridStartingPoint);
-		rad += 2.0f;
+		rad += radius;
 		distance = rad;
 		float xPos = rad * Mathf.Sin (225.0f * Mathf.Deg2Rad) * Mathf.Sin (45.0f * Mathf.Deg2Rad);
 		float yPos = rad * Mathf.Cos (45.0f * Mathf.Deg2Rad);
@@ -63,7 +68,7 @@ public class CameraMovement : MonoBehaviour {
 		this.transform.position = cameraOriginalPosition;
 
 		camController = this.GetComponent<Camera> ();
-		float margin = 432f / Screen.width;
+		float margin = 360f / Screen.width;
 		camController.rect = new Rect(margin, 0f, 1-margin, 1f);
 	}
 	
@@ -87,38 +92,38 @@ public class CameraMovement : MonoBehaviour {
 		// Camera pans left
 		if (inputManager.leftButtonHold == true)
 		{
-			transform.Translate(Vector3.left * Time.deltaTime);
-			target.transform.Translate(Vector3.left * Time.deltaTime);
+			transform.Translate(Vector3.left * Time.deltaTime * WASDQEspeed);
+			target.transform.Translate(Vector3.left * Time.deltaTime * WASDQEspeed);
 		}
 		// Camera pans right
 		if (inputManager.rightButtonHold == true)
 		{
-			transform.Translate(Vector3.right * Time.deltaTime);
-			target.transform.Translate(Vector3.right * Time.deltaTime);
+            transform.Translate(Vector3.right * Time.deltaTime * WASDQEspeed);
+            target.transform.Translate(Vector3.right * Time.deltaTime * WASDQEspeed);
 		}
 		// Camera pans forward
 		if (inputManager.upButtonHold == true)
 		{
-			transform.Translate(Vector3.forward * Time.deltaTime);
-			target.transform.Translate(Vector3.forward * Time.deltaTime);
+            transform.Translate(Vector3.forward * Time.deltaTime * WASDQEspeed);
+            target.transform.Translate(Vector3.forward * Time.deltaTime * WASDQEspeed);
 		}
 		// Camera pans backwards
 		if (inputManager.downButtonHold == true)
 		{
-			transform.Translate(Vector3.back * Time.deltaTime);
-			target.transform.Translate(Vector3.back * Time.deltaTime);
+            transform.Translate(Vector3.back * Time.deltaTime * WASDQEspeed);
+            target.transform.Translate(Vector3.back * Time.deltaTime * WASDQEspeed);
 		}
 		// Camera pans up
-		if (inputManager.qButtonHold == true)
-		{
-			transform.Translate(new Vector3(0,1,0) * Time.deltaTime);
-			target.transform.Translate(new Vector3(0,1,0) * Time.deltaTime);
-		}
-		// Camera pans down
 		if (inputManager.eButtonHold == true)
 		{
-			transform.Translate(new Vector3(0,-1,0) * Time.deltaTime);
-			target.transform.Translate(new Vector3(0,-1,0) * Time.deltaTime);
+            transform.Translate(new Vector3(0, 1, 0) * Time.deltaTime * WASDQEspeed);
+            target.transform.Translate(new Vector3(0, 1, 0) * Time.deltaTime * WASDQEspeed);
+		}
+		// Camera pans down
+		if (inputManager.qButtonHold == true)
+		{
+            transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * WASDQEspeed);
+            target.transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * WASDQEspeed);
 		}
 	}
 	
@@ -139,7 +144,7 @@ public class CameraMovement : MonoBehaviour {
 				
 				Quaternion rotation = Quaternion.Euler(y, x, 0);
 				
-				distance = Mathf.Clamp(distance - Input.GetAxis("Mouse ScrollWheel") * 5, distanceMin, distanceMax);
+				distance = Mathf.Clamp(distance - (Input.GetAxis("Mouse ScrollWheel") / 2), distanceMin, distanceMax);
 				
 				//This contains the zoomin function from a raycast. Disabled for now - if we need it in the future, we can enable it.
 				//RaycastHit hit;

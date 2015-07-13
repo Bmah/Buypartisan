@@ -13,8 +13,8 @@ using System.Collections;
 /// 
 /// </summary>
 public class Action0Script : MonoBehaviour {
-    public string actionName = "VoterSuppression";
-	public int baseCost = 20;
+    public string actionName = "Voter Suppression";
+	public int baseCost = 100;
     public int totalCost = 0; // Please use totalCost for any end calculation, since this will be used to display on the UI's action button
     public float costMultiplier = 1.0f; // Increased by fixed amount within same turn (in PlayerTurnsManager). This is reset to 1 after the END of your turn.
 
@@ -27,6 +27,7 @@ public class Action0Script : MonoBehaviour {
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 	private int selectedVoter = 0;
 	private bool voterSelected = false;
+	private bool foundVoter = false;
 
 	[System.NonSerialized]
 	public bool leftButton = false; //checks if left button has been pressed
@@ -36,6 +37,9 @@ public class Action0Script : MonoBehaviour {
 	public bool confirmButton = false; //checks if confirm button has been pressed
 	[System.NonSerialized]
 	public bool cancelButton = false;
+
+	//holds the number needed for this action to succeed (Alex Jungroth)
+	public float successRate = 0.5f;
 
 	// Use this for initialization
 	void Start () {
@@ -84,16 +88,15 @@ public class Action0Script : MonoBehaviour {
 	void Update () {
 
 		//ends the action if the cancel button is pressed (Alex Jungroth)
-		if (cancelButton) 
-		{
+		if (cancelButton) {
 			//handles early canceling(Alex Jungroth)
-			uiController.GetComponent<UI_Script>().activateAction0UI2();
-			uiController.GetComponent<UI_Script>().toggleActionButtons();
-			Destroy(gameObject);
+			uiController.GetComponent<UI_Script> ().activateAction0UI2 ();
+			uiController.GetComponent<UI_Script> ().toggleActionButtons ();
+			Destroy (gameObject);
 		}
 
 		if (!voterSelected) {
-			if (leftButton) {
+			/*if (leftButton) {
 				if (selectedVoter == 0) {
 					selectedVoter = voters.Length - 1;
 				} else {
@@ -110,23 +113,42 @@ public class Action0Script : MonoBehaviour {
 					selectedVoter += 1;
 				}
 				this.transform.position = voters [selectedVoter].transform.position;
-				
+
 				rightButton = false;
 			}
 			if (confirmButton) {
 				Debug.Log ("Here");
 				voterSelected = true;
-				voters [selectedVoter].GetComponent<VoterVariables> ().votes = 0;
 				confirmButton = false;
-				uiController.GetComponent<UI_Script>().activateAction0UI2();
+				uiController.GetComponent<UI_Script> ().activateAction0UI2 ();
+
+				//checks to see if the power succeeded (Alex Jungroth)
+
+			}*/
+
+			if (Input.GetMouseButtonDown(0)) {
+				for (int i = 0; i < voters.Length; i++) {
+					if (voters [i].GetComponent<VoterVariables> ().GetSelected ()) {
+							
+						if (Random.value >= successRate)
+						{
+							voters [i].GetComponent<VoterVariables> ().votes = 0;
+						}
+						foundVoter = true;
+						voterSelected = true;
+					}
+				}
+				if (!foundVoter) {
+					Debug.Log ("Please Select A Voter by Mousing Over Them and Clicking");
+				}
 
 			}
 		}
 		if (voterSelected)
-			EndAction();
+			EndAction ();
 
+	
 	}
-
 	void EndAction() {
 		uiController.GetComponent<UI_Script>().activateAction0UI2();
 		uiController.GetComponent<UI_Script>().toggleActionButtons();

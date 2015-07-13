@@ -20,13 +20,24 @@ public class VoterVariables : MonoBehaviour {
 	string holdingText;
 
 	//These variables hold a voters resistance to being moved (Alex Jungroth)
-	public int baseResistance = 0;
-	public int xPlusResistance = 0;
-	public int xMinusResistance = 0;
-	public int yPlusResistance = 0;
-	public int yMinusResistance = 0;
-	public int zPlusResistance = 0;
-	public int zMinusResistance = 0;
+	public float baseResistance = 0;
+	public float xPlusResistance = 0;
+	public float xMinusResistance = 0;
+	public float yPlusResistance = 0;
+	public float yMinusResistance = 0;
+	public float zPlusResistance = 0;
+	public float zMinusResistance = 0;
+
+	//voterOwner Brian Mah
+	public GameObject CanidateChoice;
+	private bool movedRecently = false;
+	private Vector3 prevPosition;
+	public GameObject[] players;
+	public Material contestedSelectedTexture;
+	public Material contestedUnselectedTexture;
+	private Material originalSelected;
+	private Material originalUnselected;
+
 
 	void Start () {
 		voterRenderer = this.GetComponent<Renderer>();
@@ -34,6 +45,11 @@ public class VoterVariables : MonoBehaviour {
 		powerType = 1; //hardcoded for testing suppression, make sure to remove when code in place for buttons assigning
 		ControllerSquared = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 		UIController = GameObject.FindGameObjectWithTag ("UI_Controller").GetComponent<UI_Script> ();
+
+		//initialization for voter Owner system
+		prevPosition = this.transform.position;
+		originalSelected = selectedTexture;
+		originalUnselected = unselectedTexture;
 	}
 	
 	/// <summary>
@@ -48,10 +64,70 @@ public class VoterVariables : MonoBehaviour {
 			RaycastHit hit;
 			if (Coll.Raycast (ray, out hit, 100.0F)) {
 				ToggleSelected();
-				ControllerSquared.PowerCall(powerType);
+				//ControllerSquared.PowerCall(powerType);
 				ToggleSelected();
 
 			}
+		}
+
+		//checks if the position has changed from previous update
+		if (prevPosition != this.transform.position) {
+			FindCanidate();
+		}// if position is not the previous position
+		prevPosition = this.transform.position;
+
+	}//Update
+
+	//looks at all canidates and finds which one this voter belongs to
+	public void FindCanidate(){
+		float closestDistance = 1000f;
+		float currentCanidateDistance;
+		for(int i = 0; i < players.Length; i++){
+			for(int j = 0; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count; j++){
+				//distance to the canidate's shadow positions being checked
+				currentCanidateDistance = (this.transform.position - players[i].GetComponent<PlayerVariables>().shadowPositions[j].transform.position).magnitude;
+				
+				//if that is closer than the previous closestDistance
+				if(currentCanidateDistance < closestDistance && currentCanidateDistance <= players[i].GetComponent<PlayerVariables>().shadowPositions[j].GetComponent<PlayerVariables>().sphereController.transform.localScale.x / 20f){
+					closestDistance = currentCanidateDistance;
+					CanidateChoice = players[i];
+				}
+				else if(currentCanidateDistance == closestDistance){
+					CanidateChoice = null;
+				}
+			}//for shadowpositions
+			
+			//distance to the canidate you are checking
+			currentCanidateDistance = (this.transform.position - players[i].transform.position).magnitude;
+			
+			//if that is closer than the previous closestDistance
+			if(currentCanidateDistance < closestDistance && currentCanidateDistance <= players[i].GetComponent<PlayerVariables>().sphereController.transform.localScale.x / 20f){
+				closestDistance = currentCanidateDistance;
+				CanidateChoice = players[i];
+			}
+			else if(currentCanidateDistance == closestDistance ){
+				CanidateChoice = null;
+			}
+			
+		}//for players
+		
+		//if no canidates are within range
+		if(closestDistance == 1000f){
+			CanidateChoice = null;
+			selectedTexture = originalSelected;
+			unselectedTexture = originalUnselected;
+			voterRenderer.material = unselectedTexture;
+		}
+		else if(CanidateChoice == null){  //if there is a tie
+			selectedTexture = contestedSelectedTexture;
+			unselectedTexture = contestedUnselectedTexture;
+			voterRenderer.material = unselectedTexture;
+		}
+		else{ //if a canidate has been selected
+			selectedTexture = CanidateChoice.GetComponent<Renderer>().material;
+			//selectedTexture.color = new Color(selectedTexture.color.r + 0.5f, selectedTexture.color.g + 0.5f, selectedTexture.color.b + 0.5f);
+			unselectedTexture = CanidateChoice.GetComponent<Renderer>().material;
+			voterRenderer.material = unselectedTexture;
 		}
 
 	}
