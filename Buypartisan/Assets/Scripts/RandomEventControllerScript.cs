@@ -284,17 +284,23 @@ public class RandomEventControllerScript : MonoBehaviour {
 			if(eventTriggerList[5]){
 				eventTriggerList[5] = false;
 				//SphereOfInfluence
-				OverreachingCampeign(players[i]);
+				OverreachingCampaign(players[i]);
 			}
 		}//for each player
 	}//Check For Triggered events
 
 	/// <summary>
-	/// Voters the outrage.
+	/// Voter Outrage:
+	/// Voters flock to the opposing canidate's position
+	/// one of their voters gain a 200 voter boost in votes
 	/// </summary>
 	void VoterOutrage(GameObject TargetPlayer){
-		for (int i = 0; i < voters.Length; i++) {
-		
+		bool foundOpposingVoter = false;
+		for (int i = 0; i < voters.Length && !foundOpposingVoter; i++) {
+			if(voterVars[i].CanidateChoice != null && voterVars[i].CanidateChoice != TargetPlayer){
+				voterVars[i].votes += 200;
+				foundOpposingVoter = true;
+			}
 		}
 	}
 
@@ -302,35 +308,151 @@ public class RandomEventControllerScript : MonoBehaviour {
 	/// Flips the flopping.
 	/// </summary>
 	void FlipFlopping(GameObject TargetPlayer){
-	
+		bool failToMove = false;
+		int magnitude;
+		Vector3 newLocation;
+		float direction;
+
+		for (int i = 0; i < voters.Length; i++) {
+			if(voterVars[i].CanidateChoice == TargetPlayer){
+				newLocation = voters[i].transform.position;
+				direction = Random.value;
+
+				//choose a direction
+				if(direction < 0.3333f){
+					//move along x axis
+					if(voters[i].transform.position.x - TargetPlayer.transform.position.x < 0){
+						magnitude = -1;
+					}
+					else{
+						magnitude = 1;
+					}
+					failToMove = false;
+					Vector3 temporaryPosition = voters[i].transform.position;
+					if((magnitude > 0 && temporaryPosition.x < gridSize - magnitude)||(magnitude < 0 && temporaryPosition.x > -1 - magnitude)){
+						temporaryPosition.x = temporaryPosition.x + magnitude;
+						for(int j = 0; j < voters.Length && !failToMove; j++){
+							if(voters[j].transform.position == temporaryPosition){
+								failToMove = true;
+							}
+						}
+					}
+					
+					//check to see if voter resistance prevents event from moving voter
+					if(magnitude < 0 &&  Random.value < voterVars[i].xMinusResistance + voterVars[i].baseResistance){
+						failToMove = true;
+					}
+					else if(magnitude > 0 &&  Random.value < voterVars[i].xPlusResistance + voterVars[i].baseResistance){
+						failToMove = true;
+					}
+					
+					if(!failToMove)
+					{
+						voters[i].transform.position = temporaryPosition;
+					}
+				}
+				else if(direction < 0.6666f){
+					//move voter in y direction
+					if(voters[i].transform.position.y - TargetPlayer.transform.position.y < 0){
+						magnitude = -1;
+					}
+					else{
+						magnitude = 1;
+					}
+					failToMove = false;
+					Vector3 temporaryPosition = voters[i].transform.position;
+					if((magnitude > 0 && temporaryPosition.y < gridSize - magnitude)||(magnitude < 0 && temporaryPosition.y > -1 - magnitude)){
+						temporaryPosition.y = temporaryPosition.y + magnitude;
+						for(int j = 0; j < voters.Length && !failToMove; j++){
+							if(voters[j].transform.position == temporaryPosition){
+								failToMove = true;
+							}
+						}
+					}
+					
+					//check to see if voter resistance prevents event from moving voter
+					if(magnitude < 0 &&  Random.value < voterVars[i].yMinusResistance + voterVars[i].baseResistance){
+						failToMove = true;
+					}
+					else if(magnitude > 0 &&  Random.value < voterVars[i].yPlusResistance + voterVars[i].baseResistance){
+						failToMove = true;
+					}
+					
+					if(!failToMove)
+					{
+						voters[i].transform.position = temporaryPosition;
+					}
+				}
+				else{
+					//move voter in z direction
+					if(voters[i].transform.position.z - TargetPlayer.transform.position.z < 0){
+						magnitude = -1;
+					}
+					else{
+						magnitude = 1;
+					}
+					failToMove = false;
+					Vector3 temporaryPosition = voters[i].transform.position;
+					if((magnitude > 0 && temporaryPosition.z < gridSize - magnitude)||(magnitude < 0 && temporaryPosition.z > -1 - magnitude)){
+						temporaryPosition.z = temporaryPosition.z + magnitude;
+						for(int j = 0; j < voters.Length && !failToMove; j++){
+							if(voters[j].transform.position == temporaryPosition){
+								failToMove = true;
+							}
+						}
+					}
+					
+					//check to see if voter resistance prevents event from moving voter
+					if(magnitude < 0 &&  Random.value < voterVars[i].zMinusResistance + voterVars[i].baseResistance){
+						failToMove = true;
+					}
+					else if(magnitude > 0 &&  Random.value < voterVars[i].zPlusResistance + voterVars[i].baseResistance){
+						failToMove = true;
+					}
+					
+					if(!failToMove)
+					{
+						voters[i].transform.position = temporaryPosition;
+					}
+				}
+			}
+		}
 	}
 
 	/// <summary>
 	/// Voters the manipulation.
 	/// </summary>
 	void VoterManipulation(GameObject TargetPlayer){
-
+		//charged for a fine
+		TargetPlayer.GetComponent<PlayerVariables> ().money -= 300;
 	}
 
 	/// <summary>
 	/// Contradictories the positions.
 	/// </summary>
 	void ContradictoryPositions(GameObject TargetPlayer){
-
+		// pop a shadow position
+		if(TargetPlayer.GetComponent<PlayerVariables> ().shadowPositions.Count > 0){
+			TargetPlayer.GetComponent<PlayerVariables> ().shadowPositions.RemoveAt(0);
+		}
+		// also political scandal
 	}
 
 	/// <summary>
 	/// Ads the burnout.
 	/// </summary>
 	void AdBurnout(GameObject TargetPlayer){
-
+		// people get tired of ads and become harder to move
+		for (int i = 0; i < voters.Length; i++) {
+			voterVars[i].baseResistance += 0.2f;
+		}
 	}
 
 	/// <summary>
 	/// Overreachings the campeign.
 	/// </summary>
-	void OverreachingCampeign(GameObject TargetPlayer){
-
+	void OverreachingCampaign(GameObject TargetPlayer){
+		//Sphere of influence shrinks?
 	}
 
 

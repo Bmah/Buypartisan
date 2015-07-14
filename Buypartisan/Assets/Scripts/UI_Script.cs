@@ -491,6 +491,14 @@ public class UI_Script : MonoBehaviour {
 		party3Button.SetActive (true);
 		party4Button.SetActive (true);
 	}
+
+	public void PartyDisable () {
+		party1Button.SetActive (false);
+		party2Button.SetActive (false);
+		party3Button.SetActive (false);
+		party4Button.SetActive (false);
+	}
+
 	public void alterTextBox(string inputText)
 	{
 		visualText.text = inputText;
@@ -511,6 +519,19 @@ public class UI_Script : MonoBehaviour {
 		cancelButton.SetActive (false);
 	}
 
+	public void enablePPButtons()
+	{
+		//Debug.Log("Pressed");
+		//disables the Player Placement buttons and the cancel button
+		xPlusButton.SetActive (true);
+		xMinusButton.SetActive (true);
+		yPlusButton.SetActive (true);
+		yMinusButton.SetActive (true);
+		zPlusButton.SetActive (true);
+		zMinusButton.SetActive (true);
+		confirmButton.SetActive (true);
+		cancelButton.SetActive (true);
+	}
 	public void toggleActionButtons()
 	{
 		//this enables the action buttons
@@ -681,7 +702,7 @@ public class UI_Script : MonoBehaviour {
 	/// Brian Mah
 	/// </summary>
 	public void PlayMouseOverSound(){
-		sfx.PlayAudioClip (0, 0, SFXvolume);
+		sfx.PlayAudioClip (0, 0, SFXvolume*0.33f);
 	}
 
 	/// <summary>
