@@ -431,6 +431,10 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 5) {
 				instantiatedAction.GetComponent<Action5Script>().confirmButton = true;
 			}
+
+			if (chosenAction == 7) {
+				instantiatedAction.GetComponent<Action7Script>().confirmButton = true;
+			}
 		}
 	}
 
@@ -470,6 +474,14 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 5) {
 				instantiatedAction.GetComponent<Action5Script>().cancelButton = true;
 			}
+
+			if (chosenAction == 6) {
+				instantiatedAction.GetComponent<Action6Script>().cancelButton = true;
+			}
+
+			if (chosenAction == 7) {
+				instantiatedAction.GetComponent<Action7Script>().cancelButton = true;
+			}
 		}
 	}
 
@@ -479,6 +491,14 @@ public class UI_Script : MonoBehaviour {
 		party3Button.SetActive (true);
 		party4Button.SetActive (true);
 	}
+
+	public void PartyDisable () {
+		party1Button.SetActive (false);
+		party2Button.SetActive (false);
+		party3Button.SetActive (false);
+		party4Button.SetActive (false);
+	}
+
 	public void alterTextBox(string inputText)
 	{
 		visualText.text = inputText;
@@ -499,6 +519,19 @@ public class UI_Script : MonoBehaviour {
 		cancelButton.SetActive (false);
 	}
 
+	public void enablePPButtons()
+	{
+		//Debug.Log("Pressed");
+		//disables the Player Placement buttons and the cancel button
+		xPlusButton.SetActive (true);
+		xMinusButton.SetActive (true);
+		yPlusButton.SetActive (true);
+		yMinusButton.SetActive (true);
+		zPlusButton.SetActive (true);
+		zMinusButton.SetActive (true);
+		confirmButton.SetActive (true);
+		cancelButton.SetActive (true);
+	}
 	public void toggleActionButtons()
 	{
 		//this enables the action buttons
@@ -669,7 +702,7 @@ public class UI_Script : MonoBehaviour {
 	/// Brian Mah
 	/// </summary>
 	public void PlayMouseOverSound(){
-		sfx.PlayAudioClip (0, 0, SFXvolume);
+		sfx.PlayAudioClip (0, 0, SFXvolume*0.33f);
 	}
 
 	/// <summary>
@@ -685,16 +718,16 @@ public class UI_Script : MonoBehaviour {
     // This works for now but needs to be re-written because of an Action bug
     public void updateCost()
     {
-		text0.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+		text0.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 
-        text1.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+        text1.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 
-        text2.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+        text2.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 
-        text3.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+        text3.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 
-        text4.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+        text4.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 
-		text5.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+        text5.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
     }
 }

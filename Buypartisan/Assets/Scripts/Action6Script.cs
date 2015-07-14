@@ -6,7 +6,7 @@ using System.Collections;
 
 public class Action6Script : MonoBehaviour {
 	public string actionName = "Character Assassination";
-	public int baseCost = 350;
+	public int baseCost = 300;
 	public int totalCost = 0; // Please use totalCost for any end calculation, since this will be used to display on the UI's action button
 	public float costMultiplier = 1.0f; // Increased by fixed amount within same turn (in PlayerTurnsManager). This is reset to 1 after the END of your turn.
 	
@@ -17,6 +17,10 @@ public class Action6Script : MonoBehaviour {
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 	
 	private int currentPlayer; //this variable finds which player is currently using his turn.
+	private int selectedPlayer;
+	private bool playerSelected = false;
+	private bool foundPlayer = false;
+	public float successRate = 0.5f;
 
 	[System.NonSerialized]
 	public bool confirmButton = false;
@@ -30,7 +34,7 @@ public class Action6Script : MonoBehaviour {
 		uiController = GameObject.Find ("UI Controller");
 
 		uiController.GetComponent<UI_Script> ().disableActionButtons ();
-		uiController.GetComponent<UI_Script>().activateAction5UI();
+		uiController.GetComponent<UI_Script>().activateAction0UI();
 		//Obtains the voter and player array from the gameController
 		if (gameController != null) {
 			voters = gameController.GetComponent<GameController> ().voters;
@@ -67,14 +71,24 @@ public class Action6Script : MonoBehaviour {
 	void Update () {
 		//Debug.Log ("here");
 		//ends the action if the cancel button is pressed (Alex Jungroth)
-		if (cancelButton) 
-		{
-			uiController.GetComponent<UI_Script>().toggleActionButtons();
-			Destroy(gameObject);
+		if (cancelButton) {
+			uiController.GetComponent<UI_Script> ().activateAction0UI2 ();
+			uiController.GetComponent<UI_Script> ().toggleActionButtons ();
+			Destroy (gameObject);
 		}
-
-		if (confirmButton) {
-			players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale += new Vector3 (-10f, -10f, -10f);
+		if (Input.GetMouseButtonDown (0)) {
+			for (selectedPlayer = 0; selectedPlayer < players.Length; selectedPlayer++) {
+				if(players[selectedPlayer].GetComponent<PlayerVariables>().GetSelected()) {
+					foundPlayer = true;
+					playerSelected = true;
+					Debug.Log (playerSelected);
+					if (Random.value >= successRate) {
+						players [selectedPlayer].GetComponent<PlayerVariables> ().sphereController.transform.localScale -= new Vector3 (10f, 10f, 10f);
+					}
+				}
+			}
+		}
+		if (playerSelected) {
 			EndAction ();
 		}
 	}

@@ -33,6 +33,7 @@ public class VoterVariables : MonoBehaviour {
 	private bool movedRecently = false;
 	private Vector3 prevPosition;
 	public GameObject[] players;
+	public bool contested = false;
 	public Material contestedSelectedTexture;
 	public Material contestedUnselectedTexture;
 	private Material originalSelected;
@@ -80,6 +81,7 @@ public class VoterVariables : MonoBehaviour {
 
 	//looks at all canidates and finds which one this voter belongs to
 	public void FindCanidate(){
+		contested = false;
 		float closestDistance = 1000f;
 		float currentCanidateDistance;
 		for(int i = 0; i < players.Length; i++){
@@ -120,6 +122,7 @@ public class VoterVariables : MonoBehaviour {
 		}
 		else if(CanidateChoice == null){  //if there is a tie
 			selectedTexture = contestedSelectedTexture;
+			contested = true;
 			unselectedTexture = contestedUnselectedTexture;
 			voterRenderer.material = unselectedTexture;
 		}
