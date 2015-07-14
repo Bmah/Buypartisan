@@ -304,4 +304,20 @@ public class TitleScreenUIScript : MonoBehaviour
             creditsTextBackground.SetActive(false);
         }
     }
+
+	/// <summary>
+	/// Plays the mouse over sound. (Alex Jungroth)
+	/// </summary>
+	public void sFXPlayerMouseOver()
+	{
+		sFXPlayer.GetComponent<SFXController>().PlayAudioClip(0,0,sFXVolume);
+	}
+
+	/// <summary>
+	/// Plays the on click sound. (Alex Jungroth)
+	/// </summary>
+	public void sFXPlayerOnClick()
+	{
+		sFXPlayer.GetComponent<SFXController>().PlayAudioClip(1,0,sFXVolume);
+	}
 }
