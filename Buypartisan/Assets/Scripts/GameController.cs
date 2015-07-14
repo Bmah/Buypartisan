@@ -265,7 +265,7 @@ public class GameController : MonoBehaviour {
 			{
 				gameMusic.audioChannels[0].volume = gameSettings.musicVolume;
 			}
-			UIController.PartyEnable();
+
 			if (playersSpawned < numberPlayers) {//Players are still spawning in
 				if(partyChosen) {
 				SpawnPlayer (); 
@@ -380,6 +380,7 @@ public class GameController : MonoBehaviour {
 			for(int i = 0; i < playersSpawned; i++){
 				if (currentPlayer.transform.position == players[i].transform.position){//if they are on the same spot
 					playerConfirmsPlacment = false;
+
 				}
 			}
 			if(playerConfirmsPlacment){ //if the player placment is legal
