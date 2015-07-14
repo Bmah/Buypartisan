@@ -45,13 +45,13 @@ public class TitleScreenSettings : MonoBehaviour
 	/// <summary>
 	/// Finalizes the settings. (Alex Jungroth)
 	/// </summary>
-	public void FinalizeSettings(int size, int rounds, int elections, float voters, float music, float sFX)
+	public void FinalizeSettings(float size, float rounds, float elections, float voters, float music, float sFX)
 	{
 		//gets the values that will be sent to the gameController
-		gridSize = size;
-		totalRounds = rounds;
-		totalElections = elections;
-		totalVoters = (int)voters; //I think an int will be expected/voter markers can't be halved, cut in fourths, etc.
+		gridSize = (int)size;
+		totalRounds = (int)rounds;
+		totalElections = (int)elections;
+		totalVoters = (int)voters;
 		musicVolume = music;
 		sFXVolume = sFX;
 	}
