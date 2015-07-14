@@ -29,7 +29,7 @@ public class PlayerVariables : MonoBehaviour {
 	//code for voter's canidate color
 	private GameController gameController;
 	private Vector3 prevPosition;
-	private int prevSphereSize;
+	private float prevSphereSize;
 
 	void Start () {
         
@@ -50,7 +50,7 @@ public class PlayerVariables : MonoBehaviour {
 		//Brian Mah
 		//previous position initialization
 		prevPosition = this.transform.position;
-		prevSphereSize = sphereSize;
+		prevSphereSize = sphereController.transform.localScale.x;
 		gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 		if (gameController == null) {
 			Debug.LogError("Could not find the Game controller");
@@ -72,7 +72,7 @@ public class PlayerVariables : MonoBehaviour {
 			gameController.UpdateVoterCanidates ();
 		}// if position is not the previous position
 		prevPosition = this.transform.position;
-		prevSphereSize = sphereSize;
+		prevSphereSize = sphereController.transform.localScale.x;
 	}
 
 	/// <summary>

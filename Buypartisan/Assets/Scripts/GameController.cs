@@ -92,13 +92,13 @@ public class GameController : MonoBehaviour {
 			gameSettings = GameObject.FindGameObjectWithTag ("TitleSettings").GetComponent<TitleScreenSettings>();
 		}
 		catch  {
-			Debug.LogError ("Could not find the title screen settings!");
+			Debug.LogError ("Could not find the title screen settings, because you did not start from the title screen!");
 
 		}
 		if (gameSettings == null) 
 		{
 			//throws an error if the gameController did not receive the title screen settings (Alex Jungroth)
-			Debug.LogError("Could not find the title screen settings!");
+			Debug.Log("You may continue play testing!");
 
 		} 
 		else 
