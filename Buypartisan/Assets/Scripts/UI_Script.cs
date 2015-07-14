@@ -51,6 +51,9 @@ public class UI_Script : MonoBehaviour {
 
 	public GameObject party4Button;
 
+	//holds wether or not the player has tried to spawn on another player
+	public bool playerConfirmsPlacementUI = true;
+
 	//holds the Action Buttons by the tag ActionButton
 	public GameObject[] ActionButtonObject;
 
@@ -148,6 +151,14 @@ public class UI_Script : MonoBehaviour {
 		{
 			ActionButtonObject[i].SetActive(false);
 		}
+		
+		//disables the movement buttons
+		xPlusButton.SetActive(false);
+		xMinusButton.SetActive(false);
+		yPlusButton.SetActive(false);
+		yMinusButton.SetActive(false);
+		zPlusButton.SetActive(false);
+		zMinusButton.SetActive(false);
 
 		//disables the left, right, and end turn buttons
 		endTurnButton.SetActive (false);
@@ -159,12 +170,7 @@ public class UI_Script : MonoBehaviour {
 
 		//disables the display stats button at the start
 		displayStatsButton.SetActive (false);
-
-		party1Button.SetActive (false);
-		party2Button.SetActive (false);
-		party3Button.SetActive (false);
-		party4Button.SetActive (false);
-
+		
 		//gets the current player
 		currentPlayerPrefab = controller.GetComponent<GameController> ().players;
 
@@ -401,6 +407,22 @@ public class UI_Script : MonoBehaviour {
 		if (!turnPhase) {
 			controller.playerConfirmsPlacment = true;
 			//Debug.Log ("Confirm Clicked");
+
+			//if(playerConfirmsPlacementUI == true)
+			//{
+				//sets the movement buttons to false and and the party buttons to true
+				xPlusButton.SetActive(false);
+				xMinusButton.SetActive(false);
+				yPlusButton.SetActive(false);
+				yMinusButton.SetActive(false);
+				zPlusButton.SetActive(false);
+				zMinusButton.SetActive(false);
+
+				party1Button.SetActive(true);
+				party2Button.SetActive(true);
+				party3Button.SetActive(true);
+				party4Button.SetActive(true);
+			//}
 
 			//another test of the new text box code
 			alterTextBox ("Confirm Clicked");
