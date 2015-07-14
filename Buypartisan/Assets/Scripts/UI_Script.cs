@@ -573,8 +573,8 @@ public class UI_Script : MonoBehaviour {
 		currentPlayerVotes = currentPlayerPrefab[currentPlayer].GetComponent<PlayerVariables> ().votes;
 		
 		//compiles the players stats into one string
-		currentPlayerStats = "Player "+ actualTurn.ToString() + " has " + currentPlayerMoney.ToString() + 
-			" dollar(s) and " + currentPlayerVotes.ToString() + " vote(s).";
+		currentPlayerStats = "Player "+ actualTurn.ToString() + " has $" + currentPlayerMoney.ToString() + 
+			"m and " + currentPlayerVotes.ToString() + "k votes.";
 		
 		//updates the text box with player 1's stats
 		alterTextBox (currentPlayerStats);
