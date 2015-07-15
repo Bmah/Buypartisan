@@ -19,7 +19,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	public int[][] actionCounter;
 	private int[] actionThreshold = {3,3,3,3,3,3,3,3};
-	private bool[] eventTriggerList;
+	private bool[][] eventTriggerList;
 
 	public VoterVariables[] voterVars = null;
 	private bool voterVarsSet = false;
@@ -28,16 +28,15 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	public int gridSize;
 
+	public enum ActionState {StartEvents, WaitForTriggeredEvent0, TriggeredEvent0, WaitForTriggeredEvent1,
+		TriggeredEvent1, WaitForTriggeredEvent2, TriggeredEvent2, WaitForTriggeredEvent3, TriggeredEvent3};
+	ActionState currentState = ActionState.StartEvents;
+
+	InputManagerScript Inputs = null;
+
 	// Use this for initialization
 	void Start () {
-
 		numberOfActions = actionThreshold.Length;
-
-		//initializing the event trigger list
-		eventTriggerList = new bool[numberOfActions];
-		for(int i = 0; i < eventTriggerList.Length; i++){
-			eventTriggerList[i] = false;
-		}
 
 		if (UIController == null) {
 			Debug.LogError("UI_Script not set on RandomEventController");
@@ -45,13 +44,28 @@ public class RandomEventControllerScript : MonoBehaviour {
 		GameObject temp = GameObject.FindGameObjectWithTag ("GameController");
 		if (temp != null) {
 			actionCounter = new int[temp.GetComponent<GameController> ().numberPlayers][];
+			eventTriggerList = new bool[actionCounter.Length][];
 		}
 		else {
 			Debug.LogError("Could not fing Gamecontroller");
 		}
 
+		//initializing the event trigger list
+
+		for(int i = 0; i < eventTriggerList.Length; i++){
+			eventTriggerList[i] = new bool[numberOfActions];
+			for(int j = 0; j < eventTriggerList[0].Length; j++){
+				eventTriggerList[i][j] = false;
+			}
+		}
+
 		for (int i = 0; i < actionCounter.Length; i++){
 			actionCounter[i] = new int[numberOfActions];
+		}
+
+		Inputs = GameObject.FindGameObjectWithTag ("InputManager").GetComponent<InputManagerScript> ();
+		if (Inputs == null) {
+			Debug.LogError("Could not Find Input Manager");
 		}
 	}
 	
@@ -73,55 +87,67 @@ public class RandomEventControllerScript : MonoBehaviour {
 	/// only call this once
 	/// Brian Mah
 	/// </summary>
-	public void ActivateEvents(){
-		int eventChoice = Random.Range (0, 10);
-		switch (eventChoice) {
-		case 0:
-			ShiftVoters('X',1);
-			UIController.alterTextBox("Newsflash! Sudden victory in the war boosts confidence in big govt! " +
-				"Voters migrate 1 up on the X axis.");
+	public bool ActivateEvents(){
+
+		switch (currentState){
+		case ActionState.StartEvents :
+			currentState = ActionState.WaitForTriggeredEvent0;
+			StandardEvents ();
 			break;
-		case 1:
-			ShiftVoters('X',-1);
-			UIController.alterTextBox("Newsflash! Sudden defeat in the war crushes confidence in big govt! " +
-			                          "Voters migrate 1 down on the X axis.");
+		case ActionState.WaitForTriggeredEvent0 :
+			if(Inputs.leftClickDown){
+
+			}
 			break;
-		case 2:
-			ShiftVoters('Y',1);
-			UIController.alterTextBox("Newsflash! New developments in the field of oil drilling lead to profit for big buisness. " +
-			                          "Voters migrate 1 up on the Y axis.");
-			break;
-		case 3:
-			ShiftVoters('Y',-1);
-			UIController.alterTextBox("Newsflash! Sudden oil spill causes huge natural disaster, public outraged with big buisness." +
-			                          "Voters migrate 1 down on the Y axis.");
-			break;
-		case 4:
-			ShiftVoters('Z',1);
-			UIController.alterTextBox("Newsflash! Popular celebrity endorses the Z axis. " +
-			                          "Voters migrate 1 up on the Z axis.");
-			break;
-		case 5:
-			ShiftVoters('Z',-1);
-			UIController.alterTextBox("Newsflash! Popular celebrity denounces the Z axis. " +
-			                          "Voters migrate 1 down on the Z axis.");
-			break;
-		case 6:
-			EconomicBoom(2);
-			UIController.alterTextBox("Newsflash! MONEY MONEY EVERYWHERE. " +
-			                          "Voters now have twice the money they used to!");
-			break;
-		case 7:
-			EconomicBust(2);
-			UIController.alterTextBox("Newsflash! Poor investments in tulip market lead to market crash. " +
-			                          "Voters now have half the money they used to!");
-			break;
-		default:
-			UIController.alterTextBox("Newsflash! Little Timmy fell down the well!");
-			break;
+
 		}
 
 		CheckForTriggeredEvents();
+
+
+		return false;
+	}
+
+	void StandardEvents ()
+	{
+		int eventChoice = Random.Range (0, 10);
+		switch (eventChoice) {
+		case 0:
+			ShiftVoters ('X', 1);
+			UIController.alterTextBox ("Newsflash! Sudden victory in the war boosts confidence in big govt! " + "Voters migrate 1 up on the X axis.");
+			break;
+		case 1:
+			ShiftVoters ('X', -1);
+			UIController.alterTextBox ("Newsflash! Sudden defeat in the war crushes confidence in big govt! " + "Voters migrate 1 down on the X axis.");
+			break;
+		case 2:
+			ShiftVoters ('Y', 1);
+			UIController.alterTextBox ("Newsflash! New developments in the field of oil drilling lead to profit for big buisness. " + "Voters migrate 1 up on the Y axis.");
+			break;
+		case 3:
+			ShiftVoters ('Y', -1);
+			UIController.alterTextBox ("Newsflash! Sudden oil spill causes huge natural disaster, public outraged with big buisness." + "Voters migrate 1 down on the Y axis.");
+			break;
+		case 4:
+			ShiftVoters ('Z', 1);
+			UIController.alterTextBox ("Newsflash! Popular celebrity endorses the Z axis. " + "Voters migrate 1 up on the Z axis.");
+			break;
+		case 5:
+			ShiftVoters ('Z', -1);
+			UIController.alterTextBox ("Newsflash! Popular celebrity denounces the Z axis. " + "Voters migrate 1 down on the Z axis.");
+			break;
+		case 6:
+			EconomicBoom (2);
+			UIController.alterTextBox ("Newsflash! MONEY MONEY EVERYWHERE. " + "Voters now have twice the money they used to!");
+			break;
+		case 7:
+			EconomicBust (2);
+			UIController.alterTextBox ("Newsflash! Poor investments in tulip market lead to market crash. " + "Voters now have half the money they used to!");
+			break;
+		default:
+			UIController.alterTextBox ("Newsflash! Little Timmy fell down the well!");
+			break;
+		}
 	}
 
 	/// <summary>
@@ -245,6 +271,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	void CheckForTriggeredEvents(){
 		for (int i = 0; i < actionCounter.Length; i++) {//for each player
+
 			for(int j = 0; j < actionCounter[0].Length; j++){//for each action
 				if (actionCounter[i][j] >= actionThreshold[j] &&  //if you have reached the threshold
 				    (Random.value < ((actionCounter[i][j] - actionThreshold[j]) * 0.1f + 0.3f))){ //and rng decides you 
