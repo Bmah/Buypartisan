@@ -31,6 +31,9 @@ public class GameController : MonoBehaviour {
 
 	public UI_Script UIController;
 
+	//holds the WindowGenerator script (Alex Jungroth)
+	public WindowGeneratorScript WindowGenerator;
+
 	public RandomEventControllerScript randomEventController;
 
 	public int numberPlayers;  //number of players per game
@@ -45,7 +48,13 @@ public class GameController : MonoBehaviour {
 	public bool messaged;//Checks if Player has finished taking an action
 	public bool player2Spawning = false;
 	public bool partyChosen = false;
-	
+
+	//holds total the number of electons that will happen in the game (Alex Jungroth)
+	public int numberOfElections = 1;
+
+	//holds the number of elections that have happened (Alex Jungroth)
+	private int electionCounter = 0;
+
 	public GameObject[] voters;//array which houses the voters
 	public GameObject[] players = new GameObject[2];//array which houses the players
 	
@@ -106,8 +115,7 @@ public class GameController : MonoBehaviour {
 			//gets the following variables from the title UI settings (Alex Jungroth)
 			gridSize = gameSettings.gridSize;
 			numberOfRounds = gameSettings.totalRounds;
-			//the number of elections will be added later when presistant elections have been addded (Alex Jungroth)
-			//some variable for holding the total number of elections = gameSettings.totalElections;
+			numberOfElections = gameSettings.totalElections;
 			NumVoters = gameSettings.totalVoters;
 			//the music has to set during the update function (Alex Jungroth)
 			musicSettingsReceived = true;
@@ -327,6 +335,39 @@ public class GameController : MonoBehaviour {
 		// Once the game ends and calculation is needed, this is called
 		} else if (currentState == GameState.GameEnd) {
 			CompareVotes(messaged);
+
+			//increments the election counter (Alex Jungroth)
+			electionCounter += 1;
+
+			if(electionCounter <  numberOfElections)
+			{
+				//displays who won an election (Alex Jungroth)
+				WindowGenerator.generateElectionVictory(false);
+
+				//a call to a function, that will be in gameController, that manages things between elections will go here (Alex Jungroth)
+				//fooPlaceHolder();
+
+				//for now some of the important parts will be put here, but they will be moved
+
+				//resets the drum roll
+				SFXDrumrollPlaying = false;
+				drumrollTime = 3.7f;
+
+				//resets the rounds counter (Alex Jungroth)
+				roundCounter = 0;
+
+				//resets the game state (Alex Jungroth)
+				currentState = GameState.ActionTurns;
+			}
+			else
+			{
+				//displays who won the game (Alex Jungroth)
+				WindowGenerator.generateElectionVictory(true);
+
+				//ends the game (Alex Jungroth)
+				currentState = GameState.AfterEnd;
+			}
+
 		}
 		
 		if (inputManager.escButtonDown) {
@@ -470,9 +511,6 @@ public class GameController : MonoBehaviour {
 			UIController.alterTextBox("Winning Player is: " + winningPlayer + " with " + mostVotes + " votes!");
 			messaged = false;
 		}
-
-		// Brings us to the results UI with all the information displayed
-		currentState = GameState.AfterEnd;
 	}
 	/// <summary>
 	/// So, this is the skeleton for the power functions.  Every power will be assigned an int, and checked for either though 
