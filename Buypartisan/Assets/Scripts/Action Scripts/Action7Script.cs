@@ -4,9 +4,9 @@
 using UnityEngine;
 using System.Collections;
 
-public class Action5Script : MonoBehaviour {
+public class Action7Script : MonoBehaviour {
 	public string actionName = "Sphere of Influence";
-	public int baseCost = 300;
+	public int baseCost = 150;
 	public int totalCost = 0; // Please use totalCost for any end calculation, since this will be used to display on the UI's action button
 	public float costMultiplier = 1.0f; // Increased by fixed amount within same turn (in PlayerTurnsManager). This is reset to 1 after the END of your turn.
 	
@@ -15,6 +15,9 @@ public class Action5Script : MonoBehaviour {
 	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
 	private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
+	public GameObject textBox;
+	//Brian Mah
+	private RandomEventControllerScript eventController;
 	
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 
@@ -28,6 +31,7 @@ public class Action5Script : MonoBehaviour {
 		gameController = GameObject.FindWithTag ("GameController");
 		inputManager = GameObject.FindWithTag ("InputManager");
 		uiController = GameObject.Find ("UI Controller");
+		textBox = GameObject.FindWithTag ("ToolTip");
 
 		uiController.GetComponent<UI_Script> ().disableActionButtons ();
 		uiController.GetComponent<UI_Script>().activateAction5UI();
@@ -35,6 +39,7 @@ public class Action5Script : MonoBehaviour {
 		if (gameController != null) {
 			voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
+			eventController = gameController.GetComponent<GameController> ().randomEventController;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
@@ -74,8 +79,14 @@ public class Action5Script : MonoBehaviour {
 		}
 
 		if (confirmButton) {
-			players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale += new Vector3 (10f, 10f, 10f);
-			EndAction ();
+			if(players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale.x < 60f) {
+				players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale = new Vector3 (60f, 60f, 60f);
+				EndAction ();
+			}
+			else {
+				textBox.GetComponent<PopUpTVScript>().SetPopupTextBox("You have no negative press to spin!");
+
+			}
 		}
 	}
 	
@@ -83,6 +94,9 @@ public class Action5Script : MonoBehaviour {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;  // Money is subtracted
+		//puts the current player and the event number into the action counter of the event controller
+		//Brian Mah
+		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [7]++; // the second number should be the number of the action!
 		Destroy(gameObject);
 	}
 }

@@ -10,11 +10,15 @@ public class RandomEventControllerScript : MonoBehaviour {
 	public GameObject[] voters;
 	public GameObject[] players;
 	public bool playersSpawned = false;
-	public int numberOfActions = 6;
-	private bool ActionCounterSetup = false;
+	private int numberOfActions = 8;
+	//private bool ActionCounterSetup = false;
 
-	private int[][] actionCounter;
-	public int[] actionThreshold = {3,3,3,3,3,3};
+	//for debugging
+	public int arrayChoice = 0;
+	public int[] debugArray;
+
+	public int[][] actionCounter;
+	private int[] actionThreshold = {3,3,3,3,3,3,3,3};
 	private bool[] eventTriggerList;
 
 	public VoterVariables[] voterVars = null;
@@ -26,10 +30,8 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		//the actionthreshold is set manually but must match with the number of actions
-		if (actionThreshold.Length != numberOfActions) {
-			Debug.LogError("ActionThresholdDoes not match with the number of actions");
-		}
+
+		numberOfActions = actionThreshold.Length;
 
 		//initializing the event trigger list
 		eventTriggerList = new bool[numberOfActions];
@@ -40,11 +42,22 @@ public class RandomEventControllerScript : MonoBehaviour {
 		if (UIController == null) {
 			Debug.LogError("UI_Script not set on RandomEventController");
 		}
+		GameObject temp = GameObject.FindGameObjectWithTag ("GameController");
+		if (temp != null) {
+			actionCounter = new int[temp.GetComponent<GameController> ().numberPlayers][];
+		}
+		else {
+			Debug.LogError("Could not fing Gamecontroller");
+		}
 
+		for (int i = 0; i < actionCounter.Length; i++){
+			actionCounter[i] = new int[numberOfActions];
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		debugArray = actionCounter [arrayChoice];
 		if (!voterVarsSet) {
 			voterVars = new VoterVariables[voters.Length];
 			for(int i = 0; i < voters.Length; i++){
@@ -52,15 +65,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			}
 			voterVarsSet = true;
 		}
-
-		if (playersSpawned && !ActionCounterSetup) {
-			//setup the array to have counters for all actions for all players
-			ActionCounterSetup = true;
-			actionCounter = new int[players.Length][];
-			for (int i = 0; i < actionCounter.Length; i++){
-				actionCounter[i] = new int[numberOfActions];
-			}
-		}
+		
 	}// update
 
 	/// <summary>
@@ -239,8 +244,8 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 
 	void CheckForTriggeredEvents(){
-		for (int i = 0; i < actionCounter.Length; i++) {
-			for(int j = 0; j < actionCounter[0].Length; j++){
+		for (int i = 0; i < actionCounter.Length; i++) {//for each player
+			for(int j = 0; j < actionCounter[0].Length; j++){//for each action
 				if (actionCounter[i][j] >= actionThreshold[j] &&  //if you have reached the threshold
 				    (Random.value < ((actionCounter[i][j] - actionThreshold[j]) * 0.1f + 0.3f))){ //and rng decides you 
 					//activate triggered event j with probability of 30% plus 10% * amount you have gone over threshold
@@ -257,34 +262,44 @@ public class RandomEventControllerScript : MonoBehaviour {
 				eventTriggerList[0] = false;
 				//VoterSupression
 				VoterOutrage(players[i]);
-				UIController.alterTextBox("Newsflash! Voters outraged at supression by player "+ (i+1) +
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters outraged at supression by player "+ (i+1) +
 				                          " Voters gather at the polls to vote against them!");
 			}
 			if(eventTriggerList[1]){
 				eventTriggerList[1] = false;
 				//MoveParty
 				FlipFlopping(players[i]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters irrited by player "+ (i+1) + "'s flip flopping, " +
+				                          "voters distance themselves from the candidate!");
 			}
 			if(eventTriggerList[2]){
 				eventTriggerList[2] = false;
 				//InfluenceVoters
 				VoterManipulation(players[i]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters shocked at player "+ (i+1) + "'s manipulation of votes " +
+				                          "player "+ (i+1) + " fined for their crime");
 			}
 			if(eventTriggerList[3]){
 				eventTriggerList[3] = false;
 				//ShadowPosition
 				ContradictoryPositions (players[i]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (i+1) + " called out on contradictory positions " +
+				                          "player"+ (i+1) + "'s shadow position is removed");
 			}
 			if(eventTriggerList[4]){
 				eventTriggerList[4] = false;
 				//CampaignTour
 				AdBurnout(players[i]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters tired of Player "+ (i+1) + "'s ads" +
+				                          " voters now harder to move!");
 				//smaller size sphere
 			}
 			if(eventTriggerList[5]){
 				eventTriggerList[5] = false;
 				//SphereOfInfluence
 				OverreachingCampaign(players[i]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (i+1) + " tries to expand their campeign's reach too far " +
+				                          " no consequences for this action as of yet");
 			}
 		}//for each player
 	}//Check For Triggered events
