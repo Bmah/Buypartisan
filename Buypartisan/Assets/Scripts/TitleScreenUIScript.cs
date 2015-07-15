@@ -36,7 +36,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	public SFXController sFXPlayer;
 
 	//holds the title screen images (Alex Jungroth)
-	//public GameObject panel2;
+	public GameObject panel2;
 	public GameObject settingsText;
 
 	//holds the title screen buttons (Alex Jungroth)
@@ -80,7 +80,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	void Start () 
 	{
 		//disables the settings images (Alex Jungroth)
-		//panel2.SetActive(false);
+		panel2.SetActive(false);
 		settingsText.SetActive(false);
 
 		//disables the back button and the reset button (Alex Jungroth)
@@ -172,7 +172,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	public void SettingsMenu()
 	{
 		//enables the settings images (Alex Jungroth)
-		//panel2.SetActive(true);
+		panel2.SetActive(true);
 		settingsText.SetActive(true);
 
 		//disables the buttons (Alex Jungroth)
@@ -210,7 +210,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	public void ExitSettings()
 	{
 		//disables the settings images (Alex Jungroth)
-		//panel2.SetActive(false);
+		panel2.SetActive(false);
 		settingsText.SetActive(false);
 
 		//enables the buttons (Alex Jungroth)
