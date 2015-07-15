@@ -37,6 +37,7 @@ public class TitleScreenUIScript : MonoBehaviour
 
 	//holds the title screen images (Alex Jungroth)
 	public GameObject panel2;
+	public GameObject panel2BG;
 	public GameObject settingsText;
 
 	//holds the title screen buttons (Alex Jungroth)
@@ -81,6 +82,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	{
 		//disables the settings images (Alex Jungroth)
 		panel2.SetActive(false);
+		panel2BG.SetActive(false);
 		settingsText.SetActive(false);
 
 		//disables the back button and the reset button (Alex Jungroth)
@@ -173,6 +175,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	{
 		//enables the settings images (Alex Jungroth)
 		panel2.SetActive(true);
+		panel2BG.SetActive(true);
 		settingsText.SetActive(true);
 
 		//disables the buttons (Alex Jungroth)
@@ -211,6 +214,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	{
 		//disables the settings images (Alex Jungroth)
 		panel2.SetActive(false);
+		panel2BG.SetActive(false);
 		settingsText.SetActive(false);
 
 		//enables the buttons (Alex Jungroth)
