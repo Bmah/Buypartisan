@@ -16,6 +16,8 @@ public class Action3Script : MonoBehaviour {
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
     private GameObject visualAid;
+	//Brian Mah
+	private RandomEventControllerScript eventController;
 
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 
@@ -95,6 +97,7 @@ public class Action3Script : MonoBehaviour {
 		if (gameController != null) {
 			//			voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
+			eventController = gameController.GetComponent<GameController> ().randomEventController;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
@@ -435,6 +438,9 @@ public class Action3Script : MonoBehaviour {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
         players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
+		//puts the current player and the event number into the action counter of the event controller
+		//Brian Mah
+		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [3]++; // the second number should be the number of the action!
 		Destroy(gameObject);
 	}
 

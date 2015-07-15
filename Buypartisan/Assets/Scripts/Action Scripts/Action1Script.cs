@@ -23,7 +23,9 @@ public class Action1Script : MonoBehaviour {
 	public GameObject uiController; 
 	private GameObject[] players; // Need this to search which player to move
     private GameObject visualAid;
-	
+	//Brian Mah
+	private RandomEventControllerScript eventController;
+
 	private int currentPlayer; // Tells you the source player who's using the action
 
 	private Vector3 originalPosition; // Original position that the player started at.
@@ -63,6 +65,7 @@ public class Action1Script : MonoBehaviour {
 		
 		if (gameController != null) {
 			players = gameController.GetComponent<GameController> ().players;
+			eventController = gameController.GetComponent<GameController> ().randomEventController;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
@@ -212,6 +215,9 @@ public class Action1Script : MonoBehaviour {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
         players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
+		//puts the current player and the event number into the action counter of the event controller
+		//Brian Mah
+		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [1]++; // the second number should be the number of the action!
 		Destroy(gameObject);
 	}
 }
