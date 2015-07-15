@@ -343,7 +343,7 @@ public class GameController : MonoBehaviour {
 	void SpawnPlayer(){
 		if (!spawnedNewPlayer) {
 			UIController.PartyDisable();
-			UIController.enablePPButtons();
+			UIController.enablePPButtonsPartySelection();
 			switch (Party){//this is code for spawning different parites.  Parties are set as an enum, and assigned at title
 				//from here, depending on what party the player chose, this is what they will spawn as
 			case 0 : currentPlayer = Instantiate(neutralTemplate,new Vector3(0,0,0), Quaternion.identity) as GameObject; this.playerTemplate = neutralTemplate; break;
@@ -380,10 +380,12 @@ public class GameController : MonoBehaviour {
 			for(int i = 0; i < playersSpawned; i++){
 				if (currentPlayer.transform.position == players[i].transform.position){//if they are on the same spot
 					playerConfirmsPlacment = false;
-
 				}
 			}
 			if(playerConfirmsPlacment){ //if the player placment is legal
+
+				UIController.correctPlacement();
+
 				playersSpawned++;
 				partyChosen = false;
 				spawnedNewPlayer = false;
