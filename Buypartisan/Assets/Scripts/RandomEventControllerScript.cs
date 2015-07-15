@@ -10,11 +10,15 @@ public class RandomEventControllerScript : MonoBehaviour {
 	public GameObject[] voters;
 	public GameObject[] players;
 	public bool playersSpawned = false;
-	public int numberOfActions = 6;
-	private bool ActionCounterSetup = false;
+	private int numberOfActions = 8;
+	//private bool ActionCounterSetup = false;
 
-	private int[][] actionCounter;
-	public int[] actionThreshold = {3,3,3,3,3,3};
+	//for debugging
+	public int arrayChoice = 0;
+	public int[] debugArray;
+
+	public int[][] actionCounter;
+	private int[] actionThreshold = {3,3,3,3,3,3,3,3};
 	private bool[] eventTriggerList;
 
 	public VoterVariables[] voterVars = null;
@@ -26,10 +30,8 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		//the actionthreshold is set manually but must match with the number of actions
-		if (actionThreshold.Length != numberOfActions) {
-			Debug.LogError("ActionThresholdDoes not match with the number of actions");
-		}
+
+		numberOfActions = actionThreshold.Length;
 
 		//initializing the event trigger list
 		eventTriggerList = new bool[numberOfActions];
@@ -40,11 +42,22 @@ public class RandomEventControllerScript : MonoBehaviour {
 		if (UIController == null) {
 			Debug.LogError("UI_Script not set on RandomEventController");
 		}
+		GameObject temp = GameObject.FindGameObjectWithTag ("GameController");
+		if (temp != null) {
+			actionCounter = new int[temp.GetComponent<GameController> ().numberPlayers][];
+		}
+		else {
+			Debug.LogError("Could not fing Gamecontroller");
+		}
 
+		for (int i = 0; i < actionCounter.Length; i++){
+			actionCounter[i] = new int[numberOfActions];
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		debugArray = actionCounter [arrayChoice];
 		if (!voterVarsSet) {
 			voterVars = new VoterVariables[voters.Length];
 			for(int i = 0; i < voters.Length; i++){
@@ -52,15 +65,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			}
 			voterVarsSet = true;
 		}
-
-		if (playersSpawned && !ActionCounterSetup) {
-			//setup the array to have counters for all actions for all players
-			ActionCounterSetup = true;
-			actionCounter = new int[players.Length][];
-			for (int i = 0; i < actionCounter.Length; i++){
-				actionCounter[i] = new int[numberOfActions];
-			}
-		}
+		
 	}// update
 
 	/// <summary>
@@ -239,8 +244,8 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 
 	void CheckForTriggeredEvents(){
-		for (int i = 0; i < actionCounter.Length; i++) {
-			for(int j = 0; j < actionCounter[0].Length; j++){
+		for (int i = 0; i < actionCounter.Length; i++) {//for each player
+			for(int j = 0; j < actionCounter[0].Length; j++){//for each action
 				if (actionCounter[i][j] >= actionThreshold[j] &&  //if you have reached the threshold
 				    (Random.value < ((actionCounter[i][j] - actionThreshold[j]) * 0.1f + 0.3f))){ //and rng decides you 
 					//activate triggered event j with probability of 30% plus 10% * amount you have gone over threshold
@@ -257,44 +262,60 @@ public class RandomEventControllerScript : MonoBehaviour {
 				eventTriggerList[0] = false;
 				//VoterSupression
 				VoterOutrage(players[i]);
-				UIController.alterTextBox("Newsflash! Voters outraged at supression by player "+ (i+1) +
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters outraged at supression by player "+ (i+1) +
 				                          " Voters gather at the polls to vote against them!");
 			}
 			if(eventTriggerList[1]){
 				eventTriggerList[1] = false;
 				//MoveParty
 				FlipFlopping(players[i]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters irrited by player "+ (i+1) + "'s flip flopping, " +
+				                          "voters distance themselves from the candidate!");
 			}
 			if(eventTriggerList[2]){
 				eventTriggerList[2] = false;
 				//InfluenceVoters
 				VoterManipulation(players[i]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters shocked at player "+ (i+1) + "'s manipulation of votes " +
+				                          "player "+ (i+1) + " fined for their crime");
 			}
 			if(eventTriggerList[3]){
 				eventTriggerList[3] = false;
 				//ShadowPosition
 				ContradictoryPositions (players[i]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (i+1) + " called out on contradictory positions " +
+				                          "player"+ (i+1) + "'s shadow position is removed");
 			}
 			if(eventTriggerList[4]){
 				eventTriggerList[4] = false;
 				//CampaignTour
 				AdBurnout(players[i]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters tired of Player "+ (i+1) + "'s ads" +
+				                          " voters now harder to move!");
 				//smaller size sphere
 			}
 			if(eventTriggerList[5]){
 				eventTriggerList[5] = false;
 				//SphereOfInfluence
-				OverreachingCampeign(players[i]);
+				OverreachingCampaign(players[i]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (i+1) + " tries to expand their campeign's reach too far " +
+				                          " no consequences for this action as of yet");
 			}
 		}//for each player
 	}//Check For Triggered events
 
 	/// <summary>
-	/// Voters the outrage.
+	/// Voter Outrage:
+	/// Voters flock to the opposing canidate's position
+	/// one of their voters gain a 200 voter boost in votes
 	/// </summary>
 	void VoterOutrage(GameObject TargetPlayer){
-		for (int i = 0; i < voters.Length; i++) {
-		
+		bool foundOpposingVoter = false;
+		for (int i = 0; i < voters.Length && !foundOpposingVoter; i++) {
+			if(voterVars[i].CanidateChoice != null && voterVars[i].CanidateChoice != TargetPlayer){
+				voterVars[i].votes += 200;
+				foundOpposingVoter = true;
+			}
 		}
 	}
 
@@ -302,35 +323,151 @@ public class RandomEventControllerScript : MonoBehaviour {
 	/// Flips the flopping.
 	/// </summary>
 	void FlipFlopping(GameObject TargetPlayer){
-	
+		bool failToMove = false;
+		int magnitude;
+		Vector3 newLocation;
+		float direction;
+
+		for (int i = 0; i < voters.Length; i++) {
+			if(voterVars[i].CanidateChoice == TargetPlayer){
+				newLocation = voters[i].transform.position;
+				direction = Random.value;
+
+				//choose a direction
+				if(direction < 0.3333f){
+					//move along x axis
+					if(voters[i].transform.position.x - TargetPlayer.transform.position.x < 0){
+						magnitude = -1;
+					}
+					else{
+						magnitude = 1;
+					}
+					failToMove = false;
+					Vector3 temporaryPosition = voters[i].transform.position;
+					if((magnitude > 0 && temporaryPosition.x < gridSize - magnitude)||(magnitude < 0 && temporaryPosition.x > -1 - magnitude)){
+						temporaryPosition.x = temporaryPosition.x + magnitude;
+						for(int j = 0; j < voters.Length && !failToMove; j++){
+							if(voters[j].transform.position == temporaryPosition){
+								failToMove = true;
+							}
+						}
+					}
+					
+					//check to see if voter resistance prevents event from moving voter
+					if(magnitude < 0 &&  Random.value < voterVars[i].xMinusResistance + voterVars[i].baseResistance){
+						failToMove = true;
+					}
+					else if(magnitude > 0 &&  Random.value < voterVars[i].xPlusResistance + voterVars[i].baseResistance){
+						failToMove = true;
+					}
+					
+					if(!failToMove)
+					{
+						voters[i].transform.position = temporaryPosition;
+					}
+				}
+				else if(direction < 0.6666f){
+					//move voter in y direction
+					if(voters[i].transform.position.y - TargetPlayer.transform.position.y < 0){
+						magnitude = -1;
+					}
+					else{
+						magnitude = 1;
+					}
+					failToMove = false;
+					Vector3 temporaryPosition = voters[i].transform.position;
+					if((magnitude > 0 && temporaryPosition.y < gridSize - magnitude)||(magnitude < 0 && temporaryPosition.y > -1 - magnitude)){
+						temporaryPosition.y = temporaryPosition.y + magnitude;
+						for(int j = 0; j < voters.Length && !failToMove; j++){
+							if(voters[j].transform.position == temporaryPosition){
+								failToMove = true;
+							}
+						}
+					}
+					
+					//check to see if voter resistance prevents event from moving voter
+					if(magnitude < 0 &&  Random.value < voterVars[i].yMinusResistance + voterVars[i].baseResistance){
+						failToMove = true;
+					}
+					else if(magnitude > 0 &&  Random.value < voterVars[i].yPlusResistance + voterVars[i].baseResistance){
+						failToMove = true;
+					}
+					
+					if(!failToMove)
+					{
+						voters[i].transform.position = temporaryPosition;
+					}
+				}
+				else{
+					//move voter in z direction
+					if(voters[i].transform.position.z - TargetPlayer.transform.position.z < 0){
+						magnitude = -1;
+					}
+					else{
+						magnitude = 1;
+					}
+					failToMove = false;
+					Vector3 temporaryPosition = voters[i].transform.position;
+					if((magnitude > 0 && temporaryPosition.z < gridSize - magnitude)||(magnitude < 0 && temporaryPosition.z > -1 - magnitude)){
+						temporaryPosition.z = temporaryPosition.z + magnitude;
+						for(int j = 0; j < voters.Length && !failToMove; j++){
+							if(voters[j].transform.position == temporaryPosition){
+								failToMove = true;
+							}
+						}
+					}
+					
+					//check to see if voter resistance prevents event from moving voter
+					if(magnitude < 0 &&  Random.value < voterVars[i].zMinusResistance + voterVars[i].baseResistance){
+						failToMove = true;
+					}
+					else if(magnitude > 0 &&  Random.value < voterVars[i].zPlusResistance + voterVars[i].baseResistance){
+						failToMove = true;
+					}
+					
+					if(!failToMove)
+					{
+						voters[i].transform.position = temporaryPosition;
+					}
+				}
+			}
+		}
 	}
 
 	/// <summary>
 	/// Voters the manipulation.
 	/// </summary>
 	void VoterManipulation(GameObject TargetPlayer){
-
+		//charged for a fine
+		TargetPlayer.GetComponent<PlayerVariables> ().money -= 300;
 	}
 
 	/// <summary>
 	/// Contradictories the positions.
 	/// </summary>
 	void ContradictoryPositions(GameObject TargetPlayer){
-
+		// pop a shadow position
+		if(TargetPlayer.GetComponent<PlayerVariables> ().shadowPositions.Count > 0){
+			TargetPlayer.GetComponent<PlayerVariables> ().shadowPositions.RemoveAt(0);
+		}
+		// also political scandal
 	}
 
 	/// <summary>
 	/// Ads the burnout.
 	/// </summary>
 	void AdBurnout(GameObject TargetPlayer){
-
+		// people get tired of ads and become harder to move
+		for (int i = 0; i < voters.Length; i++) {
+			voterVars[i].baseResistance += 0.2f;
+		}
 	}
 
 	/// <summary>
 	/// Overreachings the campeign.
 	/// </summary>
-	void OverreachingCampeign(GameObject TargetPlayer){
-
+	void OverreachingCampaign(GameObject TargetPlayer){
+		//Sphere of influence shrinks?
 	}
 
 
