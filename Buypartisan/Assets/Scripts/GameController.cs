@@ -344,17 +344,8 @@ public class GameController : MonoBehaviour {
 				//displays who won an election (Alex Jungroth)
 				WindowGenerator.generateElectionVictory(false);
 
-				//a call to a function, that will be in gameController, that manages things between elections will go here (Alex Jungroth)
-				//fooPlaceHolder();
-
-				//for now some of the important parts will be put here, but they will be moved
-
-				//resets the drum roll
-				SFXDrumrollPlaying = false;
-				drumrollTime = 3.7f;
-
-				//resets the rounds counter (Alex Jungroth)
-				roundCounter = 0;
+				//manages things between elections (Alex Jungroth)
+				prepareElection();
 
 				//resets the game state (Alex Jungroth)
 				currentState = GameState.ActionTurns;
@@ -512,6 +503,26 @@ public class GameController : MonoBehaviour {
 			messaged = false;
 		}
 	}
+
+	/// <summary>
+	/// Prepares the election. (Alex Jungroth)
+	/// </summary>
+	void prepareElection()
+	{
+		//resets the drum roll
+		SFXDrumrollPlaying = false;
+		drumrollTime = 3.7f;
+
+		//this handles voter resistance cool down (Alex Jungroth)
+		for (int i = 0; i < NumVoters; i++) 
+		{
+			voters[i].GetComponent<VoterVariables>().baseResistance *= 0.5f;
+		}
+
+		//resets the rounds counter (Alex Jungroth)
+		roundCounter = 0;
+	}
+
 	/// <summary>
 	/// So, this is the skeleton for the power functions.  Every power will be assigned an int, and checked for either though 
 	/// a switch statement or simple if checks. This function is called through a variety of means, although right now, only through
