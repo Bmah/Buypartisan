@@ -148,23 +148,29 @@ public class UI_Script : MonoBehaviour {
 		{
 			ActionButtonObject[i].SetActive(false);
 		}
+		
+		//disables the movement buttons
+		xPlusButton.SetActive(false);
+		xMinusButton.SetActive(false);
+		yPlusButton.SetActive(false);
+		yMinusButton.SetActive(false);
+		zPlusButton.SetActive(false);
+		zMinusButton.SetActive(false);
 
 		//disables the left, right, and end turn buttons
 		endTurnButton.SetActive (false);
 		leftButton.SetActive (false);
 		rightButton.SetActive (false);
 
+		//disables the confirm button
+		confirmButton.SetActive(false);
+
 		//disables the cancel button
-		cancelButton.SetActive (false);
+		cancelButton.SetActive(false);
 
 		//disables the display stats button at the start
 		displayStatsButton.SetActive (false);
-
-		party1Button.SetActive (false);
-		party2Button.SetActive (false);
-		party3Button.SetActive (false);
-		party4Button.SetActive (false);
-
+		
 		//gets the current player
 		currentPlayerPrefab = controller.GetComponent<GameController> ().players;
 
@@ -435,6 +441,10 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 7) {
 				instantiatedAction.GetComponent<Action7Script>().confirmButton = true;
 			}
+
+			if (chosenAction == 8) {
+				instantiatedAction.GetComponent<Action8Script>().confirmButton = true;
+			}
 		}
 	}
 
@@ -442,9 +452,39 @@ public class UI_Script : MonoBehaviour {
 	public void Cancel()
 	{
 		if (!turnPhase) {
-			controller.playerConfirmsPlacment = true;
+			//controller.playerConfirmsPlacment = true;
 			//Debug.Log ("Cancel Clicked");
+
+			//its getting difficult to get the game controller to do what we want
+			//if we want a cancel button for choosing parties it will require an overhaul of how players are spawned
+			/*
+			//destroys the instantiated player
+			Destroy(controller.players[controller.playersSpawned]);
+
+			//decrements the number of players spawned
+			controller.playersSpawned -= 1;
+
+			//messing with bools to see what works and what doesn't
+			controller.partyChosen = true;
+			controller.spawnedNewPlayer = false; //this is private
+
+			//sets the movement, confirm, and cancel buttons to false and and the party buttons to true
+			xPlusButton.SetActive(false);
+			xMinusButton.SetActive(false);
+			yPlusButton.SetActive(false);
+			yMinusButton.SetActive(false);
+			zPlusButton.SetActive(false);
+			zMinusButton.SetActive(false);
 			
+			confirmButton.SetActive(false);
+			cancelButton.SetActive(false);
+			
+			party1Button.SetActive(true);
+			party2Button.SetActive(true);
+			party3Button.SetActive(true);
+			party4Button.SetActive(true);
+			*/
+
 			//another test of the new text box code
 			alterTextBox ("Cancel Clicked");
 			
@@ -482,7 +522,32 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 7) {
 				instantiatedAction.GetComponent<Action7Script>().cancelButton = true;
 			}
+
+			if (chosenAction == 8) {
+				instantiatedAction.GetComponent<Action8Script>().cancelButton = true;
+			}
 		}
+	}
+
+	/// <summary>
+	/// If the placement is correct then continues with cycling through the buttons
+	/// </summary>
+	public void correctPlacement()
+	{
+		//sets the movement, confirm, and cancel buttons to false and and the party buttons to true
+		xPlusButton.SetActive(false);
+		xMinusButton.SetActive(false);
+		yPlusButton.SetActive(false);
+		yMinusButton.SetActive(false);
+		zPlusButton.SetActive(false);
+		zMinusButton.SetActive(false);
+		
+		confirmButton.SetActive(false);
+		
+		party1Button.SetActive(true);
+		party2Button.SetActive(true);
+		party3Button.SetActive(true);
+		party4Button.SetActive(true);
 	}
 
 	public void PartyEnable () {
@@ -532,6 +597,25 @@ public class UI_Script : MonoBehaviour {
 		confirmButton.SetActive (true);
 		cancelButton.SetActive (true);
 	}
+
+	/// <summary>
+	/// Enables the PP buttons for party slection.
+	/// This is needed because we will have to over haul our player spawning system
+	/// if we want to support a cancel button (Alex Jungroth)
+	/// </summary>
+	public void enablePPButtonsPartySelection()
+	{
+		//Debug.Log("Pressed");
+		//disables the Player Placement buttons and the cancel button
+		xPlusButton.SetActive (true);
+		xMinusButton.SetActive (true);
+		yPlusButton.SetActive (true);
+		yMinusButton.SetActive (true);
+		zPlusButton.SetActive (true);
+		zMinusButton.SetActive (true);
+		confirmButton.SetActive (true);
+	}
+
 	public void toggleActionButtons()
 	{
 		//this enables the action buttons
