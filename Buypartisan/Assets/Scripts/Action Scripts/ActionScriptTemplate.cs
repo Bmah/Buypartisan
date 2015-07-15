@@ -27,6 +27,8 @@ public class ActionScriptTemplate : MonoBehaviour {
 	[System.NonSerialized]
 	public bool cancelButton = false;
 
+	private RandomEventControllerScript eventController;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -37,6 +39,7 @@ public class ActionScriptTemplate : MonoBehaviour {
 		if (gameController != null) {
 			voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
+			eventController = gameController.GetComponent<GameController> ().randomEventController;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
@@ -91,6 +94,8 @@ public class ActionScriptTemplate : MonoBehaviour {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;  // Money is subtracted
+		//puts the current player and the event number into the action Counter of the event controller
+		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [0]++; // the second number should be the number of the action!
 		Destroy(gameObject);
 	}
 }
