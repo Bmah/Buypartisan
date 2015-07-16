@@ -41,7 +41,7 @@ public class Action0Script : MonoBehaviour {
 	public bool cancelButton = false;
 
 	//holds the number needed for this action to succeed (Alex Jungroth)
-	public float successRate = 0.5f;
+	public float successRate = 0.3f;
 
 	// Use this for initialization
 	void Start () {
