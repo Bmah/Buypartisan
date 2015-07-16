@@ -441,6 +441,10 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 7) {
 				instantiatedAction.GetComponent<Action7Script>().confirmButton = true;
 			}
+
+			if (chosenAction == 8) {
+				instantiatedAction.GetComponent<Action8Script>().confirmButton = true;
+			}
 		}
 	}
 
@@ -517,6 +521,10 @@ public class UI_Script : MonoBehaviour {
 
 			if (chosenAction == 7) {
 				instantiatedAction.GetComponent<Action7Script>().cancelButton = true;
+			}
+
+			if (chosenAction == 8) {
+				instantiatedAction.GetComponent<Action8Script>().cancelButton = true;
 			}
 		}
 	}
