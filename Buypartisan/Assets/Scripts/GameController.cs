@@ -509,18 +509,148 @@ public class GameController : MonoBehaviour {
 	/// </summary>
 	void prepareElection()
 	{
-		//resets the drum roll
+		//holds the vector 3 of the voters so they can be altered (Alex Jungroth)
+		Vector3 temp = Vector3.zero;
+
+		//holds a random float to determine the direction the voters are moving in (Alex Jungroth)
+		float tempRandom = 0;
+
+		//resets the drum roll (Alex Jungroth)
 		SFXDrumrollPlaying = false;
 		drumrollTime = 3.7f;
 
-		//this handles voter resistance cool down (Alex Jungroth)
 		for (int i = 0; i < NumVoters; i++) 
 		{
-			voters[i].GetComponent<VoterVariables>().baseResistance *= 0.5f;
+			//this handles voter resistance cool down (Alex Jungroth)
+			voters [i].GetComponent<VoterVariables> ().baseResistance *= 0.5f;
+					
+			//gets a random value from 0 to 5 (Alex Jungroth)
+			tempRandom = Random.Range(0f, 6.0f);
+
+			//has a chance to move the voters in a random direction (Alex Jungroth)
+			switch ((int)tempRandom)
+			{
+				case 0:
+					if (Random.value > voters [i].GetComponent<VoterVariables> ().xPlusResistance + (int)voters [i].GetComponent<VoterVariables> ().baseResistance)
+					{
+						//move voter in the +X direction (Alex Jungroth)
+						temp = voters[i].transform.position;
+						temp += new Vector3(1,0,0);
+						
+						//makes sure the voter doesn't move off the grid or onto another voter (Alex Jungroth)
+						if((temp.x < gridSize - 1) && (overlapCheck(temp) == true))
+						{
+							voters[i].transform.position = temp;
+						}
+					}
+				break;
+					
+				case 1:
+					if (Random.value > voters [i].GetComponent<VoterVariables> ().xMinusResistance + (int)voters [i].GetComponent<VoterVariables> ().baseResistance)
+					{
+						//move voter in the -X direction (Alex Jungroth)
+						temp = voters[i].transform.position;
+						temp -= new Vector3(1,0,0);
+						
+						//makes sure the voter doesn't move off the grid or onto another voter (Alex Jungroth)
+						if((temp.x > 0)  && (overlapCheck(temp) == true))
+						{
+							voters[i].transform.position = temp;
+						}
+					}
+				break;
+				
+				case 2:
+					if (Random.value > voters [i].GetComponent<VoterVariables> ().yPlusResistance + (int)voters [i].GetComponent<VoterVariables> ().baseResistance) 
+					{
+						//move voter in the +Y direction (Alex Jungroth)
+						temp = voters[i].transform.position;
+						temp += new Vector3(0,1,0);
+						
+						//makes sure the voter doesn't move off the grid or onto another voter (Alex Jungroth)
+						if((temp.y < gridSize - 1) && (overlapCheck(temp) == true))
+						{
+							voters[i].transform.position = temp;
+						}
+					}
+				break;
+				
+				case 3:
+					if (Random.value > voters [i].GetComponent<VoterVariables> ().yMinusResistance + (int)voters [i].GetComponent<VoterVariables> ().baseResistance) 
+					{
+						//move voter the -Y direction (Alex Jungroth)
+						temp = voters[i].transform.position;
+						temp -= new Vector3(0,1,0);
+						
+						//makes sure the voter doesn't move off the grid or onto another voter (Alex Jungroth)
+						if((temp.y > 0) && (overlapCheck(temp) == true))
+						{
+							voters[i].transform.position = temp;
+						}
+					}
+				break;
+					
+				case 4:
+					if (Random.value > voters [i].GetComponent<VoterVariables> ().zPlusResistance + (int)voters [i].GetComponent<VoterVariables> ().baseResistance) 
+					{
+						//move voter the +Z direction (Alex Jungroth)
+						temp = voters[i].transform.position;
+						temp += new Vector3(0,0,1);
+						
+						//makes sure the voter doesn't move off the grid or onto another voter (Alex Jungroth)
+						if((temp.z < gridSize - 1) && (overlapCheck(temp) == true))
+						{
+							voters[i].transform.position = temp;
+						}
+					}
+				break;
+				
+				case 5:
+					if (Random.value > voters [i].GetComponent<VoterVariables> ().zMinusResistance + (int)voters [i].GetComponent<VoterVariables> ().baseResistance)
+					{
+						//move voter the -Z direction (Alex Jungroth)
+						temp = voters[i].transform.position;
+						temp -= new Vector3(0,0,1);
+						
+						//makes sure the voter doesn't move off the grid or onto another voter (Alex Jungroth)
+						if((temp.z > 0) && (overlapCheck(temp) == true))
+						{
+							voters[i].transform.position = temp;
+						}
+					}
+				break;
+			}
+		}
+
+		//deletes all of the players shadow positions and clears their shadow position list (Alex Jungroth)
+		for (int i = 0; i < numberPlayers; i++) 
+		{
+			for(int j = 0; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count; j++)
+			{
+				Destroy(players[i].GetComponent<PlayerVariables>().shadowPositions[j]);
+			}
+
+			players[i].GetComponent<PlayerVariables>().shadowPositions.Clear();
 		}
 
 		//resets the rounds counter (Alex Jungroth)
 		roundCounter = 0;
+	}
+
+	/// <summary>
+	/// Checks to make sure none of the voters overlap each other (Alex Jungroth)
+	/// </summary>
+	bool overlapCheck(Vector3 temp)
+	{
+		for(int i = 0; i < NumVoters; i++)
+		{
+			if(temp == voters[i].transform.position)
+			{
+				return false;
+			}
+		}
+
+		return true;	
 	}
 
 	/// <summary>
