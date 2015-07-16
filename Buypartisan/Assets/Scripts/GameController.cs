@@ -84,11 +84,14 @@ public class GameController : MonoBehaviour {
 	private float drumrollTime = 3.7f;
 	public int Party;
 
+	//holds the winner of an election (Alex Jungroth)
+	public int electionWinner;
+
 	//does the tallying at the start of each turn (Alex Jungroth)
 	public TallyingScript tallyRoutine;
 
 	private InputManagerScript inputManager;
-
+	
 	/// <summary>
 	/// Start this instance.
 	/// Adds in Voter Array
@@ -342,7 +345,7 @@ public class GameController : MonoBehaviour {
 			if(electionCounter <  numberOfElections)
 			{
 				//displays who won an election (Alex Jungroth)
-				WindowGenerator.generateElectionVictory(false);
+				WindowGenerator.generateElectionVictory(false, electionWinner);
 
 				//manages things between elections (Alex Jungroth)
 				prepareElection();
@@ -353,7 +356,7 @@ public class GameController : MonoBehaviour {
 			else
 			{
 				//displays who won the game (Alex Jungroth)
-				WindowGenerator.generateElectionVictory(true);
+				WindowGenerator.generateElectionVictory(true, electionWinner);
 
 				//ends the game (Alex Jungroth)
 				currentState = GameState.AfterEnd;
@@ -484,23 +487,30 @@ public class GameController : MonoBehaviour {
 		for(int i = 0; i < players.Length; i++){
 			if(players[i].GetComponent<PlayerVariables>().votes > mostVotes){
 				mostVotes = players[i].GetComponent<PlayerVariables>().votes; 
-				winningPlayer = i;
+				winningPlayer = i + 1;
 			}
 			else if(players[i].GetComponent<PlayerVariables>().votes == mostVotes) {
 				//Debug.Log ("here");
 				tieVotes = players[i].GetComponent<PlayerVariables>().votes;
-				tieFighter = i;
+				tieFighter = i + 1;
 			}
 		}
 		if(messaged && mostVotes == tieVotes){
 			Debug.Log ("Winning Players are " + winningPlayer +" and " + tieFighter + " with a tie vote of: " + tieVotes + "!");
 			UIController.alterTextBox("Winning Players are " + winningPlayer +" and " + tieFighter + " with a tie vote of: " + tieVotes + "!");
 			messaged = false;
+
+			//gets the winner (Alex Jungroth)
+			electionWinner = winningPlayer;
+
 		}
 		else if(messaged){
 			Debug.Log("Winning Player is: " + winningPlayer + " with " + mostVotes + " votes!");
 			UIController.alterTextBox("Winning Player is: " + winningPlayer + " with " + mostVotes + " votes!");
 			messaged = false;
+
+			//gets the winner (Alex Jungroth)
+			electionWinner = winningPlayer;
 		}
 	}
 

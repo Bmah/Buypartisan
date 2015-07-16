@@ -15,10 +15,11 @@ public class WindowGeneratorScript : MonoBehaviour {
 	public GameObject endGameWindow;
 	public Image victoryToken;
 	public Text victoryText;
-	public Slider policySlider;
-	public Button continueButton;
+	public GameObject policySlider;
+	public GameObject continueButton;
 	public Text windowName;
 	public Text policyText;
+	public Text helpfulText;
 
 	// Use this for initialization
 	void Start () 
@@ -30,13 +31,14 @@ public class WindowGeneratorScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		
+		//as the slider is adjusted the policy text will change
+
 	}
 
 	/// <summary>
 	/// Manages window generation. (Alex Jungroth)
 	/// </summary>
-	public void generateElectionVictory(bool gameFinished)
+	public void generateElectionVictory(bool gameFinished, int winner)
 	{
 		//generates the correct window
 		if (gameFinished == false) 
@@ -49,6 +51,13 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 			//enables the end game screen
 			endGame.SetActive(true);
+
+			//alters the window's name
+			windowName.text = "Election Results are in!";
+
+			//prints the election winner from the gameController
+			victoryText.text = "Player " + winner + " won the election!";
+
 		} 
 		else
 		{
@@ -61,8 +70,15 @@ public class WindowGeneratorScript : MonoBehaviour {
 			//enables the end game screen
 			endGame.SetActive(true);
 
-			//diables the continue button on the end game screen
-			continueButton.enabled = false;
+			//diables some elements on the end game screen
+			continueButton.SetActive(false);
+			policySlider.SetActive(false);
+			policyText.text = "";
+			helpfulText.text = "";
+			victoryText.text = "";
+
+			//alters the window's name
+			windowName.text = "Game Over Man! Game Over!";
 		}
 	}
 
