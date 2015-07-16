@@ -453,21 +453,21 @@ public class GameController : MonoBehaviour {
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
 
-                //does the tallying after the players ends there turns (Alex Jungroth)
-                tallyRoutine.preTurnTalling();
+				if(randomEventController.ActivateEvents()){  //continually goes to random event controller until randomEventController returns true
+					//does the tallying after the players ends there turns (Alex Jungroth)
+					tallyRoutine.preTurnTalling();
 
-				randomEventController.ActivateEvents();
-
-				//this is when the new round begins
-				roundCounter++;
-				currentPlayerTurn = 0;
-				playerTakingAction = false;
-				
-				if (roundCounter < numberOfRounds) {
-					Debug.Log ("Round " + (roundCounter + 1) + " begin!");
-					Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
-				} else {
-					Debug.Log ("Game Ends!");
+					//this is when the new round begins
+					roundCounter++;
+					currentPlayerTurn = 0;
+					playerTakingAction = false;
+					
+					if (roundCounter < numberOfRounds) {
+						Debug.Log ("Round " + (roundCounter + 1) + " begin!");
+						Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+					} else {
+						Debug.Log ("Game Ends!");
+					}
 				}
 			}
 		}
