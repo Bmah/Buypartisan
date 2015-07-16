@@ -1,6 +1,7 @@
 ﻿//Alex Jungroth
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class WindowGeneratorScript : MonoBehaviour {
 
