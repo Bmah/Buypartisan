@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿//Alex Jungroth
+using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class WindowGeneratorScript : MonoBehaviour {
 
@@ -14,10 +16,18 @@ public class WindowGeneratorScript : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Generates the election victory window. (Alex Jungroth)
+	/// Manages window generation. (Alex Jungroth)
 	/// </summary>
 	public void generateElectionVictory(bool gameFinished)
 	{
-		
+		//generates the correct window
+		if (gameFinished == false) 
+		{
+
+		} 
+		else
+		{
+			
+		}
 	}
 }
