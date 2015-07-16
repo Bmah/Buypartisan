@@ -105,7 +105,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 		CheckForTriggeredEvents();
 
 
-		return false;
+		return true;
 	}
 
 	void StandardEvents ()
@@ -271,12 +271,11 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	void CheckForTriggeredEvents(){
 		for (int i = 0; i < actionCounter.Length; i++) {//for each player
-
 			for(int j = 0; j < actionCounter[0].Length; j++){//for each action
 				if (actionCounter[i][j] >= actionThreshold[j] &&  //if you have reached the threshold
 				    (Random.value < ((actionCounter[i][j] - actionThreshold[j]) * 0.1f + 0.3f))){ //and rng decides you 
 					//activate triggered event j with probability of 30% plus 10% * amount you have gone over threshold
-					eventTriggerList[j] = true;
+					eventTriggerList[i][j] = true;
 				}
 
 				//After checking to see if the event is triggered cool down the check
@@ -285,44 +284,44 @@ public class RandomEventControllerScript : MonoBehaviour {
 				}
 			}
 
-			if(eventTriggerList[0]){
-				eventTriggerList[0] = false;
+			if(eventTriggerList[i][0]){
+				eventTriggerList[i][0] = false;
 				//VoterSupression
 				VoterOutrage(players[i]);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Voters outraged at supression by player "+ (i+1) +
 				                          " Voters gather at the polls to vote against them!");
 			}
-			if(eventTriggerList[1]){
-				eventTriggerList[1] = false;
+			if(eventTriggerList[i][1]){
+				eventTriggerList[i][1] = false;
 				//MoveParty
 				FlipFlopping(players[i]);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Voters irrited by player "+ (i+1) + "'s flip flopping, " +
 				                          "voters distance themselves from the candidate!");
 			}
-			if(eventTriggerList[2]){
-				eventTriggerList[2] = false;
+			if(eventTriggerList[i][2]){
+				eventTriggerList[i][2] = false;
 				//InfluenceVoters
 				VoterManipulation(players[i]);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Voters shocked at player "+ (i+1) + "'s manipulation of votes " +
 				                          "player "+ (i+1) + " fined for their crime");
 			}
-			if(eventTriggerList[3]){
-				eventTriggerList[3] = false;
+			if(eventTriggerList[i][3]){
+				eventTriggerList[i][3] = false;
 				//ShadowPosition
 				ContradictoryPositions (players[i]);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (i+1) + " called out on contradictory positions " +
 				                          "player"+ (i+1) + "'s shadow position is removed");
 			}
-			if(eventTriggerList[4]){
-				eventTriggerList[4] = false;
+			if(eventTriggerList[i][4]){
+				eventTriggerList[i][4] = false;
 				//CampaignTour
 				AdBurnout(players[i]);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Voters tired of Player "+ (i+1) + "'s ads" +
 				                          " voters now harder to move!");
 				//smaller size sphere
 			}
-			if(eventTriggerList[5]){
-				eventTriggerList[5] = false;
+			if(eventTriggerList[i][5]){
+				eventTriggerList[i][5] = false;
 				//SphereOfInfluence
 				OverreachingCampaign(players[i]);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (i+1) + " tries to expand their campeign's reach too far " +
