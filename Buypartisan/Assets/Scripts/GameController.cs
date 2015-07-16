@@ -31,6 +31,9 @@ public class GameController : MonoBehaviour {
 
 	public UI_Script UIController;
 
+	//holds the WindowGenerator script (Alex Jungroth)
+	public WindowGeneratorScript WindowGenerator;
+
 	public RandomEventControllerScript randomEventController;
 
 	public int numberPlayers;  //number of players per game
@@ -45,7 +48,13 @@ public class GameController : MonoBehaviour {
 	public bool messaged;//Checks if Player has finished taking an action
 	public bool player2Spawning = false;
 	public bool partyChosen = false;
-	
+
+	//holds total the number of electons that will happen in the game (Alex Jungroth)
+	public int numberOfElections = 1;
+
+	//holds the number of elections that have happened (Alex Jungroth)
+	private int electionCounter = 0;
+
 	public GameObject[] voters;//array which houses the voters
 	public GameObject[] players = new GameObject[2];//array which houses the players
 	
@@ -106,8 +115,7 @@ public class GameController : MonoBehaviour {
 			//gets the following variables from the title UI settings (Alex Jungroth)
 			gridSize = gameSettings.gridSize;
 			numberOfRounds = gameSettings.totalRounds;
-			//the number of elections will be added later when presistant elections have been addded (Alex Jungroth)
-			//some variable for holding the total number of elections = gameSettings.totalElections;
+			numberOfElections = gameSettings.totalElections;
 			NumVoters = gameSettings.totalVoters;
 			//the music has to set during the update function (Alex Jungroth)
 			musicSettingsReceived = true;
@@ -327,6 +335,30 @@ public class GameController : MonoBehaviour {
 		// Once the game ends and calculation is needed, this is called
 		} else if (currentState == GameState.GameEnd) {
 			CompareVotes(messaged);
+
+			//increments the election counter (Alex Jungroth)
+			electionCounter += 1;
+
+			if(electionCounter <  numberOfElections)
+			{
+				//displays who won an election (Alex Jungroth)
+				WindowGenerator.generateElectionVictory(false);
+
+				//manages things between elections (Alex Jungroth)
+				prepareElection();
+
+				//resets the game state (Alex Jungroth)
+				currentState = GameState.ActionTurns;
+			}
+			else
+			{
+				//displays who won the game (Alex Jungroth)
+				WindowGenerator.generateElectionVictory(true);
+
+				//ends the game (Alex Jungroth)
+				currentState = GameState.AfterEnd;
+			}
+
 		}
 		
 		if (inputManager.escButtonDown) {
@@ -343,7 +375,7 @@ public class GameController : MonoBehaviour {
 	void SpawnPlayer(){
 		if (!spawnedNewPlayer) {
 			UIController.PartyDisable();
-			UIController.enablePPButtons();
+			UIController.enablePPButtonsPartySelection();
 			switch (Party){//this is code for spawning different parites.  Parties are set as an enum, and assigned at title
 				//from here, depending on what party the player chose, this is what they will spawn as
 			case 0 : currentPlayer = Instantiate(neutralTemplate,new Vector3(0,0,0), Quaternion.identity) as GameObject; this.playerTemplate = neutralTemplate; break;
@@ -380,10 +412,12 @@ public class GameController : MonoBehaviour {
 			for(int i = 0; i < playersSpawned; i++){
 				if (currentPlayer.transform.position == players[i].transform.position){//if they are on the same spot
 					playerConfirmsPlacment = false;
-
 				}
 			}
 			if(playerConfirmsPlacment){ //if the player placment is legal
+
+				UIController.correctPlacement();
+
 				playersSpawned++;
 				partyChosen = false;
 				spawnedNewPlayer = false;
@@ -419,21 +453,21 @@ public class GameController : MonoBehaviour {
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
 
-                //does the tallying after the players ends there turns (Alex Jungroth)
-                tallyRoutine.preTurnTalling();
+				if(randomEventController.ActivateEvents()){  //continually goes to random event controller until randomEventController returns true
+					//does the tallying after the players ends there turns (Alex Jungroth)
+					tallyRoutine.preTurnTalling();
 
-				randomEventController.ActivateEvents();
-
-				//this is when the new round begins
-				roundCounter++;
-				currentPlayerTurn = 0;
-				playerTakingAction = false;
-				
-				if (roundCounter < numberOfRounds) {
-					Debug.Log ("Round " + (roundCounter + 1) + " begin!");
-					Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
-				} else {
-					Debug.Log ("Game Ends!");
+					//this is when the new round begins
+					roundCounter++;
+					currentPlayerTurn = 0;
+					playerTakingAction = false;
+					
+					if (roundCounter < numberOfRounds) {
+						Debug.Log ("Round " + (roundCounter + 1) + " begin!");
+						Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+					} else {
+						Debug.Log ("Game Ends!");
+					}
 				}
 			}
 		}
@@ -468,10 +502,27 @@ public class GameController : MonoBehaviour {
 			UIController.alterTextBox("Winning Player is: " + winningPlayer + " with " + mostVotes + " votes!");
 			messaged = false;
 		}
-
-		// Brings us to the results UI with all the information displayed
-		currentState = GameState.AfterEnd;
 	}
+
+	/// <summary>
+	/// Prepares the election. (Alex Jungroth)
+	/// </summary>
+	void prepareElection()
+	{
+		//resets the drum roll
+		SFXDrumrollPlaying = false;
+		drumrollTime = 3.7f;
+
+		//this handles voter resistance cool down (Alex Jungroth)
+		for (int i = 0; i < NumVoters; i++) 
+		{
+			voters[i].GetComponent<VoterVariables>().baseResistance *= 0.5f;
+		}
+
+		//resets the rounds counter (Alex Jungroth)
+		roundCounter = 0;
+	}
+
 	/// <summary>
 	/// So, this is the skeleton for the power functions.  Every power will be assigned an int, and checked for either though 
 	/// a switch statement or simple if checks. This function is called through a variety of means, although right now, only through
