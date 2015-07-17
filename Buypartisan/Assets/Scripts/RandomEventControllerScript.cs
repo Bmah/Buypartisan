@@ -109,11 +109,13 @@ public class RandomEventControllerScript : MonoBehaviour {
 			if(DoTriggeredEvents(playerTriggerNumber)){
 				currentState = ActionState.EndRandomEvents;
 			}
+            UIController.disableActionButtons();
 			break;
 
 		case ActionState.EndRandomEvents:
 			currentState = ActionState.StartEvents;
 			UIController.alterTextBox("Events are over,\nthe Election Continues!");
+            UIController.toggleActionButtons();
 			return true;
 		}
 
