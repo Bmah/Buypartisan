@@ -10,7 +10,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 	public GameObject[] voters;
 	public GameObject[] players;
 	public bool playersSpawned = false;
-	private int numberOfActions = 8;
+	private int numberOfActions;
 	//private bool ActionCounterSetup = false;
 
 	//for debugging
@@ -28,9 +28,11 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	public int gridSize;
 
-	public enum ActionState {StartEvents, WaitForTriggeredEvent0, TriggeredEvent0, WaitForTriggeredEvent1,
-		TriggeredEvent1, WaitForTriggeredEvent2, TriggeredEvent2, WaitForTriggeredEvent3, TriggeredEvent3};
+	public enum ActionState {StartEvents, WaitForTriggeredEvent, CheckForTriggeredEvents, ActivateTriggeredEvents, EndRandomEvents};
+	private enum TriggeredEventState {E0, Wait0, E1, Wait1, E2, Wait2, E3, Wait3, E4, Wait4, E5, Wait5, E6, Wait6, E7, Wait7, EndOfTriggeredEvents};
+	TriggeredEventState triggerState = TriggeredEventState.E0;
 	ActionState currentState = ActionState.StartEvents;
+	int playerTriggerNumber = 0;
 
 	InputManagerScript Inputs = null;
 
@@ -84,28 +86,40 @@ public class RandomEventControllerScript : MonoBehaviour {
 
 	/// <summary>
 	/// Activates the events.
-	/// only call this once
 	/// Brian Mah
 	/// </summary>
 	public bool ActivateEvents(){
 
 		switch (currentState){
 		case ActionState.StartEvents :
-			currentState = ActionState.WaitForTriggeredEvent0;
+			currentState = ActionState.WaitForTriggeredEvent;
 			StandardEvents ();
 			break;
-		case ActionState.WaitForTriggeredEvent0 :
+		case ActionState.WaitForTriggeredEvent :
 			if(Inputs.leftClickDown){
-
+				currentState = ActionState.CheckForTriggeredEvents;
 			}
 			break;
+		case ActionState.CheckForTriggeredEvents :
+			CheckForTriggeredEvents();
+			playerTriggerNumber = 0;
+			currentState = ActionState.ActivateTriggeredEvents;
+			break;
+		case ActionState.ActivateTriggeredEvents :
+			if(DoTriggeredEvents(playerTriggerNumber)){
+				currentState = ActionState.EndRandomEvents;
+			}
+            UIController.disableActionButtons();
+			break;
 
+		case ActionState.EndRandomEvents:
+			currentState = ActionState.StartEvents;
+			UIController.alterTextBox("Events are over,\nthe Election Continues!");
+            UIController.toggleActionButtons();
+			return true;
 		}
 
-		CheckForTriggeredEvents();
-
-
-		return true;
+		return false;
 	}
 
 	void StandardEvents ()
@@ -114,38 +128,39 @@ public class RandomEventControllerScript : MonoBehaviour {
 		switch (eventChoice) {
 		case 0:
 			ShiftVoters ('X', 1);
-			UIController.alterTextBox ("Newsflash! Sudden victory in the war boosts confidence in big govt! " + "Voters migrate 1 up on the X axis.");
+			UIController.alterTextBox ("Newsflash! Sudden victory in the war boosts confidence in big govt! " + 
+			                           "Voters migrate 1 up on the X axis.\nLeft Click to Continue");
 			break;
 		case 1:
 			ShiftVoters ('X', -1);
-			UIController.alterTextBox ("Newsflash! Sudden defeat in the war crushes confidence in big govt! " + "Voters migrate 1 down on the X axis.");
+			UIController.alterTextBox ("Newsflash! Sudden defeat in the war crushes confidence in big govt! " + "Voters migrate 1 down on the X axis.\nLeft Click to Continue");
 			break;
 		case 2:
 			ShiftVoters ('Y', 1);
-			UIController.alterTextBox ("Newsflash! New developments in the field of oil drilling lead to profit for big buisness. " + "Voters migrate 1 up on the Y axis.");
+			UIController.alterTextBox ("Newsflash! New developments in the field of oil drilling lead to profit for big buisness. " + "Voters migrate 1 up on the Y axis.\nLeft Click to Continue");
 			break;
 		case 3:
 			ShiftVoters ('Y', -1);
-			UIController.alterTextBox ("Newsflash! Sudden oil spill causes huge natural disaster, public outraged with big buisness." + "Voters migrate 1 down on the Y axis.");
+			UIController.alterTextBox ("Newsflash! Sudden oil spill causes huge natural disaster, public outraged with big buisness." + "Voters migrate 1 down on the Y axis.\nLeft Click to Continue");
 			break;
 		case 4:
 			ShiftVoters ('Z', 1);
-			UIController.alterTextBox ("Newsflash! Popular celebrity endorses the Z axis. " + "Voters migrate 1 up on the Z axis.");
+			UIController.alterTextBox ("Newsflash! Popular celebrity endorses the Z axis. " + "Voters migrate 1 up on the Z axis.\nLeft Click to Continue");
 			break;
 		case 5:
 			ShiftVoters ('Z', -1);
-			UIController.alterTextBox ("Newsflash! Popular celebrity denounces the Z axis. " + "Voters migrate 1 down on the Z axis.");
+			UIController.alterTextBox ("Newsflash! Popular celebrity denounces the Z axis. " + "Voters migrate 1 down on the Z axis.\nLeft Click to Continue");
 			break;
 		case 6:
 			EconomicBoom (2);
-			UIController.alterTextBox ("Newsflash! MONEY MONEY EVERYWHERE. " + "Voters now have twice the money they used to!");
+			UIController.alterTextBox ("Newsflash! MONEY MONEY EVERYWHERE. " + "Voters now have twice the money they used to!\nLeft Click to Continue");
 			break;
 		case 7:
 			EconomicBust (2);
-			UIController.alterTextBox ("Newsflash! Poor investments in tulip market lead to market crash. " + "Voters now have half the money they used to!");
+			UIController.alterTextBox ("Newsflash! Poor investments in tulip market lead to market crash. " + "Voters now have half the money they used to!\nLeft Click to Continue");
 			break;
 		default:
-			UIController.alterTextBox ("Newsflash! Little Timmy fell down the well!");
+			UIController.alterTextBox ("Newsflash! Little Timmy fell down the well!\nLeft Click to Continue");
 			break;
 		}
 	}
@@ -283,52 +298,137 @@ public class RandomEventControllerScript : MonoBehaviour {
 					actionCounter[i][j]--;
 				}
 			}
-
-			if(eventTriggerList[i][0]){
-				eventTriggerList[i][0] = false;
-				//VoterSupression
-				VoterOutrage(players[i]);
-				UIController.alterTextBox("Triggered Event\nNewsflash! Voters outraged at supression by player "+ (i+1) +
-				                          " Voters gather at the polls to vote against them!");
-			}
-			if(eventTriggerList[i][1]){
-				eventTriggerList[i][1] = false;
-				//MoveParty
-				FlipFlopping(players[i]);
-				UIController.alterTextBox("Triggered Event\nNewsflash! Voters irrited by player "+ (i+1) + "'s flip flopping, " +
-				                          "voters distance themselves from the candidate!");
-			}
-			if(eventTriggerList[i][2]){
-				eventTriggerList[i][2] = false;
-				//InfluenceVoters
-				VoterManipulation(players[i]);
-				UIController.alterTextBox("Triggered Event\nNewsflash! Voters shocked at player "+ (i+1) + "'s manipulation of votes " +
-				                          "player "+ (i+1) + " fined for their crime");
-			}
-			if(eventTriggerList[i][3]){
-				eventTriggerList[i][3] = false;
-				//ShadowPosition
-				ContradictoryPositions (players[i]);
-				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (i+1) + " called out on contradictory positions " +
-				                          "player"+ (i+1) + "'s shadow position is removed");
-			}
-			if(eventTriggerList[i][4]){
-				eventTriggerList[i][4] = false;
-				//CampaignTour
-				AdBurnout(players[i]);
-				UIController.alterTextBox("Triggered Event\nNewsflash! Voters tired of Player "+ (i+1) + "'s ads" +
-				                          " voters now harder to move!");
-				//smaller size sphere
-			}
-			if(eventTriggerList[i][5]){
-				eventTriggerList[i][5] = false;
-				//SphereOfInfluence
-				OverreachingCampaign(players[i]);
-				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (i+1) + " tries to expand their campeign's reach too far " +
-				                          " no consequences for this action as of yet");
-			}
 		}//for each player
 	}//Check For Triggered events
+
+	bool DoTriggeredEvents(int player){
+
+		switch (triggerState){
+		case TriggeredEventState.E0:
+			if(eventTriggerList[player][0]){
+				eventTriggerList[player][0] = false;
+				//VoterSupression
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters outraged at supression by player "+ (player+1) +
+				                          " Voters gather at the polls to vote against them!\nLeft Click to Continue");
+				triggerState = TriggeredEventState.Wait0;
+			}
+			else{
+				triggerState = TriggeredEventState.E1;
+			}
+			break;
+		case TriggeredEventState.Wait0:
+			if(Inputs.leftClickDown){
+				triggerState = TriggeredEventState.E1;
+			}
+			break;
+		case TriggeredEventState.E1:
+			if(eventTriggerList[player][1]){
+				eventTriggerList[player][1] = false;
+				//MoveParty
+				FlipFlopping(players[player]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters irrited by player "+ (player+1) + "'s flip flopping, " +
+				                          "voters distance themselves from the candidate!\nLeft Click to Continue");
+				triggerState = TriggeredEventState.Wait1;
+			}
+			else{
+				triggerState = TriggeredEventState.E2;
+			}
+			break;
+		case TriggeredEventState.Wait1:
+			if(Inputs.leftClickDown){
+				triggerState = TriggeredEventState.E2;
+			}
+			break;
+
+		case TriggeredEventState.E2:
+			if(eventTriggerList[player][2]){
+				eventTriggerList[player][2] = false;
+				//InfluenceVoters
+				VoterManipulation(players[player]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters shocked at player "+ (player+1) + "'s manipulation of votes " +
+				                          "player "+ (player+1) + " fined for their crime\nLeft Click to Continue");
+				triggerState = TriggeredEventState.Wait2;
+			}
+			else{
+				triggerState = TriggeredEventState.E3;
+			}
+			break;
+		case TriggeredEventState.Wait2:
+			if(Inputs.leftClickDown){
+				triggerState = TriggeredEventState.E3;
+			}
+			break;
+
+		case TriggeredEventState.E3:
+			if(eventTriggerList[player][3]){
+				eventTriggerList[player][3] = false;
+				//ShadowPosition
+				ContradictoryPositions (players[player]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (player+1) + " called out on contradictory positions " +
+				                          "player"+ (player+1) + "'s shadow position is removed\nLeft Click to Continue");
+				triggerState = TriggeredEventState.Wait3;
+			}
+			else{
+				triggerState = TriggeredEventState.E4;
+			}
+			break;
+		case TriggeredEventState.Wait3:
+			if(Inputs.leftClickDown){
+				triggerState = TriggeredEventState.E4;
+			}
+			break;
+
+		case TriggeredEventState.E4:
+			if(eventTriggerList[player][4]){
+				eventTriggerList[player][4] = false;
+				//CampaignTour
+				AdBurnout(players[player]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters tired of Player "+ (player+1) + "'s ads" +
+				                          " voters now harder to move!\nLeft Click to Continue");
+				//smaller size sphere
+				triggerState = TriggeredEventState.Wait4;
+			}
+			else{
+				triggerState = TriggeredEventState.E5;
+			}
+			break;
+		case TriggeredEventState.Wait4:
+			if(Inputs.leftClickDown){
+				triggerState = TriggeredEventState.E5;
+			}
+			break;
+
+		case TriggeredEventState.E5:
+			if(eventTriggerList[player][5]){
+				eventTriggerList[player][5] = false;
+				//SphereOfInfluence
+				OverreachingCampaign(players[player]);
+				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (player+1) + " tries to expand their campeign's reach too far " +
+				                          " no consequences for this action as of yet\nLeft Click to Continue");
+				triggerState = TriggeredEventState.Wait5;
+			}
+			else{
+				triggerState = TriggeredEventState.EndOfTriggeredEvents;
+			}
+			break;
+		case TriggeredEventState.Wait5:
+			if(Inputs.leftClickDown){
+				triggerState = TriggeredEventState.EndOfTriggeredEvents;
+			}
+			break;
+		case TriggeredEventState.EndOfTriggeredEvents:
+			triggerState = TriggeredEventState.E0;
+			if (playerTriggerNumber < players.Length - 1){
+				playerTriggerNumber++;
+			}
+			else{
+				return true;
+			}
+			break;
+		}//switch
+
+		return false;
+	}
 
 	/// <summary>
 	/// Voter Outrage:
