@@ -84,14 +84,11 @@ public class GameController : MonoBehaviour {
 	private float drumrollTime = 3.7f;
 	public int Party;
 
-	//holds the winner of an election (Alex Jungroth)
-	public int electionWinner;
-
 	//does the tallying at the start of each turn (Alex Jungroth)
 	public TallyingScript tallyRoutine;
 
 	private InputManagerScript inputManager;
-	
+
 	/// <summary>
 	/// Start this instance.
 	/// Adds in Voter Array
@@ -317,16 +314,6 @@ public class GameController : MonoBehaviour {
 			
 		} else if (currentState == GameState.RoundEnd) {
 
-			//disables the action buttons (Alex Jungroth)
-			for(int i = 0; i < 10; i++)
-			{
-				UIController.ActionButtonObject[i].SetActive(false);
-			}
-
-			//disables the end turn and player stats buttons (Alex Jungroth)
-			UIController.endTurnButton.SetActive(false);
-			UIController.displayStatsButton.SetActive(false);
-
 			// Brian Mah
 			UIController.alterTextBox("And the Winner is...");
 
@@ -355,7 +342,7 @@ public class GameController : MonoBehaviour {
 			if(electionCounter <  numberOfElections)
 			{
 				//displays who won an election (Alex Jungroth)
-				WindowGenerator.generateElectionVictory(false, electionWinner);
+				WindowGenerator.generateElectionVictory(false);
 
 				//manages things between elections (Alex Jungroth)
 				prepareElection();
@@ -366,7 +353,7 @@ public class GameController : MonoBehaviour {
 			else
 			{
 				//displays who won the game (Alex Jungroth)
-				WindowGenerator.generateElectionVictory(true, electionWinner);
+				WindowGenerator.generateElectionVictory(true);
 
 				//ends the game (Alex Jungroth)
 				currentState = GameState.AfterEnd;
@@ -466,21 +453,21 @@ public class GameController : MonoBehaviour {
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
 
-				if(randomEventController.ActivateEvents()){  //continually goes to random event controller until randomEventController returns true
-					//does the tallying after the players ends there turns (Alex Jungroth)
-					tallyRoutine.preTurnTalling();
+                //does the tallying after the players ends there turns (Alex Jungroth)
+                tallyRoutine.preTurnTalling();
 
-					//this is when the new round begins
-					roundCounter++;
-					currentPlayerTurn = 0;
-					playerTakingAction = false;
-					
-					if (roundCounter < numberOfRounds) {
-						Debug.Log ("Round " + (roundCounter + 1) + " begin!");
-						Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
-					} else {
-						Debug.Log ("Game Ends!");
-					}
+				randomEventController.ActivateEvents();
+
+				//this is when the new round begins
+				roundCounter++;
+				currentPlayerTurn = 0;
+				playerTakingAction = false;
+				
+				if (roundCounter < numberOfRounds) {
+					Debug.Log ("Round " + (roundCounter + 1) + " begin!");
+					Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+				} else {
+					Debug.Log ("Game Ends!");
 				}
 			}
 		}
@@ -497,30 +484,23 @@ public class GameController : MonoBehaviour {
 		for(int i = 0; i < players.Length; i++){
 			if(players[i].GetComponent<PlayerVariables>().votes > mostVotes){
 				mostVotes = players[i].GetComponent<PlayerVariables>().votes; 
-				winningPlayer = i + 1;
+				winningPlayer = i;
 			}
 			else if(players[i].GetComponent<PlayerVariables>().votes == mostVotes) {
 				//Debug.Log ("here");
 				tieVotes = players[i].GetComponent<PlayerVariables>().votes;
-				tieFighter = i + 1;
+				tieFighter = i;
 			}
 		}
 		if(messaged && mostVotes == tieVotes){
 			Debug.Log ("Winning Players are " + winningPlayer +" and " + tieFighter + " with a tie vote of: " + tieVotes + "!");
 			UIController.alterTextBox("Winning Players are " + winningPlayer +" and " + tieFighter + " with a tie vote of: " + tieVotes + "!");
 			messaged = false;
-
-			//gets the winner (Alex Jungroth)
-			electionWinner = winningPlayer;
-
 		}
 		else if(messaged){
 			Debug.Log("Winning Player is: " + winningPlayer + " with " + mostVotes + " votes!");
 			UIController.alterTextBox("Winning Player is: " + winningPlayer + " with " + mostVotes + " votes!");
 			messaged = false;
-
-			//gets the winner (Alex Jungroth)
-			electionWinner = winningPlayer;
 		}
 	}
 
@@ -529,148 +509,18 @@ public class GameController : MonoBehaviour {
 	/// </summary>
 	void prepareElection()
 	{
-		//holds the vector 3 of the voters so they can be altered (Alex Jungroth)
-		Vector3 temp = Vector3.zero;
-
-		//holds a random float to determine the direction the voters are moving in (Alex Jungroth)
-		float tempRandom = 0;
-
-		//resets the drum roll (Alex Jungroth)
+		//resets the drum roll
 		SFXDrumrollPlaying = false;
 		drumrollTime = 3.7f;
 
+		//this handles voter resistance cool down (Alex Jungroth)
 		for (int i = 0; i < NumVoters; i++) 
 		{
-			//this handles voter resistance cool down (Alex Jungroth)
-			voters [i].GetComponent<VoterVariables> ().baseResistance *= 0.5f;
-					
-			//gets a random value from 0 to 5 (Alex Jungroth)
-			tempRandom = Random.Range(0f, 6.0f);
-
-			//has a chance to move the voters in a random direction (Alex Jungroth)
-			switch ((int)tempRandom)
-			{
-				case 0:
-					if (Random.value > voters [i].GetComponent<VoterVariables> ().xPlusResistance + (int)voters [i].GetComponent<VoterVariables> ().baseResistance)
-					{
-						//move voter in the +X direction (Alex Jungroth)
-						temp = voters[i].transform.position;
-						temp += new Vector3(1,0,0);
-						
-						//makes sure the voter doesn't move off the grid or onto another voter (Alex Jungroth)
-						if((temp.x < gridSize - 1) && (overlapCheck(temp) == true))
-						{
-							voters[i].transform.position = temp;
-						}
-					}
-				break;
-					
-				case 1:
-					if (Random.value > voters [i].GetComponent<VoterVariables> ().xMinusResistance + (int)voters [i].GetComponent<VoterVariables> ().baseResistance)
-					{
-						//move voter in the -X direction (Alex Jungroth)
-						temp = voters[i].transform.position;
-						temp -= new Vector3(1,0,0);
-						
-						//makes sure the voter doesn't move off the grid or onto another voter (Alex Jungroth)
-						if((temp.x > 0)  && (overlapCheck(temp) == true))
-						{
-							voters[i].transform.position = temp;
-						}
-					}
-				break;
-				
-				case 2:
-					if (Random.value > voters [i].GetComponent<VoterVariables> ().yPlusResistance + (int)voters [i].GetComponent<VoterVariables> ().baseResistance) 
-					{
-						//move voter in the +Y direction (Alex Jungroth)
-						temp = voters[i].transform.position;
-						temp += new Vector3(0,1,0);
-						
-						//makes sure the voter doesn't move off the grid or onto another voter (Alex Jungroth)
-						if((temp.y < gridSize - 1) && (overlapCheck(temp) == true))
-						{
-							voters[i].transform.position = temp;
-						}
-					}
-				break;
-				
-				case 3:
-					if (Random.value > voters [i].GetComponent<VoterVariables> ().yMinusResistance + (int)voters [i].GetComponent<VoterVariables> ().baseResistance) 
-					{
-						//move voter the -Y direction (Alex Jungroth)
-						temp = voters[i].transform.position;
-						temp -= new Vector3(0,1,0);
-						
-						//makes sure the voter doesn't move off the grid or onto another voter (Alex Jungroth)
-						if((temp.y > 0) && (overlapCheck(temp) == true))
-						{
-							voters[i].transform.position = temp;
-						}
-					}
-				break;
-					
-				case 4:
-					if (Random.value > voters [i].GetComponent<VoterVariables> ().zPlusResistance + (int)voters [i].GetComponent<VoterVariables> ().baseResistance) 
-					{
-						//move voter the +Z direction (Alex Jungroth)
-						temp = voters[i].transform.position;
-						temp += new Vector3(0,0,1);
-						
-						//makes sure the voter doesn't move off the grid or onto another voter (Alex Jungroth)
-						if((temp.z < gridSize - 1) && (overlapCheck(temp) == true))
-						{
-							voters[i].transform.position = temp;
-						}
-					}
-				break;
-				
-				case 5:
-					if (Random.value > voters [i].GetComponent<VoterVariables> ().zMinusResistance + (int)voters [i].GetComponent<VoterVariables> ().baseResistance)
-					{
-						//move voter the -Z direction (Alex Jungroth)
-						temp = voters[i].transform.position;
-						temp -= new Vector3(0,0,1);
-						
-						//makes sure the voter doesn't move off the grid or onto another voter (Alex Jungroth)
-						if((temp.z > 0) && (overlapCheck(temp) == true))
-						{
-							voters[i].transform.position = temp;
-						}
-					}
-				break;
-			}
-		}
-
-		//deletes all of the players shadow positions and clears their shadow position list (Alex Jungroth)
-		for (int i = 0; i < numberPlayers; i++) 
-		{
-			for(int j = 0; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count; j++)
-			{
-				Destroy(players[i].GetComponent<PlayerVariables>().shadowPositions[j]);
-			}
-
-			players[i].GetComponent<PlayerVariables>().shadowPositions.Clear();
+			voters[i].GetComponent<VoterVariables>().baseResistance *= 0.5f;
 		}
 
 		//resets the rounds counter (Alex Jungroth)
 		roundCounter = 0;
-	}
-
-	/// <summary>
-	/// Checks to make sure none of the voters overlap each other (Alex Jungroth)
-	/// </summary>
-	bool overlapCheck(Vector3 temp)
-	{
-		for(int i = 0; i < NumVoters; i++)
-		{
-			if(temp == voters[i].transform.position)
-			{
-				return false;
-			}
-		}
-
-		return true;	
 	}
 
 	/// <summary>
