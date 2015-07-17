@@ -54,6 +54,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 			//prints the election winner from the gameController
 			victoryText.text = "Player " + winner + " won the election!";
 
+
 		} 
 		else
 		{
