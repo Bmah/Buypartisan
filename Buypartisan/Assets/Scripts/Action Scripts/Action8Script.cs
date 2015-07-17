@@ -84,7 +84,7 @@ public class Action8Script : MonoBehaviour {
 		}
 
 		if (confirmButton) {
-			if(Random.value > 0.5f) {
+			if(Random.value >= 0.2f) {
 				for(int i = 0; i < voters.Length; i++) {
 					if((voters[i].transform.position - players[currentPlayer].transform.position).magnitude <= players[currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale.x) {
 						players[currentPlayer].GetComponent<PlayerVariables>().money += voters[i].GetComponent<VoterVariables>().money/10;
