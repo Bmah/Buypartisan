@@ -317,6 +317,16 @@ public class GameController : MonoBehaviour {
 			
 		} else if (currentState == GameState.RoundEnd) {
 
+			//disables the action buttons (Alex Jungroth)
+			for(int i = 0; i < 10; i++)
+			{
+				UIController.ActionButtonObject[i].SetActive(false);
+			}
+
+			//disables the end turn and player stats buttons (Alex Jungroth)
+			UIController.endTurnButton.SetActive(false);
+			UIController.displayStatsButton.SetActive(false);
+
 			// Brian Mah
 			UIController.alterTextBox("And the Winner is...");
 

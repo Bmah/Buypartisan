@@ -45,10 +45,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 		{
 			//This code generates a window for the end of an election
 
-			//disables the end turn and player stats buttons
-			uiController.endTurnButton.SetActive(false);
-			uiController.displayStatsButton.SetActive(false);
-
 			//enables the end game screen
 			endGame.SetActive(true);
 
@@ -63,10 +59,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 		{
 			//This code generates a window for the end of the game
 
-			//disables the end turn and player stats buttons
-			uiController.endTurnButton.SetActive(false);
-			uiController.displayStatsButton.SetActive(false);
-			
 			//enables the end game screen
 			endGame.SetActive(true);
 
@@ -91,6 +83,12 @@ public class WindowGeneratorScript : MonoBehaviour {
 		uiController.endTurnButton.SetActive(true);
 		uiController.displayStatsButton.SetActive(true);
 
+		//enables the action buttons
+		for(int i = 0; i < 10; i++)
+		{
+			uiController.ActionButtonObject[i].SetActive(true);
+		}
+		
 		//disables the end game screen
 		endGame.SetActive(false);
 	}
