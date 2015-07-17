@@ -6,40 +6,40 @@ using System.Collections;
 /// Brian Mah
 /// </summary>
 public class RandomEventControllerScript : MonoBehaviour {
-
+	
 	public GameObject[] voters;
 	public GameObject[] players;
 	public bool playersSpawned = false;
 	private int numberOfActions;
 	//private bool ActionCounterSetup = false;
-
+	
 	//for debugging
 	public int arrayChoice = 0;
 	public int[] debugArray;
-
+	
 	public int[][] actionCounter;
 	private int[] actionThreshold = {3,3,3,3,3,3,3,3};
 	private bool[][] eventTriggerList;
-
+	
 	public VoterVariables[] voterVars = null;
 	private bool voterVarsSet = false;
-
+	
 	public UI_Script UIController;
-
+	
 	public int gridSize;
-
+	
 	public enum ActionState {StartEvents, WaitForTriggeredEvent, CheckForTriggeredEvents, ActivateTriggeredEvents, EndRandomEvents};
 	private enum TriggeredEventState {E0, Wait0, E1, Wait1, E2, Wait2, E3, Wait3, E4, Wait4, E5, Wait5, E6, Wait6, E7, Wait7, EndOfTriggeredEvents};
 	TriggeredEventState triggerState = TriggeredEventState.E0;
 	ActionState currentState = ActionState.StartEvents;
 	int playerTriggerNumber = 0;
-
+	
 	InputManagerScript Inputs = null;
-
+	
 	// Use this for initialization
 	void Start () {
 		numberOfActions = actionThreshold.Length;
-
+		
 		if (UIController == null) {
 			Debug.LogError("UI_Script not set on RandomEventController");
 		}
@@ -51,20 +51,20 @@ public class RandomEventControllerScript : MonoBehaviour {
 		else {
 			Debug.LogError("Could not fing Gamecontroller");
 		}
-
+		
 		//initializing the event trigger list
-
+		
 		for(int i = 0; i < eventTriggerList.Length; i++){
 			eventTriggerList[i] = new bool[numberOfActions];
 			for(int j = 0; j < eventTriggerList[0].Length; j++){
 				eventTriggerList[i][j] = false;
 			}
 		}
-
+		
 		for (int i = 0; i < actionCounter.Length; i++){
 			actionCounter[i] = new int[numberOfActions];
 		}
-
+		
 		Inputs = GameObject.FindGameObjectWithTag ("InputManager").GetComponent<InputManagerScript> ();
 		if (Inputs == null) {
 			Debug.LogError("Could not Find Input Manager");
@@ -83,13 +83,13 @@ public class RandomEventControllerScript : MonoBehaviour {
 		}
 		
 	}// update
-
+	
 	/// <summary>
 	/// Activates the events.
 	/// Brian Mah
 	/// </summary>
 	public bool ActivateEvents(){
-
+		
 		switch (currentState){
 		case ActionState.StartEvents :
 			currentState = ActionState.WaitForTriggeredEvent;
@@ -109,19 +109,19 @@ public class RandomEventControllerScript : MonoBehaviour {
 			if(DoTriggeredEvents(playerTriggerNumber)){
 				currentState = ActionState.EndRandomEvents;
 			}
-            UIController.disableActionButtons();
+			UIController.disableActionButtons();
 			break;
-
+			
 		case ActionState.EndRandomEvents:
 			currentState = ActionState.StartEvents;
 			UIController.alterTextBox("Events are over,\nthe Election Continues!");
-            UIController.toggleActionButtons();
+			UIController.toggleActionButtons();
 			return true;
 		}
-
+		
 		return false;
 	}
-
+	
 	void StandardEvents ()
 	{
 		int eventChoice = Random.Range (0, 10);
@@ -164,7 +164,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			break;
 		}
 	}
-
+	
 	/// <summary>
 	/// Shifts all voters by magnitude length in the specified direction.
 	/// Brian Mah
@@ -282,8 +282,8 @@ public class RandomEventControllerScript : MonoBehaviour {
 			voters[i].GetComponent<VoterVariables>().money /= divisor;
 		}
 	}
-
-
+	
+	
 	void CheckForTriggeredEvents(){
 		for (int i = 0; i < actionCounter.Length; i++) {//for each player
 			for(int j = 0; j < actionCounter[0].Length; j++){//for each action
@@ -292,7 +292,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 					//activate triggered event j with probability of 30% plus 10% * amount you have gone over threshold
 					eventTriggerList[i][j] = true;
 				}
-
+				
 				//After checking to see if the event is triggered cool down the check
 				if(actionCounter[i][j] > 0){
 					actionCounter[i][j]--;
@@ -300,9 +300,9 @@ public class RandomEventControllerScript : MonoBehaviour {
 			}
 		}//for each player
 	}//Check For Triggered events
-
+	
 	bool DoTriggeredEvents(int player){
-
+		
 		switch (triggerState){
 		case TriggeredEventState.E0:
 			if(eventTriggerList[player][0]){
@@ -339,7 +339,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				triggerState = TriggeredEventState.E2;
 			}
 			break;
-
+			
 		case TriggeredEventState.E2:
 			if(eventTriggerList[player][2]){
 				eventTriggerList[player][2] = false;
@@ -358,7 +358,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				triggerState = TriggeredEventState.E3;
 			}
 			break;
-
+			
 		case TriggeredEventState.E3:
 			if(eventTriggerList[player][3]){
 				eventTriggerList[player][3] = false;
@@ -377,7 +377,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				triggerState = TriggeredEventState.E4;
 			}
 			break;
-
+			
 		case TriggeredEventState.E4:
 			if(eventTriggerList[player][4]){
 				eventTriggerList[player][4] = false;
@@ -397,7 +397,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				triggerState = TriggeredEventState.E5;
 			}
 			break;
-
+			
 		case TriggeredEventState.E5:
 			if(eventTriggerList[player][5]){
 				eventTriggerList[player][5] = false;
@@ -426,10 +426,10 @@ public class RandomEventControllerScript : MonoBehaviour {
 			}
 			break;
 		}//switch
-
+		
 		return false;
 	}
-
+	
 	/// <summary>
 	/// Voter Outrage:
 	/// Voters flock to the opposing canidate's position
@@ -444,7 +444,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			}
 		}
 	}
-
+	
 	/// <summary>
 	/// Flips the flopping.
 	/// </summary>
@@ -453,12 +453,12 @@ public class RandomEventControllerScript : MonoBehaviour {
 		int magnitude;
 		Vector3 newLocation;
 		float direction;
-
+		
 		for (int i = 0; i < voters.Length; i++) {
 			if(voterVars[i].CanidateChoice == TargetPlayer){
 				newLocation = voters[i].transform.position;
 				direction = Random.value;
-
+				
 				//choose a direction
 				if(direction < 0.3333f){
 					//move along x axis
@@ -559,7 +559,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			}
 		}
 	}
-
+	
 	/// <summary>
 	/// Voters the manipulation.
 	/// </summary>
@@ -567,7 +567,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 		//charged for a fine
 		TargetPlayer.GetComponent<PlayerVariables> ().money -= 300;
 	}
-
+	
 	/// <summary>
 	/// Contradictories the positions.
 	/// </summary>
@@ -578,7 +578,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 		}
 		// also political scandal
 	}
-
+	
 	/// <summary>
 	/// Ads the burnout.
 	/// </summary>
@@ -588,13 +588,13 @@ public class RandomEventControllerScript : MonoBehaviour {
 			voterVars[i].baseResistance += 0.2f;
 		}
 	}
-
+	
 	/// <summary>
 	/// Overreachings the campeign.
 	/// </summary>
 	void OverreachingCampaign(GameObject TargetPlayer){
 		//Sphere of influence shrinks?
 	}
-
-
+	
+	
 }//RandomEventController script

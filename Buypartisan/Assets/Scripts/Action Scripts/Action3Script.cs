@@ -85,7 +85,7 @@ public class Action3Script : MonoBehaviour {
 	private Vector3 playerShadowSphereScale;
 
 	//holds the number needed for this action to succeed (Alex Jungroth)
-	public float successRate = 0.5f;
+	public float successRate = 0.4f;
 
 	// Use this for initialization
 	void Start () {
