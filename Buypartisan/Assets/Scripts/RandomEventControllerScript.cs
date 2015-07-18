@@ -451,12 +451,12 @@ public class RandomEventControllerScript : MonoBehaviour {
 	void FlipFlopping(GameObject TargetPlayer){
 		bool failToMove = false;
 		int magnitude;
-		Vector3 newLocation;
+		//Vector3 newLocation;
 		float direction;
 		
 		for (int i = 0; i < voters.Length; i++) {
 			if(voterVars[i].CanidateChoice == TargetPlayer){
-				newLocation = voters[i].transform.position;
+				//newLocation = voters[i].transform.position;
 				direction = Random.value;
 				
 				//choose a direction

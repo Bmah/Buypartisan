@@ -14,7 +14,7 @@ public class VoterVariables : MonoBehaviour {
 	public Material unselectedTexture;
 	private Renderer voterRenderer;
 	public Collider Coll;//not sure if needed
-	private GameController ControllerSquared;//used for power calls
+	//private GameController ControllerSquared;//used for power calls
 	private UI_Script UIController;
 
 	string holdingText;
@@ -30,7 +30,7 @@ public class VoterVariables : MonoBehaviour {
 
 	//voterOwner Brian Mah
 	public GameObject CanidateChoice;
-	private bool movedRecently = false;
+	//private bool movedRecently = false;
 	private Vector3 prevPosition;
 	public GameObject[] players;
 	public bool contested = false;
@@ -45,7 +45,7 @@ public class VoterVariables : MonoBehaviour {
 		voterRenderer = transform.Find ("PawnGroup").transform.Find ("SketchUp").GetComponent<Renderer> ();
 		Coll = this.GetComponent<Collider> ();
 		powerType = 1; //hardcoded for testing suppression, make sure to remove when code in place for buttons assigning
-		ControllerSquared = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+		//ControllerSquared = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 		UIController = GameObject.FindGameObjectWithTag ("UI_Controller").GetComponent<UI_Script> ();
 
 		//initialization for voter Owner system
