@@ -14,7 +14,7 @@ public class VoterVariables : MonoBehaviour {
 	public Material unselectedTexture;
 	private Renderer voterRenderer;
 	public Collider Coll;//not sure if needed
-	private GameController ControllerSquared;//used for power calls
+	//private GameController ControllerSquared;//used for power calls
 	private UI_Script UIController;
 
 	string holdingText;
@@ -30,7 +30,7 @@ public class VoterVariables : MonoBehaviour {
 
 	//voterOwner Brian Mah
 	public GameObject CanidateChoice;
-	private bool movedRecently = false;
+	//private bool movedRecently = false;
 	private Vector3 prevPosition;
 	public GameObject[] players;
 	public bool contested = false;
@@ -45,7 +45,7 @@ public class VoterVariables : MonoBehaviour {
 		voterRenderer = transform.Find ("PawnGroup").transform.Find ("SketchUp").GetComponent<Renderer> ();
 		Coll = this.GetComponent<Collider> ();
 		powerType = 1; //hardcoded for testing suppression, make sure to remove when code in place for buttons assigning
-		ControllerSquared = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+		//ControllerSquared = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 		UIController = GameObject.FindGameObjectWithTag ("UI_Controller").GetComponent<UI_Script> ();
 
 		//initialization for voter Owner system
@@ -128,9 +128,13 @@ public class VoterVariables : MonoBehaviour {
 			voterRenderer.material = unselectedTexture;
 		}
 		else{ //if a canidate has been selected
-			selectedTexture = CanidateChoice.GetComponent<Renderer>().material;
+//			selectedTexture = CanidateChoice.GetComponent<Renderer>().material;
 			//selectedTexture.color = new Color(selectedTexture.color.r + 0.5f, selectedTexture.color.g + 0.5f, selectedTexture.color.b + 0.5f);
-			unselectedTexture = CanidateChoice.GetComponent<Renderer>().material;
+//			unselectedTexture = CanidateChoice.GetComponent<Renderer>().material;
+//			selectedTexture = CanidateChoice.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer> ().material;
+//			unselectedTexture = CanidateChoice.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer> ().material;
+			selectedTexture = CanidateChoice.GetComponent<PlayerVariables>().selectedTexture;
+			unselectedTexture = CanidateChoice.GetComponent<PlayerVariables>().unselectedTexture;
 			voterRenderer.material = unselectedTexture;
 		}
 
