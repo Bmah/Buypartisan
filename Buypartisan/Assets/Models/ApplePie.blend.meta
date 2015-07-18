@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 3feb4935efef3f1409e07efacc092595
-timeCreated: 1436990967
+guid: ba5886e433647e84a8205634d5007862
+timeCreated: 1437178616
 licenseType: Pro
 ModelImporter:
   serializedVersion: 18
@@ -8,18 +8,16 @@ ModelImporter:
     100000: //RootNode
     100002: Armature
     100004: Bone
-    100006: Cylinder_001
+    100006: Circle
     400000: //RootNode
     400002: Armature
     400004: Bone
-    400006: Cylinder_001
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Cylinder_001
+    400006: Circle
+    4300000: Circle
     7400000: Default Take
-    7400002: Idle
+    7400002: Spin
     9500000: //RootNode
-    13700000: Cylinder_001
+    13700000: Circle
   materials:
     importMaterials: 1
     materialName: 0
@@ -70,13 +68,13 @@ ModelImporter:
         weight: 1
       - path: Armature/Bone
         weight: 1
-      - path: Cylinder_001
+      - path: Circle
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
     - serializedVersion: 16
-      name: Idle
-      takeName: Idle
+      name: Spin
+      takeName: Spin
       firstFrame: -1
       lastFrame: 199
       wrapMode: 0
@@ -104,14 +102,14 @@ ModelImporter:
         weight: 1
       - path: Armature/Bone
         weight: 1
-      - path: Cylinder_001
+      - path: Circle
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: .300000012
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
