@@ -128,9 +128,13 @@ public class VoterVariables : MonoBehaviour {
 			voterRenderer.material = unselectedTexture;
 		}
 		else{ //if a canidate has been selected
-			selectedTexture = CanidateChoice.GetComponent<Renderer>().material;
+//			selectedTexture = CanidateChoice.GetComponent<Renderer>().material;
 			//selectedTexture.color = new Color(selectedTexture.color.r + 0.5f, selectedTexture.color.g + 0.5f, selectedTexture.color.b + 0.5f);
-			unselectedTexture = CanidateChoice.GetComponent<Renderer>().material;
+//			unselectedTexture = CanidateChoice.GetComponent<Renderer>().material;
+//			selectedTexture = CanidateChoice.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer> ().material;
+//			unselectedTexture = CanidateChoice.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer> ().material;
+			selectedTexture = CanidateChoice.GetComponent<PlayerVariables>().selectedTexture;
+			unselectedTexture = CanidateChoice.GetComponent<PlayerVariables>().unselectedTexture;
 			voterRenderer.material = unselectedTexture;
 		}
 
