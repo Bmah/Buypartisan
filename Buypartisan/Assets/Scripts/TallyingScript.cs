@@ -13,6 +13,9 @@ public class TallyingScript : MonoBehaviour {
 	//holds the voters
 	private GameObject[] voters;
 
+	//holds the number of players
+	private int numberPlayers;
+
 	//holds the distance between a given player or shadow position and a given voter
 	private Vector3 distanceVector;
 	
@@ -53,16 +56,17 @@ public class TallyingScript : MonoBehaviour {
 		
 		//gets the voters
 		voters = gameController.GetComponent<GameController> ().voters;
-		
+
+		numberPlayers = gameController.GetComponent<GameController> ().numberPlayers;
 
 		//resets the players votes so they can be properly be counted 
-		for (int i = 0; i < players.Length; i++) 
+		for (int i = 0; i < numberPlayers; i++) 
 		{
 			players[i].GetComponent<PlayerVariables>().votes = 0;
 
 		}
 		
-		for (int i = 0; i < voters.Length; i++) 
+		for (int i = 0; i < numberPlayers; i++) 
 		{
 			float leastDistance = 1000f;
 			int closestPlayer = 0;
@@ -70,7 +74,7 @@ public class TallyingScript : MonoBehaviour {
 			int tiePlayer = 0;
 			
 			//calculates the distance of voters from players
-			for (int j = 0; j < players.Length; j++)
+			for (int j = 0; j < numberPlayers; j++)
 			{
 
 				//gets the player's sphere of influence size

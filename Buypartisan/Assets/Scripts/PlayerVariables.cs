@@ -11,6 +11,16 @@ public class PlayerVariables : MonoBehaviour {
     public int votes = 0;
 	public int sphereSize = 4;
 
+	//holds the number of victory points the player has (Alex Jungroth)
+	public int victoryPoints = 0;
+
+	//holds the alignment for forming coalitions  (Alex Jungroth)
+	//0 = going alone, 1 = coalition A, 2 = coalition B
+	public int alignment = 0;
+
+	//holds the player's political party (Alex Jungroth)
+	public string politicalPartyName;
+
 	public Material selectedTexture;
 	public Material unselectedTexture;
 	private Renderer playerRenderer;
@@ -35,7 +45,11 @@ public class PlayerVariables : MonoBehaviour {
         
 		//makes sure all of the players shadowPositions lists are empty at the start of the program (Alex Jungroth)
 		this.shadowPositions.Clear ();
+
+		//gets the players render (Alex Jungroth)
 		playerRenderer = this.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer> ();
+
+		//gets the UI Controller script (Alex Jungroth)
 		UIController = GameObject.FindGameObjectWithTag ("UI_Controller").GetComponent<UI_Script> ();
 
 		//sets up the spheres for the players (Daniel Schlesinger)
