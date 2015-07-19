@@ -23,11 +23,14 @@ public class GameController : MonoBehaviour {
 	//holds the max number of political parties and by extension the max number of players in the game (Alex Jungroth)
 	private const int totalPoliticalParties = 5;
 
-	//holds the wether or not a part has been chosen (Alex Jungroth)
+	//holds the whether or not a part has been chosen (Alex Jungroth)
 	public bool[] politicalPartyChosen = new bool[totalPoliticalParties];
 
-	//holds wether or not the action state has been reached (Alex Jungroth)
-	public bool isActionTurn = false;
+	//holds wether or not it is the action turns state yet (Alex Jungroth)
+	public bool isActionTurns = false;
+
+	//holds whether or not the random events arrays have been initialized (Alex Jungroth)
+	public bool isREAInitialized = false;
 
 	public int gridSize;
 	public GridInstanced GridInstancedController;
@@ -42,7 +45,7 @@ public class GameController : MonoBehaviour {
 	
 	public RandomEventControllerScript randomEventController;
 
-	//holds wether or not the number of players has been selected (Alex Jungroth)
+	//holds whether or not the number of players has been selected (Alex Jungroth)
 	public bool totalPlayersPicked = false;
 
 	public int numberPlayers;  //number of players per game
@@ -65,7 +68,7 @@ public class GameController : MonoBehaviour {
 	private int electionCounter = 0;
 	
 	public GameObject[] voters;//array which houses the voters
-	public GameObject[] players = new GameObject[totalPoliticalParties];//array which houses the players
+	public GameObject[] players;//array which houses the players
 	
 	public GameObject currentPlayer;
 
@@ -298,7 +301,14 @@ public class GameController : MonoBehaviour {
 			{
 				//gets the number of players (Alex Jungroth)
 				numberPlayers = (int)UIController.totalPlayersSlider.GetComponent<Slider>().value;
-				
+
+				//dynamically sizes the players array, but this array should never be
+				//larger than the total political parties variable (Alex Jungroth)
+				players = new GameObject[numberPlayers];
+
+				//sends the newly made array of players to the UIScript (Alex Jungroth)
+				UIController.getPlayerArray(players);
+
 				//disables the total party selection (Alex Jungroth)
 				UIController.TotalPlayersDisable();
 				
@@ -351,22 +361,31 @@ public class GameController : MonoBehaviour {
 				{
 					voters[i].GetComponent<VoterVariables>().players = players;
 				}
-				
-				//Brian Mah
-				//Makes voters the right colors
+
+				//updates the voters (Alex Jungroth)
 				UpdateVoterCanidates();
 			}
 		} 
 		else if (currentState == GameState.ActionTurns)
 		{
-			//gets that it is the action state for the first time
-			isActionTurn = true;
+			//checks to see if the real event array has been initialized (Alex Jungroth)
+			if(!isREAInitialized)
+			{
+				//sets the isActionTurns to true (Alex Jungroth)
+				isActionTurns = true;
+
+				//initializes the random event arrays (Alex Jungroth)
+				randomEventController.initializeRandomEventsArrays();
+
+				//prevents the random event arrays from being initialized more than once (Alex Jungroth)
+				isREAInitialized = true;
+			}
 
 			// In Game Heirchy, GameController must set Number Of Rounds greater than 0 in order for this to be called
 			if (roundCounter < numberOfRounds)
 			{
 				PlayerTurn ();
-				
+
 			}
 			else 
 			{
@@ -460,7 +479,7 @@ public class GameController : MonoBehaviour {
 			//enables the player placement movement controls (Alex Jungroth)
 			UIController.PartyDisable ();
 			UIController.enablePPButtonsPartySelection ();
-			
+
 			//this is code for spawning different parites
 			//depending on what party the player chose, this is what they will spawn as
 			//each party can only be chosen once
@@ -494,6 +513,9 @@ public class GameController : MonoBehaviour {
 
 			//stores the current player into the array of players (Alex Jungroth)
 			players [playersSpawned] = currentPlayer;
+
+			//sends the most recent player array to voter variables (Alex Jungroth)
+			//voterTemplate.GetComponent<VoterVariables>().getPlayers(currentPlayer);
 
 			//prevents update from calling this part of the function again (Alex Jungroth)
 			spawnFinished = true;
@@ -541,7 +563,16 @@ public class GameController : MonoBehaviour {
 	/// </summary>
 	void PlayerTurn(){
 		if (playerTakingAction) {
-			currentPlayerTurn++;
+			if(currentPlayerTurn < numberPlayers)
+			{
+				/*I am moving the incrementing of current player turn to 
+				inside this if statement to prevent current player turn 
+				form endlessly growing when the random event controller 
+				is being called. This can not go into the if statement below
+				as that will call an index out of range exception (Alex Jungroth)*/
+				currentPlayerTurn++;
+			}
+
 			if (currentPlayerTurn < numberPlayers) {
 				playerTakingAction = false;
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
@@ -552,6 +583,7 @@ public class GameController : MonoBehaviour {
 				//this is when all players have made their turns
 				
 				if(randomEventController.ActivateEvents()){  //continually goes to random event controller until randomEventController returns true
+
 					//does the tallying after the players ends there turns (Alex Jungroth)
 					tallyRoutine.preTurnTalling();
 					
@@ -583,7 +615,7 @@ public class GameController : MonoBehaviour {
 		int tieFighter = 0;//player that ties
 		
 		
-		for(int i = 0; i < players.Length; i++){
+		for(int i = 0; i < numberPlayers; i++){
 			if(players[i].GetComponent<PlayerVariables>().votes > mostVotes){
 				mostVotes = players[i].GetComponent<PlayerVariables>().votes; 
 				winningPlayer = i + 1;
@@ -764,8 +796,8 @@ public class GameController : MonoBehaviour {
 
 	//function to make all voters check who they are closest to
 	public void UpdateVoterCanidates(){
-		Debug.Log("voters updated");
-		for (int i = 0; i < numberPlayers; i++) {
+		//Debug.Log("voters updated");
+		for (int i = 0; i < voters.Length; i++) {
 			voters[i].GetComponent<VoterVariables>().FindCanidate();
 		}
 	}

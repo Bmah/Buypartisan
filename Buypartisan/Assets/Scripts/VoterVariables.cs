@@ -57,7 +57,21 @@ public class VoterVariables : MonoBehaviour {
 		originalSelected = selectedTexture;
 		originalUnselected = unselectedTexture;
 	}
-	
+
+	/// <summary>
+	/// Gets the players everytime a new player is spawned. (Alex Jungroth)
+	/// </summary>
+	/*
+	public void getPlayers(GameObject lastPlayerSpawned)
+	{
+		Debug.Log("Hello!");
+		players = new GameObject[gameController.playersSpawned + 1];
+
+		//gets the last player that was spawned (Alex Jungroth)
+		players[gameController.playersSpawned] = lastPlayerSpawned;
+	}
+	*/
+
 	/// <summary>
 	/// should have two checks, one controlled by a bool "powersUsed".  If powers aren't being used, clicking on a voter should bring up a 
 	/// small menu showing their attributes (votes and Money).  If powers is used, this will trigger going to the powers function, and 
@@ -75,14 +89,13 @@ public class VoterVariables : MonoBehaviour {
 
 			}
 		}
-		if(gameController.isActionTurn == true)
-		{
-			//checks if the position has changed from previous update
-			if (prevPosition != this.transform.position) {
-				FindCanidate();
-			}// if position is not the previous position
-			prevPosition = this.transform.position;
-		}
+
+		//checks if the position has changed from previous update
+		if (prevPosition != this.transform.position) {
+			FindCanidate();
+		}// if position is not the previous position
+		prevPosition = this.transform.position;
+
 
 	}//Update
 
@@ -91,39 +104,34 @@ public class VoterVariables : MonoBehaviour {
 		contested = false;
 		float closestDistance = 1000f;
 		float currentCanidateDistance;
-		//stops a null reference when the players are spawning (Alex Jungroth)
-		if (gameController.numberPlayers == gameController.playersSpawned) 
-		{
-			for (int i = 0; i < gameController.numberPlayers; i++) {
-				//prevents a index out of bounds exception if there are no shadow positions
-				//in the player's array of shadow positions (Alex Jungroth)
-				if (players [i].GetComponent<PlayerVariables> ().shadowPositions.Count > 0) {
-					for (int j = 0; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count; j++) {
-						//distance to the canidate's shadow positions being checked
-						currentCanidateDistance = (this.transform.position - players [i].GetComponent<PlayerVariables> ().shadowPositions [j].transform.position).magnitude;
-					
-						//if that is closer than the previous closestDistance
-						if (currentCanidateDistance < closestDistance && currentCanidateDistance <= players [i].GetComponent<PlayerVariables> ().shadowPositions [j].GetComponent<PlayerVariables> ().sphereController.transform.localScale.x / 20f) {
-							closestDistance = currentCanidateDistance;
-							CanidateChoice = players [i];
-						} else if (currentCanidateDistance == closestDistance) {
-							CanidateChoice = null;
-						}
-					}//for shadowpositions
-				}
-				//distance to the canidate you are checking
-				currentCanidateDistance = (this.transform.position - players [i].transform.position).magnitude;
+
+		for (int i = 0; i < gameController.playersSpawned; i++) {
+			for (int j = 0; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count; j++) {
+				//distance to the canidate's shadow positions being checked
+				currentCanidateDistance = (this.transform.position - players [i].GetComponent<PlayerVariables> ().shadowPositions [j].transform.position).magnitude;
 			
 				//if that is closer than the previous closestDistance
-				if (currentCanidateDistance < closestDistance && currentCanidateDistance <= players [i].GetComponent<PlayerVariables> ().sphereController.transform.localScale.x / 20f) {
+				if (currentCanidateDistance < closestDistance && currentCanidateDistance <= players [i].GetComponent<PlayerVariables> ().shadowPositions [j].GetComponent<PlayerVariables> ().sphereController.transform.localScale.x / 20f) {
 					closestDistance = currentCanidateDistance;
 					CanidateChoice = players [i];
 				} else if (currentCanidateDistance == closestDistance) {
 					CanidateChoice = null;
 				}
-			
-			}//for players
-		}
+			}//for shadowpositions
+
+			//distance to the canidate you are checking
+			currentCanidateDistance = (this.transform.position - players [i].transform.position).magnitude;
+		
+			//if that is closer than the previous closestDistance
+			if (currentCanidateDistance < closestDistance && currentCanidateDistance <= players [i].GetComponent<PlayerVariables> ().sphereController.transform.localScale.x / 20f) {
+				closestDistance = currentCanidateDistance;
+				CanidateChoice = players [i];
+			} else if (currentCanidateDistance == closestDistance) {
+				CanidateChoice = null;
+			}
+		
+		}//for players
+
 		//if no canidates are within range
 		if(closestDistance == 1000f){
 			CanidateChoice = null;

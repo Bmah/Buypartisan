@@ -179,9 +179,6 @@ public class UI_Script : MonoBehaviour {
 
 		//disables the display stats button at the start
 		displayStatsButton.SetActive (false);
-		
-		//gets the current player
-		currentPlayerPrefab = controller.GetComponent<GameController> ().players;
 
 		sfx = GameObject.FindGameObjectWithTag ("SFX").GetComponent<SFXController> ();
 		if (sfx == null) {
@@ -210,7 +207,15 @@ public class UI_Script : MonoBehaviour {
 		//Debug.Log ("The Height is: " + rectScrollView.localPosition.y);
 		//Debug.Log ("Height move is: " + heightToMove);
 	}
-	
+
+	/// <summary>
+	/// Gets the player array when game controller has finished setting it up (Alex Jungroth)
+	/// </summary>
+	public void getPlayerArray(GameObject[] players)
+	{
+		//gets the array of players
+		currentPlayerPrefab = players;
+	}
 
 	// Update is called once per frame
 	void Update () {
@@ -635,7 +640,7 @@ public class UI_Script : MonoBehaviour {
 	{
 		//gets the current player
 		currentPlayer = controller.GetComponent <GameController> ().currentPlayerTurn;
-		
+
 		//gets the current players money
 		currentPlayerMoney = currentPlayerPrefab[currentPlayer].GetComponent<PlayerVariables> ().money; 
 		
@@ -648,6 +653,13 @@ public class UI_Script : MonoBehaviour {
 		
 		//updates the text box with player 1's stats
 		alterTextBox (currentPlayerStats);
+	}
+
+	public void disablePlayerStats()
+	{
+		//disables the player's stats button
+		displayStatsButton.SetActive(false);
+
 	}
 
 	public void activateActionButton(int num)

@@ -69,8 +69,9 @@ public class PlayerVariables : MonoBehaviour {
 		if (gameController == null) {
 			Debug.LogError("Could not find the Game controller");
 		}
-		//does an initial check for when shadow positions spawn
-		gameController.UpdateVoterCanidates ();
+
+		//an initial check for a player is spawned in (Alex Jungroth)
+		//gameController.UpdateVoterCanidates();
 
 		//playerRenderer = this.GetComponent<Renderer>();
 	//	GameObject sphere = GameObject.CreatePrimitive (PrimitiveType.Sphere);
@@ -78,11 +79,11 @@ public class PlayerVariables : MonoBehaviour {
 		//sphere.transform.SetParent (this);
        
 	}
-	
-	
+
 	void Update () {
 		//checks if the position has changed from previous update
-		if (prevPosition != this.transform.position || prevSphereSize != sphereSize) {
+		if ((prevPosition != this.transform.position || prevSphereSize != sphereSize) && (gameController.isActionTurns))
+		{
 			gameController.UpdateVoterCanidates ();
 		}// if position is not the previous position
 		prevPosition = this.transform.position;

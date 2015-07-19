@@ -43,37 +43,41 @@ public class RandomEventControllerScript : MonoBehaviour {
 		if (UIController == null) {
 			Debug.LogError("UI_Script not set on RandomEventController");
 		}
+
+		Inputs = GameObject.FindGameObjectWithTag ("InputManager").GetComponent<InputManagerScript> ();
+		if (Inputs == null) {
+			Debug.LogError("Could not Find Input Manager");
+		}
+	}
+
+	/// <summary>
+	/// Initializes the random events arrays.
+	/// </summary>
+	public void initializeRandomEventsArrays ()
+	{
 		GameObject temp = GameObject.FindGameObjectWithTag ("GameController");
 		if (temp != null) {
 			actionCounter = new int[temp.GetComponent<GameController> ().numberPlayers][];
 			eventTriggerList = new bool[actionCounter.Length][];
 		}
 		else {
-			Debug.LogError("Could not fing Gamecontroller");
+			Debug.LogError ("Could not fing Gamecontroller");
 		}
-		
 		//initializing the event trigger list
-		
-		for(int i = 0; i < eventTriggerList.Length; i++){
-			eventTriggerList[i] = new bool[numberOfActions];
-			for(int j = 0; j < eventTriggerList[0].Length; j++){
-				eventTriggerList[i][j] = false;
+		for (int i = 0; i < eventTriggerList.Length; i++) {
+			eventTriggerList [i] = new bool[numberOfActions];
+			for (int j = 0; j < eventTriggerList [0].Length; j++) {
+				eventTriggerList [i] [j] = false;
 			}
 		}
-		
-		for (int i = 0; i < actionCounter.Length; i++){
-			actionCounter[i] = new int[numberOfActions];
-		}
-		
-		Inputs = GameObject.FindGameObjectWithTag ("InputManager").GetComponent<InputManagerScript> ();
-		if (Inputs == null) {
-			Debug.LogError("Could not Find Input Manager");
+		for (int i = 0; i < actionCounter.Length; i++) {
+			actionCounter [i] = new int[numberOfActions];
 		}
 	}
-	
+
+
 	// Update is called once per frame
 	void Update () {
-		debugArray = actionCounter [arrayChoice];
 		if (!voterVarsSet) {
 			voterVars = new VoterVariables[voters.Length];
 			for(int i = 0; i < voters.Length; i++){
@@ -110,6 +114,8 @@ public class RandomEventControllerScript : MonoBehaviour {
 				currentState = ActionState.EndRandomEvents;
 			}
 			UIController.disableActionButtons();
+			//disables the player stats button (Alex Jungroth)
+			UIController.disablePlayerStats();
 			break;
 			
 		case ActionState.EndRandomEvents:
@@ -302,7 +308,6 @@ public class RandomEventControllerScript : MonoBehaviour {
 	}//Check For Triggered events
 	
 	bool DoTriggeredEvents(int player){
-		
 		switch (triggerState){
 		case TriggeredEventState.E0:
 			if(eventTriggerList[player][0]){
@@ -418,7 +423,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			break;
 		case TriggeredEventState.EndOfTriggeredEvents:
 			triggerState = TriggeredEventState.E0;
-			if (playerTriggerNumber < players.Length - 1){
+			if (playerTriggerNumber < actionCounter.Length - 1){
 				playerTriggerNumber++;
 			}
 			else{
