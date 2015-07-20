@@ -88,6 +88,8 @@ public class GameController : MonoBehaviour {
 	private bool SFXDrumrollPlaying = false;
 	private float drumrollTime = 3.7f;
 	public int Party;
+	private int tracker = 0;
+	private bool votersAppear = true;
 	
 	//holds the winner of an election (Alex Jungroth)
 	public int electionWinner;
@@ -275,7 +277,7 @@ public class GameController : MonoBehaviour {
 			voterInfoTemp.zMinusResistance = Random.value*Random.value;
 			voterInfoTemp.zPlusResistance = Random.value*Random.value;
 			voterInfoTemp.baseResistance = 0;
-			
+			voters[i].gameObject.SetActive (false);
 		}
 		
 	}
@@ -332,6 +334,10 @@ public class GameController : MonoBehaviour {
 			//spawns players until every player has been spawned (Alex Jungroth)
 			if (playersSpawned < numberPlayers)
 			{
+				if(votersAppear) {
+					tracker = MakeAppear(tracker);
+					votersAppear = false;
+				}
 				SpawnPlayer(); 
 			} 
 			else 
@@ -541,6 +547,7 @@ public class GameController : MonoBehaviour {
 
 			//at most, confirm should only be able to be pressed five times (Alex Jungroth)
 			playerConfirmsPlacement = false;
+			votersAppear = true;
 
 			//gives instructions for player placement (Alex Jungroth)
 			UIController.alterTextBox("Choose a party and a political position.");
@@ -909,6 +916,15 @@ public class GameController : MonoBehaviour {
 			UIController.alterTextBox("This party has already been chosen.");
 			
 		}
+	}
+
+	public int MakeAppear(int tracker)
+	{
+		for (int i = 0; i < voters.Length/numberPlayers; i++) {
+			voters [tracker].gameObject.SetActive (true);
+			tracker++;
+		}
+		return tracker;
 	}
 
 }//Gamecontroller Class
