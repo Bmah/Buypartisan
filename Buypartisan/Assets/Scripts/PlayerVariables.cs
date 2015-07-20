@@ -32,6 +32,9 @@ public class PlayerVariables : MonoBehaviour {
 	private bool selected = false;
 	string holdingText;
 
+	//holds whether or not this instance of the player is a shadow position (Alex Jungroth)
+	public bool isShadowPosition = false;
+
 	//holds all of the shadow postions (Alex Jungroth)
 	public List<GameObject> shadowPositions = new List<GameObject>();
 
@@ -112,10 +115,15 @@ public class PlayerVariables : MonoBehaviour {
 	/// Used to select the voter and display their stats on the textbox
 	/// Brian Mah
 	/// </summary>
-	void OnMouseEnter(){
-		ToggleSelected ();
-		holdingText = UIController.visualText.text;
-		UIController.alterTextBox ("Money: " + money + "\nVotes: " + votes);
+	void OnMouseEnter()
+	{
+		//shadow positions should not be moused over (Alex Jungroth)
+		if(!isShadowPosition)
+		{
+			ToggleSelected ();
+			holdingText = UIController.visualText.text;
+			UIController.alterTextBox ("Money: " + money + "\nVotes: " + votes);
+		}
 	}
 	
 	/// <summary>
@@ -123,9 +131,14 @@ public class PlayerVariables : MonoBehaviour {
 	/// Used to unselect the voter and put the text back to what it was.
 	/// Brian Mah
 	/// </summary>
-	void OnMouseExit(){
-		ToggleSelected ();
-		UIController.alterTextBox (holdingText);
+	void OnMouseExit()
+	{
+		//shadow positions should not be moused over (Alex Jungroth)
+		if(!isShadowPosition)
+		{
+			ToggleSelected ();
+			UIController.alterTextBox (holdingText);
+		}
 	}
 
 	/// <summary>
