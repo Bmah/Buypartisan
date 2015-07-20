@@ -11,6 +11,16 @@ public class PlayerVariables : MonoBehaviour {
     public int votes = 0;
 	public int sphereSize = 4;
 
+	//holds the number of victory points the player has (Alex Jungroth)
+	public int victoryPoints = 0;
+
+	//holds the alignment for forming coalitions  (Alex Jungroth)
+	//0 = going alone, 1 = coalition A, 2 = coalition B
+	public int alignment = 0;
+
+	//holds the player's political party (Alex Jungroth)
+	public string politicalPartyName;
+
 	public Material selectedTexture;
 	public Material unselectedTexture;
 	private Renderer playerRenderer;
@@ -35,7 +45,11 @@ public class PlayerVariables : MonoBehaviour {
         
 		//makes sure all of the players shadowPositions lists are empty at the start of the program (Alex Jungroth)
 		this.shadowPositions.Clear ();
+
+		//gets the players render (Alex Jungroth)
 		playerRenderer = this.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer> ();
+
+		//gets the UI Controller script (Alex Jungroth)
 		UIController = GameObject.FindGameObjectWithTag ("UI_Controller").GetComponent<UI_Script> ();
 
 		//sets up the spheres for the players (Daniel Schlesinger)
@@ -47,6 +61,9 @@ public class PlayerVariables : MonoBehaviour {
 		sphereRenderer.material.SetColor ("_Color", transparentColor);
 		sphereController.transform.localScale = new Vector3 (sphereSize, sphereSize, sphereSize);
 
+		//resets the sphere size (Alex Jungroth)
+		sphereSize /= 10;
+		
 		//Brian Mah
 		//previous position initialization
 		prevPosition = this.transform.position;
@@ -55,8 +72,9 @@ public class PlayerVariables : MonoBehaviour {
 		if (gameController == null) {
 			Debug.LogError("Could not find the Game controller");
 		}
-		//does an initial check for when shadow positions spawn
-		gameController.UpdateVoterCanidates ();
+
+		//an initial check for a player is spawned in (Alex Jungroth)
+		//gameController.UpdateVoterCanidates();
 
 		//playerRenderer = this.GetComponent<Renderer>();
 	//	GameObject sphere = GameObject.CreatePrimitive (PrimitiveType.Sphere);
@@ -64,11 +82,11 @@ public class PlayerVariables : MonoBehaviour {
 		//sphere.transform.SetParent (this);
        
 	}
-	
-	
+
 	void Update () {
 		//checks if the position has changed from previous update
-		if (prevPosition != this.transform.position || prevSphereSize != sphereSize) {
+		if ((prevPosition != this.transform.position || prevSphereSize != sphereSize) && (gameController.isActionTurns))
+		{
 			gameController.UpdateVoterCanidates ();
 		}// if position is not the previous position
 		prevPosition = this.transform.position;
@@ -109,12 +127,6 @@ public class PlayerVariables : MonoBehaviour {
 		ToggleSelected ();
 		UIController.alterTextBox (holdingText);
 	}
-	
-	/// <summary>
-	/// Toggles whether or not the Voter is selected.
-	/// Brian Mah
-	/// </summary>
-
 
 	/// <summary>
 	/// Gets whether or not the voter is selected.
@@ -124,13 +136,4 @@ public class PlayerVariables : MonoBehaviour {
 	public bool GetSelected(){
 		return selected;
 	}
-
-	public void VoterSuppressStart() {
-		if (money < 5) 
-			Debug.Log ("You Need More Money");
-		else {
-			Debug.Log ("Click on a voter");
-		}
-	}
-
 }

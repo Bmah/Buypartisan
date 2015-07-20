@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// Sphere of Influence script by Daniel Schlesinger
+/// Character Assassination script by Daniel Schlesinger
 /// </summary>
 using UnityEngine;
 using System.Collections;
@@ -13,7 +13,7 @@ public class Action6Script : MonoBehaviour {
 	public GameObject gameController; //this is the game controller variable. It is obtained from the scene
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the scene
 	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
-	private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
+	//private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 	//Brian Mah
 	private RandomEventControllerScript eventController;
@@ -21,7 +21,7 @@ public class Action6Script : MonoBehaviour {
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 	private int selectedPlayer;
 	private bool playerSelected = false;
-	private bool foundPlayer = false;
+	//private bool foundPlayer = false;
 	public float successRate = 0.5f;
 
 	[System.NonSerialized]
@@ -39,7 +39,7 @@ public class Action6Script : MonoBehaviour {
 		uiController.GetComponent<UI_Script>().activateAction0UI();
 		//Obtains the voter and player array from the gameController
 		if (gameController != null) {
-			voters = gameController.GetComponent<GameController> ().voters;
+			//voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
 		} else {
@@ -82,7 +82,7 @@ public class Action6Script : MonoBehaviour {
 		if (Input.GetMouseButtonDown (0)) {
 			for (selectedPlayer = 0; selectedPlayer < players.Length; selectedPlayer++) {
 				if(players[selectedPlayer].GetComponent<PlayerVariables>().GetSelected()) {
-					foundPlayer = true;
+					//foundPlayer = true;
 					playerSelected = true;
 					Debug.Log (playerSelected);
 					if (Random.value >= successRate) {

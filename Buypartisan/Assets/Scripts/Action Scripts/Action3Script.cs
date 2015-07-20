@@ -85,7 +85,7 @@ public class Action3Script : MonoBehaviour {
 	private Vector3 playerShadowSphereScale;
 
 	//holds the number needed for this action to succeed (Alex Jungroth)
-	public float successRate = 0.4f;
+	public float successRate = 0.25f;
 
 	// Use this for initialization
 	void Start () {
@@ -394,13 +394,13 @@ public class Action3Script : MonoBehaviour {
 			if(Random.value >= successRate)
 			{
 				//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
-				shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
+				shadowPosition = Instantiate(players[currentPlayer],semiTestedPosition, Quaternion.identity) as GameObject;
 
 				//gets the players Renderer
-				playerRenderer = players[currentPlayer].GetComponent<Renderer>();
+				playerRenderer = players[currentPlayer].transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
 
 				//gets the shadows position's renderer
-				shadowRenderer = shadowPosition.GetComponent<Renderer>();
+				shadowRenderer = shadowPosition.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
 
 				//sets the shadow position's color equal to the player's render color
 				shadowRenderer.material.color = playerRenderer.material.color;
@@ -409,17 +409,6 @@ public class Action3Script : MonoBehaviour {
 				transparentColor = shadowRenderer.material.color;
 				transparentColor.a = 0.5f;
 				shadowRenderer.material.SetColor("_Color", transparentColor);  
-
-				//makes the shadow positions sphere of influence the same color as the players sphere of inclufence
-				playerSphereRenderer = players[currentPlayer].GetComponent<PlayerVariables>().sphereController.GetComponent<Renderer>();
-				transparentSphereColor = playerSphereRenderer.material.color;
-				transparentSphereColor.a = 0.2f;
-				shadowPosition.GetComponent<PlayerVariables>().sphereController.GetComponent<Renderer>().material.SetColor("_Color", transparentSphereColor);
-
-				//sets the shadow position's sphere of influence equal to the player's sphere of influence (doesn't work for some reason)
-				//playerShadowSphereScale = players[currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale;
-
-				//shadowPosition.GetComponent<PlayerVariables>().sphereController.transform.localScale = playerShadowSphereScale;
 
 				//adds the shadow position to the players array list of shadowpositions
 				players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.Add(shadowPosition);
