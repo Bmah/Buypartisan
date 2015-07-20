@@ -75,15 +75,6 @@ public class Action3Script : MonoBehaviour {
 	//holds the orignial color of the shadow position
 	private Color transparentColor;
 
-	//holds the player's shadow position sphere's color
-	private Color transparentSphereColor;
-
-	//holds the player's shadow position sphere's renderer
-	private Renderer playerSphereRenderer;
-
-	//holds the player's shadow postion sphere's local scale
-	private Vector3 playerShadowSphereScale;
-
 	//holds the number needed for this action to succeed (Alex Jungroth)
 	public float successRate = 0.25f;
 
@@ -395,6 +386,9 @@ public class Action3Script : MonoBehaviour {
 			{
 				//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
 				shadowPosition = Instantiate(players[currentPlayer],semiTestedPosition, Quaternion.identity) as GameObject;
+
+				//marks the this instance of the player as a shadow position so it will not be moused over
+				shadowPosition.GetComponent<PlayerVariables>().isShadowPosition = true;
 
 				//gets the players Renderer
 				playerRenderer = players[currentPlayer].transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
