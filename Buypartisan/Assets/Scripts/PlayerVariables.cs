@@ -61,6 +61,9 @@ public class PlayerVariables : MonoBehaviour {
 		sphereRenderer.material.SetColor ("_Color", transparentColor);
 		sphereController.transform.localScale = new Vector3 (sphereSize, sphereSize, sphereSize);
 
+		//resets the sphere size (Alex Jungroth)
+		sphereSize /= 10;
+		
 		//Brian Mah
 		//previous position initialization
 		prevPosition = this.transform.position;
@@ -124,12 +127,6 @@ public class PlayerVariables : MonoBehaviour {
 		ToggleSelected ();
 		UIController.alterTextBox (holdingText);
 	}
-	
-	/// <summary>
-	/// Toggles whether or not the Voter is selected.
-	/// Brian Mah
-	/// </summary>
-
 
 	/// <summary>
 	/// Gets whether or not the voter is selected.
@@ -139,13 +136,4 @@ public class PlayerVariables : MonoBehaviour {
 	public bool GetSelected(){
 		return selected;
 	}
-
-	public void VoterSuppressStart() {
-		if (money < 5) 
-			Debug.Log ("You Need More Money");
-		else {
-			Debug.Log ("Click on a voter");
-		}
-	}
-
 }
