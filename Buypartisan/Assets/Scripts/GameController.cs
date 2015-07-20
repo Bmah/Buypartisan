@@ -514,9 +514,6 @@ public class GameController : MonoBehaviour {
 			//stores the current player into the array of players (Alex Jungroth)
 			players [playersSpawned] = currentPlayer;
 
-			//sends the most recent player array to voter variables (Alex Jungroth)
-			//voterTemplate.GetComponent<VoterVariables>().getPlayers(currentPlayer);
-
 			//prevents update from calling this part of the function again (Alex Jungroth)
 			spawnFinished = true;
 		}
