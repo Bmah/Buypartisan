@@ -14,8 +14,10 @@ public class VoterVariables : MonoBehaviour {
 	public Material unselectedTexture;
 	private Renderer voterRenderer;
 	public Collider Coll;//not sure if needed
-	private GameController ControllerSquared;//used for power calls
 	private UI_Script UIController;
+
+	//holds the game controller (Alex Jungroth)
+	private GameController gameController;
 
 	string holdingText;
 
@@ -30,7 +32,7 @@ public class VoterVariables : MonoBehaviour {
 
 	//voterOwner Brian Mah
 	public GameObject CanidateChoice;
-	private bool movedRecently = false;
+	//private bool movedRecently = false;
 	private Vector3 prevPosition;
 	public GameObject[] players;
 	public bool contested = false;
@@ -45,15 +47,17 @@ public class VoterVariables : MonoBehaviour {
 		voterRenderer = transform.Find ("PawnGroup").transform.Find ("SketchUp").GetComponent<Renderer> ();
 		Coll = this.GetComponent<Collider> ();
 		powerType = 1; //hardcoded for testing suppression, make sure to remove when code in place for buttons assigning
-		ControllerSquared = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+		//ControllerSquared = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 		UIController = GameObject.FindGameObjectWithTag ("UI_Controller").GetComponent<UI_Script> ();
+
+		gameController = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameController>();
 
 		//initialization for voter Owner system
 		prevPosition = this.transform.position;
 		originalSelected = selectedTexture;
 		originalUnselected = unselectedTexture;
 	}
-	
+
 	/// <summary>
 	/// should have two checks, one controlled by a bool "powersUsed".  If powers aren't being used, clicking on a voter should bring up a 
 	/// small menu showing their attributes (votes and Money).  If powers is used, this will trigger going to the powers function, and 
@@ -66,7 +70,7 @@ public class VoterVariables : MonoBehaviour {
 			RaycastHit hit;
 			if (Coll.Raycast (ray, out hit, 100.0F)) {
 				ToggleSelected();
-				//ControllerSquared.PowerCall(powerType);
+
 				ToggleSelected();
 
 			}
@@ -78,6 +82,7 @@ public class VoterVariables : MonoBehaviour {
 		}// if position is not the previous position
 		prevPosition = this.transform.position;
 
+
 	}//Update
 
 	//looks at all canidates and finds which one this voter belongs to
@@ -85,35 +90,34 @@ public class VoterVariables : MonoBehaviour {
 		contested = false;
 		float closestDistance = 1000f;
 		float currentCanidateDistance;
-		for(int i = 0; i < players.Length; i++){
-			for(int j = 0; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count; j++){
+
+		for (int i = 0; i < gameController.playersSpawned; i++) {
+			for (int j = 0; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count; j++) {
 				//distance to the canidate's shadow positions being checked
-				currentCanidateDistance = (this.transform.position - players[i].GetComponent<PlayerVariables>().shadowPositions[j].transform.position).magnitude;
-				
+				currentCanidateDistance = (this.transform.position - players [i].GetComponent<PlayerVariables> ().shadowPositions [j].transform.position).magnitude;
+			
 				//if that is closer than the previous closestDistance
-				if(currentCanidateDistance < closestDistance && currentCanidateDistance <= players[i].GetComponent<PlayerVariables>().shadowPositions[j].GetComponent<PlayerVariables>().sphereController.transform.localScale.x / 20f){
+				if (currentCanidateDistance < closestDistance && currentCanidateDistance <= players [i].GetComponent<PlayerVariables> ().shadowPositions [j].GetComponent<PlayerVariables> ().sphereController.transform.localScale.x / 20f) {
 					closestDistance = currentCanidateDistance;
-					CanidateChoice = players[i];
-				}
-				else if(currentCanidateDistance == closestDistance){
+					CanidateChoice = players [i];
+				} else if (currentCanidateDistance == closestDistance) {
 					CanidateChoice = null;
 				}
 			}//for shadowpositions
-			
+
 			//distance to the canidate you are checking
-			currentCanidateDistance = (this.transform.position - players[i].transform.position).magnitude;
-			
+			currentCanidateDistance = (this.transform.position - players [i].transform.position).magnitude;
+		
 			//if that is closer than the previous closestDistance
-			if(currentCanidateDistance < closestDistance && currentCanidateDistance <= players[i].GetComponent<PlayerVariables>().sphereController.transform.localScale.x / 20f){
+			if (currentCanidateDistance < closestDistance && currentCanidateDistance <= players [i].GetComponent<PlayerVariables> ().sphereController.transform.localScale.x / 20f) {
 				closestDistance = currentCanidateDistance;
-				CanidateChoice = players[i];
-			}
-			else if(currentCanidateDistance == closestDistance ){
+				CanidateChoice = players [i];
+			} else if (currentCanidateDistance == closestDistance) {
 				CanidateChoice = null;
 			}
-			
-		}//for players
 		
+		}//for players
+
 		//if no canidates are within range
 		if(closestDistance == 1000f){
 			CanidateChoice = null;
@@ -128,9 +132,13 @@ public class VoterVariables : MonoBehaviour {
 			voterRenderer.material = unselectedTexture;
 		}
 		else{ //if a canidate has been selected
-			selectedTexture = CanidateChoice.GetComponent<Renderer>().material;
+//			selectedTexture = CanidateChoice.GetComponent<Renderer>().material;
 			//selectedTexture.color = new Color(selectedTexture.color.r + 0.5f, selectedTexture.color.g + 0.5f, selectedTexture.color.b + 0.5f);
-			unselectedTexture = CanidateChoice.GetComponent<Renderer>().material;
+//			unselectedTexture = CanidateChoice.GetComponent<Renderer>().material;
+//			selectedTexture = CanidateChoice.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer> ().material;
+//			unselectedTexture = CanidateChoice.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer> ().material;
+			selectedTexture = CanidateChoice.GetComponent<PlayerVariables>().selectedTexture;
+			unselectedTexture = CanidateChoice.GetComponent<PlayerVariables>().unselectedTexture;
 			voterRenderer.material = unselectedTexture;
 		}
 
