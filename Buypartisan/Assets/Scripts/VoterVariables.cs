@@ -59,20 +59,6 @@ public class VoterVariables : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Gets the players everytime a new player is spawned. (Alex Jungroth)
-	/// </summary>
-	/*
-	public void getPlayers(GameObject lastPlayerSpawned)
-	{
-		Debug.Log("Hello!");
-		players = new GameObject[gameController.playersSpawned + 1];
-
-		//gets the last player that was spawned (Alex Jungroth)
-		players[gameController.playersSpawned] = lastPlayerSpawned;
-	}
-	*/
-
-	/// <summary>
 	/// should have two checks, one controlled by a bool "powersUsed".  If powers aren't being used, clicking on a voter should bring up a 
 	/// small menu showing their attributes (votes and Money).  If powers is used, this will trigger going to the powers function, and 
 	/// will execute whatever power numvber "powerType" is set to.  
