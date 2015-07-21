@@ -339,10 +339,12 @@ public class GameController : MonoBehaviour {
 					votersAppear = false;
 				}
 				SpawnPlayer(); 
-			} 
+			}
+
 			else 
 			{
 				//this is the button configuration once all players have been placed (Alex Jungroth)
+				//MakeRest(tracker);
 				UIController.disablePPButtons();
 				UIController.PartyDisable();
 				UIController.toggleActionButtons();
@@ -551,6 +553,8 @@ public class GameController : MonoBehaviour {
 
 			//gives instructions for player placement (Alex Jungroth)
 			UIController.alterTextBox("Choose a party and a political position.");
+			if(numberPlayers == playersSpawned)
+				MakeRest(tracker);
 
 		}//if
 
@@ -572,7 +576,7 @@ public class GameController : MonoBehaviour {
 				/*I am moving the incrementing of current player turn to 
 				inside this if statement to prevent current player turn 
 				form endlessly growing when the random event controller 
-				is being called. This can not go into the if statement below
+				is being. This can not go into the if statement below
 				as that will call an index out of range exception (Alex Jungroth)*/
 				currentPlayerTurn++;
 			}
@@ -921,10 +925,21 @@ public class GameController : MonoBehaviour {
 	public int MakeAppear(int tracker)
 	{
 		for (int i = 0; i < voters.Length/numberPlayers; i++) {
+			Debug.Log(tracker);
 			voters [tracker].gameObject.SetActive (true);
 			tracker++;
 		}
 		return tracker;
+	}
+
+	public void MakeRest(int tracker)
+	{
+		for (int i = 0; i < voters.Length%numberPlayers; i++) {
+			Debug.Log (tracker);
+			voters [tracker].gameObject.SetActive (true);
+			tracker++;
+		}
+
 	}
 
 }//Gamecontroller Class
