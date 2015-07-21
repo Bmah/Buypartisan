@@ -9,6 +9,12 @@ public class MusicController : MonoBehaviour {
 
 	public AudioClip[] musicTracks;
 	public AudioSource[] audioChannels;
+	public bool[] fadingIn;
+	public bool[] fadingOut;
+	public float musicVolume = 0.5f;
+	private float newVolume;
+
+	bool temp = false;
 
 	// Use this for initialization
 	void Start () {
@@ -18,11 +24,61 @@ public class MusicController : MonoBehaviour {
 		LoadTrack(0,0);
 		audioChannels[0].Play();
 		audioChannels [0].loop = true;
+
+		fadingIn =  new bool[audioChannels.Length];
+		fadingOut =  new bool[audioChannels.Length];
+
+		for (int i = 0; i < audioChannels.Length; i++) {
+			fadingIn[i] = false;
+			fadingOut[i] = false;
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+
+		if (Time.time > 5f && !temp) {
+			Debug.Log("test");
+			FadeOut(0);
+			temp = true;
+		}
+
+		if (temp && audioChannels[0].volume <= 0f) {
+			Debug.Log ("end fadeout: " + Time.time);
+		}
+
+		for (int i = 0; i < audioChannels.Length; i++) {
+			if(fadingIn[i] && audioChannels[i].volume < musicVolume){
+				audioChannels[i].volume += musicVolume*(0.1f) * Time.deltaTime;
+			}
+			else{
+				fadingIn[i] = false;
+			}
+
+			if(fadingOut[i] && audioChannels[i].volume > 0f){
+				audioChannels[i].volume -= musicVolume*(0.1f) * Time.deltaTime;
+			}
+			else{
+				fadingOut[i] = false;
+			}
+		}
+	}
+
+	void FadeIn(int channel){
+		if (channel >= 0 && channel < fadingIn.Length) {
+			fadingIn [channel] = true;
+		} else {
+			Debug.LogError("Index out of range error on input: "+channel);
+		}
+	}
+
+	void FadeOut(int channel){
+		Debug.Log ("start fadeout: " + Time.time);
+		if (channel >= 0 && channel < fadingOut.Length) {
+			fadingOut [channel] = true;
+		} else {
+			Debug.LogError("Index out of range error on input: "+channel);
+		}
 	}
 
 	/// <summary>
