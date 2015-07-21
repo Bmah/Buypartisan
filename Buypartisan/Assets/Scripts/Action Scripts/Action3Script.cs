@@ -75,17 +75,8 @@ public class Action3Script : MonoBehaviour {
 	//holds the orignial color of the shadow position
 	private Color transparentColor;
 
-	//holds the player's shadow position sphere's color
-	private Color transparentSphereColor;
-
-	//holds the player's shadow position sphere's renderer
-	private Renderer playerSphereRenderer;
-
-	//holds the player's shadow postion sphere's local scale
-	private Vector3 playerShadowSphereScale;
-
 	//holds the number needed for this action to succeed (Alex Jungroth)
-	public float successRate = 0.4f;
+	public float successRate = 0.25f;
 
 	// Use this for initialization
 	void Start () {
@@ -93,7 +84,7 @@ public class Action3Script : MonoBehaviour {
 		inputManager = GameObject.FindWithTag ("InputManager");
 		uiController = GameObject.Find ("UI Controller");
         visualAid = GameObject.FindWithTag("VisualAidManager");
-
+		
 		if (gameController != null) {
 			//			voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
@@ -134,7 +125,9 @@ public class Action3Script : MonoBehaviour {
 		transform.localScale = new Vector3 (0.098f, 0.098f, 0.098f);
 
 		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
-		
+		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Drone")== 0)
+			baseCost = baseCost - baseCost / 4;
+
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
 
 			totalCost = (int)(baseCost * costMultiplier);
@@ -394,13 +387,16 @@ public class Action3Script : MonoBehaviour {
 			if(Random.value >= successRate)
 			{
 				//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
-				shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
+				shadowPosition = Instantiate(players[currentPlayer],semiTestedPosition, Quaternion.identity) as GameObject;
+
+				//marks the this instance of the player as a shadow position so it will not be moused over
+				shadowPosition.GetComponent<PlayerVariables>().isShadowPosition = true;
 
 				//gets the players Renderer
-				playerRenderer = players[currentPlayer].GetComponent<Renderer>();
+				playerRenderer = players[currentPlayer].transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
 
 				//gets the shadows position's renderer
-				shadowRenderer = shadowPosition.GetComponent<Renderer>();
+				shadowRenderer = shadowPosition.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
 
 				//sets the shadow position's color equal to the player's render color
 				shadowRenderer.material.color = playerRenderer.material.color;
@@ -409,17 +405,6 @@ public class Action3Script : MonoBehaviour {
 				transparentColor = shadowRenderer.material.color;
 				transparentColor.a = 0.5f;
 				shadowRenderer.material.SetColor("_Color", transparentColor);  
-
-				//makes the shadow positions sphere of influence the same color as the players sphere of inclufence
-				playerSphereRenderer = players[currentPlayer].GetComponent<PlayerVariables>().sphereController.GetComponent<Renderer>();
-				transparentSphereColor = playerSphereRenderer.material.color;
-				transparentSphereColor.a = 0.2f;
-				shadowPosition.GetComponent<PlayerVariables>().sphereController.GetComponent<Renderer>().material.SetColor("_Color", transparentSphereColor);
-
-				//sets the shadow position's sphere of influence equal to the player's sphere of influence (doesn't work for some reason)
-				//playerShadowSphereScale = players[currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale;
-
-				//shadowPosition.GetComponent<PlayerVariables>().sphereController.transform.localScale = playerShadowSphereScale;
 
 				//adds the shadow position to the players array list of shadowpositions
 				players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.Add(shadowPosition);
