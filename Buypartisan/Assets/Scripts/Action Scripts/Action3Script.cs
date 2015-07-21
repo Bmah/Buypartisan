@@ -84,7 +84,7 @@ public class Action3Script : MonoBehaviour {
 		inputManager = GameObject.FindWithTag ("InputManager");
 		uiController = GameObject.Find ("UI Controller");
         visualAid = GameObject.FindWithTag("VisualAidManager");
-
+		
 		if (gameController != null) {
 			//			voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
@@ -125,7 +125,9 @@ public class Action3Script : MonoBehaviour {
 		transform.localScale = new Vector3 (0.098f, 0.098f, 0.098f);
 
 		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
-		
+		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Drone")== 0)
+			baseCost = baseCost - baseCost / 4;
+
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
 
 			totalCost = (int)(baseCost * costMultiplier);
