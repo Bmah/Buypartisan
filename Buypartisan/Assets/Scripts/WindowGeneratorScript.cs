@@ -55,7 +55,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 	private int maxVotes = 0;
 
 	//holds the highest percentage total
-	private int maxPerecent = 0;
+	private int maxPercent = 0;
 
 	//hols the highest victory point total
 	private int maxVictoryPoints = 0;
@@ -201,7 +201,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 			coalitionA = 0;
 			coalitionB = 0;
 			maxVotes = 0;
-			maxPerecent = 0;
+			maxPercent = 0;
 			maxVictoryPoints = 0;
 
 			//disables the victory token
@@ -280,9 +280,9 @@ public class WindowGeneratorScript : MonoBehaviour {
 						gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints += (int)Mathf.Ceil
 							(10 * gameController.players [i].GetComponent<PlayerVariables> ().votes / maxVotes);
 
-						if (gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints >= maxPerecent)
+						if (gameController.players [i].GetComponent<PlayerVariables> ().votes >= maxPercent)
 						{
-							maxPerecent = gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints;
+							maxPercent = gameController.players [i].GetComponent<PlayerVariables> ().votes;
 							winner = gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName;
 						}
 					}
@@ -298,9 +298,9 @@ public class WindowGeneratorScript : MonoBehaviour {
 						gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints += (int)Mathf.Ceil
 							(10 * gameController.players [i].GetComponent<PlayerVariables> ().votes / maxVotes);
 					
-						if (gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints >= maxPerecent) 
+						if (gameController.players [i].GetComponent<PlayerVariables> ().votes >= maxPercent) 
 						{
-							maxPerecent = gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints;
+							maxPercent = gameController.players [i].GetComponent<PlayerVariables> ().votes;
 							winner = gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName;
 						}
 					}
