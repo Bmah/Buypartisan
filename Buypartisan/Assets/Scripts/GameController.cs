@@ -439,7 +439,9 @@ public class GameController : MonoBehaviour {
 		}
 		else if (currentState == GameState.GameEnd)
 		{
-			CompareVotes(messaged);
+			//Comapre Votes is no longer used, I have left it here
+			//in case we need it for future bug testing (Alex Jungroth)
+			//CompareVotes(messaged);
 			
 			//increments the election counter (Alex Jungroth)
 			electionCounter += 1;
@@ -447,7 +449,7 @@ public class GameController : MonoBehaviour {
 			if(electionCounter <  numberOfElections)
 			{
 				//displays who won an election (Alex Jungroth)
-				WindowGenerator.generateElectionVictory(false, electionWinner);
+				WindowGenerator.generateElectionVictory(false);
 				
 				//manages things between elections (Alex Jungroth)
 				prepareElection();
@@ -458,7 +460,7 @@ public class GameController : MonoBehaviour {
 			else
 			{
 				//displays who won the game (Alex Jungroth)
-				WindowGenerator.generateElectionVictory(true, electionWinner);
+				WindowGenerator.generateElectionVictory(true);
 				
 				//ends the game (Alex Jungroth)
 				currentState = GameState.AfterEnd;
@@ -614,7 +616,12 @@ public class GameController : MonoBehaviour {
 			}
 		}
 	}
-	
+
+	/// <summary>
+	/// Compares the votes. This function is no longer used. I'm leaving it here for now
+	/// in case we want it for bug testing in the future. (Alex Jungroth)
+	/// </summary>
+	/// <param name="messaged">If set to <c>true</c> messaged.</param>
 	void CompareVotes(bool messaged){
 		
 		int mostVotes = 0;
@@ -925,7 +932,6 @@ public class GameController : MonoBehaviour {
 	public int MakeAppear(int tracker)
 	{
 		for (int i = 0; i < voters.Length/numberPlayers; i++) {
-			Debug.Log(tracker);
 			voters [tracker].gameObject.SetActive (true);
 			tracker++;
 		}
