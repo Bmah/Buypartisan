@@ -34,7 +34,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 	private bool gameOver;
 
 	//holds the winner
-	private string winner;
+	public string winner = "no winner";
 
 	//holds the number of players
 	private int totalPlayers = 0;
@@ -84,6 +84,19 @@ public class WindowGeneratorScript : MonoBehaviour {
 	void Update ()
 	{
 		//as the slider is adjusted the policy text will change
+		if (coalitionsFormed) 
+		{
+			for(int i = 0; i < totalPlayers; i++)
+			{
+				//sets the winners policy
+				if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == winner)
+				{
+					gameController.players[i].GetComponent<PlayerVariables>().chosenPolicy = (int) policySlider.GetComponent<Slider>().value;
+
+					policyText.text = gameController.players[i].GetComponent<PlayerVariables>().policiesText[(int) policySlider.GetComponent<Slider>().value];
+				}
+			}
+		}
 
 		//as the player sliders are adjusted the player's alignment is changed
 		if((!coalitionsFormed) && (totalPlayers > 0))
@@ -369,6 +382,8 @@ public class WindowGeneratorScript : MonoBehaviour {
 				else 
 				{
 					//if no one won the election
+					winner = "no winner";
+
 					windowName.text = "No one voted, so no one was elected!";
 				
 					victoryText.text = "";
