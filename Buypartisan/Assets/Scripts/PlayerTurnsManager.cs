@@ -32,8 +32,7 @@ public class PlayerTurnsManager : MonoBehaviour {
 	public bool firstTime = true;
 	// Use this for initialization
 	void Start () {
-		voters = gameController.GetComponent<GameController> ().voters;
-		players = gameController.GetComponent<GameController> ().players;
+
 	}
 	
 	// Update is called once per frame
@@ -82,14 +81,16 @@ public class PlayerTurnsManager : MonoBehaviour {
 
     public void IncreaseCostMultiplier()
     {   
+		voters = gameController.GetComponent<GameController> ().voters;
+		players = gameController.GetComponent<GameController> ().players;
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
 		Debug.Log (currentPlayer);
         costMultiplier += costMultiplierIncreaseAmount;
-	//	if (players [currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName == "Coffee") {
+		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Coffee")== 0) {
 			if (firstTime) {
 				firstTime = false;
 				costMultiplier -= costMultiplierIncreaseAmount;
 			}
-//		}
+		}
     }
 }
