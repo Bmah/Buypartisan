@@ -83,12 +83,13 @@ public class PlayerTurnsManager : MonoBehaviour {
     public void IncreaseCostMultiplier()
     {   
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName == "Coffee") {
+		Debug.Log (currentPlayer);
+        costMultiplier += costMultiplierIncreaseAmount;
+	//	if (players [currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName == "Coffee") {
 			if (firstTime) {
 				firstTime = false;
-				return 0;
+				costMultiplier -= costMultiplierIncreaseAmount;
 			}
-		}
-        costMultiplier += costMultiplierIncreaseAmount;
+//		}
     }
 }
