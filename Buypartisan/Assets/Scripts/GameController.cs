@@ -420,6 +420,7 @@ public class GameController : MonoBehaviour {
 			
 			if(!SFXDrumrollPlaying)
 			{
+				gameMusic.FadeOut(0);
 				SFX.PlayAudioClip(2,0,SFXVolume);
 				SFXDrumrollPlaying = true;
 				drumrollTime += Time.time;

@@ -61,7 +61,7 @@ public class MusicController : MonoBehaviour {
 		}
 	}
 
-	void FadeIn(int channel){
+	public void FadeIn(int channel){
 		if (channel >= 0 && channel < fadingIn.Length) {
 			fadingIn [channel] = true;
 		} else {
@@ -69,7 +69,7 @@ public class MusicController : MonoBehaviour {
 		}
 	}
 
-	void FadeOut(int channel){
+	public void FadeOut(int channel){
 		Debug.Log ("start fadeout: " + Time.time);
 		if (channel >= 0 && channel < fadingOut.Length) {
 			fadingOut [channel] = true;
