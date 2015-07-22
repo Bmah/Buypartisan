@@ -4,7 +4,10 @@ using System.Collections.Generic;
 
 public class PlayerVariables : MonoBehaviour {
 
-	// Transform is already built-in
+	//Transform is already built-in
+
+	//holds the number of different policies that I'm going to code (Alex Jungroth)
+	private const int policyLimit = 4;
 
     public int pTag = 0;
     public int money = 100;
@@ -20,6 +23,19 @@ public class PlayerVariables : MonoBehaviour {
 
 	//holds the player's political party (Alex Jungroth)
 	public string politicalPartyName;
+
+	//holds the player's choice of policy when they get elected (Alex Jungroth)
+	//= 0 means no policy was chosen >= 1 means a certain policy was picked
+	public int chosenPolicy = 0;
+
+	//holds the modifier for the money players get from voters (Alex Jungroth)
+	public int revenueModifier = 0;
+
+	//holds the modifier for the cost of actions (Alex Jungroth)
+	public int actionCostModifier = 0;
+
+	//holds the text for each of the parites policies
+	public string[] policiesText = new string[policyLimit];
 
 	public Material selectedTexture;
 	public Material unselectedTexture;
