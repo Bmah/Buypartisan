@@ -9,7 +9,7 @@ using System.IO;
 using System.Runtime;
 
 public class GameController : MonoBehaviour {
-	public enum GameState {TotalPlayersSelect,PlayerSpawn, ActionTurns, RoundEnd, GameEnd, AfterEnd};
+	public enum GameState {TotalPlayersSelect,PlayerSpawn, ActionTurns, RoundEnd, GameEnd, EnactPolicies, AfterEnd};
 	GameState currentState = GameState.TotalPlayersSelect;
 	
 	public GameObject voterTemplate;
@@ -42,7 +42,10 @@ public class GameController : MonoBehaviour {
 
 	//holds the WindowGenerator script (Alex Jungroth)
 	public WindowGeneratorScript WindowGenerator;
-	
+
+	//holds the party policies scripts (Alex Jungroth)
+	public GameObject partyPolicyManager;
+
 	public RandomEventControllerScript randomEventController;
 
 	//holds whether or not the number of players has been selected (Alex Jungroth)
@@ -92,7 +95,7 @@ public class GameController : MonoBehaviour {
 	private bool votersAppear = true;
 	
 	//holds the winner of an election (Alex Jungroth)
-	public int electionWinner;
+	public int electionWinner = 0;
 	
 	//does the tallying at the start of each turn (Alex Jungroth)
 	public TallyingScript tallyRoutine;
@@ -420,6 +423,7 @@ public class GameController : MonoBehaviour {
 			
 			if(!SFXDrumrollPlaying)
 			{
+				gameMusic.FadeOut(0);
 				SFX.PlayAudioClip(2,0,SFXVolume);
 				SFXDrumrollPlaying = true;
 				drumrollTime += Time.time;
@@ -439,7 +443,9 @@ public class GameController : MonoBehaviour {
 		}
 		else if (currentState == GameState.GameEnd)
 		{
-			CompareVotes(messaged);
+			//Comapre Votes is no longer used, I have left it here
+			//in case we need it for future bug testing (Alex Jungroth)
+			//CompareVotes(messaged);
 			
 			//increments the election counter (Alex Jungroth)
 			electionCounter += 1;
@@ -447,25 +453,80 @@ public class GameController : MonoBehaviour {
 			if(electionCounter <  numberOfElections)
 			{
 				//displays who won an election (Alex Jungroth)
-				WindowGenerator.generateElectionVictory(false, electionWinner);
+				WindowGenerator.generateElectionVictory(false);
 				
 				//manages things between elections (Alex Jungroth)
 				prepareElection();
 				
-				//resets the game state (Alex Jungroth)
-				currentState = GameState.ActionTurns;
+				//sets the game state enact policies(Alex Jungroth)
+				currentState = GameState.EnactPolicies;
 			}
 			else
 			{
 				//displays who won the game (Alex Jungroth)
-				WindowGenerator.generateElectionVictory(true, electionWinner);
+				WindowGenerator.generateElectionVictory(true);
 				
 				//ends the game (Alex Jungroth)
 				currentState = GameState.AfterEnd;
 			}
-			
 		}
-		
+		else if(currentState == GameState.EnactPolicies)
+		{
+			//enacts a policy (Alex Jungroth)
+			if(WindowGenerator.winner != "no winner")
+			{
+				for(int i = 0; i < numberPlayers; i++)
+				{
+					if(players[i].GetComponent<PlayerVariables>().politicalPartyName == WindowGenerator.winner)
+					{
+						//sets electionWinner to the player who won (Alex Jungroth)
+						electionWinner = i;
+					}
+				}
+
+				if(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy != 0)
+				{
+					//a case structure for calling the correct set of functions based on which player won (Alex Jungroth)
+					switch(players[electionWinner].GetComponent<PlayerVariables>().politicalPartyName)
+					{
+						case "Neutral":
+							partyPolicyManager.GetComponent<NeutralPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+						break;
+
+						case "Coffee":
+							partyPolicyManager.GetComponent<EspressoPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+						break;
+
+						case "Drone":
+							partyPolicyManager.GetComponent<DronePolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+						break;
+
+						case "Windy":
+							partyPolicyManager.GetComponent<WindyPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+						break;
+
+						case "Anti":
+							partyPolicyManager.GetComponent<Party5Policies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+						break;
+
+						default:
+							//something went wrong with the players names
+							Debug.LogError("Unrecognized player name!");
+						break;
+					}
+				}
+			}
+			
+			//resets the selected policies for all players (Alex Jungroth)
+			for(int i = 0; i < numberPlayers; i++)
+			{
+				players[i].GetComponent<PlayerVariables>().chosenPolicy = 0;
+			}
+
+			//resets the game state to action turns (Alex Jungroth)
+			currentState = GameState.ActionTurns;
+		}
+
 		if (inputManager.escButtonDown) 
 		{
 			Application.LoadLevel("TitleScene");
@@ -614,7 +675,12 @@ public class GameController : MonoBehaviour {
 			}
 		}
 	}
-	
+
+	/// <summary>
+	/// Compares the votes. This function is no longer used. I'm leaving it here for now
+	/// in case we want it for bug testing in the future. (Alex Jungroth)
+	/// </summary>
+	/// <param name="messaged">If set to <c>true</c> messaged.</param>
 	void CompareVotes(bool messaged){
 		
 		int mostVotes = 0;
@@ -640,7 +706,7 @@ public class GameController : MonoBehaviour {
 			messaged = false;
 			
 			//gets the winner (Alex Jungroth)
-			electionWinner = winningPlayer;
+			//electionWinner = winningPlayer;
 			
 		}
 		else if(messaged){
@@ -649,7 +715,7 @@ public class GameController : MonoBehaviour {
 			messaged = false;
 			
 			//gets the winner (Alex Jungroth)
-			electionWinner = winningPlayer;
+			//electionWinner = winningPlayer;
 		}
 	}
 	
@@ -925,7 +991,6 @@ public class GameController : MonoBehaviour {
 	public int MakeAppear(int tracker)
 	{
 		for (int i = 0; i < voters.Length/numberPlayers; i++) {
-			Debug.Log(tracker);
 			voters [tracker].gameObject.SetActive (true);
 			tracker++;
 		}
