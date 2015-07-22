@@ -23,6 +23,7 @@ public class PlayerVariables : MonoBehaviour {
 
 	public Material selectedTexture;
 	public Material unselectedTexture;
+	public Material transparentTexture;
 	private Renderer playerRenderer;
 	public Renderer sphereRenderer;
 	public GameObject sphereController;
