@@ -13,12 +13,19 @@ public class MusicController : MonoBehaviour {
 	public bool[] fadingOut;
 	public float musicVolume = 0.5f;
 	private float newVolume;
-
-	bool temp = false;
+	private TitleScreenSettings titleScreenSettings;
 
 	// Use this for initialization
 	void Start () {
 		audioChannels = this.GetComponents<AudioSource> ();
+		
+		GameObject TitleSettingGetter = GameObject.FindGameObjectWithTag ("TitleSettings");
+		if(TitleSettingGetter != null){
+			titleScreenSettings = TitleSettingGetter.GetComponent<TitleScreenSettings>();
+		}
+		if (titleScreenSettings != null) {
+			musicVolume = titleScreenSettings.musicVolume;
+		}
 
 		//play level song to start out
 		LoadTrack(0,0);
@@ -37,26 +44,16 @@ public class MusicController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (Time.time > 5f && !temp) {
-			Debug.Log("test");
-			FadeOut(0);
-			temp = true;
-		}
-
-		if (temp && audioChannels[0].volume <= 0f) {
-			Debug.Log ("end fadeout: " + Time.time);
-		}
-
 		for (int i = 0; i < audioChannels.Length; i++) {
 			if(fadingIn[i] && audioChannels[i].volume < musicVolume){
-				audioChannels[i].volume += musicVolume*(0.1f) * Time.deltaTime;
+				audioChannels[i].volume += musicVolume*(0.8f) * Time.deltaTime;
 			}
 			else{
 				fadingIn[i] = false;
 			}
 
 			if(fadingOut[i] && audioChannels[i].volume > 0f){
-				audioChannels[i].volume -= musicVolume*(0.1f) * Time.deltaTime;
+				audioChannels[i].volume -= musicVolume*(0.8f) * Time.deltaTime;
 			}
 			else{
 				fadingOut[i] = false;
