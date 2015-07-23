@@ -35,7 +35,11 @@ public class RandomEventControllerScript : MonoBehaviour {
 	int playerTriggerNumber = 0;
 	
 	InputManagerScript Inputs = null;
-	
+
+	bool naturalDisaster = false;
+	bool lossInWar = false;
+	bool marketCrash = false;
+
 	// Use this for initialization
 	void Start () {
 		numberOfActions = actionThreshold.Length;
@@ -139,35 +143,67 @@ public class RandomEventControllerScript : MonoBehaviour {
 			break;
 		case 1:
 			ShiftVoters ('X', -1);
-			UIController.alterTextBox ("Newsflash! Sudden defeat in the war crushes confidence in big govt! " + "Voters migrate 1 down on the X axis.\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! Sudden defeat in the war crushes confidence in big govt! " + 
+			                           "Voters migrate 1 down on the X axis.\nLeft Click to Continue");
+			lossInWar = true;
 			break;
 		case 2:
 			ShiftVoters ('Y', 1);
-			UIController.alterTextBox ("Newsflash! New developments in the field of oil drilling lead to profit for big buisness. " + "Voters migrate 1 up on the Y axis.\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! New developments in the field of oil drilling lead to profit for big buisness. " + 
+			                           "Voters migrate 1 up on the Y axis.\nLeft Click to Continue");
 			break;
 		case 3:
 			ShiftVoters ('Y', -1);
-			UIController.alterTextBox ("Newsflash! Sudden oil spill causes huge natural disaster, public outraged with big buisness." + "Voters migrate 1 down on the Y axis.\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! Sudden oil spill causes huge natural disaster, public outraged with big buisness." + 
+			                           "Voters migrate 1 down on the Y axis.\nLeft Click to Continue");
+			naturalDisaster = true;
 			break;
 		case 4:
 			ShiftVoters ('Z', 1);
-			UIController.alterTextBox ("Newsflash! Popular celebrity endorses the Z axis. " + "Voters migrate 1 up on the Z axis.\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! Popular celebrity endorses the Z axis. " + 
+			                           "Voters migrate 1 up on the Z axis.\nLeft Click to Continue");
 			break;
 		case 5:
 			ShiftVoters ('Z', -1);
-			UIController.alterTextBox ("Newsflash! Popular celebrity denounces the Z axis. " + "Voters migrate 1 down on the Z axis.\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! Popular celebrity denounces the Z axis. " + 
+			                           "Voters migrate 1 down on the Z axis.\nLeft Click to Continue");
 			break;
 		case 6:
 			EconomicBoom (2);
-			UIController.alterTextBox ("Newsflash! MONEY MONEY EVERYWHERE. " + "Voters now have twice the money they used to!\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! MONEY MONEY EVERYWHERE. " + 
+			                           "Voters now have twice the money they used to!\nLeft Click to Continue");
 			break;
 		case 7:
 			EconomicBust (2);
-			UIController.alterTextBox ("Newsflash! Poor investments in tulip market lead to market crash. " + "Voters now have half the money they used to!\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! Poor investments in tulip market lead to market crash. " + 
+			                           "Voters now have half the money they used to!\nLeft Click to Continue");
+			marketCrash = true;
+			break;
+		case 8:
+			if(naturalDisaster && marketCrash && lossInWar){
+				UIController.alterTextBox ("PANIC: due to loss in the War, the Market Crash, and Oil Spill, " + 
+				                           "Mass Extinction has occured!\nLeft Click to Continue");
+				ExtinctionEvent();
+			}
+			else{
+				UIController.alterTextBox ("Newsflash! Little Tommy fell down the well!\nLeft Click to Continue");
+			}
 			break;
 		default:
 			UIController.alterTextBox ("Newsflash! Little Timmy fell down the well!\nLeft Click to Continue");
 			break;
+		}
+	}
+
+	/// <summary>
+	/// Kills all the voters but one
+	/// </summary>
+	void ExtinctionEvent(){
+		int survivor = Random.Range(0,voters.Length);
+		for (int i = 0; i < voters.Length; i++) {
+			if (i != survivor){
+				voters[i].SetActive(false);
+			}
 		}
 	}
 	
@@ -288,7 +324,6 @@ public class RandomEventControllerScript : MonoBehaviour {
 			voters[i].GetComponent<VoterVariables>().money /= divisor;
 		}
 	}
-	
 	
 	void CheckForTriggeredEvents(){
 		for (int i = 0; i < actionCounter.Length; i++) {//for each player
