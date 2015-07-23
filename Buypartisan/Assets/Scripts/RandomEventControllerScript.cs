@@ -39,6 +39,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 	bool naturalDisaster = false;
 	bool lossInWar = false;
 	bool marketCrash = false;
+	bool extinctionEvent = false;
 
 	// Use this for initialization
 	void Start () {
@@ -180,9 +181,10 @@ public class RandomEventControllerScript : MonoBehaviour {
 			marketCrash = true;
 			break;
 		case 8:
-			if(naturalDisaster && marketCrash && lossInWar){
+			if(naturalDisaster && marketCrash && lossInWar && !extinctionEvent){
 				UIController.alterTextBox ("PANIC: due to loss in the War, the Market Crash, and Oil Spill, " + 
 				                           "Mass Extinction has occured!\nLeft Click to Continue");
+				extinctionEvent = true;
 				ExtinctionEvent();
 			}
 			else{
