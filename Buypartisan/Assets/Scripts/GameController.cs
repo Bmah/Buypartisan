@@ -96,8 +96,8 @@ public class GameController : MonoBehaviour {
 	public int voterMaxVotes = 100;
 	public float IgnoreNearestVoter = 0.3f;
 	
-	private bool SFXDrumrollPlaying = false;
-	private float drumrollTime = 3.7f;
+	private bool PreAnnouncmentSFXPlaying = false;
+	private float PreAnnouncmentSFXTime = 3.7f;
 	public int Party;
 	private int tracker = 0;
 	private bool votersAppear = true;
@@ -304,6 +304,7 @@ public class GameController : MonoBehaviour {
 			{
 				gameMusic.audioChannels[0].volume = gameSettings.musicVolume;
 
+
 				//sets music settings recieved to false so it doesn't update 
 				//the volume every time update is called (Alex Jungroth)
 				musicSettingsReceived = false;
@@ -429,17 +430,38 @@ public class GameController : MonoBehaviour {
 			// Brian Mah
 			UIController.alterTextBox("And the Winner is...");
 			
-			if(!SFXDrumrollPlaying)
+			if(!PreAnnouncmentSFXPlaying)
 			{
 				gameMusic.FadeOut(0);
-				SFX.PlayAudioClip(2,0,SFXVolume);
-				SFXDrumrollPlaying = true;
-				drumrollTime += Time.time;
+
+				if(electionCounter == numberOfElections - 1){
+					SFX.PlayAudioClip(2,0,SFXVolume);
+					PreAnnouncmentSFXTime = Time.time + 3.7f;
+				}
+				else{
+					gameMusic.LoadTrack(1,1);
+					gameMusic.audioChannels[1].volume = 0;
+					gameMusic.FadeIn(1);
+					gameMusic.audioChannels[1].Play();
+					PreAnnouncmentSFXTime = Time.time + 7f;
+				}
+				PreAnnouncmentSFXPlaying = true;
+
 			}
 			
-			if(Time.time >= drumrollTime)
+			if(Time.time >= PreAnnouncmentSFXTime)
 			{ // when the sound is done playing
-				
+
+				if(electionCounter == numberOfElections - 1){
+					SFX.PlayAudioClip(4,0,SFXVolume);
+				}
+				else{
+					gameMusic.LoadTrack(2,1);
+					gameMusic.audioChannels[1].Stop();
+					gameMusic.PlayElectionTheme();
+				}
+
+
 				//does the tallying at the end of the game (Alex Jungroth)
 				tallyRoutine.preTurnTalling ();
 				
@@ -559,6 +581,12 @@ public class GameController : MonoBehaviour {
 				//resets the game state to action turns (Alex Jungroth)
 				currentState = GameState.ActionTurns;
 
+				//Brian Mah
+				//audio stuff, fades in regular music, fades out election music
+				//also stops the custom loop in music controller
+				gameMusic.FadeIn(0);
+				gameMusic.FadeOut(1);
+				gameMusic.StopElectionTheme();
 			}//if
 		}//else if
 
@@ -766,8 +794,8 @@ public class GameController : MonoBehaviour {
 		float tempRandom = 0;
 		
 		//resets the drum roll (Alex Jungroth)
-		SFXDrumrollPlaying = false;
-		drumrollTime = 3.7f;
+		PreAnnouncmentSFXPlaying = false;
+		PreAnnouncmentSFXTime = 3.7f;
 		
 		for (int i = 0; i < NumVoters; i++) 
 		{
