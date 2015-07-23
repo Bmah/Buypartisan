@@ -48,6 +48,8 @@ public class GameController : MonoBehaviour {
 
 	public RandomEventControllerScript randomEventController;
 
+	public PlayerTurnsManager turnsManager;
+
 	//holds whether or not the number of players has been selected (Alex Jungroth)
 	public bool totalPlayersPicked = false;
 
@@ -362,7 +364,7 @@ public class GameController : MonoBehaviour {
 
 				//does the tallying before the first player's turn starts (Alex Jungroth)
 				tallyRoutine.preTurnTalling ();
-				
+				turnsManager.firstTime = true;
 				//Gives the randomEventController the list of newly spawned players Brian Mah
 				randomEventController.players = players;
 				randomEventController.playersSpawned = true;
