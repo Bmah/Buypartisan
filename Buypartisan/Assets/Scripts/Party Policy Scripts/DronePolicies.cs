@@ -4,6 +4,9 @@ using System.Collections;
 
 public class DronePolicies : MonoBehaviour {
 
+	//holds the Game Controller
+	public GameController gameController;
+
 	// Use this for initialization
 	void Start () {
 	

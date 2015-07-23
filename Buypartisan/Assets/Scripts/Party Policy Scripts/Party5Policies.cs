@@ -6,6 +6,9 @@ using System.Collections;
 
 public class Party5Policies : MonoBehaviour {
 
+	//holds the Game Controller
+	public GameController gameController;
+
 	// Use this for initialization
 	void Start () {
 	

@@ -23,6 +23,12 @@ public class GameController : MonoBehaviour {
 	//holds the max number of political parties and by extension the max number of players in the game (Alex Jungroth)
 	private const int totalPoliticalParties = 5;
 
+	//constants that are used to calculate a winning player's money at the end of an election (Alex Jungroth)
+	private const float threeQuatersDecrease = 0.75f;
+	private const float half = 0.5f;
+	private const float tenPercentIncrease = 1.1f;
+	private const float tenPercentDecrease = 0.9f;
+
 	//holds the whether or not a part has been chosen (Alex Jungroth)
 	public bool[] politicalPartyChosen = new bool[totalPoliticalParties];
 
@@ -454,12 +460,15 @@ public class GameController : MonoBehaviour {
 			
 			if(electionCounter <  numberOfElections)
 			{
+				//tells the game controller to not skip over enact policies (Alex Jungroth)
+				WindowGenerator.resumeGame = false;
+
 				//displays who won an election (Alex Jungroth)
 				WindowGenerator.generateElectionVictory(false);
 				
 				//manages things between elections (Alex Jungroth)
 				prepareElection();
-				
+
 				//sets the game state enact policies(Alex Jungroth)
 				currentState = GameState.EnactPolicies;
 			}
@@ -474,60 +483,84 @@ public class GameController : MonoBehaviour {
 		}
 		else if(currentState == GameState.EnactPolicies)
 		{
-			//enacts a policy (Alex Jungroth)
-			if(WindowGenerator.winner != "no winner")
+			//only enacts policies when the window generator has finished
+			if(WindowGenerator.resumeGame == true)
 			{
+				//enacts a policy (Alex Jungroth)
+				if(WindowGenerator.winner != "no winner")
+				{
+					for(int i = 0; i < numberPlayers; i++)
+					{
+						if(players[i].GetComponent<PlayerVariables>().politicalPartyName == WindowGenerator.winner)
+						{
+							//sets electionWinner to the player who won (Alex Jungroth)
+							electionWinner = i;
+						}//if
+					}//for
+
+					//The winner deposits 25% of their money into a war chest for their constituents (Alex Jungroth)
+					players[electionWinner].GetComponent<PlayerVariables>().money = (int) Mathf.Floor
+						(players[electionWinner].GetComponent<PlayerVariables>().money  * threeQuatersDecrease);
+
+					if(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy != 0)
+					{
+						//a case structure for calling the correct set of functions based on which player won (Alex Jungroth)
+						switch(players[electionWinner].GetComponent<PlayerVariables>().politicalPartyName)
+						{
+							case "Neutral":
+								partyPolicyManager.GetComponent<NeutralPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							case "Coffee":
+								partyPolicyManager.GetComponent<EspressoPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							case "Drone":
+								partyPolicyManager.GetComponent<DronePolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							case "Windy":
+								partyPolicyManager.GetComponent<WindyPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							case "Anti":
+								partyPolicyManager.GetComponent<Party5Policies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							default:
+								//something went wrong with the players names
+								Debug.LogError("Unrecognized player name!");
+							break;
+						}//switch
+
+						//determines if the party's policy was well received or not (Alex Jungroth)
+						if(Random.value >= half)
+						{
+							//If the party's policy was well received then the party gains money equal to 10% of its total money (Alex Jungroth)
+							players[electionWinner].GetComponent<PlayerVariables>().money = (int) Mathf.Ceil
+								(players[electionWinner].GetComponent<PlayerVariables>().money  * tenPercentIncrease);
+						}
+						else
+						{
+							//If the party's policy was poorly received then the party loses money equal to 10% of its total money (Alex Jungroth)
+							players[electionWinner].GetComponent<PlayerVariables>().money = (int) Mathf.Floor
+								(players[electionWinner].GetComponent<PlayerVariables>().money  * tenPercentDecrease);
+
+						}//else
+					}//if
+				}//if
+
+				//resets the selected policies for all players (Alex Jungroth)
 				for(int i = 0; i < numberPlayers; i++)
 				{
-					if(players[i].GetComponent<PlayerVariables>().politicalPartyName == WindowGenerator.winner)
-					{
-						//sets electionWinner to the player who won (Alex Jungroth)
-						electionWinner = i;
-					}
-				}
+					players[i].GetComponent<PlayerVariables>().chosenPolicy = 0;
+				}//for
 
-				if(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy != 0)
-				{
-					//a case structure for calling the correct set of functions based on which player won (Alex Jungroth)
-					switch(players[electionWinner].GetComponent<PlayerVariables>().politicalPartyName)
-					{
-						case "Neutral":
-							partyPolicyManager.GetComponent<NeutralPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-						break;
+				//resets the game state to action turns (Alex Jungroth)
+				currentState = GameState.ActionTurns;
 
-						case "Coffee":
-							partyPolicyManager.GetComponent<EspressoPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-						break;
-
-						case "Drone":
-							partyPolicyManager.GetComponent<DronePolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-						break;
-
-						case "Windy":
-							partyPolicyManager.GetComponent<WindyPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-						break;
-
-						case "Anti":
-							partyPolicyManager.GetComponent<Party5Policies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-						break;
-
-						default:
-							//something went wrong with the players names
-							Debug.LogError("Unrecognized player name!");
-						break;
-					}
-				}
-			}
-			
-			//resets the selected policies for all players (Alex Jungroth)
-			for(int i = 0; i < numberPlayers; i++)
-			{
-				players[i].GetComponent<PlayerVariables>().chosenPolicy = 0;
-			}
-
-			//resets the game state to action turns (Alex Jungroth)
-			currentState = GameState.ActionTurns;
-		}
+			}//if
+		}//else if
 
 		if (inputManager.escButtonDown) 
 		{
@@ -849,7 +882,7 @@ public class GameController : MonoBehaviour {
 			
 			players[i].GetComponent<PlayerVariables>().shadowPositions.Clear();
 		}
-		
+
 		//resets the rounds counter (Alex Jungroth)
 		roundCounter = 0;
 	}
