@@ -77,6 +77,9 @@ public class TitleScreenUIScript : MonoBehaviour
 
     private bool inCredits = false;
 
+	//holds the cover the other buttons when the settings are being adjusted (Alex Jungroth)
+	public GameObject settingsCover;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -105,6 +108,9 @@ public class TitleScreenUIScript : MonoBehaviour
 		voterCounterSlider.SetActive(false);
 		sFXSlider.SetActive(false);
 		musicSlider.SetActive(false);
+
+		//disable the setting cover at the start (Alex Jungroth)
+		settingsCover.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -178,11 +184,8 @@ public class TitleScreenUIScript : MonoBehaviour
 		panel2BG.SetActive(true);
 		settingsText.SetActive(true);
 
-		//disables the buttons (Alex Jungroth)
-		playButton.SetActive(false);
-		settingsButton.SetActive(false);
-		quitButton.SetActive(false);
-        creditsButton.SetActive(false);
+		//enables the settings cover (Alex Jungroth)
+		settingsCover.SetActive(true);
 
 		//enables the back button and the reset button (Alex Jungroth)
 		backButton.SetActive(true);
@@ -217,11 +220,8 @@ public class TitleScreenUIScript : MonoBehaviour
 		panel2BG.SetActive(false);
 		settingsText.SetActive(false);
 
-		//enables the buttons (Alex Jungroth)
-		playButton.SetActive(true);
-		settingsButton.SetActive(true);
-		quitButton.SetActive(true);
-        creditsButton.SetActive(true);
+		//disables the settings cover (Alex Jungroth)
+		settingsCover.SetActive(false);
 
 		//disables the back button and the reset button (Alex Jungroth)
 		backButton.SetActive(false);
