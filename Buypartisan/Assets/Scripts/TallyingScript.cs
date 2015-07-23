@@ -7,6 +7,8 @@ public class TallyingScript : MonoBehaviour {
 	//holds the game controller 
 	public GameObject gameController;
 
+	private int currentPlayer;
+
 	//holds the players
 	private GameObject[] players;
 
@@ -189,6 +191,16 @@ public class TallyingScript : MonoBehaviour {
 					players [closestPlayer].GetComponent<PlayerVariables> ().votes += voters [i].GetComponent<VoterVariables> ().votes;
 					players [closestPlayer].GetComponent<PlayerVariables> ().money += voters [i].GetComponent<VoterVariables> ().money;
 				}
+			}
+		}
+		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+		if (string.Compare ((players [currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Anti") == 0) {
+			for (int i = 0; i < gameController.GetComponent<GameController>().numberPlayers; i++) {
+				sphereSize = players [currentPlayer].GetComponent<PlayerVariables> ().sphereController.transform.localScale.x;
+				distanceVector = players [i].transform.position - players [currentPlayer].transform.position;
+				distance = Mathf.Abs (distanceVector.magnitude);
+				if (sphereSize >= distance)
+					players [currentPlayer].GetComponent<PlayerVariables> ().money += players [i].GetComponent<PlayerVariables> ().money / 10;
 			}
 		}
 	}
