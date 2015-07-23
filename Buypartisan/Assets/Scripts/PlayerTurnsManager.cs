@@ -88,7 +88,7 @@ public class PlayerTurnsManager : MonoBehaviour {
         costMultiplier += costMultiplierIncreaseAmount;
 
 		//This is the Espresso Party's passive
-		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Coffee")== 0) {
+		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Espresso")== 0) {
 			if (firstTime) {
 				firstTime = false;
 				costMultiplier -= costMultiplierIncreaseAmount;

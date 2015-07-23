@@ -507,11 +507,11 @@ public class GameController : MonoBehaviour {
 						//a case structure for calling the correct set of functions based on which player won (Alex Jungroth)
 						switch(players[electionWinner].GetComponent<PlayerVariables>().politicalPartyName)
 						{
-							case "Neutral":
+							case "Apple Pie":
 								partyPolicyManager.GetComponent<NeutralPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
 							break;
 
-							case "Coffee":
+							case "Espresso":
 								partyPolicyManager.GetComponent<EspressoPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
 							break;
 
@@ -523,7 +523,7 @@ public class GameController : MonoBehaviour {
 								partyPolicyManager.GetComponent<WindyPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
 							break;
 
-							case "Anti":
+							case "Providence":
 								partyPolicyManager.GetComponent<Party5Policies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
 							break;
 
@@ -923,7 +923,7 @@ public class GameController : MonoBehaviour {
 			politicalPartyChosen [0] = true;
 
 			//Tells the user which party they picked (Alex Jungroth)
-			UIController.alterTextBox("You have chosen the Neutral Party.");
+			UIController.alterTextBox("You have chosen the Apple Pie Party.");
 
 		} 
 		else
@@ -946,7 +946,7 @@ public class GameController : MonoBehaviour {
 			politicalPartyChosen [1] = true;
 
 			//Tells the user which party they picked (Alex Jungroth)
-			UIController.alterTextBox("You have chosen the Coffee Party.");
+			UIController.alterTextBox("You have chosen the Espresso Party.");
 		}
 		else
 		{
@@ -1013,7 +1013,7 @@ public class GameController : MonoBehaviour {
 			politicalPartyChosen [4] = true;
 
 			//Tells the user which party they picked (Alex Jungroth)
-			UIController.alterTextBox("You have chosen the Anti Party.");
+			UIController.alterTextBox("You have chosen the Providence Party.");
 		}
 		else
 		{

@@ -36,9 +36,10 @@ public class RandomEventControllerScript : MonoBehaviour {
 	
 	InputManagerScript Inputs = null;
 
-	bool naturalDisaster = false;
-	bool lossInWar = false;
-	bool marketCrash = false;
+	//I made these public so I could use them for party policies (Alex Jungroth)
+	public bool naturalDisaster = false;
+	public bool lossInWar = false;
+	public bool marketCrash = false;
 	bool extinctionEvent = false;
 
 	// Use this for initialization
