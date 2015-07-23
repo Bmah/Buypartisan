@@ -198,7 +198,7 @@ public class TallyingScript : MonoBehaviour {
 		//This is the providence party's passive
 		for(int i = 0; i < gameController.GetComponent<GameController>().numberPlayers; i++)
 		{
-			if (string.Compare ((players[i].GetComponent<PlayerVariables> ().politicalPartyName), "Anti") == 0) 
+			if (string.Compare ((players[i].GetComponent<PlayerVariables> ().politicalPartyName), "Providence") == 0) 
 			{
 				for (int j = 0; j < gameController.GetComponent<GameController>().numberPlayers; j++) 
 				{

@@ -7,6 +7,19 @@ public class DronePolicies : MonoBehaviour {
 	//holds the Game Controller
 	public GameController gameController;
 
+	//holds the Random Event Controller
+	public RandomEventControllerScript randomEventController;
+
+	//holds a constant value for random checks
+	private const float half = 0.5f;
+
+	//holds a constant value for an monetary increase in millions of dollars
+	private const int billion = 1000;
+
+	//holds constants to modifiy the partys' vote totals
+	private const float fifteenPercentIncrease = 1.15f;
+	private const float fivePercentDecrease = 0.95f;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -39,21 +52,36 @@ public class DronePolicies : MonoBehaviour {
 		}
 	}
 
+	//50-50 chance to get a billion dollars
 	void xAxisPolicy()
 	{
-		
-		
+		if (Random.value >= half) 
+		{
+			gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().money += billion;
+		}
 	}
-	
+
+	//starts a war and has a 50-50 chance to add towards triggering mass extinction
 	void yAxisPolicy()
 	{
-		
-		
+		if (Random.value >= half) 
+		{
+			randomEventController.lossInWar = true;
+		}
 	}
-	
+
+	//has a 50-50 chance to start you in the next election with 15% more votes or 5% less votes
 	void zAxisPolicy()
 	{
-		
-		
+		if (Random.value >= half) 
+		{
+			gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().votes = (int) Mathf.Ceil
+				(gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().votes * fifteenPercentIncrease);
+		} 
+		else
+		{
+			gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().votes = (int) Mathf.Floor
+				(gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().votes * fivePercentDecrease);
+		}
 	}
 }
