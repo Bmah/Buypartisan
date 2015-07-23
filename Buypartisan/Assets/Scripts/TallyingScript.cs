@@ -7,6 +7,8 @@ public class TallyingScript : MonoBehaviour {
 	//holds the game controller 
 	public GameObject gameController;
 
+	private int currentPlayer;
+
 	//holds the players
 	private GameObject[] players;
 
@@ -35,7 +37,8 @@ public class TallyingScript : MonoBehaviour {
 	private float shadowSphereSize;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 		
 	}
 	
@@ -191,5 +194,25 @@ public class TallyingScript : MonoBehaviour {
 				}
 			}
 		}
-	}
+
+		//This is the providence party's passive
+		for(int i = 0; i < gameController.GetComponent<GameController>().numberPlayers; i++)
+		{
+			if (string.Compare ((players[i].GetComponent<PlayerVariables> ().politicalPartyName), "Providence") == 0) 
+			{
+				for (int j = 0; j < gameController.GetComponent<GameController>().numberPlayers; j++) 
+				{
+					sphereSize = players [i].GetComponent<PlayerVariables> ().sphereController.transform.localScale.x;
+					distanceVector = players [j].transform.position - players [i].transform.position;
+					distance = Mathf.Abs (distanceVector.magnitude);
+
+					if (sphereSize >= distance)
+					{
+						players [i].GetComponent<PlayerVariables> ().money += players [j].GetComponent<PlayerVariables> ().money / 10;
+					}//if
+				}//for
+			}//if
+		}//for
+
+	}//preTurnTallying
 }
