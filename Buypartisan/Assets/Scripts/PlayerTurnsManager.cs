@@ -15,6 +15,9 @@ public class PlayerTurnsManager : MonoBehaviour {
 	public GameObject uiController; //Make sure to place the UI Controller here.
 	public GameObject[] actionArray = new GameObject[10]; //This is the array of action prefabs.
 	private GameObject instantiatedAction; //This saves the action prefab that was instantiated to check if it still exists. So long as this prefab exists, TurnsManager knows the turn hasn't ended yet.
+	private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
+	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
+	private int currentPlayer;//which player is currently taking their turn
 
 	public int chosenAction; //This value changes according to what action the player has chosen
 	private bool actionIsRunning = false; //This value checks if the player has chosen an action, and it is currently running
@@ -26,10 +29,9 @@ public class PlayerTurnsManager : MonoBehaviour {
 //	public int costOfAction = 0; //this will be the variable that saves the cost of the action.
 	public float costMultiplier = 1.0f; //this will change if the player continues to make more actions.
     public float costMultiplierIncreaseAmount = 0.5f;
-
+	public bool firstTime = true;
 	// Use this for initialization
 	void Start () {
-
 
 	}
 	
@@ -78,7 +80,17 @@ public class PlayerTurnsManager : MonoBehaviour {
 	}
 
     public void IncreaseCostMultiplier()
-    {
+    {   
+		voters = gameController.GetComponent<GameController> ().voters;
+		players = gameController.GetComponent<GameController> ().players;
+		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+		Debug.Log (currentPlayer);
         costMultiplier += costMultiplierIncreaseAmount;
+		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Coffee")== 0) {
+			if (firstTime) {
+				firstTime = false;
+				costMultiplier -= costMultiplierIncreaseAmount;
+			}
+		}
     }
 }
