@@ -286,6 +286,8 @@ public class Action4Script : MonoBehaviour {
 
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
+		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Windy")== 0)
+			players [currentPlayer].GetComponent<PlayerVariables> ().money += totalCost / 4;
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;
 		//puts the current player and the event number into the action counter of the event controller
 		//Brian Mah
