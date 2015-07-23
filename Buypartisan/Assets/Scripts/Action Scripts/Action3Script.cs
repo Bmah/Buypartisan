@@ -59,6 +59,9 @@ public class Action3Script : MonoBehaviour {
 	//holds a a pontntial position that has passed some tests
 	private Vector3 semiTestedPosition;
 
+	//holds the marker prefab that will get instantiated;
+	public GameObject markerPrefab;
+
 	//holds a primative cube to mark a potential position
 	private GameObject marker;
 
@@ -113,16 +116,21 @@ public class Action3Script : MonoBehaviour {
 		uiController.GetComponent<UI_Script> ().activateAction3UI ();
 		
 		//creates a primitive cube to show potential positions on screen
-		marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		
+		//marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		marker = Instantiate (markerPrefab) as GameObject;
+		//Replaced the primitive cube with the red arrow prefab by dragging and dropping it into the slot (Chris Ng).
+
 		//initializes the marker to the original position of the player spawning a shadow positon
 		marker.transform.position = originalPosition;
-		
-		//scales the marker so its not larger than everything else on the grid
-		marker.transform.localScale = new Vector3(0.099f, 0.099f, 0.099f);
+
+		//initializes the action to the original position of the player spawning a shadow position (Chris)
+		transform.position = originalPosition;
 
 		//scales this prefab so its not larger than everything else on the grid
 		transform.localScale = new Vector3 (0.098f, 0.098f, 0.098f);
+
+		//scales the marker so its not larger than everything else on the grid
+		marker.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 
 		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
 		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Drone")== 0)
@@ -137,7 +145,8 @@ public class Action3Script : MonoBehaviour {
         {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
-			Destroy (marker);
+			if (marker != null)
+				Destroy (marker);
 			Destroy(gameObject);
         }
 	}
@@ -425,9 +434,18 @@ public class Action3Script : MonoBehaviour {
         visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
+
 		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Windy")== 0)
 			players [currentPlayer].GetComponent<PlayerVariables> ().money += totalCost / 4;
-        players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
+        
+		//gives the Espresso party a refund based on their action cost modifier (Alex Jungroth)
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName == "Espresso" && players [currentPlayer].GetComponent<PlayerVariables> ().actionCostModifier > 0) 
+		{
+			players[currentPlayer].GetComponent<PlayerVariables>().money += (int) Mathf.Ceil
+				(totalCost * (1.0f + players [currentPlayer].GetComponent<PlayerVariables> ().actionCostModifier)); 
+		}
+
+		players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
 		//puts the current player and the event number into the action counter of the event controller
 		//Brian Mah
 		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [3]++; // the second number should be the number of the action!
