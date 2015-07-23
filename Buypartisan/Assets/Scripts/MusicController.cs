@@ -15,6 +15,11 @@ public class MusicController : MonoBehaviour {
 	private float newVolume;
 	private TitleScreenSettings titleScreenSettings;
 
+	private float ElectionThemeTime = 111.449f;
+	private float NewPlayTime;
+	private bool CustomLoopForElectionTheme = false;
+	//private bool PlayedElectionRecently = false;
+
 	// Use this for initialization
 	void Start () {
 		audioChannels = this.GetComponents<AudioSource> ();
@@ -25,6 +30,9 @@ public class MusicController : MonoBehaviour {
 		}
 		if (titleScreenSettings != null) {
 			musicVolume = titleScreenSettings.musicVolume;
+			audioChannels[0].volume = musicVolume;
+			audioChannels[1].volume = musicVolume;
+			audioChannels[2].volume = musicVolume;
 		}
 
 		//play level song to start out
@@ -59,6 +67,12 @@ public class MusicController : MonoBehaviour {
 				fadingOut[i] = false;
 			}
 		}
+
+
+		if (CustomLoopForElectionTheme && Time.time >= NewPlayTime) {
+			NewPlayTime += ElectionThemeTime;
+			audioChannels[1].PlayOneShot(musicTracks[2],musicVolume);
+		} 
 	}
 
 	public void FadeIn(int channel){
@@ -92,5 +106,14 @@ public class MusicController : MonoBehaviour {
 		} else {
 			audioChannels [channelNumber].clip = musicTracks [trackNumber];
 		}
+	}
+
+	public void PlayElectionTheme(){
+		audioChannels[1].PlayOneShot(musicTracks[2],musicVolume);
+		NewPlayTime = Time.time + ElectionThemeTime;
+		CustomLoopForElectionTheme = true;
+	}
+	public void StopElectionTheme(){
+		CustomLoopForElectionTheme = false;
 	}
 }
