@@ -20,6 +20,36 @@ public class DronePolicies : MonoBehaviour {
 	/// <param name="policyNumber">Policy number.</param>
 	public void redirectPolicyRequest(int policyNumber)
 	{
+		switch (policyNumber) 
+		{
+			case 1:
+				xAxisPolicy();
+			break;
+			
+			case 2:
+				yAxisPolicy();
+			break;
+			
+			case 3:
+				zAxisPolicy();
+			break;
+		}
+	}
+
+	void xAxisPolicy()
+	{
+		
+		
+	}
+	
+	void yAxisPolicy()
+	{
+		
+		
+	}
+	
+	void zAxisPolicy()
+	{
 		
 		
 	}
