@@ -43,8 +43,7 @@ public class VoterVariables : MonoBehaviour {
 
 
 	void Start () {
-		//voterRenderer = this.GetComponent<Renderer>();
-		voterRenderer = transform.Find ("PawnGroup").transform.Find ("SketchUp").GetComponent<Renderer> ();
+		voterRenderer = this.transform.GetChild (0).transform.GetChild(1).gameObject.GetComponent<Renderer> ();	//changed this to obtain the model's renderer.
 		Coll = this.GetComponent<Collider> ();
 		powerType = 1; //hardcoded for testing suppression, make sure to remove when code in place for buttons assigning
 		//ControllerSquared = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
