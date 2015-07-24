@@ -251,8 +251,7 @@ public class GameController : MonoBehaviour {
 		Vector3 voterLocation = new Vector3 (0, 0, 0);
 		VoterVariables voterInfoTemp;
 		bool uniqueLocation = false;
-		float moneyToVotesRatio;
-		
+
 		voters = new GameObject[numberofVoters];
 		
 		for (int i = 0; i < numberofVoters; i++) {
@@ -275,13 +274,21 @@ public class GameController : MonoBehaviour {
 					}
 				}
 			}
-			
 			voters[i] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
 			voterInfoTemp = voters[i].GetComponent<VoterVariables>();
-			moneyToVotesRatio = Random.value;
-			voterInfoTemp.money = Mathf.RoundToInt(voterMaxMoney*moneyToVotesRatio);
-			voterInfoTemp.votes = Mathf.RoundToInt(voterMaxVotes*(1-moneyToVotesRatio));
-			
+
+			voterInfoTemp.money = voterMaxMoney;
+
+			for (int k = 0; k < i; k++) {
+				if ((voters[k].transform.position - voterLocation).magnitude < distanceToNearestVoter){
+					voters[k].GetComponent<VoterVariables>().money /= 2;
+					voterInfoTemp.money /= 2;
+				}
+			}
+
+			//voterInfoTemp.votes = Mathf.RoundToInt(voterMaxVotes*(1-moneyToVotesRatio));
+			voterInfoTemp.votes = 1;
+
 			voterInfoTemp.xMinusResistance = Random.value*Random.value;
 			voterInfoTemp.xPlusResistance = Random.value*Random.value;
 			voterInfoTemp.yMinusResistance = Random.value*Random.value;
@@ -369,6 +376,7 @@ public class GameController : MonoBehaviour {
 
 				//updates the tv so the users know whose turn it is (Alex Jungroth)
 				UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName + " party's turn.");
+				UIController.SetPlayerAndParyNameInUpperLeft(players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName, currentPlayerTurn + 1);
 
 				//does the tallying before the first player's turn starts (Alex Jungroth)
 				tallyRoutine.preTurnTalling ();
@@ -711,7 +719,7 @@ public class GameController : MonoBehaviour {
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 				//updates the tv so the users know whose turn it is (Alex Jungroth)
 				UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName + " party's turn.");
-
+				UIController.SetPlayerAndParyNameInUpperLeft(players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName, currentPlayerTurn + 1);
 				PlayStartOfTurnAudio ();
 			}
 
@@ -734,7 +742,7 @@ public class GameController : MonoBehaviour {
 
 						//updates the tv so the users know whose turn it is (Alex Jungroth)
 						UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName + " party's turn.");
-
+						UIController.SetPlayerAndParyNameInUpperLeft(players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName, currentPlayerTurn + 1);
 						PlayStartOfTurnAudio ();
 					} else {
 						Debug.Log ("Game Ends!");
