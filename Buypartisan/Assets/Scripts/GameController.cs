@@ -147,6 +147,7 @@ public class GameController : MonoBehaviour {
 		UIController.gridSize = gridSize;
 		UIController.SFXvolume = SFXVolume;
 		randomEventController.gridSize = gridSize;
+		randomEventController.SFXvolume = SFXVolume;
 		messaged = true;
 		
 		if (SpawnUsingTXT) {
@@ -436,14 +437,14 @@ public class GameController : MonoBehaviour {
 
 				if(electionCounter == numberOfElections - 1){
 					SFX.PlayAudioClip(2,0,SFXVolume);
-					PreAnnouncmentSFXTime = Time.time + 3.7f;
+					PreAnnouncmentSFXTime = Time.time + 5.07f;
 				}
 				else{
 					gameMusic.LoadTrack(1,1);
 					gameMusic.audioChannels[1].volume = 0;
 					gameMusic.FadeIn(1);
 					gameMusic.audioChannels[1].Play();
-					PreAnnouncmentSFXTime = Time.time + 7f;
+					PreAnnouncmentSFXTime = Time.time + 7.52f;
 				}
 				PreAnnouncmentSFXPlaying = true;
 
