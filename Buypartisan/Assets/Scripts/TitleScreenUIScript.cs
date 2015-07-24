@@ -77,6 +77,12 @@ public class TitleScreenUIScript : MonoBehaviour
 
     private bool inCredits = false;
 
+	//holds the cover the other buttons when the settings are being adjusted (Alex Jungroth)
+	public GameObject settingsCover;
+
+	private bool LoadingGameScene = false;
+	private float LoadSceneTime;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -105,6 +111,9 @@ public class TitleScreenUIScript : MonoBehaviour
 		voterCounterSlider.SetActive(false);
 		sFXSlider.SetActive(false);
 		musicSlider.SetActive(false);
+
+		//disable the setting cover at the start (Alex Jungroth)
+		settingsCover.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -142,10 +151,14 @@ public class TitleScreenUIScript : MonoBehaviour
 		voterCounterText.GetComponent<Text>().text = voterCounterSlider.GetComponent<Slider>().value.ToString();
 		totalVoters = voterCounterSlider.GetComponent<Slider>().value;
 
-		//adjusts the music volume as the user moves the handle on the slide bar (Alex Jungroth)
-		musicPlayer.audioChannels [mChannel].volume = musicSlider.GetComponent<Slider>().value;
-		musicVolume = musicSlider.GetComponent<Slider>().value;
-		musicText.GetComponent<Text>().text = musicSlider.GetComponent<Slider>().value.ToString();
+		//Brian Mah
+		//If loading do the fade
+		if (!LoadingGameScene) {
+			//adjusts the music volume as the user moves the handle on the slide bar (Alex Jungroth)
+			musicPlayer.audioChannels [mChannel].volume = musicSlider.GetComponent<Slider> ().value;
+			musicVolume = musicSlider.GetComponent<Slider> ().value;
+			musicText.GetComponent<Text> ().text = musicSlider.GetComponent<Slider> ().value.ToString ();
+		}
 
 		//adjusts the SFX volume as the user moves the handle on the slide bar (Alex Jungroth)
 		sFXPlayer.AudioChannels [sChannel].volume = sFXSlider.GetComponent<Slider>().value;
@@ -156,14 +169,20 @@ public class TitleScreenUIScript : MonoBehaviour
         {
             toggleCredits(false);
         }
+
+		if (LoadingGameScene && Time.time > LoadSceneTime) {
+			Application.LoadLevel("PrototypeScene");
+		}
 	}
 
 	public void PlayGame()
 	{
 		//sends the decided game settings to the object that the gameController will see (Alex Jungroth)
+		settingsCover.SetActive(true);
 		gameSettings.FinalizeSettings (gridSize, totalRounds,totalElections, totalVoters, musicVolume, sFXVolume);
-
-		Application.LoadLevel("PrototypeScene");
+		//Brian Mah
+		LoadSceneTime = Time.time + 0.5f;
+		LoadingGameScene = true;
 	}
 
 	/// <summary>
@@ -178,11 +197,8 @@ public class TitleScreenUIScript : MonoBehaviour
 		panel2BG.SetActive(true);
 		settingsText.SetActive(true);
 
-		//disables the buttons (Alex Jungroth)
-		playButton.SetActive(false);
-		settingsButton.SetActive(false);
-		quitButton.SetActive(false);
-        creditsButton.SetActive(false);
+		//enables the settings cover (Alex Jungroth)
+		settingsCover.SetActive(true);
 
 		//enables the back button and the reset button (Alex Jungroth)
 		backButton.SetActive(true);
@@ -217,11 +233,8 @@ public class TitleScreenUIScript : MonoBehaviour
 		panel2BG.SetActive(false);
 		settingsText.SetActive(false);
 
-		//enables the buttons (Alex Jungroth)
-		playButton.SetActive(true);
-		settingsButton.SetActive(true);
-		quitButton.SetActive(true);
-        creditsButton.SetActive(true);
+		//disables the settings cover (Alex Jungroth)
+		settingsCover.SetActive(false);
 
 		//disables the back button and the reset button (Alex Jungroth)
 		backButton.SetActive(false);

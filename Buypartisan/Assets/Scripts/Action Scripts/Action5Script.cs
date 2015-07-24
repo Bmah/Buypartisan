@@ -13,7 +13,7 @@ public class Action5Script : MonoBehaviour {
 	public GameObject gameController; //this is the game controller variable. It is obtained from the scene
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the scene
 	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
-	private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
+	//private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 	//Brian Mah
 	private RandomEventControllerScript eventController;
@@ -35,7 +35,7 @@ public class Action5Script : MonoBehaviour {
 		uiController.GetComponent<UI_Script>().activateAction5UI();
 		//Obtains the voter and player array from the gameController
 		if (gameController != null) {
-			voters = gameController.GetComponent<GameController> ().voters;
+			//voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
 		} else {
@@ -85,7 +85,20 @@ public class Action5Script : MonoBehaviour {
 	void EndAction() {
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
+
+		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Windy")== 0)
+			players [currentPlayer].GetComponent<PlayerVariables> ().money += totalCost / 4;
+
+		//gives the Espresso party a refund based on their action cost modifier (Alex Jungroth)
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName == "Espresso" && players [currentPlayer].GetComponent<PlayerVariables> ().actionCostModifier > 0) 
+		{
+			players[currentPlayer].GetComponent<PlayerVariables>().money += (int) Mathf.Ceil
+				(totalCost * (1.0f + players [currentPlayer].GetComponent<PlayerVariables> ().actionCostModifier)); 
+		}
+
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;  // Money is subtracted
+
+
 		//puts the current player and the event number into the action counter of the event controller
 		//Brian Mah
 		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [5]++; // the second number should be the number of the action!

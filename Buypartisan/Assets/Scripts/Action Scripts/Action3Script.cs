@@ -59,6 +59,9 @@ public class Action3Script : MonoBehaviour {
 	//holds a a pontntial position that has passed some tests
 	private Vector3 semiTestedPosition;
 
+	//holds the marker prefab that will get instantiated;
+	public GameObject markerPrefab;
+
 	//holds a primative cube to mark a potential position
 	private GameObject marker;
 
@@ -75,17 +78,8 @@ public class Action3Script : MonoBehaviour {
 	//holds the orignial color of the shadow position
 	private Color transparentColor;
 
-	//holds the player's shadow position sphere's color
-	private Color transparentSphereColor;
-
-	//holds the player's shadow position sphere's renderer
-	private Renderer playerSphereRenderer;
-
-	//holds the player's shadow postion sphere's local scale
-	private Vector3 playerShadowSphereScale;
-
 	//holds the number needed for this action to succeed (Alex Jungroth)
-	public float successRate = 0.4f;
+	public float successRate = 0.25f;
 
 	// Use this for initialization
 	void Start () {
@@ -93,7 +87,7 @@ public class Action3Script : MonoBehaviour {
 		inputManager = GameObject.FindWithTag ("InputManager");
 		uiController = GameObject.Find ("UI Controller");
         visualAid = GameObject.FindWithTag("VisualAidManager");
-
+		
 		if (gameController != null) {
 			//			voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
@@ -122,19 +116,26 @@ public class Action3Script : MonoBehaviour {
 		uiController.GetComponent<UI_Script> ().activateAction3UI ();
 		
 		//creates a primitive cube to show potential positions on screen
-		marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		
+		//marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		marker = Instantiate (markerPrefab) as GameObject;
+		//Replaced the primitive cube with the red arrow prefab by dragging and dropping it into the slot (Chris Ng).
+
 		//initializes the marker to the original position of the player spawning a shadow positon
 		marker.transform.position = originalPosition;
-		
-		//scales the marker so its not larger than everything else on the grid
-		marker.transform.localScale = new Vector3(0.099f, 0.099f, 0.099f);
+
+		//initializes the action to the original position of the player spawning a shadow position (Chris)
+		transform.position = originalPosition;
 
 		//scales this prefab so its not larger than everything else on the grid
 		transform.localScale = new Vector3 (0.098f, 0.098f, 0.098f);
 
+		//scales the marker so its not larger than everything else on the grid
+		marker.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+
 		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
-		
+		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Drone")== 0)
+			baseCost = baseCost - baseCost / 4;
+
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
 
 			totalCost = (int)(baseCost * costMultiplier);
@@ -144,7 +145,8 @@ public class Action3Script : MonoBehaviour {
         {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
-			Destroy (marker);
+			if (marker != null)
+				Destroy (marker);
 			Destroy(gameObject);
         }
 	}
@@ -394,13 +396,19 @@ public class Action3Script : MonoBehaviour {
 			if(Random.value >= successRate)
 			{
 				//instantiates a new instance of player that will be the shadow postion and sets it position to the player who spawned
-				shadowPosition = Instantiate(gameController.GetComponent<GameController>().playerTemplate,semiTestedPosition, Quaternion.identity) as GameObject;
+				shadowPosition = Instantiate(players[currentPlayer],semiTestedPosition, Quaternion.identity) as GameObject;
+
+				//marks the this instance of the player as a shadow position so it will not be moused over
+				shadowPosition.GetComponent<PlayerVariables>().isShadowPosition = true;
 
 				//gets the players Renderer
-				playerRenderer = players[currentPlayer].GetComponent<Renderer>();
+				playerRenderer = players[currentPlayer].transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
 
 				//gets the shadows position's renderer
-				shadowRenderer = shadowPosition.GetComponent<Renderer>();
+				shadowRenderer = shadowPosition.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
+
+				//
+				shadowRenderer.material = players[currentPlayer].GetComponent<PlayerVariables>().transparentTexture;
 
 				//sets the shadow position's color equal to the player's render color
 				shadowRenderer.material.color = playerRenderer.material.color;
@@ -409,17 +417,6 @@ public class Action3Script : MonoBehaviour {
 				transparentColor = shadowRenderer.material.color;
 				transparentColor.a = 0.5f;
 				shadowRenderer.material.SetColor("_Color", transparentColor);  
-
-				//makes the shadow positions sphere of influence the same color as the players sphere of inclufence
-				playerSphereRenderer = players[currentPlayer].GetComponent<PlayerVariables>().sphereController.GetComponent<Renderer>();
-				transparentSphereColor = playerSphereRenderer.material.color;
-				transparentSphereColor.a = 0.2f;
-				shadowPosition.GetComponent<PlayerVariables>().sphereController.GetComponent<Renderer>().material.SetColor("_Color", transparentSphereColor);
-
-				//sets the shadow position's sphere of influence equal to the player's sphere of influence (doesn't work for some reason)
-				//playerShadowSphereScale = players[currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale;
-
-				//shadowPosition.GetComponent<PlayerVariables>().sphereController.transform.localScale = playerShadowSphereScale;
 
 				//adds the shadow position to the players array list of shadowpositions
 				players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.Add(shadowPosition);
@@ -437,7 +434,18 @@ public class Action3Script : MonoBehaviour {
         visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
-        players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
+
+		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Windy")== 0)
+			players [currentPlayer].GetComponent<PlayerVariables> ().money += totalCost / 4;
+        
+		//gives the Espresso party a refund based on their action cost modifier (Alex Jungroth)
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName == "Espresso" && players [currentPlayer].GetComponent<PlayerVariables> ().actionCostModifier > 0) 
+		{
+			players[currentPlayer].GetComponent<PlayerVariables>().money += (int) Mathf.Ceil
+				(totalCost * (1.0f + players [currentPlayer].GetComponent<PlayerVariables> ().actionCostModifier)); 
+		}
+
+		players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
 		//puts the current player and the event number into the action counter of the event controller
 		//Brian Mah
 		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [3]++; // the second number should be the number of the action!

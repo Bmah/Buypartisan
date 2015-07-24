@@ -102,6 +102,17 @@ public class Action8Script : MonoBehaviour {
 		//visualAid.GetComponent<VisualAidAxisManangerScript>().Detach(); // Remove if no need visual aid
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
+
+		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Windy")== 0)
+			players [currentPlayer].GetComponent<PlayerVariables> ().money += totalCost / 4;
+
+		//gives the Espresso party a refund based on their action cost modifier (Alex Jungroth)
+		if (players [currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName == "Espresso" && players [currentPlayer].GetComponent<PlayerVariables> ().actionCostModifier > 0) 
+		{
+			players[currentPlayer].GetComponent<PlayerVariables>().money += (int) Mathf.Ceil
+				(totalCost * (1.0f + players [currentPlayer].GetComponent<PlayerVariables> ().actionCostModifier)); 
+		}
+
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;  // Money is subtracted
 		//puts the current player and the event number into the action Counter of the event controller
 		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [0]++; // the second number should be the number of the action!

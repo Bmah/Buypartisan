@@ -7,11 +7,16 @@ public class TallyingScript : MonoBehaviour {
 	//holds the game controller 
 	public GameObject gameController;
 
+	private int currentPlayer;
+
 	//holds the players
 	private GameObject[] players;
 
 	//holds the voters
 	private GameObject[] voters;
+
+	//holds the number of players
+	private int numberPlayers;
 
 	//holds the distance between a given player or shadow position and a given voter
 	private Vector3 distanceVector;
@@ -26,13 +31,14 @@ public class TallyingScript : MonoBehaviour {
 	private bool tieInfluenced = true;
 
 	//holds the size of the player's sphere of influence
-	private int sphereSize;
+	private float sphereSize;
 
-	//holds the size of the player's sphere of influence
-	private int shadowSphereSize;
+	//holds the size of the players shadow position's sphere of influence
+	private float shadowSphereSize;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 		
 	}
 	
@@ -53,10 +59,11 @@ public class TallyingScript : MonoBehaviour {
 		
 		//gets the voters
 		voters = gameController.GetComponent<GameController> ().voters;
-		
+
+		numberPlayers = gameController.GetComponent<GameController> ().numberPlayers;
 
 		//resets the players votes so they can be properly be counted 
-		for (int i = 0; i < players.Length; i++) 
+		for (int i = 0; i < numberPlayers; i++) 
 		{
 			players[i].GetComponent<PlayerVariables>().votes = 0;
 
@@ -70,13 +77,12 @@ public class TallyingScript : MonoBehaviour {
 			int tiePlayer = 0;
 			
 			//calculates the distance of voters from players
-			for (int j = 0; j < players.Length; j++)
+			for (int j = 0; j < numberPlayers; j++)
 			{
-
 				//gets the player's sphere of influence size
-				sphereSize = players[j].GetComponent<PlayerVariables>().sphereSize;
+				sphereSize = players[j].GetComponent<PlayerVariables>().sphereController.transform.localScale.x;
 
-				distanceVector = players [j].GetComponent<PlayerVariables>().transform.position - voters [i].GetComponent<VoterVariables>().transform.position;
+				distanceVector = players [j].transform.position - voters [i].transform.position;
 				distance = Mathf.Abs (distanceVector.magnitude);
 
 				//determines if there is a player that beat the last one
@@ -85,7 +91,7 @@ public class TallyingScript : MonoBehaviour {
 					leastDistance = distance;
 					closestPlayer = j;
 
-					if(sphereSize / 20 >= distance)
+					if(sphereSize / 20f >= distance)
 					{
 						influenced = true;
 					}
@@ -100,7 +106,7 @@ public class TallyingScript : MonoBehaviour {
 					tieDistance = distance;
 					tiePlayer = j;
 
-					if(sphereSize / 20 >= distance)
+					if(sphereSize / 20f >= distance)
 					{
 						tieInfluenced = true;
 					}
@@ -114,7 +120,7 @@ public class TallyingScript : MonoBehaviour {
 				{
 
 					//gets the player's shadow postion sphere of influence
-					shadowSphereSize = players[j].GetComponent<PlayerVariables>().shadowPositions[k].GetComponent<PlayerVariables>().sphereSize;
+					shadowSphereSize = players[j].GetComponent<PlayerVariables>().shadowPositions[k].GetComponent<PlayerVariables>().sphereController.transform.localScale.x;
 
 					distanceVector = players [j].GetComponent<PlayerVariables>().shadowPositions[k].GetComponent<PlayerVariables>().transform.position - 
 						voters [i].GetComponent<VoterVariables>().transform.position;
@@ -126,7 +132,7 @@ public class TallyingScript : MonoBehaviour {
 						leastDistance = distance;
 						closestPlayer = j;
 
-						if(shadowSphereSize / 20 >= distance)
+						if(shadowSphereSize / 20f >= distance)
 						{
 							influenced = true;
 						}
@@ -141,7 +147,7 @@ public class TallyingScript : MonoBehaviour {
 						tieDistance = distance;
 						tiePlayer = j;
 
-						if(shadowSphereSize / 20 >= distance)
+						if(shadowSphereSize / 20f >= distance)
 						{
 							tieInfluenced = true;
 						}
@@ -188,5 +194,25 @@ public class TallyingScript : MonoBehaviour {
 				}
 			}
 		}
-	}
+
+		//This is the providence party's passive
+		for(int i = 0; i < gameController.GetComponent<GameController>().numberPlayers; i++)
+		{
+			if (string.Compare ((players[i].GetComponent<PlayerVariables> ().politicalPartyName), "Providence") == 0) 
+			{
+				for (int j = 0; j < gameController.GetComponent<GameController>().numberPlayers; j++) 
+				{
+					sphereSize = players [i].GetComponent<PlayerVariables> ().sphereController.transform.localScale.x;
+					distanceVector = players [j].transform.position - players [i].transform.position;
+					distance = Mathf.Abs (distanceVector.magnitude);
+
+					if (sphereSize >= distance)
+					{
+						players [i].GetComponent<PlayerVariables> ().money += players [j].GetComponent<PlayerVariables> ().money / 10;
+					}//if
+				}//for
+			}//if
+		}//for
+
+	}//preTurnTallying
 }

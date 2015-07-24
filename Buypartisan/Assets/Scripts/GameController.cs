@@ -9,20 +9,35 @@ using System.IO;
 using System.Runtime;
 
 public class GameController : MonoBehaviour {
-	public enum GameState {PlayerSpawn, ActionTurns, RoundEnd, GameEnd, AfterEnd};
-	GameState currentState = GameState.PlayerSpawn;
+	public enum GameState {TotalPlayersSelect,PlayerSpawn, ActionTurns, RoundEnd, GameEnd, EnactPolicies, AfterEnd};
+	GameState currentState = GameState.TotalPlayersSelect;
 	
 	public GameObject voterTemplate;
 	public GameObject neutralTemplate;
 	public GameObject coffeeTemplate;
 	public GameObject party3Template;
 	public GameObject party4Template;
+	public GameObject party5Template; //The fifth party(Alex Jungroth)
 	public GameObject playerTemplate;
-	public Button party1;
-	public Button party2;
-	public Button party3;
-	public Button party4;
-	
+
+	//holds the max number of political parties and by extension the max number of players in the game (Alex Jungroth)
+	private const int totalPoliticalParties = 5;
+
+	//constants that are used to calculate a winning player's money at the end of an election (Alex Jungroth)
+	private const float threeQuatersDecrease = 0.75f;
+	private const float half = 0.5f;
+	private const float tenPercentIncrease = 1.1f;
+	private const float tenPercentDecrease = 0.9f;
+
+	//holds the whether or not a part has been chosen (Alex Jungroth)
+	public bool[] politicalPartyChosen = new bool[totalPoliticalParties];
+
+	//holds wether or not it is the action turns state yet (Alex Jungroth)
+	public bool isActionTurns = false;
+
+	//holds whether or not the random events arrays have been initialized (Alex Jungroth)
+	public bool isREAInitialized = false;
+
 	public int gridSize;
 	public GridInstanced GridInstancedController;
 	
@@ -30,24 +45,32 @@ public class GameController : MonoBehaviour {
 	private TitleScreenSettings gameSettings;
 	
 	public UI_Script UIController;
-	
+
 	//holds the WindowGenerator script (Alex Jungroth)
 	public WindowGeneratorScript WindowGenerator;
-	
+
+	//holds the party policies scripts (Alex Jungroth)
+	public GameObject partyPolicyManager;
+
 	public RandomEventControllerScript randomEventController;
-	
+
+	public PlayerTurnsManager turnsManager;
+
+	//holds whether or not the number of players has been selected (Alex Jungroth)
+	public bool totalPlayersPicked = false;
+
 	public int numberPlayers;  //number of players per game
 	public int playersSpawned = 0; //how many players have been spawned in
-	private bool spawnedNewPlayer = false; //bool for checking whether or not a new player has been spawned in
-	public bool playerConfirmsPlacment = false; //bool for checking if player is done
+	public bool playerConfirmsPlacement = false; //bool for checking if player is done
+
+	//holds whether or not the player has been spawned (Alex Jungroth)
+	private bool spawnFinished = true;
 	
 	public int currentPlayerTurn = 0; //this keeps track of which player is currently taking a turn
 	public int numberOfRounds; //this is a variable that you can change to however many number if rounds we want.
 	private int roundCounter = 0;//will be used to keep track of rounds
 	public bool playerTakingAction = false;
 	public bool messaged;//Checks if Player has finished taking an action
-	public bool player2Spawning = false;
-	public bool partyChosen = false;
 	
 	//holds total the number of electons that will happen in the game (Alex Jungroth)
 	public int numberOfElections = 1;
@@ -56,19 +79,12 @@ public class GameController : MonoBehaviour {
 	private int electionCounter = 0;
 	
 	public GameObject[] voters;//array which houses the voters
-	public GameObject[] players = new GameObject[2];//array which houses the players
+	public GameObject[] players;//array which houses the players
 	
 	public GameObject currentPlayer;
-	public Material Player2Material;
-	
-	//holds player2's sphere renderer (Alex Jungroth)
-	private Renderer player2Renderer;
-	
-	//holds player2 sphere's transparency (Alex Jungroth)
-	private Color player2SphereTransparency;
-	
+
 	private MusicController gameMusic;
-	//holds wether or not the gameController got the music volume settings (Alex Jungroth)
+	//holds whether or not the gameController got the music volume settings (Alex Jungroth)
 	private bool musicSettingsReceived = false;
 	private SFXController SFX;
 	public float SFXVolume;
@@ -80,12 +96,14 @@ public class GameController : MonoBehaviour {
 	public int voterMaxVotes = 100;
 	public float IgnoreNearestVoter = 0.3f;
 	
-	private bool SFXDrumrollPlaying = false;
-	private float drumrollTime = 3.7f;
+	private bool PreAnnouncmentSFXPlaying = false;
+	private float PreAnnouncmentSFXTime = 3.7f;
 	public int Party;
+	private int tracker = 0;
+	private bool votersAppear = true;
 	
 	//holds the winner of an election (Alex Jungroth)
-	public int electionWinner;
+	public int electionWinner = 0;
 	
 	//does the tallying at the start of each turn (Alex Jungroth)
 	public TallyingScript tallyRoutine;
@@ -129,6 +147,7 @@ public class GameController : MonoBehaviour {
 		UIController.gridSize = gridSize;
 		UIController.SFXvolume = SFXVolume;
 		randomEventController.gridSize = gridSize;
+		randomEventController.SFXvolume = SFXVolume;
 		messaged = true;
 		
 		if (SpawnUsingTXT) {
@@ -153,6 +172,16 @@ public class GameController : MonoBehaviour {
 		if (inputManager == null) {
 			Debug.LogError ("The Game Controller could not find the Input manager please place it in the scene.");
 		}
+
+		//sets all of the political parties to not chosen (Alex Jungroth)
+		for(int i = 0; i < totalPoliticalParties; i++)
+		{
+			politicalPartyChosen[i] = false;
+		}
+
+		//sets the games starting message (Alex Jungroth)
+		UIController.alterTextBox("How many players are running for office?");
+	
 	}
 	
 	/// <summary>
@@ -222,8 +251,7 @@ public class GameController : MonoBehaviour {
 		Vector3 voterLocation = new Vector3 (0, 0, 0);
 		VoterVariables voterInfoTemp;
 		bool uniqueLocation = false;
-		float moneyToVotesRatio;
-		
+
 		voters = new GameObject[numberofVoters];
 		
 		for (int i = 0; i < numberofVoters; i++) {
@@ -246,13 +274,21 @@ public class GameController : MonoBehaviour {
 					}
 				}
 			}
-			
 			voters[i] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
 			voterInfoTemp = voters[i].GetComponent<VoterVariables>();
-			moneyToVotesRatio = Random.value;
-			voterInfoTemp.money = Mathf.RoundToInt(voterMaxMoney*moneyToVotesRatio);
-			voterInfoTemp.votes = Mathf.RoundToInt(voterMaxVotes*(1-moneyToVotesRatio));
-			
+
+			voterInfoTemp.money = voterMaxMoney;
+
+			for (int k = 0; k < i; k++) {
+				if ((voters[k].transform.position - voterLocation).magnitude < distanceToNearestVoter){
+					voters[k].GetComponent<VoterVariables>().money /= 2;
+					voterInfoTemp.money /= 2;
+				}
+			}
+
+			//voterInfoTemp.votes = Mathf.RoundToInt(voterMaxVotes*(1-moneyToVotesRatio));
+			voterInfoTemp.votes = 1;
+
 			voterInfoTemp.xMinusResistance = Random.value*Random.value;
 			voterInfoTemp.xPlusResistance = Random.value*Random.value;
 			voterInfoTemp.yMinusResistance = Random.value*Random.value;
@@ -260,62 +296,135 @@ public class GameController : MonoBehaviour {
 			voterInfoTemp.zMinusResistance = Random.value*Random.value;
 			voterInfoTemp.zPlusResistance = Random.value*Random.value;
 			voterInfoTemp.baseResistance = 0;
-			
+			voters[i].gameObject.SetActive (false);
 		}
 		
 	}
 	
 	
 	// Update is called once per frame
-	void Update () {
-		
-		if (currentState == GameState.PlayerSpawn) {
-			
+	void Update () 
+	{	
+		if(currentState == GameState.TotalPlayersSelect)
+		{
 			//sets the music volume at the start of the game (Alex Jungroth)
 			if(musicSettingsReceived == true)
 			{
 				gameMusic.audioChannels[0].volume = gameSettings.musicVolume;
+
+
+				//sets music settings recieved to false so it doesn't update 
+				//the volume every time update is called (Alex Jungroth)
+				musicSettingsReceived = false;
 			}
 			
-			if (playersSpawned < numberPlayers) {//Players are still spawning in
-				if(partyChosen) {
-					SpawnPlayer (); 
+			//waits until the number of players has been determined (Alex Jungroth)
+			if(totalPlayersPicked)
+			{
+				//gets the number of players (Alex Jungroth)
+				numberPlayers = (int)UIController.totalPlayersSlider.GetComponent<Slider>().value;
+
+				//dynamically sizes the players array, but this array should never be
+				//larger than the total political parties variable (Alex Jungroth)
+				players = new GameObject[numberPlayers];
+
+				//sends the newly made array of players to the UIScript (Alex Jungroth)
+				UIController.getPlayerArray(players);
+
+				//disables the total party selection (Alex Jungroth)
+				UIController.TotalPlayersDisable();
+				
+				//enables the party selection buttons (Alex Jungroth)
+				UIController.PartyEnable();
+				
+				//gives instructions for player placement (Alex Jungroth)
+				UIController.alterTextBox("Choose a party and a political position.");
+
+				//updates the game state (Alex Jungroth)
+				currentState = GameState.PlayerSpawn;
+			}
+			else
+			{
+				//sets the display text equal to value of the slide bar (Alex Jungroth)
+				UIController.totalPlayersText.GetComponent<Text>().text = UIController.totalPlayersSlider.GetComponent<Slider>().value.ToString();
+			}
+		}
+		else if (currentState == GameState.PlayerSpawn)
+		{	
+			//spawns players until every player has been spawned (Alex Jungroth)
+			if (playersSpawned < numberPlayers)
+			{
+				if(votersAppear) {
+					tracker = MakeAppear(tracker);
+					votersAppear = false;
 				}
-			} else {
+				SpawnPlayer(); 
+			}
+
+			else 
+			{
+				//this is the button configuration once all players have been placed (Alex Jungroth)
+				//MakeRest(tracker);
+				UIController.disablePPButtons();
+				UIController.PartyDisable();
+				UIController.toggleActionButtons();
+				
 				currentState = GameState.ActionTurns;
 				playerTakingAction = false;
 				Debug.Log ("Round " + (roundCounter + 1) + " begin!");
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
-				
+
+				//updates the tv so the users know whose turn it is (Alex Jungroth)
+				UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName + " party's turn.");
+				UIController.SetPlayerAndParyNameInUpperLeft(players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName, currentPlayerTurn + 1);
+
 				//does the tallying before the first player's turn starts (Alex Jungroth)
 				tallyRoutine.preTurnTalling ();
-				
-				//Gives the randomEventController the list of newly spawned players
-				//Brian Mah
+				turnsManager.firstTime = true;
+				//Gives the randomEventController the list of newly spawned players Brian Mah
 				randomEventController.players = players;
 				randomEventController.playersSpawned = true;
-				
+
 				//lets the voters know what the players are
-				for(int i = 0; i < voters.Length; i++){
+				for(int i = 0; i < voters.Length; i++)
+				{
 					voters[i].GetComponent<VoterVariables>().players = players;
 				}
-				
-				//Brian Mah
-				//Makes voters the right colors
+
+				//updates the voters (Alex Jungroth)
 				UpdateVoterCanidates();
 			}
-		} else if (currentState == GameState.ActionTurns) {
-			
+		} 
+		else if (currentState == GameState.ActionTurns)
+		{
+			//checks to see if the real event array has been initialized (Alex Jungroth)
+			if(!isREAInitialized)
+			{
+				//sets the isActionTurns to true (Alex Jungroth)
+				isActionTurns = true;
+
+				//initializes the random event arrays (Alex Jungroth)
+				randomEventController.initializeRandomEventsArrays();
+
+				//prevents the random event arrays from being initialized more than once (Alex Jungroth)
+				isREAInitialized = true;
+			}
+
 			// In Game Heirchy, GameController must set Number Of Rounds greater than 0 in order for this to be called
-			if (roundCounter < numberOfRounds) {
+			if (roundCounter < numberOfRounds)
+			{
 				PlayerTurn ();
-				
-			} else {
+
+			}
+			else 
+			{
 				currentState = GameState.RoundEnd;
 				
 			}
 			
-		} else if (currentState == GameState.RoundEnd) {
+		} 
+		else if (currentState == GameState.RoundEnd)
+		{
 			
 			//disables the action buttons (Alex Jungroth)
 			for(int i = 0; i < 10; i++)
@@ -330,14 +439,38 @@ public class GameController : MonoBehaviour {
 			// Brian Mah
 			UIController.alterTextBox("And the Winner is...");
 			
-			if(!SFXDrumrollPlaying){
-				SFX.PlayAudioClip(2,0,SFXVolume);
-				SFXDrumrollPlaying = true;
-				drumrollTime += Time.time;
+			if(!PreAnnouncmentSFXPlaying)
+			{
+				gameMusic.FadeOut(0);
+
+				if(electionCounter == numberOfElections - 1){
+					SFX.PlayAudioClip(2,0,SFXVolume);
+					PreAnnouncmentSFXTime = Time.time + 5.07f;
+				}
+				else{
+					gameMusic.LoadTrack(1,1);
+					gameMusic.audioChannels[1].volume = 0;
+					gameMusic.FadeIn(1);
+					gameMusic.audioChannels[1].Play();
+					PreAnnouncmentSFXTime = Time.time + 7.52f;
+				}
+				PreAnnouncmentSFXPlaying = true;
+
 			}
 			
-			if(Time.time >= drumrollTime){ // when the sound is done playing
-				
+			if(Time.time >= PreAnnouncmentSFXTime)
+			{ // when the sound is done playing
+
+				if(electionCounter == numberOfElections - 1){
+					SFX.PlayAudioClip(4,0,SFXVolume);
+				}
+				else{
+					gameMusic.LoadTrack(2,1);
+					gameMusic.audioChannels[1].Stop();
+					gameMusic.PlayElectionTheme();
+				}
+
+
 				//does the tallying at the end of the game (Alex Jungroth)
 				tallyRoutine.preTurnTalling ();
 				
@@ -346,35 +479,128 @@ public class GameController : MonoBehaviour {
 			}
 			
 			// Once the game ends and calculation is needed, this is called
-		} else if (currentState == GameState.GameEnd) {
-			CompareVotes(messaged);
+		}
+		else if (currentState == GameState.GameEnd)
+		{
+			//Comapre Votes is no longer used, I have left it here
+			//in case we need it for future bug testing (Alex Jungroth)
+			//CompareVotes(messaged);
 			
 			//increments the election counter (Alex Jungroth)
 			electionCounter += 1;
 			
 			if(electionCounter <  numberOfElections)
 			{
+				//tells the game controller to not skip over enact policies (Alex Jungroth)
+				WindowGenerator.resumeGame = false;
+
 				//displays who won an election (Alex Jungroth)
-				WindowGenerator.generateElectionVictory(false, electionWinner);
+				WindowGenerator.generateElectionVictory(false);
 				
 				//manages things between elections (Alex Jungroth)
 				prepareElection();
-				
-				//resets the game state (Alex Jungroth)
-				currentState = GameState.ActionTurns;
+
+				//sets the game state enact policies(Alex Jungroth)
+				currentState = GameState.EnactPolicies;
 			}
 			else
 			{
 				//displays who won the game (Alex Jungroth)
-				WindowGenerator.generateElectionVictory(true, electionWinner);
+				WindowGenerator.generateElectionVictory(true);
 				
 				//ends the game (Alex Jungroth)
 				currentState = GameState.AfterEnd;
 			}
-			
 		}
-		
-		if (inputManager.escButtonDown) {
+		else if(currentState == GameState.EnactPolicies)
+		{
+			//only enacts policies when the window generator has finished
+			if(WindowGenerator.resumeGame == true)
+			{
+				//enacts a policy (Alex Jungroth)
+				if(WindowGenerator.winner != "no winner")
+				{
+					for(int i = 0; i < numberPlayers; i++)
+					{
+						if(players[i].GetComponent<PlayerVariables>().politicalPartyName == WindowGenerator.winner)
+						{
+							//sets electionWinner to the player who won (Alex Jungroth)
+							electionWinner = i;
+						}//if
+					}//for
+
+					//The winner deposits 25% of their money into a war chest for their constituents (Alex Jungroth)
+					players[electionWinner].GetComponent<PlayerVariables>().money = (int) Mathf.Floor
+						(players[electionWinner].GetComponent<PlayerVariables>().money  * threeQuatersDecrease);
+
+					if(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy != 0)
+					{
+						//a case structure for calling the correct set of functions based on which player won (Alex Jungroth)
+						switch(players[electionWinner].GetComponent<PlayerVariables>().politicalPartyName)
+						{
+							case "Apple Pie":
+								partyPolicyManager.GetComponent<NeutralPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							case "Espresso":
+								partyPolicyManager.GetComponent<EspressoPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							case "Drone":
+								partyPolicyManager.GetComponent<DronePolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							case "Windy":
+								partyPolicyManager.GetComponent<WindyPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							case "Providence":
+								partyPolicyManager.GetComponent<Party5Policies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							default:
+								//something went wrong with the players names
+								Debug.LogError("Unrecognized player name!");
+							break;
+						}//switch
+
+						//determines if the party's policy was well received or not (Alex Jungroth)
+						if(Random.value >= half)
+						{
+							//If the party's policy was well received then the party gains money equal to 10% of its total money (Alex Jungroth)
+							players[electionWinner].GetComponent<PlayerVariables>().money = (int) Mathf.Ceil
+								(players[electionWinner].GetComponent<PlayerVariables>().money  * tenPercentIncrease);
+						}
+						else
+						{
+							//If the party's policy was poorly received then the party loses money equal to 10% of its total money (Alex Jungroth)
+							players[electionWinner].GetComponent<PlayerVariables>().money = (int) Mathf.Floor
+								(players[electionWinner].GetComponent<PlayerVariables>().money  * tenPercentDecrease);
+
+						}//else
+					}//if
+				}//if
+
+				//resets the selected policies for all players (Alex Jungroth)
+				for(int i = 0; i < numberPlayers; i++)
+				{
+					players[i].GetComponent<PlayerVariables>().chosenPolicy = 0;
+				}//for
+
+				//resets the game state to action turns (Alex Jungroth)
+				currentState = GameState.ActionTurns;
+
+				//Brian Mah
+				//audio stuff, fades in regular music, fades out election music
+				//also stops the custom loop in music controller
+				gameMusic.FadeIn(0);
+				gameMusic.FadeOut(1);
+				gameMusic.StopElectionTheme();
+			}//if
+		}//else if
+
+		if (inputManager.escButtonDown) 
+		{
 			Application.LoadLevel("TitleScene");
 		}
 		
@@ -382,68 +608,89 @@ public class GameController : MonoBehaviour {
 	
 	
 	/// <summary>
+	/// This is the part of the game controler that I changed to support 5 players (Alex Jungroth)
 	/// Spawns the player and enables player placment controlls.
 	/// Disables controlls upon confirmation and last player placed
 	/// </summary>
-	void SpawnPlayer(){
-		if (!spawnedNewPlayer) {
-			UIController.PartyDisable();
-			UIController.enablePPButtonsPartySelection();
-			switch (Party){//this is code for spawning different parites.  Parties are set as an enum, and assigned at title
-				//from here, depending on what party the player chose, this is what they will spawn as
-			case 0 : currentPlayer = Instantiate(neutralTemplate,new Vector3(0,0,0), Quaternion.identity) as GameObject; this.playerTemplate = neutralTemplate; break;
-			case 1 : currentPlayer = Instantiate(coffeeTemplate,new Vector3(0,0,0), Quaternion.identity) as GameObject; this.playerTemplate = coffeeTemplate; break;
-			case 2 : currentPlayer = Instantiate(party3Template,new Vector3(0,0,0), Quaternion.identity) as GameObject; this.playerTemplate = party3Template; break;
-			case 3 : currentPlayer = Instantiate(party4Template,new Vector3(0,0,0), Quaternion.identity) as GameObject; this.playerTemplate = party4Template; break;
-			}
-			
-			//currentPlayer = Instantiate(playerTemplate,new Vector3(0,0,0), Quaternion.identity) as GameObject;
-			players[playersSpawned] = currentPlayer;
-			spawnedNewPlayer = true;
-			playerConfirmsPlacment = false;
-			
-		}
+	void SpawnPlayer()
+	{
+		//prevents update from spamming this part of the function (Alex Jungroth)
+		if (!spawnFinished) 
+		{
+			//enables the player placement movement controls (Alex Jungroth)
+			UIController.PartyDisable ();
+			UIController.enablePPButtonsPartySelection ();
+
+			//this is code for spawning different parites
+			//depending on what party the player chose, this is what they will spawn as
+			//each party can only be chosen once
+			switch (Party) 
+			{
+				case 0: 
+					currentPlayer = Instantiate (neutralTemplate, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject; 
+					this.playerTemplate = neutralTemplate; 
+				break;
 		
-		//Player Uses Buttons to choose where the player goes in the scene
-		/*if (player2Spawning) {
-			players [playersSpawned].GetComponent<Renderer> ().material = Player2Material;
+				case 1: 
+					currentPlayer = Instantiate (coffeeTemplate, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject; 
+					this.playerTemplate = coffeeTemplate; 
+				break;
 
-			//trying an alternate way of changing the sphere's color (Alex Jungroth)
-			player2Renderer = players[playersSpawned].GetComponent<PlayerVariables>().sphereController.GetComponent<Renderer>();
-			player2Renderer.material = Player2Material;
-			player2SphereTransparency = player2Renderer.material.color;
-			player2SphereTransparency.a = 0.2f;
-			player2Renderer.material.SetColor("_Color", player2SphereTransparency);
-
-			//players [playersSpawned].GetComponent<PlayerVariables> ().transparentColor = players [playersSpawned].GetComponent<PlayerVariables> ().sphereRenderer.material.color;
-			//players [playersSpawned].GetComponent<PlayerVariables> ().transparentColor.a = 0.2f;
-			//players [playersSpawned].GetComponent<PlayerVariables> ().sphereRenderer.material.SetColor ("_Color", players [playersSpawned].GetComponent<PlayerVariables> ().transparentColor);
-			//players [playersSpawned].GetComponent<PlayerVariables> ().sphereController.transform.localScale = new Vector3 (players [playersSpawned].GetComponent<PlayerVariables> ().sphereSize, players [playersSpawned].GetComponent<PlayerVariables> ().sphereSize, players [playersSpawned].GetComponent<PlayerVariables> ().sphereSize);
-		}*/
-		if (playerConfirmsPlacment) {
-			//checks the player against all of the previous players to ensure no duplicates
-			for(int i = 0; i < playersSpawned; i++){
-				if (currentPlayer.transform.position == players[i].transform.position){//if they are on the same spot
-					playerConfirmsPlacment = false;
-				}
+				case 2:
+					currentPlayer = Instantiate (party3Template, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
+					this.playerTemplate = party3Template;
+				break;
+		
+				case 3:
+					currentPlayer = Instantiate (party4Template, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
+					this.playerTemplate = party4Template;
+				break;
+		
+				case 4:
+					currentPlayer = Instantiate (party5Template, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject; 
+					this.playerTemplate = party5Template;
+				break;
 			}
-			if(playerConfirmsPlacment){ //if the player placment is legal
-				
-				UIController.correctPlacement();
-				
-				playersSpawned++;
-				partyChosen = false;
-				spawnedNewPlayer = false;
-				player2Spawning = true;
-				playerConfirmsPlacment = false;
-				if(!(playersSpawned < numberPlayers)){
-					UIController.disablePPButtons();
-					UIController.PartyDisable();
-					//adding this in to enable action buttons/test functionality (Alex Jungroth)
-					UIController.toggleActionButtons();
-				}
+
+			//stores the current player into the array of players (Alex Jungroth)
+			players [playersSpawned] = currentPlayer;
+
+			//prevents update from calling this part of the function again (Alex Jungroth)
+			spawnFinished = true;
+		}
+
+		//checks the player against all of the previous players to ensure no duplicates
+		for(int i = 0; i < playersSpawned; i++)
+		{
+			if (currentPlayer.transform.position == players[i].transform.position)
+			{
+				//if they are on the same spot
+				playerConfirmsPlacement = false;
 			}
 		}
+
+		if(playerConfirmsPlacement)
+		{ 
+			//if the player placment is legal sets up the next party selection buttons (Alex Jungroth)
+			UIController.correctPlacement();
+
+			//increments the players spawned (Alex Jungroth)
+			playersSpawned++;
+
+			//prevents more than five players from spawning (Alex Jungroth)
+			spawnFinished = true;
+
+			//at most, confirm should only be able to be pressed five times (Alex Jungroth)
+			playerConfirmsPlacement = false;
+			votersAppear = true;
+
+			//gives instructions for player placement (Alex Jungroth)
+			UIController.alterTextBox("Choose a party and a political position.");
+			if(numberPlayers == playersSpawned)
+				MakeRest(tracker);
+
+		}//if
+
 	}//SpawnPlayer
 	
 	/// <summary>
@@ -454,19 +701,33 @@ public class GameController : MonoBehaviour {
 	/// When all players have moved, it ends the round, and continues till all rounds are done.
 	/// NOTE: Make sure that you set the number of Rounds in the scene editor. Default is 0 right now.
 	/// Another note, in order to end the turn, an outside script needs to tell the Game Controller that "playerTakingAction" is true for the turn to end.
-	/// For now, just press P to end a turn.
 	/// </summary>
 	void PlayerTurn(){
 		if (playerTakingAction) {
-			currentPlayerTurn++;
+			if(currentPlayerTurn < numberPlayers)
+			{
+				/*I am moving the incrementing of current player turn to 
+				inside this if statement to prevent current player turn 
+				form endlessly growing when the random event controller 
+				is being. This can not go into the if statement below
+				as that will call an index out of range exception (Alex Jungroth)*/
+				currentPlayerTurn++;
+			}
+
 			if (currentPlayerTurn < numberPlayers) {
 				playerTakingAction = false;
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+				//updates the tv so the users know whose turn it is (Alex Jungroth)
+				UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName + " party's turn.");
+				UIController.SetPlayerAndParyNameInUpperLeft(players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName, currentPlayerTurn + 1);
+				PlayStartOfTurnAudio ();
 			}
+
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
 				
 				if(randomEventController.ActivateEvents()){  //continually goes to random event controller until randomEventController returns true
+
 					//does the tallying after the players ends there turns (Alex Jungroth)
 					tallyRoutine.preTurnTalling();
 					
@@ -478,6 +739,11 @@ public class GameController : MonoBehaviour {
 					if (roundCounter < numberOfRounds) {
 						Debug.Log ("Round " + (roundCounter + 1) + " begin!");
 						Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+
+						//updates the tv so the users know whose turn it is (Alex Jungroth)
+						UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName + " party's turn.");
+						UIController.SetPlayerAndParyNameInUpperLeft(players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName, currentPlayerTurn + 1);
+						PlayStartOfTurnAudio ();
 					} else {
 						Debug.Log ("Game Ends!");
 					}
@@ -485,7 +751,33 @@ public class GameController : MonoBehaviour {
 			}
 		}
 	}
-	
+
+	void PlayStartOfTurnAudio ()
+	{
+		switch (players [currentPlayerTurn].GetComponent<PlayerVariables> ().politicalPartyName) {
+		case "Espresso":
+			SFX.PlayAudioClip (8, 0, SFXVolume);
+			break;
+		case "Windy":
+			SFX.PlayAudioClip (12, 0, SFXVolume);
+			break;
+		case "Providence":
+			SFX.PlayAudioClip (11, 0, SFXVolume);
+			break;
+		case "Apple Pie":
+			SFX.PlayAudioClip (10, 0, SFXVolume);
+			break;
+		case "Drone":
+			SFX.PlayAudioClip (9, 0, SFXVolume);
+			break;
+		}
+	}
+
+	/// <summary>
+	/// Compares the votes. This function is no longer used. I'm leaving it here for now
+	/// in case we want it for bug testing in the future. (Alex Jungroth)
+	/// </summary>
+	/// <param name="messaged">If set to <c>true</c> messaged.</param>
 	void CompareVotes(bool messaged){
 		
 		int mostVotes = 0;
@@ -494,7 +786,7 @@ public class GameController : MonoBehaviour {
 		int tieFighter = 0;//player that ties
 		
 		
-		for(int i = 0; i < players.Length; i++){
+		for(int i = 0; i < numberPlayers; i++){
 			if(players[i].GetComponent<PlayerVariables>().votes > mostVotes){
 				mostVotes = players[i].GetComponent<PlayerVariables>().votes; 
 				winningPlayer = i + 1;
@@ -511,7 +803,7 @@ public class GameController : MonoBehaviour {
 			messaged = false;
 			
 			//gets the winner (Alex Jungroth)
-			electionWinner = winningPlayer;
+			//electionWinner = winningPlayer;
 			
 		}
 		else if(messaged){
@@ -520,7 +812,7 @@ public class GameController : MonoBehaviour {
 			messaged = false;
 			
 			//gets the winner (Alex Jungroth)
-			electionWinner = winningPlayer;
+			//electionWinner = winningPlayer;
 		}
 	}
 	
@@ -536,8 +828,8 @@ public class GameController : MonoBehaviour {
 		float tempRandom = 0;
 		
 		//resets the drum roll (Alex Jungroth)
-		SFXDrumrollPlaying = false;
-		drumrollTime = 3.7f;
+		PreAnnouncmentSFXPlaying = false;
+		PreAnnouncmentSFXTime = 3.7f;
 		
 		for (int i = 0; i < NumVoters; i++) 
 		{
@@ -652,7 +944,7 @@ public class GameController : MonoBehaviour {
 			
 			players[i].GetComponent<PlayerVariables>().shadowPositions.Clear();
 		}
-		
+
 		//resets the rounds counter (Alex Jungroth)
 		roundCounter = 0;
 	}
@@ -672,47 +964,144 @@ public class GameController : MonoBehaviour {
 		
 		return true;	
 	}
-	
-	/// <summary>
-	/// So, this is the skeleton for the power functions.  Every power will be assigned an int, and checked for either though 
-	/// a switch statement or simple if checks. This function is called through a variety of means, although right now, only through
-	/// clicking on a voter.  Once its called, it checks int power for the power to execute, and then executes the code contained in the 
-	/// block.
-	/// </summary>
-	/// <param name="power">Power.</param>
-	public void PowerCall(int power) {
-		if (power == 1) {//VOTER SUPPRESSION
-			for (int i = 0; i < voters.Length; i++) {
-				if (voters[i].GetComponent<VoterVariables>().GetSelected())//looks through voters to get the one selected
-					voters [i].GetComponent<VoterVariables> ().votes = 0;//sets votes equal to zero
-			}
-		}
-		//TODO: implement the rest of the powers, which will be further increments of power
-	}
-	
+
 	//function to make all voters check who they are closest to
 	public void UpdateVoterCanidates(){
-		Debug.Log("voters updated");
+		//Debug.Log("voters updated");
 		for (int i = 0; i < voters.Length; i++) {
 			voters[i].GetComponent<VoterVariables>().FindCanidate();
 		}
 	}
 	
-	public void SetPartyNeutral() {
-		Party = 0;
-		partyChosen = true;
+	public void SetPartyNeutral()
+	{
+		if (politicalPartyChosen [0] == false) {
+			Party = 0;
+
+			//doesn't spawn a player until one of the parties has been selected
+			spawnFinished = false;
+
+			//prevents this party from being chosen twice (Alex Jungroth)
+			politicalPartyChosen [0] = true;
+
+			//Tells the user which party they picked (Alex Jungroth)
+			UIController.alterTextBox("You have chosen the Apple Pie Party.");
+
+		} 
+		else
+		{
+			//displays an error message to the users (Alex Jungroth)
+			UIController.alterTextBox("This party has already been chosen.");
+
+		}
 	}
-	public void SetPartyCoffee() {
-		Party = 1;
-		partyChosen = true;
+	public void SetPartyCoffee() 
+	{
+		if (politicalPartyChosen [1] == false) 
+		{
+			Party = 1;
+
+			//doesn't spawn a player until one of the parties has been selected
+			spawnFinished = false;
+
+			//prevents this party from being chosen twice (Alex Jungroth)
+			politicalPartyChosen [1] = true;
+
+			//Tells the user which party they picked (Alex Jungroth)
+			UIController.alterTextBox("You have chosen the Espresso Party.");
+		}
+		else
+		{
+			//displays an error message to the users (Alex Jungroth)
+			UIController.alterTextBox("This party has already been chosen.");
+			
+		}
+	
 	}
-	public void SetParty3() {
-		Party = 2;
-		partyChosen = true;
-		Debug.Log ("yooooooo");
+	public void SetParty3() 
+	{
+		if (politicalPartyChosen [2] == false)
+		{
+			Party = 2;
+
+			//doesn't spawn a player until one of the parties has been selected
+			spawnFinished = false;
+
+			//prevents this party from being chosen twice (Alex Jungroth)
+			politicalPartyChosen [2] = true;
+
+			//Tells the user which party they picked (Alex Jungroth)
+			UIController.alterTextBox("You have chosen the Drone Party.");
+		}
+		else
+		{
+			//displays an error message to the users (Alex Jungroth)
+			UIController.alterTextBox("This party has already been chosen.");
+
+		}
 	}
-	public void SetParty4() {
-		Party = 3;
-		partyChosen = true;
+	public void SetParty4() 
+	{
+		if (politicalPartyChosen [3] == false)
+		{
+			Party = 3;
+
+			//doesn't spawn a player until one of the parties has been selected
+			spawnFinished = false;
+
+			//prevents this party from being chosen twice (Alex Jungroth)
+			politicalPartyChosen [3] = true;
+
+			//Tells the user which party they picked (Alex Jungroth)
+			UIController.alterTextBox("You have chosen the Windy Party.");
+		}
+		else
+		{
+			//displays an error message to the users (Alex Jungroth)
+			UIController.alterTextBox("This party has already been chosen.");
+			
+		}
 	}
+	public void SetParty5()
+	{
+		if (politicalPartyChosen [4] == false) 
+		{
+			Party = 4;
+
+			//doesn't spawn a player until one of the parties has been selected
+			spawnFinished = false;
+
+			//prevents this party from being chosen twice (Alex Jungroth)
+			politicalPartyChosen [4] = true;
+
+			//Tells the user which party they picked (Alex Jungroth)
+			UIController.alterTextBox("You have chosen the Providence Party.");
+		}
+		else
+		{
+			//displays an error message to the users (Alex Jungroth)
+			UIController.alterTextBox("This party has already been chosen.");
+			
+		}
+	}
+
+	public int MakeAppear(int tracker)
+	{
+		for (int i = 0; i < voters.Length/numberPlayers; i++) {
+			voters [tracker].gameObject.SetActive (true);
+			tracker++;
+		}
+		return tracker;
+	}
+
+	public void MakeRest(int tracker)
+	{
+		for (int i = 0; i < voters.Length%numberPlayers; i++) {
+			Debug.Log (tracker);
+			voters [tracker].gameObject.SetActive (true);
+			tracker++;
+		}
+
+	}
+
 }//Gamecontroller Class

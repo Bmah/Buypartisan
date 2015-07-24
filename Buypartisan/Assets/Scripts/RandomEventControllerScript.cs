@@ -35,7 +35,16 @@ public class RandomEventControllerScript : MonoBehaviour {
 	int playerTriggerNumber = 0;
 	
 	InputManagerScript Inputs = null;
-	
+
+	//I made these public so I could use them for party policies (Alex Jungroth)
+	public bool naturalDisaster = false;
+	public bool lossInWar = false;
+	public bool marketCrash = false;
+	bool extinctionEvent = false;
+
+	private SFXController SFX;
+	public float SFXvolume;
+
 	// Use this for initialization
 	void Start () {
 		numberOfActions = actionThreshold.Length;
@@ -43,37 +52,46 @@ public class RandomEventControllerScript : MonoBehaviour {
 		if (UIController == null) {
 			Debug.LogError("UI_Script not set on RandomEventController");
 		}
+
+		Inputs = GameObject.FindGameObjectWithTag ("InputManager").GetComponent<InputManagerScript> ();
+		if (Inputs == null) {
+			Debug.LogError("Could not Find Input Manager");
+		}
+
+		SFX = GameObject.FindGameObjectWithTag ("SFX").GetComponent<SFXController> ();
+		if (SFX == null) {
+			Debug.LogError("SFX could not be found by random event controller please place it in the scene.");
+		}
+	}
+
+	/// <summary>
+	/// Initializes the random events arrays.
+	/// </summary>
+	public void initializeRandomEventsArrays ()
+	{
 		GameObject temp = GameObject.FindGameObjectWithTag ("GameController");
 		if (temp != null) {
 			actionCounter = new int[temp.GetComponent<GameController> ().numberPlayers][];
 			eventTriggerList = new bool[actionCounter.Length][];
 		}
 		else {
-			Debug.LogError("Could not fing Gamecontroller");
+			Debug.LogError ("Could not find Gamecontroller");
 		}
-		
 		//initializing the event trigger list
-		
-		for(int i = 0; i < eventTriggerList.Length; i++){
-			eventTriggerList[i] = new bool[numberOfActions];
-			for(int j = 0; j < eventTriggerList[0].Length; j++){
-				eventTriggerList[i][j] = false;
+		for (int i = 0; i < eventTriggerList.Length; i++) {
+			eventTriggerList [i] = new bool[numberOfActions];
+			for (int j = 0; j < eventTriggerList [0].Length; j++) {
+				eventTriggerList [i] [j] = false;
 			}
 		}
-		
-		for (int i = 0; i < actionCounter.Length; i++){
-			actionCounter[i] = new int[numberOfActions];
-		}
-		
-		Inputs = GameObject.FindGameObjectWithTag ("InputManager").GetComponent<InputManagerScript> ();
-		if (Inputs == null) {
-			Debug.LogError("Could not Find Input Manager");
+		for (int i = 0; i < actionCounter.Length; i++) {
+			actionCounter [i] = new int[numberOfActions];
 		}
 	}
-	
+
+
 	// Update is called once per frame
 	void Update () {
-		debugArray = actionCounter [arrayChoice];
 		if (!voterVarsSet) {
 			voterVars = new VoterVariables[voters.Length];
 			for(int i = 0; i < voters.Length; i++){
@@ -94,6 +112,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 		case ActionState.StartEvents :
 			currentState = ActionState.WaitForTriggeredEvent;
 			StandardEvents ();
+			SFX.PlayAudioClip(5,0,SFXvolume);
 			break;
 		case ActionState.WaitForTriggeredEvent :
 			if(Inputs.leftClickDown){
@@ -110,6 +129,8 @@ public class RandomEventControllerScript : MonoBehaviour {
 				currentState = ActionState.EndRandomEvents;
 			}
 			UIController.disableActionButtons();
+			//disables the player stats button (Alex Jungroth)
+			UIController.disablePlayerStats();
 			break;
 			
 		case ActionState.EndRandomEvents:
@@ -133,35 +154,69 @@ public class RandomEventControllerScript : MonoBehaviour {
 			break;
 		case 1:
 			ShiftVoters ('X', -1);
-			UIController.alterTextBox ("Newsflash! Sudden defeat in the war crushes confidence in big govt! " + "Voters migrate 1 down on the X axis.\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! Sudden defeat in the war crushes confidence in big govt! " + 
+			                           "Voters migrate 1 down on the X axis.\nLeft Click to Continue");
+			lossInWar = true;
 			break;
 		case 2:
 			ShiftVoters ('Y', 1);
-			UIController.alterTextBox ("Newsflash! New developments in the field of oil drilling lead to profit for big buisness. " + "Voters migrate 1 up on the Y axis.\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! New developments in the field of oil drilling lead to profit for big buisness. " + 
+			                           "Voters migrate 1 up on the Y axis.\nLeft Click to Continue");
 			break;
 		case 3:
 			ShiftVoters ('Y', -1);
-			UIController.alterTextBox ("Newsflash! Sudden oil spill causes huge natural disaster, public outraged with big buisness." + "Voters migrate 1 down on the Y axis.\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! Sudden oil spill causes huge natural disaster, public outraged with big buisness." + 
+			                           "Voters migrate 1 down on the Y axis.\nLeft Click to Continue");
+			naturalDisaster = true;
 			break;
 		case 4:
 			ShiftVoters ('Z', 1);
-			UIController.alterTextBox ("Newsflash! Popular celebrity endorses the Z axis. " + "Voters migrate 1 up on the Z axis.\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! Popular celebrity endorses the Z axis. " + 
+			                           "Voters migrate 1 up on the Z axis.\nLeft Click to Continue");
 			break;
 		case 5:
 			ShiftVoters ('Z', -1);
-			UIController.alterTextBox ("Newsflash! Popular celebrity denounces the Z axis. " + "Voters migrate 1 down on the Z axis.\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! Popular celebrity denounces the Z axis. " + 
+			                           "Voters migrate 1 down on the Z axis.\nLeft Click to Continue");
 			break;
 		case 6:
 			EconomicBoom (2);
-			UIController.alterTextBox ("Newsflash! MONEY MONEY EVERYWHERE. " + "Voters now have twice the money they used to!\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! MONEY MONEY EVERYWHERE. " + 
+			                           "Voters now have twice the money they used to!\nLeft Click to Continue");
 			break;
 		case 7:
 			EconomicBust (2);
-			UIController.alterTextBox ("Newsflash! Poor investments in tulip market lead to market crash. " + "Voters now have half the money they used to!\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! Poor investments in tulip market lead to market crash. " + 
+			                           "Voters now have half the money they used to!\nLeft Click to Continue");
+			marketCrash = true;
+			break;
+		case 8:
+			if(naturalDisaster && marketCrash && lossInWar && !extinctionEvent){
+				UIController.alterTextBox ("PANIC: due to loss in the War, the Market Crash, and Oil Spill, " + 
+				                           "Mass Extinction has occured!\nLeft Click to Continue");
+				extinctionEvent = true;
+				SFX.PlayAudioClip(7,0,SFXvolume);
+				ExtinctionEvent();
+			}
+			else{
+				UIController.alterTextBox ("Newsflash! Little Tommy fell down the well!\nLeft Click to Continue");
+			}
 			break;
 		default:
 			UIController.alterTextBox ("Newsflash! Little Timmy fell down the well!\nLeft Click to Continue");
 			break;
+		}
+	}
+
+	/// <summary>
+	/// Kills all the voters but one
+	/// </summary>
+	void ExtinctionEvent(){
+		int survivor = Random.Range(0,voters.Length);
+		for (int i = 0; i < voters.Length; i++) {
+			if (i != survivor){
+				voters[i].SetActive(false);
+			}
 		}
 	}
 	
@@ -283,7 +338,6 @@ public class RandomEventControllerScript : MonoBehaviour {
 		}
 	}
 	
-	
 	void CheckForTriggeredEvents(){
 		for (int i = 0; i < actionCounter.Length; i++) {//for each player
 			for(int j = 0; j < actionCounter[0].Length; j++){//for each action
@@ -302,12 +356,12 @@ public class RandomEventControllerScript : MonoBehaviour {
 	}//Check For Triggered events
 	
 	bool DoTriggeredEvents(int player){
-		
 		switch (triggerState){
 		case TriggeredEventState.E0:
 			if(eventTriggerList[player][0]){
 				eventTriggerList[player][0] = false;
 				//VoterSupression
+				SFX.PlayAudioClip(5,0,SFXvolume);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Voters outraged at supression by player "+ (player+1) +
 				                          " Voters gather at the polls to vote against them!\nLeft Click to Continue");
 				triggerState = TriggeredEventState.Wait0;
@@ -326,6 +380,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				eventTriggerList[player][1] = false;
 				//MoveParty
 				FlipFlopping(players[player]);
+				SFX.PlayAudioClip(5,0,SFXvolume);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Voters irrited by player "+ (player+1) + "'s flip flopping, " +
 				                          "voters distance themselves from the candidate!\nLeft Click to Continue");
 				triggerState = TriggeredEventState.Wait1;
@@ -345,6 +400,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				eventTriggerList[player][2] = false;
 				//InfluenceVoters
 				VoterManipulation(players[player]);
+				SFX.PlayAudioClip(5,0,SFXvolume);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Voters shocked at player "+ (player+1) + "'s manipulation of votes " +
 				                          "player "+ (player+1) + " fined for their crime\nLeft Click to Continue");
 				triggerState = TriggeredEventState.Wait2;
@@ -364,6 +420,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				eventTriggerList[player][3] = false;
 				//ShadowPosition
 				ContradictoryPositions (players[player]);
+				SFX.PlayAudioClip(5,0,SFXvolume);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (player+1) + " called out on contradictory positions " +
 				                          "player"+ (player+1) + "'s shadow position is removed\nLeft Click to Continue");
 				triggerState = TriggeredEventState.Wait3;
@@ -383,6 +440,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				eventTriggerList[player][4] = false;
 				//CampaignTour
 				AdBurnout(players[player]);
+				SFX.PlayAudioClip(5,0,SFXvolume);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Voters tired of Player "+ (player+1) + "'s ads" +
 				                          " voters now harder to move!\nLeft Click to Continue");
 				//smaller size sphere
@@ -403,6 +461,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				eventTriggerList[player][5] = false;
 				//SphereOfInfluence
 				OverreachingCampaign(players[player]);
+				SFX.PlayAudioClip(5,0,SFXvolume);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (player+1) + " tries to expand their campeign's reach too far " +
 				                          " no consequences for this action as of yet\nLeft Click to Continue");
 				triggerState = TriggeredEventState.Wait5;
@@ -418,7 +477,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			break;
 		case TriggeredEventState.EndOfTriggeredEvents:
 			triggerState = TriggeredEventState.E0;
-			if (playerTriggerNumber < players.Length - 1){
+			if (playerTriggerNumber < actionCounter.Length - 1){
 				playerTriggerNumber++;
 			}
 			else{
@@ -451,12 +510,12 @@ public class RandomEventControllerScript : MonoBehaviour {
 	void FlipFlopping(GameObject TargetPlayer){
 		bool failToMove = false;
 		int magnitude;
-		Vector3 newLocation;
+		//Vector3 newLocation;
 		float direction;
 		
 		for (int i = 0; i < voters.Length; i++) {
 			if(voterVars[i].CanidateChoice == TargetPlayer){
-				newLocation = voters[i].transform.position;
+				//newLocation = voters[i].transform.position;
 				direction = Random.value;
 				
 				//choose a direction
