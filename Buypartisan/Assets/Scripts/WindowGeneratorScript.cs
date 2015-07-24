@@ -63,6 +63,9 @@ public class WindowGeneratorScript : MonoBehaviour {
 	//holds the victory point totals which will be sent to the main tv
 	private string victoryPointTotals;
 
+	//holds whether or not the Game Controller can continue
+	public bool resumeGame = false;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -84,7 +87,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 	void Update ()
 	{
 		//as the slider is adjusted the policy text will change
-		if (coalitionsFormed) 
+		if (coalitionsFormed && !gameOver) 
 		{
 			for(int i = 0; i < totalPlayers; i++)
 			{
@@ -225,9 +228,13 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 			//displays to the TV that it is player 1's turn
 			uiController.alterTextBox("It is the " + gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName + " Party's turn.");
+			uiController.SetPlayerAndParyNameInUpperLeft(gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName, 1);
 
 			//disables the end game screen
 			endGame.SetActive (false);
+
+			//lets the game controller know it can continue
+			resumeGame = true;
 		} 
 		else 
 		{
@@ -430,7 +437,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 				//alters the window's name
 				windowName.text = "Game Over Man! Game Over!";
 
-				if(winner == "Anti")
+				if(winner == "Providence")
 				{
 					helpfulText.text = "All Hail the Overlords!";
 				}

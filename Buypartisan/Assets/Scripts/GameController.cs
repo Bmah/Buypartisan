@@ -23,6 +23,12 @@ public class GameController : MonoBehaviour {
 	//holds the max number of political parties and by extension the max number of players in the game (Alex Jungroth)
 	private const int totalPoliticalParties = 5;
 
+	//constants that are used to calculate a winning player's money at the end of an election (Alex Jungroth)
+	private const float threeQuatersDecrease = 0.75f;
+	private const float half = 0.5f;
+	private const float tenPercentIncrease = 1.1f;
+	private const float tenPercentDecrease = 0.9f;
+
 	//holds the whether or not a part has been chosen (Alex Jungroth)
 	public bool[] politicalPartyChosen = new bool[totalPoliticalParties];
 
@@ -90,8 +96,8 @@ public class GameController : MonoBehaviour {
 	public int voterMaxVotes = 100;
 	public float IgnoreNearestVoter = 0.3f;
 	
-	private bool SFXDrumrollPlaying = false;
-	private float drumrollTime = 3.7f;
+	private bool PreAnnouncmentSFXPlaying = false;
+	private float PreAnnouncmentSFXTime = 3.7f;
 	public int Party;
 	private int tracker = 0;
 	private bool votersAppear = true;
@@ -141,6 +147,7 @@ public class GameController : MonoBehaviour {
 		UIController.gridSize = gridSize;
 		UIController.SFXvolume = SFXVolume;
 		randomEventController.gridSize = gridSize;
+		randomEventController.SFXvolume = SFXVolume;
 		messaged = true;
 		
 		if (SpawnUsingTXT) {
@@ -244,8 +251,7 @@ public class GameController : MonoBehaviour {
 		Vector3 voterLocation = new Vector3 (0, 0, 0);
 		VoterVariables voterInfoTemp;
 		bool uniqueLocation = false;
-		float moneyToVotesRatio;
-		
+
 		voters = new GameObject[numberofVoters];
 		
 		for (int i = 0; i < numberofVoters; i++) {
@@ -268,13 +274,21 @@ public class GameController : MonoBehaviour {
 					}
 				}
 			}
-			
 			voters[i] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
 			voterInfoTemp = voters[i].GetComponent<VoterVariables>();
-			moneyToVotesRatio = Random.value;
-			voterInfoTemp.money = Mathf.RoundToInt(voterMaxMoney*moneyToVotesRatio);
-			voterInfoTemp.votes = Mathf.RoundToInt(voterMaxVotes*(1-moneyToVotesRatio));
-			
+
+			voterInfoTemp.money = voterMaxMoney;
+
+			for (int k = 0; k < i; k++) {
+				if ((voters[k].transform.position - voterLocation).magnitude < distanceToNearestVoter){
+					voters[k].GetComponent<VoterVariables>().money /= 2;
+					voterInfoTemp.money /= 2;
+				}
+			}
+
+			//voterInfoTemp.votes = Mathf.RoundToInt(voterMaxVotes*(1-moneyToVotesRatio));
+			voterInfoTemp.votes = 1;
+
 			voterInfoTemp.xMinusResistance = Random.value*Random.value;
 			voterInfoTemp.xPlusResistance = Random.value*Random.value;
 			voterInfoTemp.yMinusResistance = Random.value*Random.value;
@@ -297,6 +311,7 @@ public class GameController : MonoBehaviour {
 			if(musicSettingsReceived == true)
 			{
 				gameMusic.audioChannels[0].volume = gameSettings.musicVolume;
+
 
 				//sets music settings recieved to false so it doesn't update 
 				//the volume every time update is called (Alex Jungroth)
@@ -361,6 +376,7 @@ public class GameController : MonoBehaviour {
 
 				//updates the tv so the users know whose turn it is (Alex Jungroth)
 				UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName + " party's turn.");
+				UIController.SetPlayerAndParyNameInUpperLeft(players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName, currentPlayerTurn + 1);
 
 				//does the tallying before the first player's turn starts (Alex Jungroth)
 				tallyRoutine.preTurnTalling ();
@@ -423,17 +439,38 @@ public class GameController : MonoBehaviour {
 			// Brian Mah
 			UIController.alterTextBox("And the Winner is...");
 			
-			if(!SFXDrumrollPlaying)
+			if(!PreAnnouncmentSFXPlaying)
 			{
 				gameMusic.FadeOut(0);
-				SFX.PlayAudioClip(2,0,SFXVolume);
-				SFXDrumrollPlaying = true;
-				drumrollTime += Time.time;
+
+				if(electionCounter == numberOfElections - 1){
+					SFX.PlayAudioClip(2,0,SFXVolume);
+					PreAnnouncmentSFXTime = Time.time + 5.07f;
+				}
+				else{
+					gameMusic.LoadTrack(1,1);
+					gameMusic.audioChannels[1].volume = 0;
+					gameMusic.FadeIn(1);
+					gameMusic.audioChannels[1].Play();
+					PreAnnouncmentSFXTime = Time.time + 7.52f;
+				}
+				PreAnnouncmentSFXPlaying = true;
+
 			}
 			
-			if(Time.time >= drumrollTime)
+			if(Time.time >= PreAnnouncmentSFXTime)
 			{ // when the sound is done playing
-				
+
+				if(electionCounter == numberOfElections - 1){
+					SFX.PlayAudioClip(4,0,SFXVolume);
+				}
+				else{
+					gameMusic.LoadTrack(2,1);
+					gameMusic.audioChannels[1].Stop();
+					gameMusic.PlayElectionTheme();
+				}
+
+
 				//does the tallying at the end of the game (Alex Jungroth)
 				tallyRoutine.preTurnTalling ();
 				
@@ -454,12 +491,15 @@ public class GameController : MonoBehaviour {
 			
 			if(electionCounter <  numberOfElections)
 			{
+				//tells the game controller to not skip over enact policies (Alex Jungroth)
+				WindowGenerator.resumeGame = false;
+
 				//displays who won an election (Alex Jungroth)
 				WindowGenerator.generateElectionVictory(false);
 				
 				//manages things between elections (Alex Jungroth)
 				prepareElection();
-				
+
 				//sets the game state enact policies(Alex Jungroth)
 				currentState = GameState.EnactPolicies;
 			}
@@ -474,60 +514,90 @@ public class GameController : MonoBehaviour {
 		}
 		else if(currentState == GameState.EnactPolicies)
 		{
-			//enacts a policy (Alex Jungroth)
-			if(WindowGenerator.winner != "no winner")
+			//only enacts policies when the window generator has finished
+			if(WindowGenerator.resumeGame == true)
 			{
+				//enacts a policy (Alex Jungroth)
+				if(WindowGenerator.winner != "no winner")
+				{
+					for(int i = 0; i < numberPlayers; i++)
+					{
+						if(players[i].GetComponent<PlayerVariables>().politicalPartyName == WindowGenerator.winner)
+						{
+							//sets electionWinner to the player who won (Alex Jungroth)
+							electionWinner = i;
+						}//if
+					}//for
+
+					//The winner deposits 25% of their money into a war chest for their constituents (Alex Jungroth)
+					players[electionWinner].GetComponent<PlayerVariables>().money = (int) Mathf.Floor
+						(players[electionWinner].GetComponent<PlayerVariables>().money  * threeQuatersDecrease);
+
+					if(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy != 0)
+					{
+						//a case structure for calling the correct set of functions based on which player won (Alex Jungroth)
+						switch(players[electionWinner].GetComponent<PlayerVariables>().politicalPartyName)
+						{
+							case "Apple Pie":
+								partyPolicyManager.GetComponent<NeutralPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							case "Espresso":
+								partyPolicyManager.GetComponent<EspressoPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							case "Drone":
+								partyPolicyManager.GetComponent<DronePolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							case "Windy":
+								partyPolicyManager.GetComponent<WindyPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							case "Providence":
+								partyPolicyManager.GetComponent<Party5Policies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+							break;
+
+							default:
+								//something went wrong with the players names
+								Debug.LogError("Unrecognized player name!");
+							break;
+						}//switch
+
+						//determines if the party's policy was well received or not (Alex Jungroth)
+						if(Random.value >= half)
+						{
+							//If the party's policy was well received then the party gains money equal to 10% of its total money (Alex Jungroth)
+							players[electionWinner].GetComponent<PlayerVariables>().money = (int) Mathf.Ceil
+								(players[electionWinner].GetComponent<PlayerVariables>().money  * tenPercentIncrease);
+						}
+						else
+						{
+							//If the party's policy was poorly received then the party loses money equal to 10% of its total money (Alex Jungroth)
+							players[electionWinner].GetComponent<PlayerVariables>().money = (int) Mathf.Floor
+								(players[electionWinner].GetComponent<PlayerVariables>().money  * tenPercentDecrease);
+
+						}//else
+					}//if
+				}//if
+
+				//resets the selected policies for all players (Alex Jungroth)
 				for(int i = 0; i < numberPlayers; i++)
 				{
-					if(players[i].GetComponent<PlayerVariables>().politicalPartyName == WindowGenerator.winner)
-					{
-						//sets electionWinner to the player who won (Alex Jungroth)
-						electionWinner = i;
-					}
-				}
+					players[i].GetComponent<PlayerVariables>().chosenPolicy = 0;
+				}//for
 
-				if(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy != 0)
-				{
-					//a case structure for calling the correct set of functions based on which player won (Alex Jungroth)
-					switch(players[electionWinner].GetComponent<PlayerVariables>().politicalPartyName)
-					{
-						case "Neutral":
-							partyPolicyManager.GetComponent<NeutralPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-						break;
+				//resets the game state to action turns (Alex Jungroth)
+				currentState = GameState.ActionTurns;
 
-						case "Coffee":
-							partyPolicyManager.GetComponent<EspressoPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-						break;
-
-						case "Drone":
-							partyPolicyManager.GetComponent<DronePolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-						break;
-
-						case "Windy":
-							partyPolicyManager.GetComponent<WindyPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-						break;
-
-						case "Anti":
-							partyPolicyManager.GetComponent<Party5Policies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-						break;
-
-						default:
-							//something went wrong with the players names
-							Debug.LogError("Unrecognized player name!");
-						break;
-					}
-				}
-			}
-			
-			//resets the selected policies for all players (Alex Jungroth)
-			for(int i = 0; i < numberPlayers; i++)
-			{
-				players[i].GetComponent<PlayerVariables>().chosenPolicy = 0;
-			}
-
-			//resets the game state to action turns (Alex Jungroth)
-			currentState = GameState.ActionTurns;
-		}
+				//Brian Mah
+				//audio stuff, fades in regular music, fades out election music
+				//also stops the custom loop in music controller
+				gameMusic.FadeIn(0);
+				gameMusic.FadeOut(1);
+				gameMusic.StopElectionTheme();
+			}//if
+		}//else if
 
 		if (inputManager.escButtonDown) 
 		{
@@ -649,7 +719,10 @@ public class GameController : MonoBehaviour {
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 				//updates the tv so the users know whose turn it is (Alex Jungroth)
 				UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName + " party's turn.");
+				UIController.SetPlayerAndParyNameInUpperLeft(players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName, currentPlayerTurn + 1);
+				PlayStartOfTurnAudio ();
 			}
+
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
 				
@@ -669,12 +742,34 @@ public class GameController : MonoBehaviour {
 
 						//updates the tv so the users know whose turn it is (Alex Jungroth)
 						UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName + " party's turn.");
-
+						UIController.SetPlayerAndParyNameInUpperLeft(players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName, currentPlayerTurn + 1);
+						PlayStartOfTurnAudio ();
 					} else {
 						Debug.Log ("Game Ends!");
 					}
 				}
 			}
+		}
+	}
+
+	void PlayStartOfTurnAudio ()
+	{
+		switch (players [currentPlayerTurn].GetComponent<PlayerVariables> ().politicalPartyName) {
+		case "Espresso":
+			SFX.PlayAudioClip (8, 0, SFXVolume);
+			break;
+		case "Windy":
+			SFX.PlayAudioClip (12, 0, SFXVolume);
+			break;
+		case "Providence":
+			SFX.PlayAudioClip (11, 0, SFXVolume);
+			break;
+		case "Apple Pie":
+			SFX.PlayAudioClip (10, 0, SFXVolume);
+			break;
+		case "Drone":
+			SFX.PlayAudioClip (9, 0, SFXVolume);
+			break;
 		}
 	}
 
@@ -733,8 +828,8 @@ public class GameController : MonoBehaviour {
 		float tempRandom = 0;
 		
 		//resets the drum roll (Alex Jungroth)
-		SFXDrumrollPlaying = false;
-		drumrollTime = 3.7f;
+		PreAnnouncmentSFXPlaying = false;
+		PreAnnouncmentSFXTime = 3.7f;
 		
 		for (int i = 0; i < NumVoters; i++) 
 		{
@@ -849,7 +944,7 @@ public class GameController : MonoBehaviour {
 			
 			players[i].GetComponent<PlayerVariables>().shadowPositions.Clear();
 		}
-		
+
 		//resets the rounds counter (Alex Jungroth)
 		roundCounter = 0;
 	}
@@ -890,7 +985,7 @@ public class GameController : MonoBehaviour {
 			politicalPartyChosen [0] = true;
 
 			//Tells the user which party they picked (Alex Jungroth)
-			UIController.alterTextBox("You have chosen the Neutral Party.");
+			UIController.alterTextBox("You have chosen the Apple Pie Party.");
 
 		} 
 		else
@@ -913,7 +1008,7 @@ public class GameController : MonoBehaviour {
 			politicalPartyChosen [1] = true;
 
 			//Tells the user which party they picked (Alex Jungroth)
-			UIController.alterTextBox("You have chosen the Coffee Party.");
+			UIController.alterTextBox("You have chosen the Espresso Party.");
 		}
 		else
 		{
@@ -980,7 +1075,7 @@ public class GameController : MonoBehaviour {
 			politicalPartyChosen [4] = true;
 
 			//Tells the user which party they picked (Alex Jungroth)
-			UIController.alterTextBox("You have chosen the Anti Party.");
+			UIController.alterTextBox("You have chosen the Providence Party.");
 		}
 		else
 		{

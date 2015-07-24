@@ -28,11 +28,8 @@ public class PlayerVariables : MonoBehaviour {
 	//= 0 means no policy was chosen >= 1 means a certain policy was picked
 	public int chosenPolicy = 0;
 
-	//holds the modifier for the money players get from voters (Alex Jungroth)
-	public int revenueModifier = 0;
-
 	//holds the modifier for the cost of actions (Alex Jungroth)
-	public int actionCostModifier = 0;
+	public float actionCostModifier = 0;
 
 	//holds the text for each of the parites policies
 	public string[] policiesText = new string[policyLimit];
