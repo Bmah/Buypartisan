@@ -147,6 +147,7 @@ public class GameController : MonoBehaviour {
 		UIController.gridSize = gridSize;
 		UIController.SFXvolume = SFXVolume;
 		randomEventController.gridSize = gridSize;
+		randomEventController.SFXvolume = SFXVolume;
 		messaged = true;
 		
 		if (SpawnUsingTXT) {
@@ -436,14 +437,14 @@ public class GameController : MonoBehaviour {
 
 				if(electionCounter == numberOfElections - 1){
 					SFX.PlayAudioClip(2,0,SFXVolume);
-					PreAnnouncmentSFXTime = Time.time + 3.7f;
+					PreAnnouncmentSFXTime = Time.time + 5.07f;
 				}
 				else{
 					gameMusic.LoadTrack(1,1);
 					gameMusic.audioChannels[1].volume = 0;
 					gameMusic.FadeIn(1);
 					gameMusic.audioChannels[1].Play();
-					PreAnnouncmentSFXTime = Time.time + 7f;
+					PreAnnouncmentSFXTime = Time.time + 7.52f;
 				}
 				PreAnnouncmentSFXPlaying = true;
 
@@ -710,7 +711,10 @@ public class GameController : MonoBehaviour {
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 				//updates the tv so the users know whose turn it is (Alex Jungroth)
 				UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName + " party's turn.");
+
+				PlayStartOfTurnAudio ();
 			}
+
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
 				
@@ -731,11 +735,33 @@ public class GameController : MonoBehaviour {
 						//updates the tv so the users know whose turn it is (Alex Jungroth)
 						UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName + " party's turn.");
 
+						PlayStartOfTurnAudio ();
 					} else {
 						Debug.Log ("Game Ends!");
 					}
 				}
 			}
+		}
+	}
+
+	void PlayStartOfTurnAudio ()
+	{
+		switch (players [currentPlayerTurn].GetComponent<PlayerVariables> ().politicalPartyName) {
+		case "Espresso":
+			SFX.PlayAudioClip (8, 0, SFXVolume);
+			break;
+		case "Windy":
+			SFX.PlayAudioClip (12, 0, SFXVolume);
+			break;
+		case "Providence":
+			SFX.PlayAudioClip (11, 0, SFXVolume);
+			break;
+		case "Apple Pie":
+			SFX.PlayAudioClip (10, 0, SFXVolume);
+			break;
+		case "Drone":
+			SFX.PlayAudioClip (9, 0, SFXVolume);
+			break;
 		}
 	}
 
