@@ -808,16 +808,16 @@ public class UI_Script : MonoBehaviour {
     public void updateCost()
     {
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().actionName + "\n$" +
-		text0.text =  (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		text0.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().actionName + "\n$" + 
-        text1.text = (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+        text1.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().actionName + "\n$" + 
-        text2.text = (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+        text2.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().actionName + "\n$" + 
-        text3.text = (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+        text3.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().actionName + "\n$" + 
-        text4.text = (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+        text4.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().actionName + "\n$" + 
-        text5.text = (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+        text5.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
     }
 }
