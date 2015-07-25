@@ -43,6 +43,13 @@ public class UI_Script : MonoBehaviour {
 	//holds the button for displaying player's stats
 	public GameObject displayStatsButton;
 
+	//holds the buttons for the political parties (Alex Jungroth)
+	public GameObject party1Button;
+	public GameObject party2Button;
+	public GameObject party3Button;
+	public GameObject party4Button;
+	public GameObject party5Button; 
+
 	//holds the Action Buttons by the tag ActionButton
 	public GameObject[] ActionButtonObject;
 
@@ -64,9 +71,6 @@ public class UI_Script : MonoBehaviour {
 	//holds a string that will update the main textbox
 	private string currentPlayerStats;
 
-	//holds a integer that will be used to display which player's turn it is
-	private int actualTurn = 0;
-
 	//this will allow us to change states for some of the buttons, so that when the turn phase begins,
 	//the buttons can therefore do something else.
 	private bool turnPhase = false;
@@ -81,6 +85,12 @@ public class UI_Script : MonoBehaviour {
 	private SFXController sfx;
 	public float SFXvolume = 1;
 
+	//holds the slider for getting the number of players
+	public GameObject totalPlayersSlider;
+	
+	//holds the text for getting the number of players
+	public GameObject totalPlayersText;
+
 	//this code takes care of the scaling of the scroll rect dynamically.
 	//Brian Mah
 	public RectTransform rectScrollView;
@@ -88,6 +98,9 @@ public class UI_Script : MonoBehaviour {
 	public float scrollViewWidth = 360f;
 	public float titleHeight = 114f;
 	public float bottomTVHeight = 300f;
+
+	public Text UpperLeftDisplayPlayer;
+	public Text UpperLeftDisplayParty;
 
 	// Use this for initialization
 	void Start () {
@@ -141,19 +154,34 @@ public class UI_Script : MonoBehaviour {
 			ActionButtonObject[i].SetActive(false);
 		}
 
+		//disables the party selection buttons
+		party1Button.SetActive(false);
+		party2Button.SetActive(false);
+		party3Button.SetActive(false);
+		party4Button.SetActive(false);
+		party5Button.SetActive(false);
+
+		//disables the movement buttons
+		xPlusButton.SetActive(false);
+		xMinusButton.SetActive(false);
+		yPlusButton.SetActive(false);
+		yMinusButton.SetActive(false);
+		zPlusButton.SetActive(false);
+		zMinusButton.SetActive(false);
+
 		//disables the left, right, and end turn buttons
 		endTurnButton.SetActive (false);
 		leftButton.SetActive (false);
 		rightButton.SetActive (false);
 
+		//disables the confirm button
+		//confirmButton.SetActive(false);
+
 		//disables the cancel button
-		cancelButton.SetActive (false);
+		cancelButton.SetActive(false);
 
 		//disables the display stats button at the start
 		displayStatsButton.SetActive (false);
-
-		//gets the current player
-		currentPlayerPrefab = controller.GetComponent<GameController> ().players;
 
 		sfx = GameObject.FindGameObjectWithTag ("SFX").GetComponent<SFXController> ();
 		if (sfx == null) {
@@ -182,7 +210,15 @@ public class UI_Script : MonoBehaviour {
 		//Debug.Log ("The Height is: " + rectScrollView.localPosition.y);
 		//Debug.Log ("Height move is: " + heightToMove);
 	}
-	
+
+	/// <summary>
+	/// Gets the player array when game controller has finished setting it up (Alex Jungroth)
+	/// </summary>
+	public void getPlayerArray(GameObject[] players)
+	{
+		//gets the array of players
+		currentPlayerPrefab = players;
+	}
 
 	// Update is called once per frame
 	void Update () {
@@ -203,10 +239,6 @@ public class UI_Script : MonoBehaviour {
 				ppMove = controller.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.right;
 				controller.currentPlayer.transform.position = ppMove;
-				//Debug.Log ("X+ Clicked");
-
-				//another test of the new text box code
-				alterTextBox ("X+ Clicked");
 			}
 		} else {
 			if (chosenAction == 1) {
@@ -234,10 +266,6 @@ public class UI_Script : MonoBehaviour {
 				ppMove = controller.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.left;
 				controller.currentPlayer.transform.position = ppMove;
-				//Debug.Log ("X- Clicked");
-
-				//another test of the new text box code
-				alterTextBox ("X- Clicked");
 			}
 		} else {
 			if (chosenAction == 1) {
@@ -265,10 +293,6 @@ public class UI_Script : MonoBehaviour {
 				ppMove = controller.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.up;
 				controller.currentPlayer.transform.position = ppMove;
-				//Debug.Log ("Y+ Clicked");
-
-				//another test of the new text box code
-				alterTextBox ("Y+ Clicked");
 			}
 		} else {
 			if (chosenAction == 1) {
@@ -296,10 +320,6 @@ public class UI_Script : MonoBehaviour {
 				ppMove = controller.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.down;
 				controller.currentPlayer.transform.position = ppMove;
-				//Debug.Log ("Y- Clicked");
-
-				//another test of the new text box code
-				alterTextBox ("Y- Clicked");
 			}
 		} else {
 			if (chosenAction == 1) {
@@ -327,10 +347,6 @@ public class UI_Script : MonoBehaviour {
 				ppMove = controller.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.forward;
 				controller.currentPlayer.transform.position = ppMove;
-				//Debug.Log ("Z+ Clicked");
-
-				//another test of the new text box code
-				alterTextBox ("Z+ Clicked");
 			}
 		} else {
 			if (chosenAction == 1) {
@@ -358,10 +374,6 @@ public class UI_Script : MonoBehaviour {
 				ppMove = controller.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.back;
 				controller.currentPlayer.transform.position = ppMove;
-				//Debug.Log ("Z- Clicked");
-
-				//another test of the new text box code
-				alterTextBox ("Z- Clicked");
 			}
 		} else {
 			if (chosenAction == 1) {
@@ -385,16 +397,17 @@ public class UI_Script : MonoBehaviour {
 	//calls the confirm function
 	public void PP_Confirm()
 	{
-		if (!turnPhase) {
-			controller.playerConfirmsPlacment = true;
-			//Debug.Log ("Confirm Clicked");
+		if(!controller.totalPlayersPicked)
+		{
+			controller.totalPlayersPicked = true;
 
-			//another test of the new text box code
-			alterTextBox ("Confirm Clicked");
-
-			//quick test of the disabling player placement buttons
-			//disablePPButtons ();
-		} else {
+		}
+		else if (!turnPhase)
+		{
+			controller.playerConfirmsPlacement = true;
+		}
+		else
+		{
 			if (chosenAction == 0) {
 				instantiatedAction.GetComponent<Action0Script>().confirmButton = true;
 			}
@@ -418,22 +431,56 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 5) {
 				instantiatedAction.GetComponent<Action5Script>().confirmButton = true;
 			}
+
+			if (chosenAction == 7) {
+				instantiatedAction.GetComponent<Action7Script>().confirmButton = true;
+			}
+
+			if (chosenAction == 8) {
+				instantiatedAction.GetComponent<Action8Script>().confirmButton = true;
+			}
 		}
 	}
 
 	//calls the cancel function
 	public void Cancel()
 	{
-		if (!turnPhase) {
-			controller.playerConfirmsPlacment = true;
-			//Debug.Log ("Cancel Clicked");
+		if (!turnPhase) 
+		{
+			//its getting difficult to get the game controller to do what we want
+			//if we want a cancel button for choosing parties it will require an overhaul of how players are spawned
+			/*
+			//destroys the instantiated player
+			Destroy(controller.players[controller.playersSpawned]);
+
+			//decrements the number of players spawned
+			controller.playersSpawned -= 1;
+
+			//messing with bools to see what works and what doesn't
+			controller.partyChosen = true;
+			controller.spawnedNewPlayer = false; //this is private
+
+			//sets the movement, confirm, and cancel buttons to false and and the party buttons to true
+			xPlusButton.SetActive(false);
+			xMinusButton.SetActive(false);
+			yPlusButton.SetActive(false);
+			yMinusButton.SetActive(false);
+			zPlusButton.SetActive(false);
+			zMinusButton.SetActive(false);
 			
-			//another test of the new text box code
-			alterTextBox ("Cancel Clicked");
+			confirmButton.SetActive(false);
+			cancelButton.SetActive(false);
 			
-			//quick test of the disabling player placement buttons
-			//disablePPButtons ();
-		} else {
+			party1Button.SetActive(true);
+			party2Button.SetActive(true);
+			party3Button.SetActive(true);
+			party4Button.SetActive(true);
+			party5Button.SetActive(true);
+			*/
+
+		} 
+		else 
+		{
 			if (chosenAction == 0) {
 				instantiatedAction.GetComponent<Action0Script>().cancelButton = true;
 			}
@@ -457,13 +504,76 @@ public class UI_Script : MonoBehaviour {
 			if (chosenAction == 5) {
 				instantiatedAction.GetComponent<Action5Script>().cancelButton = true;
 			}
+
+			if (chosenAction == 6) {
+				instantiatedAction.GetComponent<Action6Script>().cancelButton = true;
+			}
+
+			if (chosenAction == 7) {
+				instantiatedAction.GetComponent<Action7Script>().cancelButton = true;
+			}
+
+			if (chosenAction == 8) {
+				instantiatedAction.GetComponent<Action8Script>().cancelButton = true;
+			}
 		}
+	}
+
+	/// <summary>
+	/// If the placement is correct then continues with cycling through the buttons
+	/// </summary>
+	public void correctPlacement()
+	{
+		//sets the movement, confirm, and cancel buttons to false and and the party buttons to true
+		xPlusButton.SetActive(false);
+		xMinusButton.SetActive(false);
+		yPlusButton.SetActive(false);
+		yMinusButton.SetActive(false);
+		zPlusButton.SetActive(false);
+		zMinusButton.SetActive(false);
+		
+		confirmButton.SetActive(false);
+		
+		party1Button.SetActive(true);
+		party2Button.SetActive(true);
+		party3Button.SetActive(true);
+		party4Button.SetActive(true);
+		party5Button.SetActive(true);
+	}
+
+	public void PartyEnable ()
+	{
+		party1Button.SetActive(true);
+		party2Button.SetActive(true);
+		party3Button.SetActive(true);
+		party4Button.SetActive(true);
+		party5Button.SetActive(true);
+	}
+
+	public void PartyDisable () 
+	{
+		party1Button.SetActive(false);
+		party2Button.SetActive(false);
+		party3Button.SetActive(false);
+		party4Button.SetActive(false);
+		party5Button.SetActive(false);
+	}
+
+	public void TotalPlayersDisable()
+	{
+		totalPlayersSlider.SetActive(false);
+		totalPlayersText.SetActive(false);
+		confirmButton.SetActive(false);
 	}
 
 	public void alterTextBox(string inputText)
 	{
 		visualText.text = inputText;
+	}
 
+	public void SetPlayerAndParyNameInUpperLeft(string party,int player){
+		UpperLeftDisplayPlayer.text = " Player " + player;
+		UpperLeftDisplayParty.text = "\n" + party + " Party";
 	}
 
 	public void disablePPButtons()
@@ -478,6 +588,36 @@ public class UI_Script : MonoBehaviour {
 		zMinusButton.SetActive (false);
 		confirmButton.SetActive (false);
 		cancelButton.SetActive (false);
+	}
+
+	public void enablePPButtons()
+	{
+		//Debug.Log("Pressed");
+		//disables the Player Placement buttons and the cancel button
+		xPlusButton.SetActive (true);
+		xMinusButton.SetActive (true);
+		yPlusButton.SetActive (true);
+		yMinusButton.SetActive (true);
+		zPlusButton.SetActive (true);
+		zMinusButton.SetActive (true);
+		confirmButton.SetActive (true);
+		cancelButton.SetActive (true);
+	}
+
+	/// <summary>
+	/// Enables the PP buttons for party slection.
+	/// This is needed because we will have to over haul our player spawning system
+	/// if we want to support a cancel button (Alex Jungroth)
+	/// </summary>
+	public void enablePPButtonsPartySelection()
+	{
+		xPlusButton.SetActive (true);
+		xMinusButton.SetActive (true);
+		yPlusButton.SetActive (true);
+		yMinusButton.SetActive (true);
+		zPlusButton.SetActive (true);
+		zMinusButton.SetActive (true);
+		confirmButton.SetActive (true);
 	}
 
 	public void toggleActionButtons()
@@ -508,12 +648,6 @@ public class UI_Script : MonoBehaviour {
 		//gets the current player
 		currentPlayer = controller.GetComponent <GameController> ().currentPlayerTurn;
 
-		//resets acutalTurn
-		actualTurn = 0;
-
-		//gets the current player plus 1 to make the first player be player 1 and not player 0
-		actualTurn = currentPlayer + 1;
-		
 		//gets the current players money
 		currentPlayerMoney = currentPlayerPrefab[currentPlayer].GetComponent<PlayerVariables> ().money; 
 		
@@ -521,11 +655,18 @@ public class UI_Script : MonoBehaviour {
 		currentPlayerVotes = currentPlayerPrefab[currentPlayer].GetComponent<PlayerVariables> ().votes;
 		
 		//compiles the players stats into one string
-		currentPlayerStats = "Player "+ actualTurn.ToString() + " has " + currentPlayerMoney.ToString() + 
-			" dollar(s) and " + currentPlayerVotes.ToString() + " vote(s).";
+		currentPlayerStats = "The "+ controller.players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName + " Party has $" + currentPlayerMoney.ToString() + 
+			"m and " + currentPlayerVotes.ToString() + "k votes.";
 		
 		//updates the text box with player 1's stats
 		alterTextBox (currentPlayerStats);
+	}
+
+	public void disablePlayerStats()
+	{
+		//disables the player's stats button
+		displayStatsButton.SetActive(false);
+
 	}
 
 	public void activateActionButton(int num)
@@ -650,7 +791,7 @@ public class UI_Script : MonoBehaviour {
 	/// Brian Mah
 	/// </summary>
 	public void PlayMouseOverSound(){
-		sfx.PlayAudioClip (0, 0, SFXvolume);
+		sfx.PlayAudioClip (0, 0, SFXvolume*0.33f);
 	}
 
 	/// <summary>
@@ -666,16 +807,17 @@ public class UI_Script : MonoBehaviour {
     // This works for now but needs to be re-written because of an Action bug
     public void updateCost()
     {
-		text0.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
-
-        text1.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
-
-        text2.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
-
-        text3.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
-
-        text4.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
-
-		text5.text = playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().actionName + "\n$" + (playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier);
+		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().actionName + "\n$" +
+		text0.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().actionName + "\n$" + 
+        text1.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().actionName + "\n$" + 
+        text2.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().actionName + "\n$" + 
+        text3.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().actionName + "\n$" + 
+        text4.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().actionName + "\n$" + 
+        text5.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
     }
 }
