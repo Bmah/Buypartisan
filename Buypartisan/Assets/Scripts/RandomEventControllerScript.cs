@@ -361,6 +361,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			if(eventTriggerList[player][0]){
 				eventTriggerList[player][0] = false;
 				//VoterSupression
+				VoterOutrage(players[player]);
 				SFX.PlayAudioClip(5,0,SFXvolume);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Voters outraged at supression by player "+ (player+1) +
 				                          " Voters gather at the polls to vote against them!\nLeft Click to Continue");
@@ -498,8 +499,10 @@ public class RandomEventControllerScript : MonoBehaviour {
 		bool foundOpposingVoter = false;
 		for (int i = 0; i < voters.Length && !foundOpposingVoter; i++) {
 			if(voterVars[i].CanidateChoice != null && voterVars[i].CanidateChoice != TargetPlayer){
-				voterVars[i].votes += 200;
-				foundOpposingVoter = true;
+				if(voterVars[i].votes == 0){
+					voterVars[i].votes = 1;
+					foundOpposingVoter = true;
+				}
 			}
 		}
 	}
