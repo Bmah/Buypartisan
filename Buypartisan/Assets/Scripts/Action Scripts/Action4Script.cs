@@ -39,6 +39,7 @@ public class Action4Script : MonoBehaviour {
 
 	private Vector3[] voterOriginalPositions; //this is an array of the saved original positions of the voters.
 	private Vector3[] voterFinalPositions;	//this will be where the final positions of the voters will be saved.
+	private Vector3[] voterAdjustedPositions;
 
 	private bool noOverlap = true; //this boolean will be used to check if theres any overlaps with other voters
 	private int overlap1; //these two ints save which ones are overlapping.
@@ -55,6 +56,9 @@ public class Action4Script : MonoBehaviour {
 	//4 = Y-
 	//5 = Z+
 	//6 = Z-
+
+	private bool running = false;
+	private Vector3 inputVec = Vector3.zero;
 
 	// Use this for initialization
 	void Start () {
@@ -79,9 +83,11 @@ public class Action4Script : MonoBehaviour {
 		//obtain the original positions of the voters
 		voterOriginalPositions = new Vector3[voters.Length];
 		voterFinalPositions = new Vector3[voters.Length];
+		voterAdjustedPositions = new Vector3[voters.Length];
 
 		for (int i = 0; i < voters.Length; i++) {
 			voterOriginalPositions[i] = voters[i].transform.position;
+			voterFinalPositions[i] = new Vector3(1023f, 1234f, 4923f); //Used to check if a position has been placed or not.
 
 			//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
 
@@ -116,107 +122,66 @@ public class Action4Script : MonoBehaviour {
 			}
 			setFinalPosition();
 			Destroy(gameObject);
-		}
-		
-		if (xPlusButton) {
-			for (int i = 0; i < voters.Length; i++) {
-				if (voterOriginalPositions[i].x < (gameController.GetComponent<GameController>().gridSize - 1)) {
-					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(1,0,0);
+		}		
 
-					//This sets final direction to X+ (Alex Jungroth)
-					finalDirection = 1;
-				} else {
-					voterFinalPositions[i] = voterOriginalPositions[i];
-				}
+		if (xPlusButton) {
+			if (!running) {
+				UpdatePositions2(1f,0f,0f);
+				finalDirection = 1;
 			}
-			OverlapCheck();
-			setFinalPosition();
 			xPlusButton = false;
 		}
+		
 		if (xMinusButton) {
-			for (int i = 0; i < voters.Length; i++) {
-				if (voterOriginalPositions[i].x > 0) {
-					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(-1,0,0);
-
-					//This sets final direction to X- (Alex Jungroth)
-					finalDirection = 2;
-				} else {
-					voterFinalPositions[i] = voterOriginalPositions[i];
-				}
+			if (!running) {
+				UpdatePositions2(-1f,0f,0f);
+				finalDirection = 2;
 			}
-			OverlapCheck();
-			setFinalPosition();
 			xMinusButton = false;
 		}
+		
 		if (yPlusButton) {
-			for (int i = 0; i < voters.Length; i++) {
-				if (voterOriginalPositions[i].y < (gameController.GetComponent<GameController>().gridSize - 1)) {
-					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,1,0);
-
-					//This sets final direction to Y+ (Alex Jungroth)
-					finalDirection = 3;
-				} else {
-					voterFinalPositions[i] = voterOriginalPositions[i];
-				}
+			if (!running) {
+				UpdatePositions2 (0f, 1f, 0f);
+				finalDirection = 3;
 			}
-			OverlapCheck();
-			setFinalPosition();
 			yPlusButton = false;
 		}
+		
 		if (yMinusButton) {
-			for (int i = 0; i < voters.Length; i++) {
-				if (voterOriginalPositions[i].y > 0) {
-					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,-1,0);
-
-					//This sets final direction to Y- (Alex Jungroth)
-					finalDirection = 4;
-				} else {
-					voterFinalPositions[i] = voterOriginalPositions[i];
-				}
+			if (!running) {
+				UpdatePositions2(0f,-1f,0f);
+				finalDirection = 4;
 			}
-			OverlapCheck();
-			setFinalPosition();
 			yMinusButton = false;
 		}
+		
 		if (zPlusButton) {
-			for (int i = 0; i < voters.Length; i++) {
-				if (voterOriginalPositions[i].z < (gameController.GetComponent<GameController>().gridSize - 1)) {
-					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,0,1);
-
-					//This sets final direction to Z+ (Alex Jungroth)
-					finalDirection = 5;
-				} else {
-					voterFinalPositions[i] = voterOriginalPositions[i];
-				}
+			if (!running) {
+				UpdatePositions2(0f,0f,1f);
+				finalDirection = 5;
 			}
-			OverlapCheck();
-			setFinalPosition();
 			zPlusButton = false;
 		}
+		
 		if (zMinusButton) {
-			for (int i = 0; i < voters.Length; i++) {
-				if (voterOriginalPositions[i].z > 0){
-					voterFinalPositions[i] = voterOriginalPositions[i] + new Vector3(0,0,-1);
-
-					//This sets final direction to Z- (Alex Jungroth)
-					finalDirection = 6;
-				} else {
-					voterFinalPositions[i] = voterOriginalPositions[i];
-				}
+			if (!running) {
+				UpdatePositions2(0f,0f,-1f);
+				finalDirection = 6;
 			}
-			OverlapCheck();
-			setFinalPosition();
 			zMinusButton = false;
 		}
 
+		if (running)
+			UpdatePositionsCont (inputVec);
+
 		if (confirmButton) {
-			actionConfirmed = true;
+			if (!running) {
+				actionConfirmed = true;
+				EndActionInitial();
+			}
 			confirmButton = false;
 		}
-
-		if (Input.GetKeyDown (KeyCode.B))
-			OverlapCheck ();
-	
 
 		if (actionConfirmed)
 		EndAction ();
@@ -264,44 +229,167 @@ public class Action4Script : MonoBehaviour {
 		}
 	}
 
-	void EndAction() {
+	///By Chris
+	//New Update Positions function works in two parts. First there is the initialization function below:
+	//This function sets running to true and first checks all the borders to see if any voters won't be moved off the grid.
+	//Once running is true, the next function UpdatePositionsCont() begins to run in the Update() function.
+	void UpdatePositions2(float x, float y, float z) {
+		running = true;
+		inputVec = new Vector3 (x, y, z);
+
+		for (int p = 0; p < voters.Length; p++) {
+			voterFinalPositions[p] = new Vector3(1023f, 1234f, 4923f);
+		}
+
+		for (int o = 0; o < voters.Length; o++) {
+			if (x > 0 && y == 0 && z == 0) {
+				if (voterOriginalPositions[o].x == (gameController.GetComponent<GameController>().gridSize - 1)) {
+					voterFinalPositions[o] = voterOriginalPositions[o];
+				}
+			} else if (x < 0 && y == 0 && z == 0) {
+				if (voterOriginalPositions[o].x == 0f) {
+					voterFinalPositions[o] = voterOriginalPositions[o];
+				}
+			} else if (x == 0 && y > 0 && z == 0) {
+				if (voterOriginalPositions[o].y == (gameController.GetComponent<GameController>().gridSize - 1)) {
+					voterFinalPositions[o] = voterOriginalPositions[o];
+				}
+			} else if (x == 0 && y < 0 && z == 0) {
+				if (voterOriginalPositions[o].y == 0f) {
+					voterFinalPositions[o] = voterOriginalPositions[o];
+				}
+			} else if (x == 0 && y == 0 && z > 0) {
+				if (voterOriginalPositions[o].z == (gameController.GetComponent<GameController>().gridSize - 1)) {
+					voterFinalPositions[o] = voterOriginalPositions[o];
+				}
+			} else if (x == 0 && y == 0 && z < 0) {
+				if (voterOriginalPositions[o].z == 0f){
+					voterFinalPositions[o] = voterOriginalPositions[o];
+				}
+			} else {
+				Debug.Log ("Action 4: Inputted vector is multidirectional!");
+			}
+		}
+	}
+
+	///By Chris Ng
+	//This is part 2 of the new UpdatePositions function.
+	//This function is designed to only run when the variable running is true in the Update function.
+	//This is so that the positions are updated frame by frame, rather than all at once in a single frame.
+	//This function first goes through the array checking if any voters will be moved onto a position that is occupied by another voter's final position.
+	//Once it checks frame by frame that no more voters will overlap with one another, it sets the final voters final positions and ends the process by setting running to false.
+	void UpdatePositionsCont (Vector3 inputedVector) {
+		bool overlap = false;
+
+		for (int i = 0; i < voters.Length; i++) {
+			if (voterFinalPositions[i] == new Vector3(1023f, 1234f, 4923f)) {
+				for (int j = 0; j < voters.Length; j++) {
+					if (voterOriginalPositions[i] + inputedVector == voterFinalPositions[j]) {
+						voterFinalPositions[i] = voterOriginalPositions[i];
+						overlap = true;
+					}
+				}
+			}
+		}
+
+		if (!overlap) {
+			for (int k = 0; k < voters.Length; k++) {
+				if (voterFinalPositions[k] == new Vector3(1023f, 1234f, 4923f)) {
+					voterFinalPositions[k] = voterOriginalPositions[k] + inputedVector;
+				}
+				voters[k].transform.position = voterFinalPositions[k];
+			}
+			running = false;
+		}
+	}
+
+	void EndActionInitial() {
+		for (int p = 0; p < voters.Length; p++) {
+			voterAdjustedPositions[p] = voterFinalPositions[p];
+			voterFinalPositions[p] = new Vector3(1023f, 1234f, 4923f);
+		}
+
+		for (int o = 0; o < voters.Length; o++) {
+			if (inputVec.x > 0 && inputVec.y == 0 && inputVec.z == 0) {
+				if (voterOriginalPositions[o].x == (gameController.GetComponent<GameController>().gridSize - 1)) {
+					voterFinalPositions[o] = voterOriginalPositions[o];
+				}
+			} else if (inputVec.x < 0 && inputVec.y == 0 && inputVec.z == 0) {
+				if (voterOriginalPositions[o].x == 0f) {
+					voterFinalPositions[o] = voterOriginalPositions[o];
+				}
+			} else if (inputVec.x == 0 && inputVec.y > 0 && inputVec.z == 0) {
+				if (voterOriginalPositions[o].y == (gameController.GetComponent<GameController>().gridSize - 1)) {
+					voterFinalPositions[o] = voterOriginalPositions[o];
+				}
+			} else if (inputVec.x == 0 && inputVec.y < 0 && inputVec.z == 0) {
+				if (voterOriginalPositions[o].y == 0f) {
+					voterFinalPositions[o] = voterOriginalPositions[o];
+				}
+			} else if (inputVec.x == 0 && inputVec.y == 0 && inputVec.z > 0) {
+				if (voterOriginalPositions[o].z == (gameController.GetComponent<GameController>().gridSize - 1)) {
+					voterFinalPositions[o] = voterOriginalPositions[o];
+				}
+			} else if (inputVec.x == 0 && inputVec.y == 0 && inputVec.z < 0) {
+				if (voterOriginalPositions[o].z == 0f){
+					voterFinalPositions[o] = voterOriginalPositions[o];
+				}
+			} else {
+				Debug.Log ("Action 4: Inputted vector is multidirectional!");
+			}
+		}
 
 		for (int i = 0; i < voters.Length; i++) 
 		{
-			//tests to see if the action is successful (Alex Jungroth)
-			if(compareResistance(i))
-			{
-				//increases the base resistance of the voter by 1% (Alex Jungroth)
-				voters[i].GetComponent<VoterVariables>().baseResistance += voters[i].GetComponent<VoterVariables>().baseResistance * 0.01f;
-			}
-			else
-			{
-				//resets the voters postions if they resist the action (Alex Jungroth)
-				voterFinalPositions[i] = voterOriginalPositions[i];
+			//Checks to see if they have moved at all. e.g. next to edge (Chris Ng)
+			if (voterFinalPositions[i] != new Vector3(1023f, 1234f, 4923f)) {
+				//tests to see if the action is successful (Alex Jungroth)
+				if(compareResistance(i))
+				{
+					//increases the base resistance of the voter by 1% (Alex Jungroth)
+					voters[i].GetComponent<VoterVariables>().baseResistance += voters[i].GetComponent<VoterVariables>().baseResistance * 0.01f;
+				}
+				else
+				{
+					//resets the voters postions if they resist the action (Alex Jungroth)
+					voterFinalPositions[i] = voterOriginalPositions[i];
+					running = true;
+					Debug.Log (i + " " + voterFinalPositions[i] + " " + voterOriginalPositions[i]);
+				}
 			}
 		}
 
-		//alligns the voters to their action finishing postions (Alex Jungroth)
-		setFinalPosition ();
+		if (!running) {
+			for (int p = 0; p < voters.Length; p++) {
+				voterFinalPositions[p] = voterAdjustedPositions[p];
+			}
+			Debug.Log ("all passed");
+		}
+	}
 
-		uiController.GetComponent<UI_Script>().toggleActionButtons();
-		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
+	void EndAction() {
+		if (!running) {
+			//alligns the voters to their action finishing postions (Alex Jungroth)
+			setFinalPosition ();
 
-		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Windy")== 0)
-			players [currentPlayer].GetComponent<PlayerVariables> ().money += totalCost / 4;
+			uiController.GetComponent<UI_Script> ().toggleActionButtons ();
+			this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier ();
 
-		//gives the Espresso party a refund based on their action cost modifier (Alex Jungroth)
-		if (players [currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName == "Espresso" && players [currentPlayer].GetComponent<PlayerVariables> ().actionCostModifier > 0) 
-		{
-			players[currentPlayer].GetComponent<PlayerVariables>().money += (int) Mathf.Ceil
+			if (string.Compare ((players [currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Windy") == 0)
+				players [currentPlayer].GetComponent<PlayerVariables> ().money += totalCost / 4;
+
+			//gives the Espresso party a refund based on their action cost modifier (Alex Jungroth)
+			if (players [currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName == "Espresso" && players [currentPlayer].GetComponent<PlayerVariables> ().actionCostModifier > 0) {
+				players [currentPlayer].GetComponent<PlayerVariables> ().money += (int)Mathf.Ceil
 				(totalCost * (1.0f + players [currentPlayer].GetComponent<PlayerVariables> ().actionCostModifier)); 
-		}
+			}
 
-		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;
-		//puts the current player and the event number into the action counter of the event controller
-		//Brian Mah
-		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [4]++; // the second number should be the number of the action!
-		Destroy(gameObject);
+			players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;
+			//puts the current player and the event number into the action counter of the event controller
+			//Brian Mah
+			eventController.actionCounter [gameController.GetComponent<GameController> ().currentPlayerTurn] [4]++; // the second number should be the number of the action!
+			Destroy (gameObject);
+		}
 	}
 
 	bool compareResistance(int i)
