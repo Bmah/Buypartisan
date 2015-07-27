@@ -251,37 +251,39 @@ public class GameController : MonoBehaviour {
 		Vector3 voterLocation = new Vector3 (0, 0, 0);
 		VoterVariables voterInfoTemp;
 		bool uniqueLocation = false;
+		int numRichppl = 0;
+		int numSemiRichppl = 0;
 
 		voters = new GameObject[numberofVoters];
 		
 		for (int i = 0; i < numberofVoters; i++) {
 			//until a unique location is found continually search for a new position.
 			uniqueLocation = false;
-			while(!uniqueLocation){
-				voterLocation = new Vector3(Random.Range(0,gridSize),Random.Range(0,gridSize),Random.Range(0,gridSize));
+			while (!uniqueLocation) {
+				voterLocation = new Vector3 (Random.Range (0, gridSize), Random.Range (0, gridSize), Random.Range (0, gridSize));
 				uniqueLocation = true;
-				for(int j = 0; j < i; j++){
-					if ((voters[j].transform.position - voterLocation).magnitude < distanceToNearestVoter){
+				for (int j = 0; j < i; j++) {
+					if ((voters [j].transform.position - voterLocation).magnitude < distanceToNearestVoter) {
 						uniqueLocation = false;
 					}
 				}
-				if(Random.value < probabilityToIgnoreNearestVoter){
+				if (Random.value < probabilityToIgnoreNearestVoter) {
 					uniqueLocation = true;
 				}
-				for(int j = 0; j < i; j++){
-					if (voters[j].transform.position == voterLocation){
+				for (int j = 0; j < i; j++) {
+					if (voters [j].transform.position == voterLocation) {
 						uniqueLocation = false;
 					}
 				}
 			}
-			voters[i] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
-			voterInfoTemp = voters[i].GetComponent<VoterVariables>();
+			voters [i] = Instantiate (voterTemplate, voterLocation, Quaternion.identity) as GameObject;
+			voterInfoTemp = voters [i].GetComponent<VoterVariables> ();
 
 			voterInfoTemp.money = voterMaxMoney;
 
 			for (int k = 0; k < i; k++) {
-				if ((voters[k].transform.position - voterLocation).magnitude < distanceToNearestVoter){
-					voters[k].GetComponent<VoterVariables>().money /= 2;
+				if ((voters [k].transform.position - voterLocation).magnitude < distanceToNearestVoter) {
+					voters [k].GetComponent<VoterVariables> ().money /= 2;
 					voterInfoTemp.money /= 2;
 				}
 			}
@@ -289,19 +291,36 @@ public class GameController : MonoBehaviour {
 			//voterInfoTemp.votes = Mathf.RoundToInt(voterMaxVotes*(1-moneyToVotesRatio));
 			voterInfoTemp.votes = 1;
 
-			voterInfoTemp.xMinusResistance = Random.value*Random.value;
-			voterInfoTemp.xPlusResistance = Random.value*Random.value;
-			voterInfoTemp.yMinusResistance = Random.value*Random.value;
-			voterInfoTemp.yPlusResistance = Random.value*Random.value;
-			voterInfoTemp.zMinusResistance = Random.value*Random.value;
-			voterInfoTemp.zPlusResistance = Random.value*Random.value;
+			voterInfoTemp.xMinusResistance = Random.value * Random.value;
+			voterInfoTemp.xPlusResistance = Random.value * Random.value;
+			voterInfoTemp.yMinusResistance = Random.value * Random.value;
+			voterInfoTemp.yPlusResistance = Random.value * Random.value;
+			voterInfoTemp.zMinusResistance = Random.value * Random.value;
+			voterInfoTemp.zPlusResistance = Random.value * Random.value;
 			voterInfoTemp.baseResistance = 0;
-			voters[i].gameObject.SetActive (false);
+			voters [i].gameObject.SetActive (false);
 		}
-		
+
+		for (int i = 0; i < numberofVoters; i++) {
+			if(voters[i].GetComponent<VoterVariables>().money == voterMaxMoney){
+				if(numRichppl*10 > numberofVoters){
+					voters[i].GetComponent<VoterVariables>().money /= 2;
+				}
+				else{
+					numRichppl++;
+				}
+			}
+			else if(voters[i].GetComponent<VoterVariables>().money == voterMaxMoney/2){
+				if(numSemiRichppl*5 > numberofVoters){
+					voters[i].GetComponent<VoterVariables>().money /= 2;
+				}
+				else{
+					numSemiRichppl++;
+				}
+			}
+		}
+	
 	}
-	
-	
 	// Update is called once per frame
 	void Update () 
 	{	
