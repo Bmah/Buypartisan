@@ -193,7 +193,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 		case 8:
 			if(naturalDisaster && marketCrash && lossInWar && !extinctionEvent){
 				UIController.alterTextBox ("PANIC: due to loss in the War, the Market Crash, and Oil Spill, " + 
-				                           "Mass Extinction has occured!\nLeft Click to Continue");
+				                           "Mass Extinction has occurred!\nLeft Click to Continue");
 				extinctionEvent = true;
 				SFX.PlayAudioClip(7,0,SFXvolume);
 				ExtinctionEvent();
@@ -363,7 +363,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				//VoterSupression
 				VoterOutrage(players[player]);
 				SFX.PlayAudioClip(5,0,SFXvolume);
-				UIController.alterTextBox("Triggered Event\nNewsflash! Voters outraged at supression by player "+ (player+1) +
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters outraged at suppression by player "+ (player+1) +
 				                          " Voters gather at the polls to vote against them!\nLeft Click to Continue");
 				triggerState = TriggeredEventState.Wait0;
 			}
@@ -382,7 +382,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				//MoveParty
 				FlipFlopping(players[player]);
 				SFX.PlayAudioClip(5,0,SFXvolume);
-				UIController.alterTextBox("Triggered Event\nNewsflash! Voters irrited by player "+ (player+1) + "'s flip flopping, " +
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters irritated by player "+ (player+1) + "'s flip flopping, " +
 				                          "voters distance themselves from the candidate!\nLeft Click to Continue");
 				triggerState = TriggeredEventState.Wait1;
 			}
@@ -402,8 +402,8 @@ public class RandomEventControllerScript : MonoBehaviour {
 				//InfluenceVoters
 				VoterManipulation(players[player]);
 				SFX.PlayAudioClip(5,0,SFXvolume);
-				UIController.alterTextBox("Triggered Event\nNewsflash! Voters shocked at player "+ (player+1) + "'s manipulation of votes " +
-				                          "player "+ (player+1) + " fined for their crime\nLeft Click to Continue");
+				UIController.alterTextBox("Triggered Event\nNewsflash! Voters shocked at player "+ (player+1) + "'s manipulation of votes.  " +
+				                          "Player "+ (player+1) + " fined for their crime\nLeft Click to Continue");
 				triggerState = TriggeredEventState.Wait2;
 			}
 			else{
@@ -423,7 +423,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				ContradictoryPositions (players[player]);
 				SFX.PlayAudioClip(5,0,SFXvolume);
 				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (player+1) + " called out on contradictory positions " +
-				                          "player"+ (player+1) + "'s shadow position is removed\nLeft Click to Continue");
+				                          "player "+ (player+1) + "'s shadow position is removed\nLeft Click to Continue");
 				triggerState = TriggeredEventState.Wait3;
 			}
 			else{
@@ -463,7 +463,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 				//SphereOfInfluence
 				OverreachingCampaign(players[player]);
 				SFX.PlayAudioClip(5,0,SFXvolume);
-				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (player+1) + " tries to expand their campeign's reach too far " +
+				UIController.alterTextBox("Triggered Event\nNewsflash! Player "+ (player+1) + " tries to expand their campaign's reach too far " +
 				                          " no consequences for this action as of yet\nLeft Click to Continue");
 				triggerState = TriggeredEventState.Wait5;
 			}
