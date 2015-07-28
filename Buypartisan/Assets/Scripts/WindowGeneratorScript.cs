@@ -238,7 +238,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 		} 
 		else 
 		{
-
 			//This code forms the coalitions
 
 			//The coalitions have been formed
@@ -371,7 +370,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 					policySlider.SetActive (true);
 				
 					//prints the default policy text
-					policyText.text = "Conitnue without choosing \na policy!";
+					policyText.text = "Continue without choosing \na policy!";
 				
 					//prints the default helpful text
 					helpfulText.text = "Choose a policy!";
@@ -436,11 +435,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 			
 				//alters the window's name
 				windowName.text = "Game Over Man! Game Over!";
-
-				if(winner == "Providence")
-				{
-					helpfulText.text = "All Hail the Overlords!";
-				}
 
 				if (maxVictoryPoints > 0) 
 				{

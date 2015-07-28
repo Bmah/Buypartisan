@@ -48,13 +48,10 @@ public class EspressoPolicies : MonoBehaviour {
 		}
 	}
 
-	//starts a tea tax and has a 50-50 chance to add towards triggering mass extinction
+	//get a ten perecent refund on all actions
 	void xAxisPolicy()
 	{
-		if (Random.value >= half) 
-		{
-			randomEventController.marketCrash = true;
-		}
+		gameController.players[gameController.electionWinner].GetComponent<PlayerVariables> ().actionCostModifier += 0.1f;
 	}
 
 	//spilled coffee on a foreign leader's shoes, everyone moves one down on the y-axis 
@@ -75,10 +72,13 @@ public class EspressoPolicies : MonoBehaviour {
 		}
 	}
 
-	//get a ten perecent refund on all actions
+	//starts a tea tax and has a 50-50 chance to add towards triggering mass extinction
 	void zAxisPolicy()
 	{
-		gameController.players [gameController.electionWinner].GetComponent<PlayerVariables> ().actionCostModifier += 0.1f;
+		if (Random.value >= half) 
+		{
+			randomEventController.marketCrash = true;
+		}
 	}
 	
 	/// <summary>
