@@ -11,6 +11,7 @@ public class GridFacePlayer : MonoBehaviour {
 
 	public Material currentMat;
 	public float currentOpacity = 255f;
+	private Transform currentVoter;
 
 	public float lowerClassPercent = 0.5f;
 	public float upperClassPercent = 0.2f;
@@ -38,21 +39,20 @@ public class GridFacePlayer : MonoBehaviour {
 		RaycastHit hit;
 		Physics.Raycast (transform.position - new Vector3 (0f, 0.2f, 0f), new Vector3 (0f, 1f, 0f), out hit, 0.3f, voterLayerMask);
 
-		if (hit.transform != null) {
-			if (hit.transform.GetComponent<VoterVariables>().money <= lowerClassLimit) {
+		if (hit.transform != currentVoter) {
+			if (hit.transform != null && hit.transform.GetComponent<VoterVariables>().money <= lowerClassLimit) {
 				currentMat = lowerClassMat;
-			} else if (hit.transform.GetComponent<VoterVariables>().money > lowerClassLimit && hit.transform.GetComponent<VoterVariables>().money <= upperClassLimit) {
+			} else if (hit.transform != null && hit.transform.GetComponent<VoterVariables>().money > lowerClassLimit && hit.transform.GetComponent<VoterVariables>().money <= upperClassLimit) {
 				currentMat = middleClassMat;
-			} else if (hit.transform.GetComponent<VoterVariables>().money > upperClassLimit) {
+			} else if (hit.transform != null && hit.transform.GetComponent<VoterVariables>().money > upperClassLimit) {
 				currentMat = upperClassMat;
+			} else if (hit.transform == null) {
+				currentMat = defaultMat;
 			}
-		} else {
-			currentMat = defaultMat;
+			GetComponent<MeshRenderer> ().material = currentMat;
+			GetComponent<MeshRenderer> ().material.color = new Color(255f/255f,255f/255f,255f/255f,currentOpacity/255f);
+			currentVoter = hit.transform;
 		}
-
-		Color mater = GetComponent<MeshRenderer>().material.color;
-		GetComponent<MeshRenderer> ().material = currentMat;
-		GetComponent<MeshRenderer> ().material.color = new Color(mater.r, mater.g, mater.b, currentOpacity);
-    } 
+    }
 
 }
