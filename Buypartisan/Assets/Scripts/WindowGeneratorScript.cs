@@ -437,11 +437,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 				//alters the window's name
 				windowName.text = "Game Over Man! Game Over!";
 
-				if(winner == "Providence")
-				{
-					helpfulText.text = "All Hail the Overlords!";
-				}
-
 				if (maxVictoryPoints > 0) 
 				{
 					victoryText.text = "The " + winner + " Party has won BuyPartisan!";

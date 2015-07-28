@@ -52,7 +52,7 @@ public class WindyPolicies : MonoBehaviour {
 		}
 	}
 
-	//reduce the revenue of your opponents by giving everyone tax breaks
+	//reduce the revenue of your opponents by making them pay for the national zoo
 	void xAxisPolicy()
 	{
 		for (int i = 0; i < gameController.numberPlayers; i++) 
