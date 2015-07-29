@@ -22,7 +22,7 @@ public class Action6Script : MonoBehaviour {
 	private int selectedPlayer;
 	private bool playerSelected = false;
 	//private bool foundPlayer = false;
-	public float successRate = 0.5f;
+	public float successRate = 0.25f;
 
 	[System.NonSerialized]
 	public bool confirmButton = false;
