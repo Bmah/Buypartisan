@@ -201,7 +201,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 		{
 			//enables the end turn and player stats buttons
 			uiController.endTurnButton.SetActive (true);
-			uiController.displayStatsButton.SetActive (true);
 			
 			//enables the action buttons
 			for (int i = 0; i < 10; i++) 
@@ -227,7 +226,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 			victoryPointTotals = "";
 
 			//displays to the TV that it is player 1's turn
-			uiController.alterTextBox("It is the " + gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName + " Party's turn.");
+			uiController.alterTextBox("It is the " + gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName + " Party's turn.\n" + gameController.displayPlayerStats());
 			uiController.SetPlayerAndParyNameInUpperLeft(gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName, 1);
 
 			//disables the end game screen
