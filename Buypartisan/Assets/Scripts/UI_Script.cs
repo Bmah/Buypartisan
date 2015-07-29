@@ -533,77 +533,40 @@ public class UI_Script : MonoBehaviour {
 	//calls the cancel function
 	public void Cancel()
 	{
-		if (!turnPhase) 
-		{
-			//its getting difficult to get the game controller to do what we want
-			//if we want a cancel button for choosing parties it will require an overhaul of how players are spawned
-			/*
-			//destroys the instantiated player
-			Destroy(controller.players[controller.playersSpawned]);
+		if (chosenAction == 0) {
+			instantiatedAction.GetComponent<Action0Script>().cancelButton = true;
+		}
 
-			//decrements the number of players spawned
-			controller.playersSpawned -= 1;
+		if (chosenAction == 1) {
+			instantiatedAction.GetComponent<Action1Script>().cancelButton = true;
+		}
 
-			//messing with bools to see what works and what doesn't
-			controller.partyChosen = true;
-			controller.spawnedNewPlayer = false; //this is private
+		if (chosenAction == 2) {
+			instantiatedAction.GetComponent<Action2Script>().cancelButton = true;
+		}
 
-			//sets the movement, confirm, and cancel buttons to false and and the party buttons to true
-			xPlusButton.SetActive(false);
-			xMinusButton.SetActive(false);
-			yPlusButton.SetActive(false);
-			yMinusButton.SetActive(false);
-			zPlusButton.SetActive(false);
-			zMinusButton.SetActive(false);
-			
-			confirmButton.SetActive(false);
-			cancelButton.SetActive(false);
-			
-			party1Button.SetActive(true);
-			party2Button.SetActive(true);
-			party3Button.SetActive(true);
-			party4Button.SetActive(true);
-			party5Button.SetActive(true);
-			*/
+		if (chosenAction == 3) {
+			instantiatedAction.GetComponent<Action3Script>().cancelButton = true;
+		}
 
-		} 
-		else 
-		{
-			if (chosenAction == 0) {
-				instantiatedAction.GetComponent<Action0Script>().cancelButton = true;
-			}
-			
-			if (chosenAction == 1) {
-				instantiatedAction.GetComponent<Action1Script>().cancelButton = true;
-			}
-			
-			if (chosenAction == 2) {
-				instantiatedAction.GetComponent<Action2Script>().cancelButton = true;
-			}
-			
-			if (chosenAction == 3) {
-				instantiatedAction.GetComponent<Action3Script>().cancelButton = true;
-			}
-			
-			if (chosenAction == 4) {
-				instantiatedAction.GetComponent<Action4Script>().cancelButton = true;
-			}
-
-			if (chosenAction == 5) {
-				instantiatedAction.GetComponent<Action5Script>().cancelButton = true;
-			}
-
-			if (chosenAction == 6) {
-				instantiatedAction.GetComponent<Action6Script>().cancelButton = true;
-			}
-
-			if (chosenAction == 7) {
-				instantiatedAction.GetComponent<Action7Script>().cancelButton = true;
-			}
-
-			if (chosenAction == 8) {
-				instantiatedAction.GetComponent<Action8Script>().cancelButton = true;
-			}
+		if (chosenAction == 4) {
+			instantiatedAction.GetComponent<Action4Script>().cancelButton = true;
+		}
+		
+		if (chosenAction == 5) {
+			instantiatedAction.GetComponent<Action5Script>().cancelButton = true;
+		}
+		
+		if (chosenAction == 6) {
+			instantiatedAction.GetComponent<Action6Script>().cancelButton = true;
+		}
+		
+		if (chosenAction == 7) {
+			instantiatedAction.GetComponent<Action7Script>().cancelButton = true;
+		}
+		
+		if (chosenAction == 8) {
+			instantiatedAction.GetComponent<Action8Script>().cancelButton = true;
 		}
 	}
 
