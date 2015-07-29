@@ -386,13 +386,14 @@ public class GameController : MonoBehaviour {
 				Debug.Log ("Round " + (roundCounter + 1) + " begin!");
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 
+				//does the tallying before the first player's turn starts (Alex Jungroth)
+				tallyRoutine.preTurnTalling ();
+
 				//updates the tv so the users know whose turn it is (Alex Jungroth)
 				UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName +
 					" party's turn.\n" + displayPlayerStats());
 				UIController.SetPlayerAndParyNameInUpperLeft(players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName, currentPlayerTurn + 1);
 
-				//does the tallying before the first player's turn starts (Alex Jungroth)
-				tallyRoutine.preTurnTalling ();
 				turnsManager.firstTime = true;
 				//Gives the randomEventController the list of newly spawned players Brian Mah
 				randomEventController.players = players;
