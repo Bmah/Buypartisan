@@ -40,9 +40,6 @@ public class UI_Script : MonoBehaviour {
 	//holds the cancel button
 	public GameObject cancelButton;
 
-	//holds the button for displaying player's stats
-	public GameObject displayStatsButton;
-
 	//holds the Action Buttons by the tag ActionButton
 	public GameObject[] ActionButtonObject;
 
@@ -132,10 +129,7 @@ public class UI_Script : MonoBehaviour {
 		leftButton = GameObject.Find ("Left");
 		rightButton = GameObject.Find ("Right");
 		cancelButton = GameObject.Find ("Cancel");
-
-		//gets the button for displaying the players stats
-		displayStatsButton = GameObject.FindGameObjectWithTag ("DisplayStats");
-
+		
 		//gets the Action Buttons
 		ActionButtonObject = GameObject.FindGameObjectsWithTag ("ActionButton");
 
@@ -163,9 +157,6 @@ public class UI_Script : MonoBehaviour {
 
 		//disables the cancel button
 		cancelButton.SetActive(false);
-
-		//disables the display stats button at the start
-		displayStatsButton.SetActive (false);
 
 		sfx = GameObject.FindGameObjectWithTag ("SFX").GetComponent<SFXController> ();
 		if (sfx == null) {
@@ -701,10 +692,7 @@ public class UI_Script : MonoBehaviour {
 		{
 			ActionButtonObject[i].SetActive(true);
 		}
-
-		//also enables the display button
-		displayStatsButton.SetActive(true);
-
+		
 		//also enables the end turn button
 		endTurnButton.SetActive (true);
 
@@ -713,13 +701,6 @@ public class UI_Script : MonoBehaviour {
 
 		//also disables the unneeded buttons
 		disablePPButtons ();
-	}
-
-	public void disablePlayerStats()
-	{
-		//disables the player's stats button
-		displayStatsButton.SetActive(false);
-
 	}
 
 	public void activateActionButton(int num)
