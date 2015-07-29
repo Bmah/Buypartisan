@@ -9,7 +9,7 @@ using System.Collections;
 public class GridInstanced : MonoBehaviour {
 
 	private InputManagerScript inputManager;
-	private GameController gameController; // Gets gridSize here
+	//private GameController gameController; // Gets gridSize here
 
 	public GameObject grid;
 	public GameObject[, ,] grids = new GameObject[10, 10, 10];
@@ -30,9 +30,9 @@ public class GridInstanced : MonoBehaviour {
 	void Start() {
 
 		inputManager = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManagerScript>();
-		gameController = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameController> ();
+		//gameController = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameController> ();
 		
-		gridSize = gameController.GetComponent<GameController>().gridSize;
+		//gridSize = gameController.GetComponent<GameController>().gridSize;
 
 		/////////////Had to replace the SpriteRenderer with a MeshRenderer for the new pedestals. (Chris Ng)
 		//r = grid.GetComponent<SpriteRenderer> ().color.r;
@@ -48,7 +48,8 @@ public class GridInstanced : MonoBehaviour {
 
 	
 	public void GridInstantiate (int max) {
-		
+
+		gridSize = max;
 		
 		for (int x = 0; x < max; x++)
 		{

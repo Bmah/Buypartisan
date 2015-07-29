@@ -80,7 +80,10 @@ public class Action7Script : MonoBehaviour {
 
 		if (confirmButton) {
 			if(players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale.x < 60f) {
-				players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale = new Vector3 (60f, 60f, 60f);
+				players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale = new Vector3
+					(players[currentPlayer].GetComponent<PlayerVariables>().sphereSize * 10,
+					 players[currentPlayer].GetComponent<PlayerVariables>().sphereSize * 10,
+					 players[currentPlayer].GetComponent<PlayerVariables>().sphereSize * 10);
 				EndAction ();
 			}
 			else {
@@ -108,6 +111,11 @@ public class Action7Script : MonoBehaviour {
 		//puts the current player and the event number into the action counter of the event controller
 		//Brian Mah
 		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [7]++; // the second number should be the number of the action!
+
+		//updates the tv so the users know whose turn it is (Alex Jungroth)
+		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +
+			" party's turn.\n" + gameController.GetComponent<GameController>().displayPlayerStats());
+
 		Destroy(gameObject);
 	}
 }
