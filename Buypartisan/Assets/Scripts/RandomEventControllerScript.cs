@@ -129,8 +129,6 @@ public class RandomEventControllerScript : MonoBehaviour {
 				currentState = ActionState.EndRandomEvents;
 			}
 			UIController.disableActionButtons();
-			//disables the player stats button (Alex Jungroth)
-			UIController.disablePlayerStats();
 			break;
 			
 		case ActionState.EndRandomEvents:
