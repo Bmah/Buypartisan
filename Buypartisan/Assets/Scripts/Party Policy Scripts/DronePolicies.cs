@@ -52,12 +52,15 @@ public class DronePolicies : MonoBehaviour {
 		}
 	}
 
-	//50-50 chance to get a billion dollars
+	//50-50 chance to decrease voter resistance
 	void xAxisPolicy()
 	{
 		if (Random.value >= half) 
 		{
-			gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().money += billion;
+			for(int i = 0; i < gameController.NumVoters; i++)
+			{
+				gameController.voters[i].GetComponent<VoterVariables>().baseResistance *= 0.9f;
+			}
 		}
 	}
 
