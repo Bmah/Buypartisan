@@ -201,7 +201,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 		{
 			//enables the end turn and player stats buttons
 			uiController.endTurnButton.SetActive (true);
-			uiController.displayStatsButton.SetActive (true);
 			
 			//enables the action buttons
 			for (int i = 0; i < 10; i++) 
@@ -227,7 +226,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 			victoryPointTotals = "";
 
 			//displays to the TV that it is player 1's turn
-			uiController.alterTextBox("It is the " + gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName + " Party's turn.");
+			uiController.alterTextBox("It is the " + gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName + " Party's turn.\n" + gameController.displayPlayerStats());
 			uiController.SetPlayerAndParyNameInUpperLeft(gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName, 1);
 
 			//disables the end game screen
@@ -238,7 +237,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 		} 
 		else 
 		{
-
 			//This code forms the coalitions
 
 			//The coalitions have been formed
@@ -371,7 +369,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 					policySlider.SetActive (true);
 				
 					//prints the default policy text
-					policyText.text = "Conitnue without choosing \na policy!";
+					policyText.text = "Continue without choosing \na policy!";
 				
 					//prints the default helpful text
 					helpfulText.text = "Choose a policy!";
@@ -436,11 +434,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 			
 				//alters the window's name
 				windowName.text = "Game Over Man! Game Over!";
-
-				if(winner == "Providence")
-				{
-					helpfulText.text = "All Hail the Overlords!";
-				}
 
 				if (maxVictoryPoints > 0) 
 				{

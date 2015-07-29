@@ -9,7 +9,7 @@ using System.Collections;
 public class GridInstanced : MonoBehaviour {
 
 	private InputManagerScript inputManager;
-	private GameController gameController; // Gets gridSize here
+	//private GameController gameController; // Gets gridSize here
 
 	public GameObject grid;
 	public GameObject[, ,] grids = new GameObject[10, 10, 10];
@@ -18,7 +18,7 @@ public class GridInstanced : MonoBehaviour {
 	private int axisMode = 0;
 	private int setX = 3, setY = 3, setZ = 3;
 
-	public int defaultOpacity = 75;
+	public int defaultOpacity = 255;
 	public int minimumOpacity = 12;
 	public int maxOpacity = 180;
 
@@ -30,13 +30,17 @@ public class GridInstanced : MonoBehaviour {
 	void Start() {
 
 		inputManager = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManagerScript>();
-		gameController = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameController> ();
+		//gameController = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameController> ();
 		
-		gridSize = gameController.GetComponent<GameController>().gridSize;
+		//gridSize = gameController.GetComponent<GameController>().gridSize;
 
-		r = grid.GetComponent<SpriteRenderer> ().color.r;
-		g = grid.GetComponent<SpriteRenderer> ().color.g;
-		b = grid.GetComponent<SpriteRenderer> ().color.b;
+		/////////////Had to replace the SpriteRenderer with a MeshRenderer for the new pedestals. (Chris Ng)
+		//r = grid.GetComponent<SpriteRenderer> ().color.r;
+		//g = grid.GetComponent<SpriteRenderer> ().color.g;
+		//b = grid.GetComponent<SpriteRenderer> ().color.b;
+		r = grid.GetComponent<MeshRenderer> ().sharedMaterial.color.r;
+		g = grid.GetComponent<MeshRenderer> ().sharedMaterial.color.g;
+		b = grid.GetComponent<MeshRenderer> ().sharedMaterial.color.b;
 	}
 
 
@@ -44,7 +48,8 @@ public class GridInstanced : MonoBehaviour {
 
 	
 	public void GridInstantiate (int max) {
-		
+
+		gridSize = max;
 		
 		for (int x = 0; x < max; x++)
 		{
@@ -52,7 +57,7 @@ public class GridInstanced : MonoBehaviour {
 			{
 				for (int z = 0; z < max; z++)
 				{
-					grids[x, y, z] = Instantiate(grid, new Vector3(x, y, z), Quaternion.identity) as GameObject;
+					grids[x, y, z] = Instantiate(grid, new Vector3(x, y, z), grid.transform.rotation) as GameObject;
 				}
 			}
 		}
@@ -104,7 +109,9 @@ public class GridInstanced : MonoBehaviour {
 
 		for (int z = 0; z < gridSize; z++) {
 			for (int y = 0; y < gridSize; y++){
-				grids [setX, y, z].GetComponent<SpriteRenderer> ().color = new Color (r, g, b, maxOpacity/255f);
+				//grids [setX, y, z].GetComponent<SpriteRenderer> ().color = new Color (r, g, b, maxOpacity/255f);
+				grids [setX, y, z].GetComponent<MeshRenderer> ().material.color = new Color (r, g, b, maxOpacity/255f);
+				grids [setX, y, z].transform.GetComponent<GridFacePlayer> ().currentOpacity = maxOpacity;
 			}
 		}
 
@@ -117,7 +124,9 @@ public class GridInstanced : MonoBehaviour {
 
 		for (int x = 0; x < gridSize; x++) {
 			for (int y = 0; y < gridSize; y++){
-				grids [x, y, setZ].GetComponent<SpriteRenderer> ().color = new Color (r, g, b, maxOpacity/255f);
+				//grids [x, y, setZ].GetComponent<SpriteRenderer> ().color = new Color (r, g, b, maxOpacity/255f);
+				grids [x, y, setZ].GetComponent<MeshRenderer> ().material.color = new Color (r, g, b, maxOpacity/255f);
+				grids [x, y, setZ].transform.GetComponent<GridFacePlayer> ().currentOpacity = maxOpacity;
 			}
 		}
 
@@ -131,7 +140,9 @@ public class GridInstanced : MonoBehaviour {
 
 		for (int x = 0; x < gridSize; x++) {
 			for (int z = 0; z < gridSize; z++){
-				grids [x, setY, z].GetComponent<SpriteRenderer> ().color = new Color (r, g, b, maxOpacity/255f);
+				//grids [x, setY, z].GetComponent<SpriteRenderer> ().color = new Color (r, g, b, maxOpacity/255f);
+				grids [x, setY, z].GetComponent<MeshRenderer> ().material.color = new Color (r, g, b, maxOpacity/255f);
+				grids [x, setY, z].transform.GetComponent<GridFacePlayer> ().currentOpacity = maxOpacity;
 			}
 		}
 
@@ -143,7 +154,9 @@ public class GridInstanced : MonoBehaviour {
 		for (int x = 0; x < gridSize; x++) {
 			for (int y = 0; y < gridSize; y++) {
 				for (int z = 0; z < gridSize; z++) {
-					grids[x, y, z].GetComponent<SpriteRenderer>().color = new Color (r, g, b, defaultOpacity/255f);
+					//grids[x, y, z].GetComponent<SpriteRenderer>().color = new Color (r, g, b, defaultOpacity/255f);
+					grids[x, y, z].GetComponent<MeshRenderer>().material.color = new Color (r, g, b, defaultOpacity/255f);
+					grids[x, y, z].transform.GetComponent<GridFacePlayer>().currentOpacity = defaultOpacity;
 				}
 			}
 		}
@@ -157,7 +170,9 @@ public class GridInstanced : MonoBehaviour {
 		for (int x = 0; x < gridSize; x++) {
 			for (int y = 0; y < gridSize; y++) {
 				for (int z = 0; z < gridSize; z++) {
-					grids[x, y, z].GetComponent<SpriteRenderer>().color = new Color (r, g, b, 0/255f);
+					//grids[x, y, z].GetComponent<SpriteRenderer>().color = new Color (r, g, b, 0/255f);
+					grids[x, y, z].GetComponent<MeshRenderer>().material.color = new Color (r, g, b, 0/255f);
+					grids[x, y, z].transform.GetComponent<GridFacePlayer>().currentOpacity = 0f;
 				}
 			}
 		}
@@ -170,7 +185,9 @@ public class GridInstanced : MonoBehaviour {
 		for (int x = 0; x < gridSize; x++) {
 			for (int y = 0; y < gridSize; y++) {
 				for (int z = 0; z < gridSize; z++) {
-					grids[x, y, z].GetComponent<SpriteRenderer>().color = new Color (r, g, b, minimumOpacity/255f);
+					//grids[x, y, z].GetComponent<SpriteRenderer>().color = new Color (r, g, b, minimumOpacity/255f);
+					grids[x, y, z].GetComponent<MeshRenderer>().material.color = new Color (r, g, b, minimumOpacity/255f);
+					grids[x, y, z].transform.GetComponent<GridFacePlayer>().currentOpacity = minimumOpacity;
 				}
 			}
 		}
