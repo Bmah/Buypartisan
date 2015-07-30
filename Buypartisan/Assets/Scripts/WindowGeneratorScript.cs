@@ -16,14 +16,17 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 	//holds the components of the end game screen
 	public GameObject endGameWindow;
-	public GameObject victoryToken;
+	public GameObject coalitionScreen;
+	public GameObject espressoScreen;
+	public GameObject droneScreen;
+	public GameObject applePieScreen;
+	public GameObject windTurbinoScreen;
+	public GameObject providenceScreen;
 	public Text victoryText;
 	public GameObject policySlider;
 	public GameObject continueButton;
 	public Text windowName;
 	public Text policyText;
-	public Text helpfulText;
-	public Text playerText;
 	public GameObject player1Slider;
 	public GameObject player2Slider;
 	public GameObject player3Slider;
@@ -72,15 +75,19 @@ public class WindowGeneratorScript : MonoBehaviour {
 		//diables the end game screen at the start of the game
 		endGame.SetActive(false);
 
-		//disables the victory token
-		victoryToken.SetActive(false);
-
 		//disables the player sliders
 		player1Slider.SetActive(false);
 		player2Slider.SetActive(false);
 		player3Slider.SetActive(false);
 		player4Slider.SetActive(false);
 		player5Slider.SetActive(false);
+		
+		//disables the win screens
+		espressoScreen.SetActive(false);
+		droneScreen.SetActive(false);
+		applePieScreen.SetActive(false);
+		windTurbinoScreen.SetActive(false);
+		providenceScreen.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -144,6 +151,9 @@ public class WindowGeneratorScript : MonoBehaviour {
 		//gets the number of players from the game controller
 		totalPlayers = gameController.numberPlayers;
 
+		//enables the coalitions screen
+		coalitionScreen.SetActive(true);
+
 		//enables the sliders for the players who are present
 		if(totalPlayers >= 2) 
 		{
@@ -166,30 +176,27 @@ public class WindowGeneratorScript : MonoBehaviour {
 			player5Slider.SetActive(true);
 		}
 
-		//clears the player text
-		playerText.text = "";
-
 		//updates the player text
-		for(int i = 0; i < totalPlayers; i++)
+		/*for(int i = 0; i < totalPlayers; i++)
 		{
 			playerText.text +=  gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName + " Party\n\n";
 		}
-		
+		*/
+
 		//This code generates a window for forming coalitions
 
 		//enables the end game screen
 		endGame.SetActive(true);
 
 		//alters the window's name
-		windowName.text = "Go it Alone or Choose a Coalition!";
+		//windowName.text = "Go it Alone or Choose a Coalition!";
 
 		//uses the vicotry text to display the coalilitions
-		victoryText.text = "Single       A               B";
+		//victoryText.text = "Single       A               B";
 
 		//diables some elements on the end game screen
 		policySlider.SetActive(false);
 		policyText.text = "";
-		helpfulText.text = "";
 	}
 	
 	/// <summary>
@@ -220,14 +227,22 @@ public class WindowGeneratorScript : MonoBehaviour {
 			maxVictoryPoints = 0;
 
 			//disables the victory token
-			victoryToken.SetActive(false);
+			//victoryToken.SetActive(false);
 
 			//resets the victoryPointTotals
 			victoryPointTotals = "";
 
 			//displays to the TV that it is player 1's turn
-			uiController.alterTextBox("It is the " + gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName + " Party's turn.\n" + gameController.displayPlayerStats());
+			uiController.alterTextBox("It is the " + gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName +
+				" Party's turn.\n" + gameController.displayPlayerStats());
 			uiController.SetPlayerAndParyNameInUpperLeft(gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName, 1);
+
+			//disables the win screens
+			espressoScreen.SetActive(false);
+			droneScreen.SetActive(false);
+			applePieScreen.SetActive(false);
+			windTurbinoScreen.SetActive(false);
+			providenceScreen.SetActive(false);
 
 			//disables the end game screen
 			endGame.SetActive (false);
@@ -241,6 +256,9 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 			//The coalitions have been formed
 			coalitionsFormed = true;
+
+			//disables the coalitions screen image
+			coalitionScreen.SetActive(false);
 
 			//disables the player sliders
 			player1Slider.SetActive (false);
@@ -355,33 +373,49 @@ public class WindowGeneratorScript : MonoBehaviour {
 				if (maxVotes > 0) 
 				{
 					//if someone won the election
-				
-					//alters the window's name
-					windowName.text = "Election Results are in!";
-				
-					//displays the victory token
-					victoryToken.SetActive (true);
-				
-					//prints the election winner from the gameController
-					victoryText.text = "The " + winner + " Party won the election with " + maxVotes.ToString() + " votes!";
-				
+
+					//enables the win screens
+					if(winner == "Espresso")
+					{
+						espressoScreen.SetActive(true);
+
+					}
+					else if(winner == "Drone")
+					{
+						droneScreen.SetActive(true);
+						
+					}
+					else if(winner == "Apple Pie")
+					{
+						applePieScreen.SetActive(true);
+						
+					}
+					else if(winner == "Windy")
+					{
+						windTurbinoScreen.SetActive(true);
+						
+					}
+					else if(winner == "Providence")
+					{
+						providenceScreen.SetActive(true);
+					}
+
 					//displays the policy slider
 					policySlider.SetActive (true);
 				
 					//prints the default policy text
 					policyText.text = "Continue without choosing \na policy!";
 				
-					//prints the default helpful text
-					helpfulText.text = "Choose a policy!";
-				
 					//prints each player's victory points to the main tv 
-					for (int i = 0; i < totalPlayers; i++) 
+					for (int i = 0; i < totalPlayers; i++)
 					{
-						victoryPointTotals += gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party: " +
-							gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints + "VP\n";
+						victoryPointTotals += gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party:   " +
+							gameController.players [i].GetComponent<PlayerVariables> ().votes + "   " +
+							gameController.players[i].GetComponent<PlayerVariables>().victoryPoints + "\n\n";
 					}
-
-					uiController.alterTextBox (victoryPointTotals);
+					
+					//updates the election victory screen with the parties' votes and victory point stats
+					victoryText.text = victoryPointTotals;
 
 				} 
 				else 
@@ -390,19 +424,19 @@ public class WindowGeneratorScript : MonoBehaviour {
 					winner = "no winner";
 
 					windowName.text = "No one voted, so no one was elected!";
-				
-					victoryText.text = "";
-				
+					
 					policySlider.SetActive (false);
 				
 					//prints each player's victory points to the main tv 
 					for (int i = 0; i < totalPlayers; i++)
 					{
-						victoryPointTotals += gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party: " +
-							gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints + "VP\n";
+						victoryPointTotals += gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party:   " +
+							gameController.players [i].GetComponent<PlayerVariables> ().votes + "   " +
+							gameController.players[i].GetComponent<PlayerVariables>().victoryPoints + "\n\n";
 					}
-				
-					uiController.alterTextBox (victoryPointTotals);
+
+					//updates the election victory screen with the parties' votes and victory point stats
+					victoryText.text = victoryPointTotals;
 				}
 			} 
 			else 
@@ -422,15 +456,10 @@ public class WindowGeneratorScript : MonoBehaviour {
 				//enables the end game screen
 				endGame.SetActive (true);
 			
-				//displays the victory token
-				victoryToken.SetActive (true);
-			
 				//diables some elements on the end game screen
 				continueButton.SetActive (false);
 				policySlider.SetActive (false);
 				policyText.text = "";
-				helpfulText.text = "";
-				playerText.text = "";
 			
 				//alters the window's name
 				windowName.text = "Game Over Man! Game Over!";
@@ -454,9 +483,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 				uiController.alterTextBox (victoryPointTotals);
 			}
 
-			//disables some elements of the end game screen
-			playerText.text = "";
-		
 			player1Slider.SetActive (false);
 			player2Slider.SetActive (false);
 			player3Slider.SetActive (false);
