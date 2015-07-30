@@ -3,7 +3,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class GridFacePlayer : MonoBehaviour { 
+public class GridFacePlayer : MonoBehaviour {
+	public bool occupied = false;
 	public Material defaultMat;
 	public Material lowerClassMat;
 	public Material middleClassMat;
@@ -40,6 +41,7 @@ public class GridFacePlayer : MonoBehaviour {
 		Physics.Raycast (transform.position - new Vector3 (0f, 0.2f, 0f), new Vector3 (0f, 1f, 0f), out hit, 0.3f, voterLayerMask);
 
 		if (hit.transform != currentVoter) {
+			occupied = true;
 			if (hit.transform != null && hit.transform.GetComponent<VoterVariables>().money <= lowerClassLimit) {
 				currentMat = lowerClassMat;
 			} else if (hit.transform != null && hit.transform.GetComponent<VoterVariables>().money > lowerClassLimit && hit.transform.GetComponent<VoterVariables>().money <= upperClassLimit) {
@@ -48,9 +50,14 @@ public class GridFacePlayer : MonoBehaviour {
 				currentMat = upperClassMat;
 			} else if (hit.transform == null) {
 				currentMat = defaultMat;
+				occupied = false;
 			}
 			GetComponent<MeshRenderer> ().material = currentMat;
-			GetComponent<MeshRenderer> ().material.color = new Color(255f/255f,255f/255f,255f/255f,currentOpacity/255f);
+			if (occupied) {
+				GetComponent<MeshRenderer> ().material.color = new Color(1f,1f,1f,180f/255f);
+			} else {
+				GetComponent<MeshRenderer> ().material.color = new Color(255f/255f,255f/255f,255f/255f,currentOpacity/255f);
+			}
 			currentVoter = hit.transform;
 		}
     }
