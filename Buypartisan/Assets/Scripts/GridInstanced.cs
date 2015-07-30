@@ -69,22 +69,27 @@ public class GridInstanced : MonoBehaviour {
 
 		if (inputManager.zButtonDown) {
 			SetZ ();
+			OutlineMakeOpaque();
 		}
 
 		if (inputManager.xButtonDown) {
 			SetX ();
+			OutlineMakeOpaque();
 		}
 
 		if (inputManager.cButtonDown) {
 			SetY ();
+			OutlineMakeOpaque();
 		}
 
 		if (inputManager.vButtonDown) {
 			ResetV ();
+			OutlineMakeOpaque();
 		}
 
 		if (inputManager.bButtonDown) {
 			ClearB ();
+			ClearOutline();
 		}
 
 		// If you're in xyz axis mode AND you're not holding right click to zoom in with scrollwheel, then run this
@@ -112,6 +117,7 @@ public class GridInstanced : MonoBehaviour {
 				//grids [setX, y, z].GetComponent<SpriteRenderer> ().color = new Color (r, g, b, maxOpacity/255f);
 				grids [setX, y, z].GetComponent<MeshRenderer> ().material.color = new Color (r, g, b, maxOpacity/255f);
 				grids [setX, y, z].transform.GetComponent<GridFacePlayer> ().currentOpacity = maxOpacity;
+				grids[setX, y, z].transform.GetComponent<GridFacePlayer>().defCurrentOpacity = maxOpacity;
 			}
 		}
 
@@ -127,6 +133,7 @@ public class GridInstanced : MonoBehaviour {
 				//grids [x, y, setZ].GetComponent<SpriteRenderer> ().color = new Color (r, g, b, maxOpacity/255f);
 				grids [x, y, setZ].GetComponent<MeshRenderer> ().material.color = new Color (r, g, b, maxOpacity/255f);
 				grids [x, y, setZ].transform.GetComponent<GridFacePlayer> ().currentOpacity = maxOpacity;
+				grids [x, y, setZ].transform.GetComponent<GridFacePlayer> ().defCurrentOpacity = maxOpacity;
 			}
 		}
 
@@ -143,6 +150,7 @@ public class GridInstanced : MonoBehaviour {
 				//grids [x, setY, z].GetComponent<SpriteRenderer> ().color = new Color (r, g, b, maxOpacity/255f);
 				grids [x, setY, z].GetComponent<MeshRenderer> ().material.color = new Color (r, g, b, maxOpacity/255f);
 				grids [x, setY, z].transform.GetComponent<GridFacePlayer> ().currentOpacity = maxOpacity;
+				grids [x, setY, z].transform.GetComponent<GridFacePlayer> ().defCurrentOpacity = maxOpacity;
 			}
 		}
 
@@ -155,8 +163,13 @@ public class GridInstanced : MonoBehaviour {
 			for (int y = 0; y < gridSize; y++) {
 				for (int z = 0; z < gridSize; z++) {
 					//grids[x, y, z].GetComponent<SpriteRenderer>().color = new Color (r, g, b, defaultOpacity/255f);
-					grids[x, y, z].GetComponent<MeshRenderer>().material.color = new Color (r, g, b, defaultOpacity/255f);
-					grids[x, y, z].transform.GetComponent<GridFacePlayer>().currentOpacity = defaultOpacity;
+					if (grids[x, y, z].transform.GetComponent<GridFacePlayer>().occupied) {
+						grids[x, y, z].GetComponent<MeshRenderer>().material.color = new Color (r, g, b, defaultOpacity/255f);
+						grids[x, y, z].transform.GetComponent<GridFacePlayer>().currentOpacity = defaultOpacity;
+					} else {
+						grids[x, y, z].GetComponent<MeshRenderer>().material.color = new Color (r, g, b, 0f/255f);
+						grids[x, y, z].transform.GetComponent<GridFacePlayer>().defCurrentOpacity = 0f;
+					}
 				}
 			}
 		}
@@ -188,6 +201,29 @@ public class GridInstanced : MonoBehaviour {
 					//grids[x, y, z].GetComponent<SpriteRenderer>().color = new Color (r, g, b, minimumOpacity/255f);
 					grids[x, y, z].GetComponent<MeshRenderer>().material.color = new Color (r, g, b, minimumOpacity/255f);
 					grids[x, y, z].transform.GetComponent<GridFacePlayer>().currentOpacity = minimumOpacity;
+					grids[x, y, z].transform.GetComponent<GridFacePlayer>().defCurrentOpacity = minimumOpacity;
+				}
+			}
+		}
+	}
+
+	// This function clears the outlined grid (Chris Ng)
+	void ClearOutline() {
+		for (int x = 0; x < gridSize; x++) {
+			for (int y = 0; y < gridSize; y++) {
+				for (int z = 0; z < gridSize; z++) {
+					grids[x, y, z].transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+				}
+			}
+		}
+	}
+
+	// This function makes the outline opaque (Chris Ng)
+	void OutlineMakeOpaque() {
+		for (int x = 0; x < gridSize; x++) {
+			for (int y = 0; y < gridSize; y++) {
+				for (int z = 0; z < gridSize; z++) {
+					grids[x, y, z].transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
 				}
 			}
 		}
