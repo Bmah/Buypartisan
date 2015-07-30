@@ -11,6 +11,7 @@ public class GridFacePlayer : MonoBehaviour {
 	public Material upperClassMat;
 
 	public Material currentMat;
+	public float defCurrentOpacity = 0f;
 	public float currentOpacity = 255f;
 	private Transform currentVoter;
 
@@ -54,9 +55,9 @@ public class GridFacePlayer : MonoBehaviour {
 			}
 			GetComponent<MeshRenderer> ().material = currentMat;
 			if (occupied) {
-				GetComponent<MeshRenderer> ().material.color = new Color(1f,1f,1f,180f/255f);
+				GetComponent<MeshRenderer> ().material.color = new Color(1f,1f,1f,currentOpacity/255f);
 			} else {
-				GetComponent<MeshRenderer> ().material.color = new Color(255f/255f,255f/255f,255f/255f,currentOpacity/255f);
+				GetComponent<MeshRenderer> ().material.color = new Color(255f/255f,255f/255f,255f/255f,defCurrentOpacity/255f);
 			}
 			currentVoter = hit.transform;
 		}

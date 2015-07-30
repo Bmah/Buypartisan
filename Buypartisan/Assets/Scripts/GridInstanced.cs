@@ -117,6 +117,7 @@ public class GridInstanced : MonoBehaviour {
 				//grids [setX, y, z].GetComponent<SpriteRenderer> ().color = new Color (r, g, b, maxOpacity/255f);
 				grids [setX, y, z].GetComponent<MeshRenderer> ().material.color = new Color (r, g, b, maxOpacity/255f);
 				grids [setX, y, z].transform.GetComponent<GridFacePlayer> ().currentOpacity = maxOpacity;
+				grids[setX, y, z].transform.GetComponent<GridFacePlayer>().defCurrentOpacity = maxOpacity;
 			}
 		}
 
@@ -132,6 +133,7 @@ public class GridInstanced : MonoBehaviour {
 				//grids [x, y, setZ].GetComponent<SpriteRenderer> ().color = new Color (r, g, b, maxOpacity/255f);
 				grids [x, y, setZ].GetComponent<MeshRenderer> ().material.color = new Color (r, g, b, maxOpacity/255f);
 				grids [x, y, setZ].transform.GetComponent<GridFacePlayer> ().currentOpacity = maxOpacity;
+				grids [x, y, setZ].transform.GetComponent<GridFacePlayer> ().defCurrentOpacity = maxOpacity;
 			}
 		}
 
@@ -148,6 +150,7 @@ public class GridInstanced : MonoBehaviour {
 				//grids [x, setY, z].GetComponent<SpriteRenderer> ().color = new Color (r, g, b, maxOpacity/255f);
 				grids [x, setY, z].GetComponent<MeshRenderer> ().material.color = new Color (r, g, b, maxOpacity/255f);
 				grids [x, setY, z].transform.GetComponent<GridFacePlayer> ().currentOpacity = maxOpacity;
+				grids [x, setY, z].transform.GetComponent<GridFacePlayer> ().defCurrentOpacity = maxOpacity;
 			}
 		}
 
@@ -165,7 +168,7 @@ public class GridInstanced : MonoBehaviour {
 						grids[x, y, z].transform.GetComponent<GridFacePlayer>().currentOpacity = defaultOpacity;
 					} else {
 						grids[x, y, z].GetComponent<MeshRenderer>().material.color = new Color (r, g, b, 0f/255f);
-						grids[x, y, z].transform.GetComponent<GridFacePlayer>().currentOpacity = 0f;
+						grids[x, y, z].transform.GetComponent<GridFacePlayer>().defCurrentOpacity = 0f;
 					}
 				}
 			}
@@ -198,6 +201,7 @@ public class GridInstanced : MonoBehaviour {
 					//grids[x, y, z].GetComponent<SpriteRenderer>().color = new Color (r, g, b, minimumOpacity/255f);
 					grids[x, y, z].GetComponent<MeshRenderer>().material.color = new Color (r, g, b, minimumOpacity/255f);
 					grids[x, y, z].transform.GetComponent<GridFacePlayer>().currentOpacity = minimumOpacity;
+					grids[x, y, z].transform.GetComponent<GridFacePlayer>().defCurrentOpacity = minimumOpacity;
 				}
 			}
 		}
