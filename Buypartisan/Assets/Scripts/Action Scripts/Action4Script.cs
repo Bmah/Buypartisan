@@ -106,7 +106,7 @@ public class Action4Script : MonoBehaviour {
 				Debug.Log ("Current Player doesn't have enough money to make this action.");
 				uiController.GetComponent<UI_Script>().toggleActionButtons();
 				Destroy(gameObject);
-        	}	
+        	}
 		}
 
 		//Sets up SFX controller (Brian Mah)
@@ -183,7 +183,7 @@ public class Action4Script : MonoBehaviour {
 		if (running)
 			UpdatePositionsCont (inputVec);
 
-		if (confirmButton) {
+		if (confirmButton && finalDirection!=0) {
 			if (!running) {
 				actionConfirmed = true;
 				EndActionInitial();
