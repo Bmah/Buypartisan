@@ -239,6 +239,9 @@ public class UI_Script : MonoBehaviour {
 				ppMove = ppMove + Vector3.right;
 				controller.currentPlayer.transform.position = ppMove;
 			}
+			else{
+				PlayErrorSound();
+			}
 		} else {
 			if (chosenAction == 1) {
 				instantiatedAction.GetComponent<Action1Script>().xPlusButton = true;
@@ -265,6 +268,9 @@ public class UI_Script : MonoBehaviour {
 				ppMove = controller.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.left;
 				controller.currentPlayer.transform.position = ppMove;
+			}
+			else{
+				PlayErrorSound();
 			}
 		} else {
 			if (chosenAction == 1) {
@@ -293,6 +299,9 @@ public class UI_Script : MonoBehaviour {
 				ppMove = ppMove + Vector3.up;
 				controller.currentPlayer.transform.position = ppMove;
 			}
+			else{
+				PlayErrorSound();
+			}
 		} else {
 			if (chosenAction == 1) {
 				instantiatedAction.GetComponent<Action1Script>().yPlusButton = true;
@@ -319,6 +328,9 @@ public class UI_Script : MonoBehaviour {
 				ppMove = controller.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.down;
 				controller.currentPlayer.transform.position = ppMove;
+			}
+			else{
+				PlayErrorSound();
 			}
 		} else {
 			if (chosenAction == 1) {
@@ -347,6 +359,9 @@ public class UI_Script : MonoBehaviour {
 				ppMove = ppMove + Vector3.forward;
 				controller.currentPlayer.transform.position = ppMove;
 			}
+			else{
+				PlayErrorSound();
+			}
 		} else {
 			if (chosenAction == 1) {
 				instantiatedAction.GetComponent<Action1Script>().zPlusButton = true;
@@ -373,6 +388,9 @@ public class UI_Script : MonoBehaviour {
 				ppMove = controller.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.back;
 				controller.currentPlayer.transform.position = ppMove;
+			}
+			else{
+				PlayErrorSound();
 			}
 		} else {
 			if (chosenAction == 1) {
@@ -797,6 +815,14 @@ public class UI_Script : MonoBehaviour {
 	/// </summary>
 	public void PlayConfirmSound(){
 		sfx.PlayAudioClip (1, 0, SFXvolume);
+	}
+
+	/// <summary>
+	/// Plays the error sound.
+	/// Brian Mah
+	/// </summary>
+	public void PlayErrorSound(){
+		sfx.PlayAudioClip (3, 0, SFXvolume);
 	}
 
     // This updates the visual cost on each action button. It shows default costs (including multiplier! =D) if no actions are spawned; if an action is spawned, then it shows the updated cost instead!

@@ -20,8 +20,8 @@ public class TitleScreenUIScript : MonoBehaviour
 	private const float vCSLowerBound = 27;
 	private const float vCSReasonableValue = 12;
 	private const float vCSValue = 40;
-	private const float sSlider = 0.5f;
-	private const float mSlider = 0.5f;
+	private const float sSlider = 0.1f;
+	private const float mSlider = 0.1f;
 	private const int mChannel = 0;
 	private const int sChannel = 0;
 	private const int mouseDown = 0;
