@@ -730,6 +730,7 @@ public class GameController : MonoBehaviour {
 	/// </summary>
 	void PlayerTurn(){
 		if (playerTakingAction) {
+
 			if(currentPlayerTurn < numberPlayers)
 			{
 				/*I am moving the incrementing of current player turn to 
@@ -752,7 +753,10 @@ public class GameController : MonoBehaviour {
 
 			if (currentPlayerTurn >= numberPlayers) {
 				//this is when all players have made their turns
-				
+
+				//disables the action buttons during the random events (Alex Jungroth)
+				UIController.disableActionButtons();
+
 				if(randomEventController.ActivateEvents()){  //continually goes to random event controller until randomEventController returns true
 
 					//does the tallying after the players ends there turns (Alex Jungroth)
