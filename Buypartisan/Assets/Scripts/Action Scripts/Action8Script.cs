@@ -31,7 +31,10 @@ public class Action8Script : MonoBehaviour {
 	public bool cancelButton = false;
 
 	private RandomEventControllerScript eventController;
-	
+
+	//Allows the Action to play sounds (Brian Mah)
+	private SFXController SFX;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -69,6 +72,12 @@ public class Action8Script : MonoBehaviour {
 		{
 			totalCost = (int)(baseCost * costMultiplier);
 		//	visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject); // Only if you need visual aid, or else remove this. Make sure to remove the Detach under Cancel() and EndAction() too.
+		}
+
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
 		}
 	}
 	
@@ -116,6 +125,11 @@ public class Action8Script : MonoBehaviour {
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;  // Money is subtracted
 		//puts the current player and the event number into the action Counter of the event controller
 		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [0]++; // the second number should be the number of the action!
+
+		//updates the tv so the users know whose turn it is (Alex Jungroth)
+		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +
+			" party's turn.\n" + gameController.GetComponent<GameController>().displayPlayerStats());
+
 		Destroy(gameObject);
 	}
 }

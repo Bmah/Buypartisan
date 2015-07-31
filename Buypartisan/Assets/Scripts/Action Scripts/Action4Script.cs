@@ -60,6 +60,9 @@ public class Action4Script : MonoBehaviour {
 	private bool running = false;
 	private Vector3 inputVec = Vector3.zero;
 
+	//Allows the Action to play sounds (Brian Mah)
+	private SFXController SFX;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -104,7 +107,12 @@ public class Action4Script : MonoBehaviour {
 				uiController.GetComponent<UI_Script>().toggleActionButtons();
 				Destroy(gameObject);
         	}
-			
+		}
+
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
 		}
 	}
 	
@@ -176,7 +184,7 @@ public class Action4Script : MonoBehaviour {
 			UpdatePositionsCont (inputVec);
 
 		if (confirmButton) {
-			if (!running) {
+			if (finalDirection !=0 && !running) {
 				actionConfirmed = true;
 				EndActionInitial();
 			}
@@ -388,6 +396,11 @@ public class Action4Script : MonoBehaviour {
 			//puts the current player and the event number into the action counter of the event controller
 			//Brian Mah
 			eventController.actionCounter [gameController.GetComponent<GameController> ().currentPlayerTurn] [4]++; // the second number should be the number of the action!
+
+			//updates the tv so the users know whose turn it is (Alex Jungroth)
+			uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +
+				" party's turn.\n" + gameController.GetComponent<GameController>().displayPlayerStats());
+
 			Destroy (gameObject);
 		}
 	}

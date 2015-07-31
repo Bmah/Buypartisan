@@ -22,13 +22,16 @@ public class Action6Script : MonoBehaviour {
 	private int selectedPlayer;
 	private bool playerSelected = false;
 	//private bool foundPlayer = false;
-	public float successRate = 0.5f;
+	public float successRate = 0.25f;
 
 	[System.NonSerialized]
 	public bool confirmButton = false;
 	[System.NonSerialized]
 	public bool cancelButton = false;
-	
+
+	//Allows the Action to play sounds (Brian Mah)
+	private SFXController SFX;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -67,6 +70,12 @@ public class Action6Script : MonoBehaviour {
 		else
 		{
 			totalCost = (int)(baseCost * costMultiplier);
+		}
+
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
 		}
 	}
 
@@ -114,6 +123,11 @@ public class Action6Script : MonoBehaviour {
 		//puts the current player and the event number into the action counter of the event controller
 		//Brian Mah
 		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [6]++; // the second number should be the number of the action!
+
+		//updates the tv so the users know whose turn it is (Alex Jungroth)
+		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +
+			" party's turn.\n" + gameController.GetComponent<GameController>().displayPlayerStats());
+
 		Destroy(gameObject);
 	}
 }
