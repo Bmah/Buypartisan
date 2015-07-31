@@ -25,7 +25,10 @@ public class Action7Script : MonoBehaviour {
 	public bool confirmButton = false;
 	[System.NonSerialized]
 	public bool cancelButton = false;
-	
+
+	//Allows the Action to play sounds (Brian Mah)
+	private SFXController SFX;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -65,6 +68,12 @@ public class Action7Script : MonoBehaviour {
 		else
 		{
 			totalCost = (int)(baseCost * costMultiplier);
+		}
+
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
 		}
 	}
 

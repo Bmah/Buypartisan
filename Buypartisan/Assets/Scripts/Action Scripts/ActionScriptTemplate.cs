@@ -29,6 +29,9 @@ public class ActionScriptTemplate : MonoBehaviour {
 
 	private RandomEventControllerScript eventController;
 
+	//Allows the Action to play sounds (Brian Mah)
+	private SFXController SFX;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -67,6 +70,12 @@ public class ActionScriptTemplate : MonoBehaviour {
             totalCost = (int)(baseCost * costMultiplier);
             //visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject); // Only if you need visual aid, or else remove this. Make sure to remove the Detach under Cancel() and EndAction() too.
         }
+
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
+		}
 	}
 	
 	// Update is called once per frame
