@@ -81,6 +81,9 @@ public class Action3Script : MonoBehaviour {
 	//holds the number needed for this action to succeed (Alex Jungroth)
 	public float successRate = 0.25f;
 
+	//Allows the Action to play sounds (Brian Mah)
+	private SFXController SFX;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -149,6 +152,12 @@ public class Action3Script : MonoBehaviour {
 				Destroy (marker);
 			Destroy(gameObject);
         }
+
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
+		}
 	}
 	
 	// Update is called once per frame
