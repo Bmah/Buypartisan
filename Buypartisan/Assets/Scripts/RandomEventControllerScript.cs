@@ -128,7 +128,8 @@ public class RandomEventControllerScript : MonoBehaviour {
 			if(DoTriggeredEvents(playerTriggerNumber)){
 				currentState = ActionState.EndRandomEvents;
 			}
-			UIController.disableActionButtons();
+			//This needs to happen sooner in the Game Controller function Player Turn (Alex Jungroth)
+			//UIController.disableActionButtons();
 			break;
 			
 		case ActionState.EndRandomEvents:
@@ -214,6 +215,9 @@ public class RandomEventControllerScript : MonoBehaviour {
 		for (int i = 0; i < voters.Length; i++) {
 			if (i != survivor){
 				voters[i].SetActive(false);
+
+				//stops the dead voters from voting (Alex Jungroth)
+				voters[i].GetComponent<VoterVariables>().votes = 0;
 			}
 		}
 	}
