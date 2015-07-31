@@ -60,6 +60,9 @@ public class Action4Script : MonoBehaviour {
 	private bool running = false;
 	private Vector3 inputVec = Vector3.zero;
 
+	//Allows the Action to play sounds (Brian Mah)
+	private SFXController SFX;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -104,7 +107,12 @@ public class Action4Script : MonoBehaviour {
 				uiController.GetComponent<UI_Script>().toggleActionButtons();
 				Destroy(gameObject);
         	}
-			
+		}
+
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
 		}
 	}
 	
@@ -175,7 +183,7 @@ public class Action4Script : MonoBehaviour {
 		if (running)
 			UpdatePositionsCont (inputVec);
 
-		if (confirmButton) {
+		if (confirmButton && finalDirection!=0) {
 			if (!running) {
 				actionConfirmed = true;
 				EndActionInitial();
