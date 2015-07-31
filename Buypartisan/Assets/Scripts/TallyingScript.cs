@@ -66,6 +66,8 @@ public class TallyingScript : MonoBehaviour {
 		for (int i = 0; i < numberPlayers; i++) 
 		{
 			players[i].GetComponent<PlayerVariables>().votes = 0;
+			if(players[i].GetComponent<PlayerVariables>().politicalPartyName == "Windy")
+				players[i].GetComponent<PlayerVariables>().votes = 3;
 
 		}
 		
