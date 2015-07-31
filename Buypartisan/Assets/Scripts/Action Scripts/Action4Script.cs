@@ -183,8 +183,8 @@ public class Action4Script : MonoBehaviour {
 		if (running)
 			UpdatePositionsCont (inputVec);
 
-		if (confirmButton && finalDirection!=0) {
-			if (!running) {
+		if (confirmButton) {
+			if (finalDirection !=0 && !running) {
 				actionConfirmed = true;
 				EndActionInitial();
 			}

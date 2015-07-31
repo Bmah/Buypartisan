@@ -88,7 +88,9 @@ public class GridInstanced : MonoBehaviour {
 		}
 
 		if (inputManager.bButtonDown) {
-			ClearB ();
+			//We don't want to clear the pedestals
+			//ClearB ();
+			ResetV ();
 			ClearOutline();
 		}
 
@@ -165,11 +167,11 @@ public class GridInstanced : MonoBehaviour {
 					//grids[x, y, z].GetComponent<SpriteRenderer>().color = new Color (r, g, b, defaultOpacity/255f);
 					if (grids[x, y, z].transform.GetComponent<GridFacePlayer>().occupied) {
 						grids[x, y, z].GetComponent<MeshRenderer>().material.color = new Color (r, g, b, defaultOpacity/255f);
-						grids[x, y, z].transform.GetComponent<GridFacePlayer>().currentOpacity = defaultOpacity;
 					} else {
 						grids[x, y, z].GetComponent<MeshRenderer>().material.color = new Color (r, g, b, 0f/255f);
-						grids[x, y, z].transform.GetComponent<GridFacePlayer>().defCurrentOpacity = 0f;
 					}
+					grids[x, y, z].transform.GetComponent<GridFacePlayer>().currentOpacity = defaultOpacity;
+					grids[x, y, z].transform.GetComponent<GridFacePlayer>().defCurrentOpacity = 0f;
 				}
 			}
 		}
