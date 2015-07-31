@@ -205,6 +205,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 		victoryText.text = "";
 		votesText.text = "";
 		victoryPointsText.text = "";
+		windowName.text = "";
 	}
 	
 	/// <summary>
