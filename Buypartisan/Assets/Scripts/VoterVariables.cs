@@ -41,6 +41,11 @@ public class VoterVariables : MonoBehaviour {
 	private Material originalSelected;
 	private Material originalUnselected;
 
+	//These variables are used for choosing hats.
+	public float extremistRatio = 0.2f;
+	private bool hasHat = false;
+	private int hatIndex = 0;
+	public GameObject[] hatArray = new GameObject[7];
 
 	void Start () {
 		voterRenderer = this.transform.GetChild (0).transform.GetChild(1).gameObject.GetComponent<Renderer> ();	//changed this to obtain the model's renderer.
@@ -55,6 +60,10 @@ public class VoterVariables : MonoBehaviour {
 		prevPosition = this.transform.position;
 		originalSelected = selectedTexture;
 		originalUnselected = unselectedTexture;
+
+		DetermineHatEligibilty ();
+		//Randomize rotation
+		transform.rotation = Quaternion.Euler (0f, Random.Range (0f, 360f), 0f);
 	}
 
 	/// <summary>
@@ -188,5 +197,109 @@ public class VoterVariables : MonoBehaviour {
 		return selected;
 	}
 
+	void DetermineHatEligibilty() {
+		float largestAxis = 0f;
 
+		if (transform.position.x >= Mathf.Round(gameController.gridSize * (1f - extremistRatio)) - 1f) {
+			if (transform.position.x > largestAxis) {
+				largestAxis = transform.position.x;
+				hatIndex = 0;
+			}
+			if (transform.position.x == largestAxis) {
+				if (Mathf.Round (Random.value) == 0) {
+					hatIndex = 0;
+				} else {
+					//Other hat is chosen.
+				}
+			}
+			hasHat = true;
+		}
+		if (transform.position.y >= Mathf.Round(gameController.gridSize * (1f - extremistRatio)) - 1f) {
+			if (transform.position.y > largestAxis) {
+				largestAxis = transform.position.y;
+				hatIndex = 2;
+			}
+			if (transform.position.y == largestAxis) {
+				if (Mathf.Round (Random.value) == 0) {
+					hatIndex = 2;
+				} else {
+					//Other hat is chosen.
+				}
+			}
+			hasHat = true;
+		}
+		if (transform.position.z >= Mathf.Round(gameController.gridSize * (1f - extremistRatio)) - 1f) {
+			if (transform.position.z > largestAxis) {
+				largestAxis = transform.position.z;
+				hatIndex = 4;
+			}
+			if (transform.position.z == largestAxis) {
+				if (Mathf.Round (Random.value) == 0) {
+					hatIndex = 4;
+				} else {
+					//Other hat is chosen.
+				}
+			}
+			hasHat = true;
+		}
+		if (transform.position.x <= Mathf.Round (gameController.gridSize * extremistRatio)) {
+			if (gameController.gridSize - 1f - transform.position.x > largestAxis) {
+				largestAxis = gameController.gridSize - 1f - transform.position.x;
+				hatIndex = 1;
+			}
+			if (gameController.gridSize - 1f - transform.position.x == largestAxis) {
+				if (Mathf.Round (Random.value) == 0) {
+					hatIndex = 1;
+				} else {
+					//Other hat is chosen.
+				}
+			}
+			hasHat = true;
+		}
+		if (transform.position.y <= Mathf.Round (gameController.gridSize * extremistRatio)) {
+			if (gameController.gridSize - 1f - transform.position.y > largestAxis) {
+				largestAxis = gameController.gridSize - 1f - transform.position.y;
+				hatIndex = 3;
+			}
+			if (gameController.gridSize - 1f - transform.position.y == largestAxis) {
+				if (Mathf.Round (Random.value) == 0) {
+					hatIndex = 3;
+				} else {
+					//Other hat is chosen.
+				}
+			}
+			hasHat = true;
+		}
+		if (transform.position.z <= Mathf.Round (gameController.gridSize * extremistRatio)) {
+			if (gameController.gridSize - 1f - transform.position.z > largestAxis) {
+				largestAxis = gameController.gridSize - 1f - transform.position.z;
+
+				if (Mathf.Round (Random.value) == 0) {
+					hatIndex = 5;
+				} else {
+					hatIndex = 6;
+				}
+			}
+			if (gameController.gridSize - 1f - transform.position.z == largestAxis) {
+				if (Mathf.Round (Random.value) == 0) {
+					if (Mathf.Round (Random.value) == 0) {
+						hatIndex = 5;
+					} else {
+						hatIndex = 6;
+					}
+				} else {
+					//Other hat is chosen.
+				}
+			}
+			hasHat = true;
+		}
+
+		if (hasHat) {
+			GameObject currentHat = Instantiate(hatArray[hatIndex]) as GameObject;
+			currentHat.transform.parent = this.transform.GetChild (0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0);
+			currentHat.transform.localPosition = new Vector3(-1f,0f,0f);
+			currentHat.transform.localRotation = Quaternion.Euler(90f,-90f,0f);
+			currentHat.transform.localScale = new Vector3(1f,1f,1f);
+		}
+	}
 }
