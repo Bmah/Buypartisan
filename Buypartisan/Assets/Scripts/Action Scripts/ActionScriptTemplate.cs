@@ -31,6 +31,7 @@ public class ActionScriptTemplate : MonoBehaviour {
 
 	//Allows the Action to play sounds (Brian Mah)
 	private SFXController SFX;
+	private float SFXVolume;
 
 	// Use this for initialization
 	void Start () {
@@ -43,12 +44,19 @@ public class ActionScriptTemplate : MonoBehaviour {
 			//voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
+			SFXVolume = gameController.GetComponent<GameController> ().SFXVolume;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
 
 		//Disables the Action UI buttons
 		uiController.GetComponent<UI_Script>().disableActionButtons();
+
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
+		}
 
 		//The start function will not end until gets to the end
 		//if you want to destroy the object in the start function,
@@ -61,7 +69,7 @@ public class ActionScriptTemplate : MonoBehaviour {
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
 		if (players[currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
-
+			SFX.PlayAudioClip(15,0,SFXVolume);
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
@@ -109,6 +117,10 @@ public class ActionScriptTemplate : MonoBehaviour {
 		//updates the tv so the users know whose turn it is (Alex Jungroth)
 		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +
 			" party's turn.\n" + gameController.GetComponent<GameController>().displayPlayerStats());
+
+		//If a power has no success rate play the sound at the end when it is destroyed
+		//If a power has a chance to fail be sure to place both the success and failure sounds inside the place where the power succeeds or fails
+		SFX.PlayAudioClip (13, 0, SFXVolume);
 
 		Destroy(gameObject);
 	}
