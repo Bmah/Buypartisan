@@ -28,6 +28,7 @@ public class Action7Script : MonoBehaviour {
 
 	//Allows the Action to play sounds (Brian Mah)
 	private SFXController SFX;
+	private float SFXVolume;
 
 	// Use this for initialization
 	void Start () {
@@ -43,13 +44,20 @@ public class Action7Script : MonoBehaviour {
 			//voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
+			SFXVolume = gameController.GetComponent<GameController> ().SFXVolume;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
 		
 		//Disables the Action UI buttons
 		uiController.GetComponent<UI_Script>().disableActionButtons();
-		
+
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
+		}
+
 		//The start function will not end until gets to the end
 		//if you want to destroy the object in the start function,
 		//it has to be the last thing you do, otherwise the flow of
@@ -61,6 +69,7 @@ public class Action7Script : MonoBehaviour {
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
 		if (players[currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
+			SFX.PlayAudioClip(15,0,SFXVolume);
 			
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
@@ -68,12 +77,6 @@ public class Action7Script : MonoBehaviour {
 		else
 		{
 			totalCost = (int)(baseCost * costMultiplier);
-		}
-
-		//Sets up SFX controller (Brian Mah)
-		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
-		if (SFX == null) {
-			Debug.LogError("Could not find SFX controller");
 		}
 	}
 
@@ -88,7 +91,7 @@ public class Action7Script : MonoBehaviour {
 		}
 
 		if (confirmButton) {
-			if(players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale.x < 60f) {
+			if(players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale.x != players[currentPlayer].GetComponent<PlayerVariables>().sphereSize * 10) {
 				players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale = new Vector3
 					(players[currentPlayer].GetComponent<PlayerVariables>().sphereSize * 10,
 					 players[currentPlayer].GetComponent<PlayerVariables>().sphereSize * 10,
@@ -124,6 +127,8 @@ public class Action7Script : MonoBehaviour {
 		//updates the tv so the users know whose turn it is (Alex Jungroth)
 		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +
 			" party's turn.\n" + gameController.GetComponent<GameController>().displayPlayerStats());
+
+		SFX.PlayAudioClip (13, 0, SFXVolume);
 
 		Destroy(gameObject);
 	}

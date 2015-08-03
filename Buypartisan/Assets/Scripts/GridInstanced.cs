@@ -88,7 +88,9 @@ public class GridInstanced : MonoBehaviour {
 		}
 
 		if (inputManager.bButtonDown) {
-			ClearB ();
+			//We don't want to clear the pedestals
+			//ClearB ();
+			ResetV ();
 			ClearOutline();
 		}
 

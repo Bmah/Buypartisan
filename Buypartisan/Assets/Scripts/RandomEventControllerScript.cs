@@ -128,7 +128,8 @@ public class RandomEventControllerScript : MonoBehaviour {
 			if(DoTriggeredEvents(playerTriggerNumber)){
 				currentState = ActionState.EndRandomEvents;
 			}
-			UIController.disableActionButtons();
+			//This needs to happen sooner in the Game Controller function Player Turn (Alex Jungroth)
+			//UIController.disableActionButtons();
 			break;
 			
 		case ActionState.EndRandomEvents:
@@ -149,6 +150,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			ShiftVoters ('X', 1);
 			UIController.alterTextBox ("Newsflash! Sudden victory in the war boosts confidence in big govt! " + 
 			                           "Voters migrate 1 up on the X axis.\nLeft Click to Continue");
+			lossInWar = false;
 			break;
 		case 1:
 			ShiftVoters ('X', -1);
@@ -160,6 +162,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			ShiftVoters ('Y', 1);
 			UIController.alterTextBox ("Newsflash! New developments in the field of oil drilling lead to profit for big buisness. " + 
 			                           "Voters migrate 1 up on the Y axis.\nLeft Click to Continue");
+			naturalDisaster = false;
 			break;
 		case 3:
 			ShiftVoters ('Y', -1);
@@ -181,6 +184,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			EconomicBoom (2);
 			UIController.alterTextBox ("Newsflash! MONEY MONEY EVERYWHERE. " + 
 			                           "Voters now have twice the money they used to!\nLeft Click to Continue");
+			marketCrash = false;
 			break;
 		case 7:
 			EconomicBust (2);
@@ -214,6 +218,10 @@ public class RandomEventControllerScript : MonoBehaviour {
 		for (int i = 0; i < voters.Length; i++) {
 			if (i != survivor){
 				voters[i].SetActive(false);
+
+				//stops the dead voters from voting (Alex Jungroth) & (Brian Mah)
+				voters[i].GetComponent<VoterVariables>().votes = 0;
+				voters[i].GetComponent<VoterVariables>().money = 0;
 			}
 		}
 	}
