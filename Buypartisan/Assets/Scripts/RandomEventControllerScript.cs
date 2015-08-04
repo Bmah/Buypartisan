@@ -182,7 +182,7 @@ public class RandomEventControllerScript : MonoBehaviour {
 			break;
 		case 6:
 			EconomicBoom (2);
-			UIController.alterTextBox ("Newsflash! MONEY MONEY EVERYWHERE. " + 
+			UIController.alterTextBox ("Newsflash! Market Bubble. " + 
 			                           "Voters now have twice the money they used to!\nLeft Click to Continue");
 			marketCrash = false;
 			break;
