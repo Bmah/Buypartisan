@@ -15,20 +15,26 @@ public class WindowGeneratorScript : MonoBehaviour {
 	public GameObject endGame;
 
 	//holds the components of the end game screen
-	public GameObject endGameWindow;
 	public GameObject coalitionScreen;
 	public GameObject espressoScreen;
 	public GameObject droneScreen;
 	public GameObject applePieScreen;
 	public GameObject windTurbinoScreen;
 	public GameObject providenceScreen;
+	public GameObject noOneVotedScreen;
+	public GameObject espressoGameOver;
+	public GameObject droneGameOver;
+	public GameObject applePieGameOver;
+	public GameObject windTurbinoGameOver;
+	public GameObject providenceGameOver;
+	public GameObject noOneVotedGameOver;
+	public Text statsText;
 	public Text victoryText;
 	public Text votesText;
 	public Text victoryPointsText;
 	public GameObject policySlider;
 	public GameObject policySliderHandle;
 	public GameObject continueButton;
-	public Text windowName;
 	public Text policyText;
 	public GameObject player1Slider;
 	public GameObject player2Slider;
@@ -205,7 +211,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 		victoryText.text = "";
 		votesText.text = "";
 		victoryPointsText.text = "";
-		windowName.text = "";
 	}
 	
 	/// <summary>
@@ -436,8 +441,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 				{
 					//if no one won the election
 					winner = "no winner";
-
-					windowName.text = "No one voted, so no one was elected!";
 					
 					policySlider.SetActive (false);
 				
@@ -476,10 +479,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 				continueButton.SetActive (false);
 				policySlider.SetActive (false);
 				policyText.text = "";
-			
-				//alters the window's name
-				windowName.text = "Game Over Man! Game Over!";
-
+				
 				if (maxVictoryPoints > 0) 
 				{
 					victoryText.text = "The " + winner + " Party has won BuyPartisan!";
