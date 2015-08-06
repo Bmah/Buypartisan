@@ -148,36 +148,36 @@ public class RandomEventControllerScript : MonoBehaviour {
 		switch (eventChoice) {
 		case 0:
 			ShiftVoters ('X', 1);
-			UIController.alterTextBox ("Newsflash! New sources of oil lower gas prices. Voters move 1 step up on the Y axis towards Libertarianism." +
+			UIController.alterTextBox ("Newsflash! Popular celebrity endorsed gay marriage.  Voters lean 1 up on X towards social liberalism" +
 			                           "\nLeft Click to Continue");
 			lossInWar = false;
 			break;
 		case 1:
 			ShiftVoters ('X', -1);
-			UIController.alterTextBox ("Newsflash! Popular celebrity endorsed worker unions. " + 
-			                           "Voters lean towards Socialism.\nLeft Click to Continue");
+			UIController.alterTextBox ("Newsflash! Popular celebrity endorsed prayer in school " + 
+			                           "Voters lean 1 down on X towards social conservatism.\nLeft Click to Continue");
 			lossInWar = true;
 			break;
 		case 2:
 			ShiftVoters ('Y', 1);
-			UIController.alterTextBox ("Newsflash! Sudden victory in the war boosts confidence in the government’s foreign intervention!  Voters move 1 up on the X axis towards Imperialism." +
+			UIController.alterTextBox ("Newsflash! Sudden victory in the war boosts confidence in the government’s foreign intervention!  Voters move 1 up on the Y axis towards Imperialism." +
 			                           "\nLeft Click to Continue");
 			naturalDisaster = false;
 			break;
 		case 3:
 			ShiftVoters ('Y', -1);
-			UIController.alterTextBox ("Newsflash! Sudden military defeat and casualties abroad saps public support for the war!  The people want to bring the troops home!  Voters move 1 down on the X axis towards Isolationism." + 
+			UIController.alterTextBox ("Newsflash! Sudden military defeat and casualties abroad saps public support for the war!  The people want to bring the troops home!  Voters move 1 down on the Y axis towards Isolationism." + 
 			                           "\nLeft Click to Continue");
 			naturalDisaster = true;
 			break;
 		case 4:
 			ShiftVoters ('Z', 1);
 			UIController.alterTextBox ("Newsflash! New factory creates thousands of jobs!  " + 
-			                           "Voters move towards Industry.\nLeft Click to Continue");
+			                           "Voters move 1 up on Z towards Industry.\nLeft Click to Continue");
 			break;
 		case 5:
 			ShiftVoters ('Z', -1);
-			UIController.alterTextBox ("Newsflash! Oil spill devastates the environment. Voters move 1 up on the Z axis towards Environmental Regulations." +
+			UIController.alterTextBox ("Newsflash! Oil spill devastates the environment. Voters move 1 down on the Z axis towards Environmental Regulations." +
 			                           "\nLeft Click to Continue");
 			break;
 		case 6:
