@@ -83,6 +83,7 @@ public class CameraMovement : MonoBehaviour {
 			transform.eulerAngles = new Vector3(45f, 45f, 0f);
 			target.transform.position = pivotOriginalPosition; //new Vector3(1.5f, 1.5f, 1.5f);
 			target.transform.eulerAngles = new Vector3(45f, 45f, 0f);
+			distance = 5.0f;
 			
 			//Resets the camera scrolling back to origin
 			x = 45f;
