@@ -13,8 +13,8 @@ public class TitleScreenSettings : MonoBehaviour
 	public int totalRounds = 5;
 	public int totalElections = 2;
 	public int totalVoters = 40;
-	public float musicVolume = 0.5f;
-	public float sFXVolume = 0.5f;
+	public float musicVolume = 0.1f;
+	public float sFXVolume = 0.1f;
 
 	// Use this for initialization
 	void Start () 

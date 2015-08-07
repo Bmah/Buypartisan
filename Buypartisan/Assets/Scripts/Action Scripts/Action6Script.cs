@@ -22,13 +22,17 @@ public class Action6Script : MonoBehaviour {
 	private int selectedPlayer;
 	private bool playerSelected = false;
 	//private bool foundPlayer = false;
-	public float successRate = 0.5f;
+	public float successRate = 0.25f;
 
 	[System.NonSerialized]
 	public bool confirmButton = false;
 	[System.NonSerialized]
 	public bool cancelButton = false;
-	
+
+	//Allows the Action to play sounds (Brian Mah)
+	private SFXController SFX;
+	private float SFXVolume;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -42,6 +46,7 @@ public class Action6Script : MonoBehaviour {
 			//voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
+			SFXVolume = gameController.GetComponent<GameController> ().SFXVolume;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
@@ -54,12 +59,19 @@ public class Action6Script : MonoBehaviour {
 		//it has to be the last thing you do, otherwise the flow of
 		//controll will stay with the destroyed instance and 
 		//that will crash the game (Alex Jungroth)
-		
+
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
+		}
+
 		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
 		if (players[currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
+			SFX.PlayAudioClip(15,0,SFXVolume);
 			
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
@@ -87,6 +99,10 @@ public class Action6Script : MonoBehaviour {
 					Debug.Log (playerSelected);
 					if (Random.value >= successRate) {
 						players [selectedPlayer].GetComponent<PlayerVariables> ().sphereController.transform.localScale -= new Vector3 (10f, 10f, 10f);
+						SFX.PlayAudioClip (13, 0, SFXVolume);
+					}
+					else{
+						SFX.PlayAudioClip (14, 0, SFXVolume);
 					}
 				}
 			}
@@ -114,6 +130,11 @@ public class Action6Script : MonoBehaviour {
 		//puts the current player and the event number into the action counter of the event controller
 		//Brian Mah
 		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [6]++; // the second number should be the number of the action!
+
+		//updates the tv so the users know whose turn it is (Alex Jungroth)
+		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +
+			" party's turn.\n" + gameController.GetComponent<GameController>().displayPlayerStats());
+
 		Destroy(gameObject);
 	}
 }
