@@ -386,6 +386,8 @@ public class GameController : MonoBehaviour {
 				Debug.Log ("Round " + (roundCounter + 1) + " begin!");
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 
+				PlayStartOfTurnAudio ();
+
 				//does the tallying before the first player's turn starts (Alex Jungroth)
 				tallyRoutine.preTurnTalling ();
 
