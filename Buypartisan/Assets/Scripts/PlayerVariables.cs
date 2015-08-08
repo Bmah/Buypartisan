@@ -43,7 +43,6 @@ public class PlayerVariables : MonoBehaviour {
 	public Color transparentColor;
 
 	private bool selected = false;
-	string holdingText;
 
 	//holds whether or not this instance of the player is a shadow position (Alex Jungroth)
 	public bool isShadowPosition = false;
@@ -133,8 +132,9 @@ public class PlayerVariables : MonoBehaviour {
 			ToggleSelected ();
 
 			//This was interfering with the parites money being updated after an action (Alex Jungroth)
-			popUpTvScript.SetPopupTextBox("Money: " + money + "\nVotes: " + votes);
-			popUpTvScript.StartWaitingForUIToolTip();
+			gameController.GetComponent<GameController>().popUpTVScript.GetComponent<PopUpTVScript>().SetPopupTextBox("Money: " + money + "\nVotes: " + votes +
+				"\nPoints: " + victoryPoints);
+			gameController.GetComponent<GameController>().popUpTVScript.GetComponent<PopUpTVScript>().ShortWaitForUIToolTip();
 
 		}
 	}
@@ -147,12 +147,11 @@ public class PlayerVariables : MonoBehaviour {
 	void OnMouseExit()
 	{
 		//shadow positions should not be moused over (Alex Jungroth)
-		if(!isShadowPosition)
-		{
+		if (!isShadowPosition) {
 			ToggleSelected ();
 
 			//This was interfering with the parites money being updated after an action (Alex Jungroth)
-			popUpTvScript.ExitUIToolTip();
+			gameController.GetComponent<GameController> ().popUpTVScript.GetComponent<PopUpTVScript> ().ExitUIToolTip ();
 		}
 	}
 

@@ -18,8 +18,6 @@ public class VoterVariables : MonoBehaviour {
 	//holds the game controller (Alex Jungroth)
 	private GameController gameController;
 
-	string holdingText;
-
 	//These variables hold a voters resistance to being moved (Alex Jungroth)
 	public float baseResistance = 0;
 	public float xPlusResistance = 0;
@@ -158,8 +156,8 @@ public class VoterVariables : MonoBehaviour {
 		ToggleSelected ();
 
 		//This was interfering with the parites money being updated after an action (Alex Jungroth)
-		popUpTvScript.SetPopupTextBox("Money: " + money + "\nVotes: " + votes);
-		popUpTvScript.StartWaitingForUIToolTip();
+		gameController.GetComponent<GameController>().popUpTVScript.GetComponent<PopUpTVScript>().SetPopupTextBox("Money: " + money + "\nVotes: " + votes);
+		gameController.GetComponent<GameController>().popUpTVScript.GetComponent<PopUpTVScript>().ShortWaitForUIToolTip();
 	}
 
 	/// <summary>
@@ -171,7 +169,7 @@ public class VoterVariables : MonoBehaviour {
 		ToggleSelected ();
 
 		//This was interfering with the parites money being updated after an action (Alex Jungroth)
-		popUpTvScript.ExitUIToolTip();
+		gameController.GetComponent<GameController>().popUpTVScript.GetComponent<PopUpTVScript>().ExitUIToolTip();
 	}
 
 	/// <summary>
