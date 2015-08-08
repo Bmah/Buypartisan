@@ -15,26 +15,50 @@ public class WindowGeneratorScript : MonoBehaviour {
 	public GameObject endGame;
 
 	//holds the components of the end game screen
-	public GameObject endGameWindow;
 	public GameObject coalitionScreen;
 	public GameObject espressoScreen;
 	public GameObject droneScreen;
 	public GameObject applePieScreen;
 	public GameObject windTurbinoScreen;
 	public GameObject providenceScreen;
+	public GameObject noOneVotedScreen;
+	public GameObject espressoGameOver;
+	public GameObject droneGameOver;
+	public GameObject applePieGameOver;
+	public GameObject windTurbinoGameOver;
+	public GameObject providenceGameOver;
+	public GameObject noOneVotedGameOver;
+	public GameObject statsText;
+	public Text moneyText;
 	public Text victoryText;
 	public Text votesText;
 	public Text victoryPointsText;
 	public GameObject policySlider;
 	public GameObject policySliderHandle;
 	public GameObject continueButton;
-	public Text windowName;
 	public Text policyText;
 	public GameObject player1Slider;
 	public GameObject player2Slider;
 	public GameObject player3Slider;
 	public GameObject player4Slider;
 	public GameObject player5Slider;
+	public GameObject player1SliderHandle;
+	public GameObject player2SliderHandle;
+	public GameObject player3SliderHandle;
+	public GameObject player4SliderHandle;
+	public GameObject player5SliderHandle;
+
+	//holds images for the player slider handles for the coalition screen
+	//these are taken from the prefabs in slider handles
+	public Image espressoHandleImage;
+	public Image droneHandleImage;
+	public Image applePieHandleImage;
+	public Image windyHandleImage;
+	public Image providenceHandleImage;
+	public Image whiteHandleImage;
+
+	//This is the same sprite that is used by the title screen sliders so don't delete it
+	public Image redHandleImage;
 
 	//holds whether or not the game is over
 	private bool gameOver;
@@ -68,6 +92,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 	//hold the scores at the end of election
 	private string partyNames;
+	private string moneyTotals;
 	private string voteTotals;
 	private string victoryPointTotals;
 
@@ -87,12 +112,19 @@ public class WindowGeneratorScript : MonoBehaviour {
 		player4Slider.SetActive(false);
 		player5Slider.SetActive(false);
 		
-		//disables the win screens
+		//disables the win screens and end game screens
 		espressoScreen.SetActive(false);
 		droneScreen.SetActive(false);
 		applePieScreen.SetActive(false);
 		windTurbinoScreen.SetActive(false);
 		providenceScreen.SetActive(false);
+		noOneVotedScreen.SetActive(false);
+		espressoGameOver.SetActive(false);
+		droneGameOver.SetActive(false);
+		applePieGameOver.SetActive(false);
+		windTurbinoGameOver.SetActive(false);
+		providenceGameOver.SetActive(false);
+		noOneVotedGameOver.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -190,6 +222,12 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 		//This code generates a window for forming coalitions
 
+		//disables the statistic labels
+		statsText.SetActive(false);
+
+		//clears the money totals
+		moneyText.text = "";
+
 		//enables the end game screen
 		endGame.SetActive(true);
 
@@ -205,9 +243,207 @@ public class WindowGeneratorScript : MonoBehaviour {
 		victoryText.text = "";
 		votesText.text = "";
 		victoryPointsText.text = "";
-		windowName.text = "";
+
+		//Sets the sliders nobes for the coalition screen to the correct image
+		for(int i = 0; i < gameController.numberPlayers; i++)
+		{
+			if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Espresso")
+			{
+				setHandleImage(i,gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+			}
+			else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Drone")
+			{
+				setHandleImage(i,gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+			}
+			else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Apple Pie")
+			{
+				setHandleImage(i,gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+			}
+			else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Windy")
+			{
+				setHandleImage(i,gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+			}
+			else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Providence")
+			{
+				setHandleImage(i,gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+			}
+		}
 	}
-	
+
+	/// <summary>
+	/// Sets the handle image.
+	/// </summary>
+	void setHandleImage(int i, string politicalPartyName)
+	{
+		switch(i)
+		{
+			case 0:
+				
+				//Player 1 Handle
+				switch(politicalPartyName)
+				{
+					case "Espresso":
+						player1SliderHandle.GetComponent<Image>().sprite = espressoHandleImage.sprite;
+						
+					break;
+					
+					case "Drone":
+						player1SliderHandle.GetComponent<Image>().sprite = droneHandleImage.sprite;
+						
+					break;
+					
+					case "Apple Pie":
+						player1SliderHandle.GetComponent<Image>().sprite = applePieHandleImage.sprite;
+						
+					break;
+					
+					case "Windy":
+						player1SliderHandle.GetComponent<Image>().sprite = windyHandleImage.sprite;
+						
+					break;
+					
+					case "Providence":
+						player1SliderHandle.GetComponent<Image>().sprite = providenceHandleImage.sprite;
+						
+					break;
+				}
+				
+			break;
+				
+			case 1:
+				
+				//Player 2 Handle
+				switch(politicalPartyName)
+				{
+					case "Espresso":
+						player2SliderHandle.GetComponent<Image>().sprite = espressoHandleImage.sprite;
+						
+					break;
+					
+					case "Drone":
+						player2SliderHandle.GetComponent<Image>().sprite = droneHandleImage.sprite;
+						
+					break;
+					
+					case "Apple Pie":
+						player2SliderHandle.GetComponent<Image>().sprite = applePieHandleImage.sprite;
+						
+					break;
+					
+					case "Windy":
+						player2SliderHandle.GetComponent<Image>().sprite = windyHandleImage.sprite;
+						
+					break;
+					
+					case "Providence":
+						player2SliderHandle.GetComponent<Image>().sprite = providenceHandleImage.sprite;
+						
+					break;
+				}
+				
+			break;
+				
+			case 2:
+				
+				//Player 3 Handle
+				switch(politicalPartyName)
+				{
+					case "Espresso":
+						player3SliderHandle.GetComponent<Image>().sprite = espressoHandleImage.sprite;
+						
+					break;
+					
+					case "Drone":
+						player3SliderHandle.GetComponent<Image>().sprite = droneHandleImage.sprite;
+						
+					break;
+					
+					case "Apple Pie":
+						player3SliderHandle.GetComponent<Image>().sprite = applePieHandleImage.sprite;
+						
+					break;
+					
+					case "Windy":
+						player3SliderHandle.GetComponent<Image>().sprite = windyHandleImage.sprite;
+						
+					break;
+					
+					case "Providence":
+						player3SliderHandle.GetComponent<Image>().sprite = providenceHandleImage.sprite;
+						
+					break;
+				}
+				
+			break;
+				
+			case 3:
+				
+				//Player 4 Handle
+				switch(politicalPartyName)
+				{
+					case "Espresso":
+						player4SliderHandle.GetComponent<Image>().sprite = espressoHandleImage.sprite;
+						
+					break;
+					
+					case "Drone":
+						player4SliderHandle.GetComponent<Image>().sprite = droneHandleImage.sprite;
+						
+					break;
+					
+					case "Apple Pie":
+						player4SliderHandle.GetComponent<Image>().sprite = applePieHandleImage.sprite;
+						
+					break;
+					
+					case "Windy":
+						player4SliderHandle.GetComponent<Image>().sprite = windyHandleImage.sprite;
+						
+					break;
+					
+					case "Providence":
+						player4SliderHandle.GetComponent<Image>().sprite = providenceHandleImage.sprite;
+
+					break;
+				}
+				
+			break;
+				
+			case 4:
+				
+				//Player 5 Handle
+				switch(politicalPartyName)
+				{
+					case "Espresso":
+						player5SliderHandle.GetComponent<Image>().sprite = espressoHandleImage.sprite;
+					
+					break;
+					
+					case "Drone":
+						player5SliderHandle.GetComponent<Image>().sprite = droneHandleImage.sprite;
+						
+					break;
+					
+					case "Apple Pie":
+						player5SliderHandle.GetComponent<Image>().sprite = applePieHandleImage.sprite;
+						
+					break;
+					
+					case "Windy":
+						player5SliderHandle.GetComponent<Image>().sprite = windyHandleImage.sprite;
+						
+					break;
+					
+					case "Providence":
+						player5SliderHandle.GetComponent<Image>().sprite = providenceHandleImage.sprite;
+						
+					break;
+				}
+					
+			break;
+		}
+	}
+
 	/// <summary>
 	/// Continues the game. (Alex Jungroth)
 	/// </summary>
@@ -217,7 +453,10 @@ public class WindowGeneratorScript : MonoBehaviour {
 		{
 			//enables the end turn and player stats buttons
 			uiController.endTurnButton.SetActive (true);
-			
+
+			//resets the policy slider
+			policySlider.GetComponent<Slider>().value = 0;
+
 			//enables the action buttons
 			for (int i = 0; i < 10; i++) 
 			{
@@ -243,10 +482,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 			voteTotals = "";
 			victoryPointTotals = "";
 
-
-			//displays to the TV that it is player 1's turn
-			uiController.alterTextBox("It is the " + gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName +
-				" Party's turn.\n" + gameController.displayPlayerStats());
 			uiController.SetPlayerAndParyNameInUpperLeft(gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName, 1);
 
 			//disables the win screens
@@ -255,6 +490,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 			applePieScreen.SetActive(false);
 			windTurbinoScreen.SetActive(false);
 			providenceScreen.SetActive(false);
+			noOneVotedScreen.SetActive(false);
 
 			//disables the end game screen
 			endGame.SetActive (false);
@@ -391,25 +627,38 @@ public class WindowGeneratorScript : MonoBehaviour {
 					{
 						espressoScreen.SetActive(true);
 
+						//sets the correct policy slider sprite
+						policySliderHandle.GetComponent<Image>().sprite = redHandleImage.sprite;
+
 					}
 					else if(winner == "Drone")
 					{
 						droneScreen.SetActive(true);
 
+						//sets the correct policy slider sprite
+						policySliderHandle.GetComponent<Image>().sprite = whiteHandleImage.sprite;
+
 					}
 					else if(winner == "Apple Pie")
 					{
 						applePieScreen.SetActive(true);
-						
+
+						//sets the correct policy slider sprite
+						policySliderHandle.GetComponent<Image>().sprite = redHandleImage.sprite;
 					}
 					else if(winner == "Windy")
 					{
 						windTurbinoScreen.SetActive(true);
-						
+
+						//sets the correct policy slider sprite
+						policySliderHandle.GetComponent<Image>().sprite = redHandleImage.sprite;
 					}
 					else if(winner == "Providence")
 					{
 						providenceScreen.SetActive(true);
+
+						//sets the correct policy slider sprite
+						policySliderHandle.GetComponent<Image>().sprite = redHandleImage.sprite;
 					}
 
 					//displays the policy slider
@@ -417,43 +666,30 @@ public class WindowGeneratorScript : MonoBehaviour {
 				
 					//prints the default policy text
 					policyText.text = "Continue without choosing \na policy!";
-					
-					//prints each player's victory points to the main tv 
-					for (int i = 0; i < totalPlayers; i++)
-					{
-						partyNames += gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party:" + "\n\n";
-						voteTotals += gameController.players [i].GetComponent<PlayerVariables> ().votes + "\n\n";
-						victoryPointTotals += gameController.players[i].GetComponent<PlayerVariables>().victoryPoints + "\n\n";
-					}
-					
-					//updates the election victory screen with the parties' votes and victory point stats
-					victoryText.text = partyNames;
-					votesText.text = voteTotals;
-					victoryPointsText.text = victoryPointTotals;
-
 				} 
 				else 
 				{
 					//if no one won the election
 					winner = "no winner";
 
-					windowName.text = "No one voted, so no one was elected!";
-					
+					noOneVotedScreen.SetActive(true);
+
 					policySlider.SetActive (false);
-				
-					//prints each player's victory points to the main tv 
-					for (int i = 0; i < totalPlayers; i++)
-					{
-						partyNames += gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party:" + "\n\n";
-						voteTotals += gameController.players [i].GetComponent<PlayerVariables> ().votes + "\n\n";
-						victoryPointTotals += gameController.players[i].GetComponent<PlayerVariables>().victoryPoints + "\n\n";
-					}
-					
-					//updates the election victory screen with the parties' votes and victory point stats
-					victoryText.text = partyNames;
-					votesText.text = voteTotals;
-					victoryPointsText.text = victoryPointTotals;
 				}
+
+				//prints each player's victory points to the big tv 
+				for (int i = 0; i < totalPlayers; i++)
+				{
+					partyNames += gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party:" + "\n\n";
+					voteTotals += gameController.players [i].GetComponent<PlayerVariables> ().votes + "\n\n";
+					victoryPointTotals += gameController.players[i].GetComponent<PlayerVariables>().victoryPoints + "\n\n";
+				}
+				
+				//updates the election victory screen with the parties' votes and victory point stats
+				victoryText.text = partyNames;
+				votesText.text = voteTotals;
+				victoryPointsText.text = victoryPointTotals;
+				
 			} 
 			else 
 			{
@@ -471,36 +707,63 @@ public class WindowGeneratorScript : MonoBehaviour {
 			
 				//enables the end game screen
 				endGame.SetActive (true);
-			
+
+				//enables the statistic labels
+				statsText.SetActive(true);
+
 				//diables some elements on the end game screen
 				continueButton.SetActive (false);
 				policySlider.SetActive (false);
 				policyText.text = "";
-			
-				//alters the window's name
-				windowName.text = "Game Over Man! Game Over!";
-
+				
 				if (maxVictoryPoints > 0) 
 				{
+					//enables the win screens
+					if(winner == "Espresso")
+					{
+						espressoGameOver.SetActive(true);
+					}
+					else if(winner == "Drone")
+					{
+						droneGameOver.SetActive(true);
+					}
+					else if(winner == "Apple Pie")
+					{
+						applePieGameOver.SetActive(true);
+					}
+					else if(winner == "Windy")
+					{
+						windTurbinoGameOver.SetActive(true);
+					}
+					else if(winner == "Providence")
+					{
+						providenceGameOver.SetActive(true);
+					}
+
 					victoryText.text = "The " + winner + " Party has won BuyPartisan!";
 				}
 				else
 				{
+					//a special screen for the case where no one voted
+					noOneVotedGameOver.SetActive(true);
+
 					victoryText.text = "The nation falls into chaos as no one was elected once!";
 				}
 				
-				//prints each player's victory points to the main tv 
+				//prints each player's victory points to the big tv 
 				for (int i = 0; i < totalPlayers; i++)
 				{
 					partyNames += gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party:" + "\n\n";
+					moneyTotals += gameController.players [i].GetComponent<PlayerVariables> ().money + "\n\n";
 					voteTotals += gameController.players [i].GetComponent<PlayerVariables> ().votes + "\n\n";
 					victoryPointTotals += gameController.players[i].GetComponent<PlayerVariables>().victoryPoints + "\n\n";
 				}
 				
 				//updates the election victory screen with the parties' votes and victory point stats
-				//victoryText.text = partyNames;
-				//votesText.text = voteTotals;
-				//victoryPointsText.text = victoryPointTotals;
+				victoryText.text = partyNames;
+				moneyText.text = moneyTotals;
+				votesText.text = voteTotals;
+				victoryPointsText.text = victoryPointTotals;
 			}
 
 			player1Slider.SetActive (false);

@@ -59,6 +59,7 @@ public class Action2Script : MonoBehaviour {
 
 	//Allows the Action to play sounds (Brian Mah)
 	private SFXController SFX;
+	private float SFXVolume;
 
 	// Use this for initialization
 	void Start () {
@@ -74,6 +75,7 @@ public class Action2Script : MonoBehaviour {
 			voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
+			SFXVolume = gameController.GetComponent<GameController> ().SFXVolume;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
@@ -85,6 +87,12 @@ public class Action2Script : MonoBehaviour {
 
 		//see ActionScriptTemplate.cs for my explination on this change (Alex Jungroth)
 
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
+		}
+
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
 
 			totalCost = (int)(baseCost * costMultiplier);
@@ -95,19 +103,14 @@ public class Action2Script : MonoBehaviour {
         else
         {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
-
+			SFX.PlayAudioClip(15,0,SFXVolume);
 			//If this isn't called then the buttons will not be removed (Alex Jungroth)
 			uiController.GetComponent<UI_Script>().activateAction2UI2();
 
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
         }
-
-		//Sets up SFX controller (Brian Mah)
-		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
-		if (SFX == null) {
-			Debug.LogError("Could not find SFX controller");
-		}
+	
 	}
 	
 	// Update is called once per frame
@@ -268,7 +271,10 @@ public class Action2Script : MonoBehaviour {
 						
 						//increases the base resistance of the voter by 1% (Alex Jungroth)
 						voters[selectedVoter].GetComponent<VoterVariables>().baseResistance += voters[selectedVoter].GetComponent<VoterVariables>().baseResistance * 0.01f;
-						
+						SFX.PlayAudioClip (13, 0, SFXVolume);
+					}
+					else{
+						SFX.PlayAudioClip (14, 0, SFXVolume);
 					}
 				}
 

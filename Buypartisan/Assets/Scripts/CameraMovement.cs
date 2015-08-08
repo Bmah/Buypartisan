@@ -10,6 +10,7 @@ public class CameraMovement : MonoBehaviour {
 	
 	public Transform target;
 	private float distance = 5.0f;
+	private float resetDistance;
 	public float radius = 5.0f;
 	public float xSpeed = 120.0f;
 	public float ySpeed = 120.0f;
@@ -61,6 +62,7 @@ public class CameraMovement : MonoBehaviour {
 		float rad = Vector3.Distance(pivotOriginalPosition, gridStartingPoint);
 		rad += radius;
 		distance = rad;
+		resetDistance = distance;
 		float xPos = rad * Mathf.Sin (225.0f * Mathf.Deg2Rad) * Mathf.Sin (45.0f * Mathf.Deg2Rad);
 		float yPos = rad * Mathf.Cos (45.0f * Mathf.Deg2Rad);
 		float zPos = rad * Mathf.Cos (225.0f * Mathf.Deg2Rad) * Mathf.Sin (45.0f * Mathf.Deg2Rad);
@@ -73,7 +75,6 @@ public class CameraMovement : MonoBehaviour {
 	}
 	
 	void Update () {
-		
 		// These movements include the camera AND THE camera's rotation anchor
 		// F key forces camera back to default position and angle
 		// THIS IS NOT DYNAMIC, the default position is set manually, must change if the grid changes
@@ -83,6 +84,7 @@ public class CameraMovement : MonoBehaviour {
 			transform.eulerAngles = new Vector3(45f, 45f, 0f);
 			target.transform.position = pivotOriginalPosition; //new Vector3(1.5f, 1.5f, 1.5f);
 			target.transform.eulerAngles = new Vector3(45f, 45f, 0f);
+			distance = resetDistance;
 			
 			//Resets the camera scrolling back to origin
 			x = 45f;

@@ -45,7 +45,7 @@ public class Action0Script : MonoBehaviour {
 
 	//Allows the Action to play sounds (Brian Mah)
 	private SFXController SFX;
-
+	private float SFXVolume;
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -59,6 +59,7 @@ public class Action0Script : MonoBehaviour {
 			voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
+			SFXVolume = gameController.GetComponent<GameController> ().SFXVolume;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
@@ -78,9 +79,15 @@ public class Action0Script : MonoBehaviour {
 
 		this.transform.position = voters [selectedVoter].transform.position;
 
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
+		}
+
 		if (players[currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
-
+			SFX.PlayAudioClip(15,0,SFXVolume);
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
@@ -88,12 +95,6 @@ public class Action0Script : MonoBehaviour {
         {
             totalCost = (int)(baseCost * costMultiplier);
         }
-
-		//Sets up SFX controller (Brian Mah)
-		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
-		if (SFX == null) {
-			Debug.LogError("Could not find SFX controller");
-		}
 	}
 	
 	// Update is called once per frame
@@ -141,10 +142,14 @@ public class Action0Script : MonoBehaviour {
 			if (Input.GetMouseButtonDown(0)) {
 				for (int i = 0; i < voters.Length; i++) {
 					if (voters [i].GetComponent<VoterVariables> ().GetSelected ()) {
-							
 						if (Random.value >= successRate)
 						{
+							SFX.PlayAudioClip (13, 0, SFXVolume);
 							voters [i].GetComponent<VoterVariables> ().votes = 0;
+						}
+						else{
+							//if the power fails play the fail sfx
+							SFX.PlayAudioClip (14, 0, SFXVolume);
 						}
 						foundVoter = true;
 						voterSelected = true;
