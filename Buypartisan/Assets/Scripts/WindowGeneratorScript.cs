@@ -482,10 +482,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 			voteTotals = "";
 			victoryPointTotals = "";
 
-
-			//displays to the TV that it is player 1's turn
-			uiController.alterTextBox("It is the " + gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName +
-				" Party's turn.\n" + gameController.displayPlayerStats());
 			uiController.SetPlayerAndParyNameInUpperLeft(gameController.players[0].GetComponent<PlayerVariables>().politicalPartyName, 1);
 
 			//disables the win screens
