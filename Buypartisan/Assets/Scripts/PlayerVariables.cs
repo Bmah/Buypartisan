@@ -41,7 +41,6 @@ public class PlayerVariables : MonoBehaviour {
 	public Renderer sphereRenderer;
 	public GameObject sphereController;
 	public Color transparentColor;
-	private UI_Script UIController;
 
 	private bool selected = false;
 	string holdingText;
@@ -64,10 +63,7 @@ public class PlayerVariables : MonoBehaviour {
 		this.shadowPositions.Clear ();
 
 		//gets the players render (Alex Jungroth)
-		playerRenderer = this.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer> ();
-
-		//gets the UI Controller script (Alex Jungroth)
-		UIController = GameObject.FindGameObjectWithTag ("UI_Controller").GetComponent<UI_Script> ();
+		playerRenderer = this.transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Renderer> ();
 
 		//sets up the spheres for the players (Daniel Schlesinger)
 		sphereSize = 10 * sphereSize;
@@ -135,8 +131,11 @@ public class PlayerVariables : MonoBehaviour {
 		if(!isShadowPosition)
 		{
 			ToggleSelected ();
-			holdingText = UIController.visualText.text;
-			UIController.alterTextBox ("Money: " + money + "\nVotes: " + votes);
+
+			//This was interfering with the parites money being updated after an action (Alex Jungroth)
+			popUpTvScript.SetPopupTextBox("Money: " + money + "\nVotes: " + votes);
+			popUpTvScript.StartWaitingForUIToolTip();
+
 		}
 	}
 	
@@ -151,7 +150,9 @@ public class PlayerVariables : MonoBehaviour {
 		if(!isShadowPosition)
 		{
 			ToggleSelected ();
-			UIController.alterTextBox (holdingText);
+
+			//This was interfering with the parites money being updated after an action (Alex Jungroth)
+			popUpTvScript.ExitUIToolTip();
 		}
 	}
 

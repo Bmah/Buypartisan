@@ -14,7 +14,6 @@ public class VoterVariables : MonoBehaviour {
 	public Material unselectedTexture;
 	private Renderer voterRenderer;
 	public Collider Coll;//not sure if needed
-	private UI_Script UIController;
 
 	//holds the game controller (Alex Jungroth)
 	private GameController gameController;
@@ -51,9 +50,7 @@ public class VoterVariables : MonoBehaviour {
 		voterRenderer = this.transform.GetChild (0).transform.GetChild(1).gameObject.GetComponent<Renderer> ();	//changed this to obtain the model's renderer.
 		Coll = this.GetComponent<Collider> ();
 		powerType = 1; //hardcoded for testing suppression, make sure to remove when code in place for buttons assigning
-		//ControllerSquared = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
-		UIController = GameObject.FindGameObjectWithTag ("UI_Controller").GetComponent<UI_Script> ();
-
+		
 		gameController = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameController>();
 
 		//initialization for voter Owner system
@@ -159,8 +156,10 @@ public class VoterVariables : MonoBehaviour {
 	/// </summary>
 	void OnMouseEnter(){
 		ToggleSelected ();
-		holdingText = UIController.visualText.text;
-		UIController.alterTextBox ("Money: " + money + "\nVotes: " + votes);
+
+		//This was interfering with the parites money being updated after an action (Alex Jungroth)
+		popUpTvScript.SetPopupTextBox("Money: " + money + "\nVotes: " + votes);
+		popUpTvScript.StartWaitingForUIToolTip();
 	}
 
 	/// <summary>
@@ -170,7 +169,9 @@ public class VoterVariables : MonoBehaviour {
 	/// </summary>
 	void OnMouseExit(){
 		ToggleSelected ();
-		UIController.alterTextBox (holdingText);
+
+		//This was interfering with the parites money being updated after an action (Alex Jungroth)
+		popUpTvScript.ExitUIToolTip();
 	}
 
 	/// <summary>
