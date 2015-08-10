@@ -29,6 +29,9 @@ public class TitleScreenUIScript : MonoBehaviour
 	//holds the script that the gameController will take the setting values from (Alex Jungroth)
 	public TitleScreenSettings gameSettings;
 
+	//holds the settings from the Game Controller (Alex Jungroth)
+	public RememberSettings rememberSettings;
+
 	//holds the music controller (Alex Jungroth)
 	public MusicController musicPlayer;
 
@@ -114,6 +117,33 @@ public class TitleScreenUIScript : MonoBehaviour
 
 		//disable the setting cover at the start (Alex Jungroth)
 		settingsCover.SetActive(false);
+
+		//gets the settings from the remember settings if it exists (Alex Jungroth)
+		try 
+		{
+			rememberSettings = GameObject.FindGameObjectWithTag("RememberSettings").GetComponent<RememberSettings>();
+		}
+		catch
+		{
+			
+		}
+		if (rememberSettings != null) 
+		{
+			//gets the following variables from the title UI settings (Alex Jungroth)
+			gridSize = rememberSettings.gridSize;
+			totalRounds = rememberSettings.totalRounds;
+			totalElections = rememberSettings.totalElections;
+			totalVoters = rememberSettings.totalVoters;
+			musicVolume = rememberSettings.musicVolume;
+			sFXVolume = rememberSettings.sFXVolume;
+
+			gridSizeSlider.GetComponent<Slider>().value = gridSize;
+			roundsSlider.GetComponent<Slider>().value = totalRounds;
+			electionSlider.GetComponent<Slider>().value = totalElections;
+			voterCounterSlider.GetComponent<Slider>().value = totalVoters;
+			musicSlider.GetComponent<Slider>().value = musicVolume;
+			sFXSlider.GetComponent<Slider>().value = sFXVolume;
+		}
 	}
 	
 	// Update is called once per frame
