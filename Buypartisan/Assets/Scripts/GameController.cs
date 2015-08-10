@@ -40,8 +40,12 @@ public class GameController : MonoBehaviour {
 	
 	//holds the title screen settings (Alex Jungroth)
 	private TitleScreenSettings gameSettings;
-	
+
+	//holds the title screen settings during the game (Alex Jungroth)
+	private RememberSettings rememberSettings;
+
 	public UI_Script UIController;
+	public PopUpTVScript popUpTVScript;
 
 	//holds the WindowGenerator script (Alex Jungroth)
 	public WindowGeneratorScript WindowGenerator;
@@ -336,6 +340,11 @@ public class GameController : MonoBehaviour {
 			{
 				gameMusic.audioChannels[0].volume = gameSettings.musicVolume;
 
+				//stores the settings into the Remember Settings Manager (Alex Jungroth)
+				rememberSettings = GameObject.FindGameObjectWithTag("RememberSettings").GetComponent<RememberSettings>();
+
+				rememberSettings.SaveSettings(gridSize, numberOfRounds, numberOfElections, NumVoters, gameSettings.musicVolume, SFXVolume);
+
 				//sets music settings recieved to false so it doesn't update 
 				//the volume every time update is called (Alex Jungroth)
 				musicSettingsReceived = false;
@@ -602,6 +611,10 @@ public class GameController : MonoBehaviour {
 				{
 					players[i].GetComponent<PlayerVariables>().chosenPolicy = 0;
 				}//for
+
+				//updates the winner's money on the main TV and displays to the TV that it is player 1's turn (Alex Jungroth)
+				UIController.alterTextBox("It is the " + players[0].GetComponent<PlayerVariables>().politicalPartyName +
+					" Party's turn.\n" + displayPlayerStats());
 
 				//resets the game state to action turns (Alex Jungroth)
 				currentState = GameState.ActionTurns;

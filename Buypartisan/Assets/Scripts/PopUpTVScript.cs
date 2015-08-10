@@ -11,8 +11,8 @@ public class PopUpTVScript : MonoBehaviour {
 	private float yLocation = -1f;
 	private float downyloaction = -1f;
 
-	public float scrollSpeed = 1000f;
-	public float timeTillToolTip = 1.5f;
+	private float scrollSpeed = 1000f;
+	private float timeTillToolTip = 1.5f;
 	private float TimeOfToolTip = -1f;
 
 	private bool mouseIsOnButton = false;
@@ -40,9 +40,11 @@ public class PopUpTVScript : MonoBehaviour {
 		}
 
 		if (bringPopupDown && this.transform.position.y > downyloaction) {
+
 			this.transform.Translate(new Vector3(0,-scrollSpeed * ((this.transform.position.y - downyloaction)/250),0)*Time.deltaTime);
 		}
 		else if(!bringPopupDown && this.transform.position.y < yLocation){
+
 			this.transform.Translate(new Vector3(0,scrollSpeed * ((yLocation - this.transform.position.y)/250),0)*Time.deltaTime);
 		}
 	}
@@ -54,6 +56,15 @@ public class PopUpTVScript : MonoBehaviour {
 	public void StartWaitingForUIToolTip(){
 		mouseIsOnButton = true;
 		TimeOfToolTip = Time.time + timeTillToolTip;
+	}
+
+	/// <summary>
+	/// I need this for when you mouse over voters and players.
+	/// </summary>
+	public void ShortWaitForUIToolTip()
+	{
+		mouseIsOnButton = true;
+		TimeOfToolTip = Time.time + timeTillToolTip * 0.5f;
 	}
 
 	public void ExitUIToolTip(){
