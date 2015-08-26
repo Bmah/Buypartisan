@@ -94,8 +94,12 @@ public class UI_Script : MonoBehaviour {
 	public float titleHeight = 114f;
 	public float bottomTVHeight = 300f;
 
+	//Text at the top left of the screen which displays player and party
 	public Text UpperLeftDisplayPlayer;
 	public Text UpperLeftDisplayParty;
+
+	//controls the tv animations
+	public Animator tvAnimator;
 
 	// Use this for initialization
 	void Start () {
@@ -626,6 +630,7 @@ public class UI_Script : MonoBehaviour {
 
 	public void alterTextBox(string inputText)
 	{
+		tvAnimator.SetTrigger ("GenericStatic");
 		visualText.text = inputText;
 	}
 
