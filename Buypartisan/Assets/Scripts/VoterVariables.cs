@@ -75,7 +75,6 @@ public class VoterVariables : MonoBehaviour {
 				ToggleSelected();
 
 				ToggleSelected();
-
 			}
 		}
 
