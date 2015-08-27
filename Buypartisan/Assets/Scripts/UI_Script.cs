@@ -628,9 +628,19 @@ public class UI_Script : MonoBehaviour {
 		providenceToolTip.SetActive(false);
 	}
 
+	public void AlterTextBoxAndDisplayNewsflash(string text){
+		Debug.Log ("Newsflash animation set!");
+		tvAnimator.SetTrigger ("NewsflashAnimation");
+		tvAnimator.SetBool ("ReturnToDefault",false);
+		alterTextBox (text);
+	}
+
+	public void ReturnTVtoDefaultState(){
+		tvAnimator.SetBool ("ReturnToDefault",true);
+	}
+
 	public void alterTextBox(string inputText)
 	{
-		tvAnimator.SetTrigger ("GenericStatic");
 		visualText.text = inputText;
 	}
 
