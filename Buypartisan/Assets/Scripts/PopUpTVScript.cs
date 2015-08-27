@@ -20,7 +20,11 @@ public class PopUpTVScript : MonoBehaviour {
 	public bool bringPopupDown = false;
 
 	public Text popUpText;
-	
+
+	public GameObject Confirm, Cancel;
+	private bool prevConfirm, prevCancel;
+	private bool ConfirmCancelButtonLock = false;
+
 	/// <summary>
 	/// gets y location of the popupTV
 	/// sets the location for it when it moves down.
@@ -28,24 +32,47 @@ public class PopUpTVScript : MonoBehaviour {
 	void Start () {
 		yLocation = this.transform.position.y;
 		downyloaction = yLocation - 250;
+		prevConfirm = Confirm.activeSelf;
+		prevCancel = Cancel.activeSelf;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (mouseIsOnButton && Time.time > TimeOfToolTip) {
+		if (Confirm.activeSelf && !prevConfirm) {
 			bringPopupDown = true;
+			ConfirmCancelButtonLock = true;
 		}
-		else if (!mouseIsOnButton) {
+		else if (!Confirm.activeSelf && prevConfirm) {
 			bringPopupDown = false;
+			ConfirmCancelButtonLock = false;
+		}
+		else if (Cancel.activeSelf && !prevCancel) {
+			bringPopupDown = true;
+			ConfirmCancelButtonLock = true;
+		}
+		else if (!Cancel.activeSelf && prevCancel) {
+			bringPopupDown = false;
+			ConfirmCancelButtonLock = false;
+		}
+
+		prevCancel = Cancel.activeSelf;
+		prevConfirm = Confirm.activeSelf;
+
+
+		if (!ConfirmCancelButtonLock) {
+			if (mouseIsOnButton && Time.time > TimeOfToolTip) {
+				bringPopupDown = true;
+			} else if (!mouseIsOnButton) {
+				bringPopupDown = false;
+			}
 		}
 
 		if (bringPopupDown && this.transform.position.y > downyloaction) {
 
-			this.transform.Translate(new Vector3(0,-scrollSpeed * ((this.transform.position.y - downyloaction)/250),0)*Time.deltaTime);
-		}
-		else if(!bringPopupDown && this.transform.position.y < yLocation){
+			this.transform.Translate (new Vector3 (0, -scrollSpeed * ((this.transform.position.y - downyloaction) / 250), 0) * Time.deltaTime);
+		} else if (!bringPopupDown && this.transform.position.y < yLocation) {
 
-			this.transform.Translate(new Vector3(0,scrollSpeed * ((yLocation - this.transform.position.y)/250),0)*Time.deltaTime);
+			this.transform.Translate (new Vector3 (0, scrollSpeed * ((yLocation - this.transform.position.y) / 250), 0) * Time.deltaTime);
 		}
 	}
 
