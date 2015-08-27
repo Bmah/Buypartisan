@@ -66,6 +66,13 @@ public class UI_Script : MonoBehaviour {
 	//holds the choose your token screen
 	public GameObject chooseTokenScreen;
 
+	//holds the gameobjects that are responsible for showing the partys' tool tips
+	public GameObject espressoToolTip;
+	public GameObject droneToolTip;
+	public GameObject applePieToolTip;
+	public GameObject windyToolTip;
+	public GameObject providenceToolTip;
+
 	//holds the player sliders for the choose your token screen
 	public Slider player1TokenSlider;
 	public Slider player2TokenSlider;
@@ -87,8 +94,12 @@ public class UI_Script : MonoBehaviour {
 	public float titleHeight = 114f;
 	public float bottomTVHeight = 300f;
 
+	//Text at the top left of the screen which displays player and party
 	public Text UpperLeftDisplayPlayer;
 	public Text UpperLeftDisplayParty;
+
+	//controls the tv animations
+	public Animator tvAnimator;
 
 	// Use this for initialization
 	void Start () {
@@ -608,6 +619,24 @@ public class UI_Script : MonoBehaviour {
 	{
 		chooseTokenScreen.SetActive(false);
 		confirmTokenButton.SetActive(false);
+
+		//disables the partys' tool tips
+		espressoToolTip.SetActive(false);
+		droneToolTip.SetActive(false);
+		applePieToolTip.SetActive(false);
+		windyToolTip.SetActive(false);
+		providenceToolTip.SetActive(false);
+	}
+
+	public void AlterTextBoxAndDisplayNewsflash(string text){
+		Debug.Log ("Newsflash animation set!");
+		tvAnimator.SetTrigger ("NewsflashAnimation");
+		tvAnimator.SetBool ("ReturnToDefault",false);
+		alterTextBox (text);
+	}
+
+	public void ReturnTVtoDefaultState(){
+		tvAnimator.SetBool ("ReturnToDefault",true);
 	}
 
 	public void alterTextBox(string inputText)

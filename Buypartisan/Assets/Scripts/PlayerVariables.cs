@@ -97,7 +97,7 @@ public class PlayerVariables : MonoBehaviour {
 
 	void Update () {
 		//checks if the position has changed from previous update
-		if ((prevPosition != this.transform.position || prevSphereSize != sphereSize) && (gameController.isActionTurns))
+		if ((prevPosition != this.transform.position || prevSphereSize != sphereController.transform.localScale.x) && (gameController.isActionTurns))
 		{
 			gameController.UpdateVoterCanidates ();
 		}// if position is not the previous position
