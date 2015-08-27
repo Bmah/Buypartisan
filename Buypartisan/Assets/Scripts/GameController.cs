@@ -800,6 +800,9 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Plays the start of turn audio.
+	/// </summary>
 	void PlayStartOfTurnAudio ()
 	{
 		switch (players [currentPlayerTurn].GetComponent<PlayerVariables> ().politicalPartyName) {
@@ -821,8 +824,14 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Displaies the player stats.
+	/// </summary>
+	/// <returns>The player stats.</returns>
 	public string displayPlayerStats()
 	{
+		UIController.tvAnimator.SetTrigger ("StatsAnimation");
+
 		//gets the current players money
 		currentPlayerMoney = players[currentPlayerTurn].GetComponent<PlayerVariables> ().money; 
 		
