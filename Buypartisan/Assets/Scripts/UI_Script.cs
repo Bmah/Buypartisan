@@ -94,8 +94,12 @@ public class UI_Script : MonoBehaviour {
 	public float titleHeight = 114f;
 	public float bottomTVHeight = 300f;
 
+	//Text at the top left of the screen which displays player and party
 	public Text UpperLeftDisplayPlayer;
 	public Text UpperLeftDisplayParty;
+
+	//controls the tv animations
+	public Animator tvAnimator;
 
 	// Use this for initialization
 	void Start () {
@@ -622,6 +626,17 @@ public class UI_Script : MonoBehaviour {
 		applePieToolTip.SetActive(false);
 		windyToolTip.SetActive(false);
 		providenceToolTip.SetActive(false);
+	}
+
+	public void AlterTextBoxAndDisplayNewsflash(string text){
+		Debug.Log ("Newsflash animation set!");
+		tvAnimator.SetTrigger ("NewsflashAnimation");
+		tvAnimator.SetBool ("ReturnToDefault",false);
+		alterTextBox (text);
+	}
+
+	public void ReturnTVtoDefaultState(){
+		tvAnimator.SetBool ("ReturnToDefault",true);
 	}
 
 	public void alterTextBox(string inputText)
