@@ -66,6 +66,13 @@ public class UI_Script : MonoBehaviour {
 	//holds the choose your token screen
 	public GameObject chooseTokenScreen;
 
+	//holds the gameobjects that are responsible for showing the partys' tool tips
+	public GameObject espressoToolTip;
+	public GameObject droneToolTip;
+	public GameObject applePieToolTip;
+	public GameObject windyToolTip;
+	public GameObject providenceToolTip;
+
 	//holds the player sliders for the choose your token screen
 	public Slider player1TokenSlider;
 	public Slider player2TokenSlider;
@@ -87,8 +94,12 @@ public class UI_Script : MonoBehaviour {
 	public float titleHeight = 114f;
 	public float bottomTVHeight = 300f;
 
+	//Text at the top left of the screen which displays player and party
 	public Text UpperLeftDisplayPlayer;
 	public Text UpperLeftDisplayParty;
+
+	//controls the tv animations
+	public Animator tvAnimator;
 
 	// Use this for initialization
 	void Start () {
@@ -608,6 +619,24 @@ public class UI_Script : MonoBehaviour {
 	{
 		chooseTokenScreen.SetActive(false);
 		confirmTokenButton.SetActive(false);
+
+		//disables the partys' tool tips
+		espressoToolTip.SetActive(false);
+		droneToolTip.SetActive(false);
+		applePieToolTip.SetActive(false);
+		windyToolTip.SetActive(false);
+		providenceToolTip.SetActive(false);
+	}
+
+	public void AlterTextBoxAndDisplayNewsflash(string text){
+		Debug.Log ("Newsflash animation set!");
+		tvAnimator.SetTrigger ("NewsflashAnimation");
+		tvAnimator.SetBool ("ReturnToDefault",false);
+		alterTextBox (text);
+	}
+
+	public void ReturnTVtoDefaultState(){
+		tvAnimator.SetBool ("ReturnToDefault",true);
 	}
 
 	public void alterTextBox(string inputText)
@@ -842,5 +871,11 @@ public class UI_Script : MonoBehaviour {
         text4.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().actionName + "\n$" + 
         text5.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+
+		//I am adding in the code for actions 6,7, and 8. I will leave 9 commented out for later. (Alex Jungroth)
+		text6.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[6].GetComponent<Action6Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		text7.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[7].GetComponent<Action7Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		text8.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[8].GetComponent<Action8Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		//text9.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[9].GetComponent<Action9Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
     }
 }

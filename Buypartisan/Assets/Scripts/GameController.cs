@@ -40,8 +40,12 @@ public class GameController : MonoBehaviour {
 	
 	//holds the title screen settings (Alex Jungroth)
 	private TitleScreenSettings gameSettings;
-	
+
+	//holds the title screen settings during the game (Alex Jungroth)
+	private RememberSettings rememberSettings;
+
 	public UI_Script UIController;
+	public PopUpTVScript popUpTVScript;
 
 	//holds the WindowGenerator script (Alex Jungroth)
 	public WindowGeneratorScript WindowGenerator;
@@ -336,6 +340,11 @@ public class GameController : MonoBehaviour {
 			{
 				gameMusic.audioChannels[0].volume = gameSettings.musicVolume;
 
+				//stores the settings into the Remember Settings Manager (Alex Jungroth)
+				rememberSettings = GameObject.FindGameObjectWithTag("RememberSettings").GetComponent<RememberSettings>();
+
+				rememberSettings.SaveSettings(gridSize, numberOfRounds, numberOfElections, NumVoters, gameSettings.musicVolume, SFXVolume);
+
 				//sets music settings recieved to false so it doesn't update 
 				//the volume every time update is called (Alex Jungroth)
 				musicSettingsReceived = false;
@@ -385,6 +394,8 @@ public class GameController : MonoBehaviour {
 				playerTakingAction = false;
 				Debug.Log ("Round " + (roundCounter + 1) + " begin!");
 				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+
+				PlayStartOfTurnAudio ();
 
 				//does the tallying before the first player's turn starts (Alex Jungroth)
 				tallyRoutine.preTurnTalling ();
@@ -583,13 +594,14 @@ public class GameController : MonoBehaviour {
 							//If the party's policy was well received then the party gains money equal to 10% of its total money (Alex Jungroth)
 							players[electionWinner].GetComponent<PlayerVariables>().money = (int) Mathf.Ceil
 								(players[electionWinner].GetComponent<PlayerVariables>().money  * tenPercentIncrease);
+							SFX.PlayAudioClip (13,0,SFXVolume);
 						}
 						else
 						{
 							//If the party's policy was poorly received then the party loses money equal to 10% of its total money (Alex Jungroth)
 							players[electionWinner].GetComponent<PlayerVariables>().money = (int) Mathf.Floor
 								(players[electionWinner].GetComponent<PlayerVariables>().money  * tenPercentDecrease);
-
+							SFX.PlayAudioClip (14,0,SFXVolume);
 						}//else
 					}//if
 				}//if
@@ -599,6 +611,10 @@ public class GameController : MonoBehaviour {
 				{
 					players[i].GetComponent<PlayerVariables>().chosenPolicy = 0;
 				}//for
+
+				//updates the winner's money on the main TV and displays to the TV that it is player 1's turn (Alex Jungroth)
+				UIController.alterTextBox("It is the " + players[0].GetComponent<PlayerVariables>().politicalPartyName +
+					" Party's turn.\n" + displayPlayerStats());
 
 				//resets the game state to action turns (Alex Jungroth)
 				currentState = GameState.ActionTurns;
@@ -784,6 +800,9 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Plays the start of turn audio.
+	/// </summary>
 	void PlayStartOfTurnAudio ()
 	{
 		switch (players [currentPlayerTurn].GetComponent<PlayerVariables> ().politicalPartyName) {
@@ -805,8 +824,14 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Displaies the player stats.
+	/// </summary>
+	/// <returns>The player stats.</returns>
 	public string displayPlayerStats()
 	{
+		UIController.tvAnimator.SetTrigger ("StatsAnimation");
+
 		//gets the current players money
 		currentPlayerMoney = players[currentPlayerTurn].GetComponent<PlayerVariables> ().money; 
 		
