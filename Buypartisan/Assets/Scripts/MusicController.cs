@@ -111,7 +111,7 @@ public class MusicController : MonoBehaviour {
 	public void PlayElectionTheme(){
 		float electionVolume = musicVolume;
 		if (musicVolume != 0f) {
-			electionVolume += 0.4;
+			electionVolume += 0.4f;
 		}
 		if(electionVolume > 1f){
 			electionVolume = 1f;
