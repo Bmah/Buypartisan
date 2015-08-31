@@ -109,7 +109,14 @@ public class MusicController : MonoBehaviour {
 	}
 
 	public void PlayElectionTheme(){
-		audioChannels[1].PlayOneShot(musicTracks[2],musicVolume);
+		float electionVolume = musicVolume;
+		if (musicVolume != 0f) {
+			electionVolume += 0.4;
+		}
+		if(electionVolume > 1f)
+			electionVolume = 1f;
+		}
+	audioChannels[1].PlayOneShot(musicTracks[2],electionVolume);
 		NewPlayTime = Time.time + ElectionThemeTime;
 		CustomLoopForElectionTheme = true;
 	}
