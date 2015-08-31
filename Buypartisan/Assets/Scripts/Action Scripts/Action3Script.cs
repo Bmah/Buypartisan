@@ -81,6 +81,10 @@ public class Action3Script : MonoBehaviour {
 	//holds the number needed for this action to succeed (Alex Jungroth)
 	public float successRate = 0.25f;
 
+	//Allows the Action to play sounds (Brian Mah)
+	private SFXController SFX;
+	private float SFXVolume;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -92,6 +96,7 @@ public class Action3Script : MonoBehaviour {
 			//			voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
+			SFXVolume = gameController.GetComponent<GameController> ().SFXVolume;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
@@ -136,6 +141,12 @@ public class Action3Script : MonoBehaviour {
 		if (string.Compare((players[currentPlayer].GetComponent<PlayerVariables> ().politicalPartyName), "Drone")== 0)
 			baseCost = baseCost - baseCost / 4;
 
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
+		}
+
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
 
 			totalCost = (int)(baseCost * costMultiplier);
@@ -144,6 +155,7 @@ public class Action3Script : MonoBehaviour {
         else
         {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
+			SFX.PlayAudioClip(15,0,SFXVolume);
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			if (marker != null)
 				Destroy (marker);
@@ -420,6 +432,11 @@ public class Action3Script : MonoBehaviour {
 
 				//adds the shadow position to the players array list of shadowpositions
 				players[currentPlayer].GetComponent<PlayerVariables>().shadowPositions.Add(shadowPosition);
+
+				SFX.PlayAudioClip (13, 0, SFXVolume);
+			}
+			else{
+				SFX.PlayAudioClip (14, 0, SFXVolume);
 			}
 
 			//removes the marker
@@ -449,6 +466,11 @@ public class Action3Script : MonoBehaviour {
 		//puts the current player and the event number into the action counter of the event controller
 		//Brian Mah
 		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [3]++; // the second number should be the number of the action!
+
+		//updates the tv so the users know whose turn it is (Alex Jungroth)
+		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +
+			" party's turn.\n" + gameController.GetComponent<GameController>().displayPlayerStats());
+
 		Destroy(gameObject);
 	}
 

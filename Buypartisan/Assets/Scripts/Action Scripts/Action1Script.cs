@@ -53,6 +53,10 @@ public class Action1Script : MonoBehaviour {
 	[System.NonSerialized]
 	public bool cancelButton = false;
 
+	//Allows the Action to play sounds (Brian Mah)
+	private SFXController SFX;
+	private float SFXVolume;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -66,6 +70,7 @@ public class Action1Script : MonoBehaviour {
 		if (gameController != null) {
 			players = gameController.GetComponent<GameController> ().players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
+			SFXVolume = gameController.GetComponent<GameController> ().SFXVolume;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
@@ -78,8 +83,15 @@ public class Action1Script : MonoBehaviour {
 
 		//see ActionScriptTemplate.cs for my explanation on this change (Alex Jungroth)
 
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
+		}
+
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
+			SFX.PlayAudioClip(15,0,SFXVolume);
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
@@ -87,7 +99,6 @@ public class Action1Script : MonoBehaviour {
         {
             visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject);
         }
-		
 	}
 	
 	// Update is called once per frame
@@ -230,6 +241,13 @@ public class Action1Script : MonoBehaviour {
 		//puts the current player and the event number into the action counter of the event controller
 		//Brian Mah
 		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [1]++; // the second number should be the number of the action!
+
+		//updates the tv so the users know whose turn it is (Alex Jungroth)
+		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +
+			" party's turn.\n" + gameController.GetComponent<GameController>().displayPlayerStats());
+
+		SFX.PlayAudioClip (13, 0, SFXVolume);
+
 		Destroy(gameObject);
 	}
 }

@@ -41,10 +41,8 @@ public class PlayerVariables : MonoBehaviour {
 	public Renderer sphereRenderer;
 	public GameObject sphereController;
 	public Color transparentColor;
-	private UI_Script UIController;
 
 	private bool selected = false;
-	string holdingText;
 
 	//holds whether or not this instance of the player is a shadow position (Alex Jungroth)
 	public bool isShadowPosition = false;
@@ -64,10 +62,7 @@ public class PlayerVariables : MonoBehaviour {
 		this.shadowPositions.Clear ();
 
 		//gets the players render (Alex Jungroth)
-		playerRenderer = this.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer> ();
-
-		//gets the UI Controller script (Alex Jungroth)
-		UIController = GameObject.FindGameObjectWithTag ("UI_Controller").GetComponent<UI_Script> ();
+		playerRenderer = this.transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Renderer> ();
 
 		//sets up the spheres for the players (Daniel Schlesinger)
 		sphereSize = 10 * sphereSize;
@@ -102,7 +97,7 @@ public class PlayerVariables : MonoBehaviour {
 
 	void Update () {
 		//checks if the position has changed from previous update
-		if ((prevPosition != this.transform.position || prevSphereSize != sphereSize) && (gameController.isActionTurns))
+		if ((prevPosition != this.transform.position || prevSphereSize != sphereController.transform.localScale.x) && (gameController.isActionTurns))
 		{
 			gameController.UpdateVoterCanidates ();
 		}// if position is not the previous position
@@ -135,8 +130,12 @@ public class PlayerVariables : MonoBehaviour {
 		if(!isShadowPosition)
 		{
 			ToggleSelected ();
-			holdingText = UIController.visualText.text;
-			UIController.alterTextBox ("Money: " + money + "\nVotes: " + votes);
+
+			//This was interfering with the parites money being updated after an action (Alex Jungroth)
+			gameController.GetComponent<GameController>().popUpTVScript.GetComponent<PopUpTVScript>().SetPopupTextBox("Money: " + money + "\nVotes: " + votes +
+				"\nPoints: " + victoryPoints);
+			gameController.GetComponent<GameController>().popUpTVScript.GetComponent<PopUpTVScript>().ShortWaitForUIToolTip();
+
 		}
 	}
 	
@@ -148,10 +147,11 @@ public class PlayerVariables : MonoBehaviour {
 	void OnMouseExit()
 	{
 		//shadow positions should not be moused over (Alex Jungroth)
-		if(!isShadowPosition)
-		{
+		if (!isShadowPosition) {
 			ToggleSelected ();
-			UIController.alterTextBox (holdingText);
+
+			//This was interfering with the parites money being updated after an action (Alex Jungroth)
+			gameController.GetComponent<GameController> ().popUpTVScript.GetComponent<PopUpTVScript> ().ExitUIToolTip ();
 		}
 	}
 

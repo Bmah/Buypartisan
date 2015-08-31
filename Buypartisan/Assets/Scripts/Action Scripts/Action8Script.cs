@@ -31,7 +31,11 @@ public class Action8Script : MonoBehaviour {
 	public bool cancelButton = false;
 
 	private RandomEventControllerScript eventController;
-	
+
+	//Allows the Action to play sounds (Brian Mah)
+	private SFXController SFX;
+	private float SFXVolume;
+
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindWithTag ("GameController");
@@ -43,6 +47,7 @@ public class Action8Script : MonoBehaviour {
 			voters = gameController.GetComponent<GameController> ().voters;
 			players = gameController.GetComponent<GameController> ().players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
+			SFXVolume = gameController.GetComponent<GameController> ().SFXVolume;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
@@ -50,6 +55,13 @@ public class Action8Script : MonoBehaviour {
 		//Disables the Action UI buttons
 		uiController.GetComponent<UI_Script>().disableActionButtons();
 		uiController.GetComponent<UI_Script> ().activateAction5UI ();
+
+		//Sets up SFX controller (Brian Mah)
+		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+		if (SFX == null) {
+			Debug.LogError("Could not find SFX controller");
+		}
+
 		//The start function will not end until gets to the end
 		//if you want to destroy the object in the start function,
 		//it has to be the last thing you do, otherwise the flow of
@@ -61,6 +73,7 @@ public class Action8Script : MonoBehaviour {
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
 		if (players[currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
+			SFX.PlayAudioClip(15,0,SFXVolume);
 			
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
@@ -116,6 +129,13 @@ public class Action8Script : MonoBehaviour {
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;  // Money is subtracted
 		//puts the current player and the event number into the action Counter of the event controller
 		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [0]++; // the second number should be the number of the action!
+
+		//updates the tv so the users know whose turn it is (Alex Jungroth)
+		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +
+			" party's turn.\n" + gameController.GetComponent<GameController>().displayPlayerStats());
+
+		SFX.PlayAudioClip (13, 0, SFXVolume);
+
 		Destroy(gameObject);
 	}
 }
