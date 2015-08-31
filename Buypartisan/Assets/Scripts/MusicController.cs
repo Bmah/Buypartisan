@@ -113,7 +113,7 @@ public class MusicController : MonoBehaviour {
 		if (musicVolume != 0f) {
 			electionVolume += 0.4;
 		}
-		if(electionVolume > 1f)
+		if(electionVolume > 1f){
 			electionVolume = 1f;
 		}
 	audioChannels[1].PlayOneShot(musicTracks[2],electionVolume);
