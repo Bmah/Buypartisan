@@ -132,34 +132,10 @@ public class GameController : MonoBehaviour {
 	/// Adds in Voter Array
 	/// </summary>
 	void Start () {
-		//VoterVariables VoterVariablesController = GameObject.FindGameObjectWithTag("Voter(Clone)").GetComponent<GameController>();
-		
-		//gets the title screen settings script (Alex Jungroth)
-		try {
-			gameSettings = GameObject.FindGameObjectWithTag ("TitleSettings").GetComponent<TitleScreenSettings>();
-		}
-		catch  {
-			Debug.LogError ("Could not find the title screen settings, because you did not start from the title screen!");
-			
-		}
-		if (gameSettings == null) 
-		{
-			//throws an error if the gameController did not receive the title screen settings (Alex Jungroth)
-			Debug.Log("You may continue play testing!");
-			
-		} 
-		else 
-		{
-			//gets the following variables from the title UI settings (Alex Jungroth)
-			gridSize = gameSettings.gridSize;
-			numberOfRounds = gameSettings.totalRounds;
-			numberOfElections = gameSettings.totalElections;
-			NumVoters = gameSettings.totalVoters;
-			//the music has to set during the update function (Alex Jungroth)
-			musicSettingsReceived = true;
-			SFXVolume = gameSettings.sFXVolume;
-		}
-		
+        //VoterVariables VoterVariablesController = GameObject.FindGameObjectWithTag("Voter(Clone)").GetComponent<GameController>();
+
+        GettingVariableReferences();
+		        
 		GridInstancedController.GridInstantiate (gridSize);
 		UIController.gridSize = gridSize;
 		UIController.SFXvolume = SFXVolume;
@@ -175,21 +151,6 @@ public class GameController : MonoBehaviour {
 		
 		randomEventController.voters = voters;
 		
-		gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
-		if (gameMusic == null) {
-			Debug.LogError ("The Game Controller could not find the Music Controller please place it in the scene.");
-		}
-		
-		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
-		if (SFX == null) {
-			Debug.LogError ("The Game Controller could not find the SFX Controller please place it in the scene.");
-		}
-		
-		inputManager = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManagerScript>();
-		if (inputManager == null) {
-			Debug.LogError ("The Game Controller could not find the Input manager please place it in the scene.");
-		}
-
 		//sets the games starting message (Alex Jungroth)
 		UIController.alterTextBox("How many players are running for office?\nChoose a party and a political position.");
 
@@ -1065,5 +1026,53 @@ public class GameController : MonoBehaviour {
 		}
 
 	}
+
+    public void GettingVariableReferences()
+    {
+        try
+        {
+            gameSettings = GameObject.FindGameObjectWithTag("TitleSettings").GetComponent<TitleScreenSettings>();
+        }
+        catch
+        {
+            Debug.LogError("Could not find the title screen settings, because you did not start from the title screen!");
+
+        }
+        if (gameSettings == null)
+        {
+            //throws an error if the gameController did not receive the title screen settings (Alex Jungroth)
+            Debug.Log("You may continue play testing!");
+
+        }
+        else
+        {
+            //gets the following variables from the title UI settings (Alex Jungroth)
+            gridSize = gameSettings.gridSize;
+            numberOfRounds = gameSettings.totalRounds;
+            numberOfElections = gameSettings.totalElections;
+            NumVoters = gameSettings.totalVoters;
+            //the music has to set during the update function (Alex Jungroth)
+            musicSettingsReceived = true;
+            SFXVolume = gameSettings.sFXVolume;
+        }
+        gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
+        if (gameMusic == null)
+        {
+            Debug.LogError("The Game Controller could not find the Music Controller please place it in the scene.");
+        }
+
+        SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+        if (SFX == null)
+        {
+            Debug.LogError("The Game Controller could not find the SFX Controller please place it in the scene.");
+        }
+
+        inputManager = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManagerScript>();
+        if (inputManager == null)
+        {
+            Debug.LogError("The Game Controller could not find the Input manager please place it in the scene.");
+        }
+
+    }
 
 }//Gamecontroller Class
