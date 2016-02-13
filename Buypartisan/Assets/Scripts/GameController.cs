@@ -9,153 +9,133 @@ using System.IO;
 using System.Runtime;
 
 public class GameController : MonoBehaviour {
-	public enum GameState {TotalPlayersSelect,PlayerSpawn, ActionTurns, RoundEnd, GameEnd, EnactPolicies, AfterEnd};
-	GameState currentState = GameState.TotalPlayersSelect;
-	
+	//TODO:  FURTHER REFINE THE ORGANIZATION WITHIN THE SUBGROUPS
+    //***********************************************************
+    //
+    //       Board initialization
+    // Here are all the variables for things that we place
+    // on the board at the start of the game, like pieces, and
+    // templates of parties and models
+    //
+    //***********************************************************
 	public GameObject voterTemplate;
-	public GameObject neutralTemplate;
-	public GameObject coffeeTemplate;
-	public GameObject party3Template;
-	public GameObject party4Template;
+	public GameObject neutralTemplate;//apple pie
+	public GameObject coffeeTemplate;//coffee
+	public GameObject party3Template;//Drone
+	public GameObject party4Template;//Windy
 	public GameObject party5Template; //The fifth party(Alex Jungroth)
-	public GameObject playerTemplate;
+	public GameObject playerTemplate;//generic
 
-	//holds the max number of political parties and by extension the max number of players in the game (Alex Jungroth)
-	private const int totalPoliticalParties = 5;
+    //*************************************************************
+    //
+    //          Game Initialization
+    // Here are the various settings or variables that
+    // we need in order to start up the game, such as 
+    // number of players and voters, or max money
+    //
+    //**************************************************************
+    private const int totalPoliticalParties = 5;//holds the max number of political parties and by extension the max number of players in the game (Alex Jungroth)
+    public int gridSize;
+    public int numberPlayers;  //number of players per game
+    public int numberOfRounds; //this is a variable that you can change to however many number if rounds we want.
+    public int numberOfElections = 1;
+    public int NumVoters = 10;
+    public int voterMaxMoney = 100;
+    public int voterMaxVotes = 100;
+    public bool SpawnUsingTXT = true;
+    public float VoterDistanceCheck = 1f;
+    public float IgnoreNearestVoter = 0.3f;
+    private bool votersAppear = true;
 
-	//constants that are used to calculate a winning player's money at the end of an election (Alex Jungroth)
-	private const float threeQuatersDecrease = 0.75f;
-	private const float half = 0.5f;
-	private const float tenPercentIncrease = 1.1f;
-	private const float tenPercentDecrease = 0.9f;
+    //*************************************************************
+    //
+    //      Game Control
+    // Variables directly related to regulating the flow
+    // and control of the game, such as latches, logistical 
+    // vars for spawning, and so on
+    //
+    //*************************************************************
+    //constants that are used to calculate a winning player's money at the end of an election (Alex Jungroth)
+    private const float threeQuatersDecrease = 0.75f;
+    private const float half = 0.5f;
+    private const float tenPercentIncrease = 1.1f;
+    private const float tenPercentDecrease = 0.9f;
+    public int playersSpawned = 0; //how many players have been spawned in
+    public bool playerConfirmsPlacement = false; //bool for checking if player is done
+    GameState currentState = GameState.TotalPlayersSelect;
+    public enum GameState { TotalPlayersSelect, PlayerSpawn, ActionTurns, RoundEnd, GameEnd, EnactPolicies, AfterEnd };
+    public int playerSpawning = 0;//holds the current player being spawned (Alex Jungroth)
+    public int currentPlayerTurn = 0; //this keeps track of which player is currently taking a turn
+    private int roundCounter = 0;//will be used to keep track of rounds
+    public bool playerTakingAction = false;
+    public bool messaged;//Checks if Player has finished taking an action
+    public bool spawnFinished = false;//holds whether or not a player needs to spawned (Alex Jungroth)
+    public bool isActionTurns = false;//holds wether or not it is the action turns state yet (Alex Jungroth)
+    public bool isREAInitialized = false;//holds whether or not the random events arrays have been initialized (Alex Jungroth)
+    public bool totalPlayersPicked = false; //holds whether or not the number of players has been selected (Alex Jungroth)
+    private int electionCounter = 0;//holds the number of elections that have happened (Alex Jungroth)
 
-	//holds wether or not it is the action turns state yet (Alex Jungroth)
-	public bool isActionTurns = false;
+    //*******************************************************************
+    //
+    //      Player and Element Collection
+    //  Here are any arrays or large data types used to keep track of
+    // pieces or integral things to the game, or variables used to keep track 
+    // of detailed player and information data.
+    //
+    //*********************************************************************
+    public GameObject[] voters;//array which houses the voters
+    public GameObject[] players;//array which houses the players
+    public GameObject currentPlayer;
+    private int currentPlayerMoney = 0;//holds the current player's money (Alex Jungroth)
+    private int currentPlayerVotes = 0;//holds the current player's votes (Alex Jungroth)
+    public int[] party = new int[5];//holds the players chosen parties by an index (Alex Jungroth)
+    public int electionWinner = 0;//holds the winner of an election (Alex Jungroth)
+    private bool musicSettingsReceived = false;//holds whether or not the gameController got the music volume settings (Alex Jungroth)
+    public float SFXVolume;
 
-	//holds whether or not the random events arrays have been initialized (Alex Jungroth)
-	public bool isREAInitialized = false;
-
-	public int gridSize;
-	public GridInstanced GridInstancedController;
-	
-	//holds the title screen settings (Alex Jungroth)
-	private TitleScreenSettings gameSettings;
-
-	//holds the title screen settings during the game (Alex Jungroth)
-	private RememberSettings rememberSettings;
-
-	public UI_Script UIController;
+    //******************************************************************
+    //
+    //           Referenced Scripts and Objects
+    // Here are references and objects that we use in some capacity
+    // or another throughout the game controller
+    //
+    //*******************************************************************
+    public GridInstanced GridInstancedController;
+	private TitleScreenSettings gameSettings; //holds the title screen settings (Alex Jungroth)
+    private RememberSettings rememberSettings;//holds the title screen settings during the game (Alex Jungroth)
+    public UI_Script UIController;
 	public PopUpTVScript popUpTVScript;
-
-	//holds the WindowGenerator script (Alex Jungroth)
-	public WindowGeneratorScript WindowGenerator;
-
-	//holds the party policies scripts (Alex Jungroth)
-	public GameObject partyPolicyManager;
-
-	public RandomEventControllerScript randomEventController;
-
-	public PlayerTurnsManager turnsManager;
-
-	//holds whether or not the number of players has been selected (Alex Jungroth)
-	public bool totalPlayersPicked = false;
-
-	public int numberPlayers;  //number of players per game
-	public int playersSpawned = 0; //how many players have been spawned in
-	public bool playerConfirmsPlacement = false; //bool for checking if player is done
-
-	//holds whether or not a player needs to spawned (Alex Jungroth)
-	public bool spawnFinished = false;
-
-	//holds the current player being spawned (Alex Jungroth)
-	public int playerSpawning = 0;
-
-	public int currentPlayerTurn = 0; //this keeps track of which player is currently taking a turn
-	public int numberOfRounds; //this is a variable that you can change to however many number if rounds we want.
-	private int roundCounter = 0;//will be used to keep track of rounds
-	public bool playerTakingAction = false;
-	public bool messaged;//Checks if Player has finished taking an action
-	
-	//holds total the number of electons that will happen in the game (Alex Jungroth)
-	public int numberOfElections = 1;
-	
-	//holds the number of elections that have happened (Alex Jungroth)
-	private int electionCounter = 0;
-	
-	public GameObject[] voters;//array which houses the voters
-	public GameObject[] players;//array which houses the players
-	
-	public GameObject currentPlayer;
-
-	//holds the current player's money (Alex Jungroth)
-	private int currentPlayerMoney = 0;
-	
-	//holds the current player's votes (Alex Jungroth)
-	private int currentPlayerVotes = 0;
-
-	private MusicController gameMusic;
-	//holds whether or not the gameController got the music volume settings (Alex Jungroth)
-	private bool musicSettingsReceived = false;
-	private SFXController SFX;
-	public float SFXVolume;
-	
-	public bool SpawnUsingTXT = true;
-	public int NumVoters = 10;
-	public float VoterDistanceCheck = 1f;
-	public int voterMaxMoney = 100;
-	public int voterMaxVotes = 100;
-	public float IgnoreNearestVoter = 0.3f;
-	
-	private bool PreAnnouncmentSFXPlaying = false;
+    public WindowGeneratorScript WindowGenerator;//holds the WindowGenerator script (Alex Jungroth)
+    public GameObject partyPolicyManager;//holds the party policies scripts (Alex Jungroth)
+    public RandomEventControllerScript randomEventController;
+    public PlayerTurnsManager turnsManager;
+    private MusicController gameMusic;
+    private SFXController SFX;
+    public TallyingScript tallyRoutine;//does the tallying at the start of each turn (Alex Jungroth)
+    private InputManagerScript inputManager;
+    //*********************************************************************
+    //
+    //      Misc
+    // Didn't know what they were, or what to do with them
+    //
+    //*********************************************************************
+    
+    private bool PreAnnouncmentSFXPlaying = false;
 	private float PreAnnouncmentSFXTime = 3.7f;
+    private int tracker = 0;
+	
+	
 
-	//holds the players chosen parties by an index (Alex Jungroth)
-	public int[] party = new int[5];
-
-	private int tracker = 0;
-	private bool votersAppear = true;
-	
-	//holds the winner of an election (Alex Jungroth)
-	public int electionWinner = 0;
-	
-	//does the tallying at the start of each turn (Alex Jungroth)
-	public TallyingScript tallyRoutine;
-	
-	private InputManagerScript inputManager;
-	
+    
 	/// <summary>
 	/// Start this instance.
 	/// Adds in Voter Array
 	/// </summary>
 	void Start () {
-		//VoterVariables VoterVariablesController = GameObject.FindGameObjectWithTag("Voter(Clone)").GetComponent<GameController>();
-		
-		//gets the title screen settings script (Alex Jungroth)
-		try {
-			gameSettings = GameObject.FindGameObjectWithTag ("TitleSettings").GetComponent<TitleScreenSettings>();
-		}
-		catch  {
-			Debug.LogError ("Could not find the title screen settings, because you did not start from the title screen!");
-			
-		}
-		if (gameSettings == null) 
-		{
-			//throws an error if the gameController did not receive the title screen settings (Alex Jungroth)
-			Debug.Log("You may continue play testing!");
-			
-		} 
-		else 
-		{
-			//gets the following variables from the title UI settings (Alex Jungroth)
-			gridSize = gameSettings.gridSize;
-			numberOfRounds = gameSettings.totalRounds;
-			numberOfElections = gameSettings.totalElections;
-			NumVoters = gameSettings.totalVoters;
-			//the music has to set during the update function (Alex Jungroth)
-			musicSettingsReceived = true;
-			SFXVolume = gameSettings.sFXVolume;
-		}
-		
+        //VoterVariables VoterVariablesController = GameObject.FindGameObjectWithTag("Voter(Clone)").GetComponent<GameController>();
+
+        GettingVariableReferences();
+		        
 		GridInstancedController.GridInstantiate (gridSize);
 		UIController.gridSize = gridSize;
 		UIController.SFXvolume = SFXVolume;
@@ -171,21 +151,6 @@ public class GameController : MonoBehaviour {
 		
 		randomEventController.voters = voters;
 		
-		gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
-		if (gameMusic == null) {
-			Debug.LogError ("The Game Controller could not find the Music Controller please place it in the scene.");
-		}
-		
-		SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
-		if (SFX == null) {
-			Debug.LogError ("The Game Controller could not find the SFX Controller please place it in the scene.");
-		}
-		
-		inputManager = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManagerScript>();
-		if (inputManager == null) {
-			Debug.LogError ("The Game Controller could not find the Input manager please place it in the scene.");
-		}
-
 		//sets the games starting message (Alex Jungroth)
 		UIController.alterTextBox("How many players are running for office?\nChoose a party and a political position.");
 
@@ -1061,5 +1026,53 @@ public class GameController : MonoBehaviour {
 		}
 
 	}
+
+    public void GettingVariableReferences()
+    {
+        try
+        {
+            gameSettings = GameObject.FindGameObjectWithTag("TitleSettings").GetComponent<TitleScreenSettings>();
+        }
+        catch
+        {
+            Debug.LogError("Could not find the title screen settings, because you did not start from the title screen!");
+
+        }
+        if (gameSettings == null)
+        {
+            //throws an error if the gameController did not receive the title screen settings (Alex Jungroth)
+            Debug.Log("You may continue play testing!");
+
+        }
+        else
+        {
+            //gets the following variables from the title UI settings (Alex Jungroth)
+            gridSize = gameSettings.gridSize;
+            numberOfRounds = gameSettings.totalRounds;
+            numberOfElections = gameSettings.totalElections;
+            NumVoters = gameSettings.totalVoters;
+            //the music has to set during the update function (Alex Jungroth)
+            musicSettingsReceived = true;
+            SFXVolume = gameSettings.sFXVolume;
+        }
+        gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
+        if (gameMusic == null)
+        {
+            Debug.LogError("The Game Controller could not find the Music Controller please place it in the scene.");
+        }
+
+        SFX = GameObject.FindGameObjectWithTag("SFX").GetComponent<SFXController>();
+        if (SFX == null)
+        {
+            Debug.LogError("The Game Controller could not find the SFX Controller please place it in the scene.");
+        }
+
+        inputManager = GameObject.FindGameObjectWithTag("InputManager").GetComponent<InputManagerScript>();
+        if (inputManager == null)
+        {
+            Debug.LogError("The Game Controller could not find the Input manager please place it in the scene.");
+        }
+
+    }
 
 }//Gamecontroller Class
