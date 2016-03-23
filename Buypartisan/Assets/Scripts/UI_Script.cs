@@ -73,6 +73,12 @@ public class UI_Script : MonoBehaviour {
 	public GameObject windyToolTip;
 	public GameObject providenceToolTip;
 
+    //Holds the cover for the party tokens and names if unique parties is disabled
+    public GameObject partyCover;
+
+    //Holds whether the cover needs to be set or not at the start of the game
+    public bool uniqueParties;
+
 	//holds the player sliders for the choose your token screen
 	public Slider player1TokenSlider;
 	public Slider player2TokenSlider;
@@ -177,7 +183,6 @@ public class UI_Script : MonoBehaviour {
         // Initializes cost
         updateCost();
 
-
 		//set size and position of scrollview and scrollBar
 		//Brian Mah
 		float scrollViewHeight = Screen.height - (titleHeight + bottomTVHeight);
@@ -232,7 +237,13 @@ public class UI_Script : MonoBehaviour {
 			controller.party [2] = (int)player3TokenSlider.value - 1;
 			controller.party [3] = (int)player4TokenSlider.value - 1;
 			controller.party [4] = (int)player5TokenSlider.value - 1;
-		}
+
+            //Enables the cover if there are no unique parties (AAJ)
+            if (uniqueParties == false)
+            {
+                partyCover.SetActive(true);
+            }//if
+        }
 	}
 
 	/// <summary>
