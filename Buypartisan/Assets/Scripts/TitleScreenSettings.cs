@@ -7,7 +7,7 @@ public class TitleScreenSettings : MonoBehaviour
 {
 	//holds a potential copy of this script if the title screen scene is called again during run time
 	private GameObject[] duplicateTitleSettingsUI;
-
+    
 	//holds the values that the gameController will get in the next scene
 	public int gridSize = 7;
 	public int totalRounds = 5;
@@ -15,6 +15,9 @@ public class TitleScreenSettings : MonoBehaviour
 	public int totalVoters = 40;
 	public float musicVolume = 0.1f;
 	public float sFXVolume = 0.1f;
+
+    //Holds whether or not the there will be unique parties
+    public bool uniqueParites;
 
 	// Use this for initialization
 	void Start () 
@@ -45,7 +48,7 @@ public class TitleScreenSettings : MonoBehaviour
 	/// <summary>
 	/// Finalizes the settings. (Alex Jungroth)
 	/// </summary>
-	public void FinalizeSettings(float size, float rounds, float elections, float voters, float music, float sFX)
+	public void FinalizeSettings(float size, float rounds, float elections, float voters, float music, float sFX, bool unique)
 	{
 		//gets the values that will be sent to the gameController
 		gridSize = (int)size;
@@ -54,5 +57,6 @@ public class TitleScreenSettings : MonoBehaviour
 		totalVoters = (int)voters;
 		musicVolume = music;
 		sFXVolume = sFX;
+        uniqueParites = unique;
 	}
 }

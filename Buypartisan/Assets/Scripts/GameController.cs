@@ -46,7 +46,8 @@ public class GameController : MonoBehaviour {
     public float VoterDistanceCheck = 1f;
     public float IgnoreNearestVoter = 0.3f;
     private bool votersAppear = true;
-
+    public bool uniqueParties;
+    
     //*************************************************************
     //
     //      Game Control
@@ -142,7 +143,8 @@ public class GameController : MonoBehaviour {
 		randomEventController.gridSize = gridSize;
 		randomEventController.SFXvolume = SFXVolume;
 		messaged = true;
-		
+        UIController.uniqueParties = uniqueParties;
+
 		if (SpawnUsingTXT) {
 			SpawnVotersFromTXT ();
 		} else {
@@ -392,7 +394,7 @@ public class GameController : MonoBehaviour {
         //stores the settings into the Remember Settings Manager (Alex Jungroth)
         rememberSettings = GameObject.FindGameObjectWithTag("RememberSettings").GetComponent<RememberSettings>();
 
-        rememberSettings.SaveSettings(gridSize, numberOfRounds, numberOfElections, NumVoters, gameSettings.musicVolume, SFXVolume);
+        rememberSettings.SaveSettings(gridSize, numberOfRounds, numberOfElections, NumVoters, gameSettings.musicVolume, SFXVolume, uniqueParties);
 
         //sets music settings recieved to false so it doesn't update 
         //the volume every time update is called (Alex Jungroth)
@@ -1108,6 +1110,7 @@ public class GameController : MonoBehaviour {
             //the music has to set during the update function (Alex Jungroth)
             musicSettingsReceived = true;
             SFXVolume = gameSettings.sFXVolume;
+            uniqueParties = gameSettings.uniqueParites;
         }
         gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
         if (gameMusic == null)

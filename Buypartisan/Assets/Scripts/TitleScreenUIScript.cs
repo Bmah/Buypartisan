@@ -70,8 +70,11 @@ public class TitleScreenUIScript : MonoBehaviour
 	public GameObject sFXSlider;
 	public GameObject musicSlider;
 
-	//holds the values that the gameController will get in the next scene (Alex Jungroth)
-	public float gridSize = gSSlider;
+    //Holds a reference to the toggle for unique parties
+    public Toggle uniquePartiesToggle;
+
+    //holds the values that the gameController will get in the next scene (Alex Jungroth)
+    public float gridSize = gSSlider;
 	public float totalRounds = rSlider;
 	public float totalElections = eSlider;
 	public float totalVoters = vCSValue;
@@ -143,6 +146,8 @@ public class TitleScreenUIScript : MonoBehaviour
 			voterCounterSlider.GetComponent<Slider>().value = totalVoters;
 			musicSlider.GetComponent<Slider>().value = musicVolume;
 			sFXSlider.GetComponent<Slider>().value = sFXVolume;
+
+            uniquePartiesToggle.GetComponent<Toggle>().isOn = rememberSettings.uniqueParties;
 		}
 	}
 	
@@ -209,7 +214,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	{
 		//sends the decided game settings to the object that the gameController will see (Alex Jungroth)
 		settingsCover.SetActive(true);
-		gameSettings.FinalizeSettings (gridSize, totalRounds,totalElections, totalVoters, musicVolume, sFXVolume);
+		gameSettings.FinalizeSettings (gridSize, totalRounds,totalElections, totalVoters, musicVolume, sFXVolume, uniquePartiesToggle.GetComponent<Toggle>().isOn);
 		//Brian Mah
 		LoadSceneTime = Time.time + 0.5f;
 		LoadingGameScene = true;
