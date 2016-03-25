@@ -8,7 +8,7 @@ public class PlayerVariables : MonoBehaviour {
 
 	//holds the number of different policies that I'm going to code (Alex Jungroth)
 	private const int policyLimit = 4;
-
+    public bool UsingModel;
     public int pTag = 0;
     public int money = 100;
     public int votes = 0;
@@ -55,6 +55,7 @@ public class PlayerVariables : MonoBehaviour {
 	private GameController gameController;
 	private Vector3 prevPosition;
 	private float prevSphereSize;
+    
 
 	void Start () {
         
@@ -62,10 +63,12 @@ public class PlayerVariables : MonoBehaviour {
 		this.shadowPositions.Clear ();
 
 		//gets the players render (Alex Jungroth)
-		playerRenderer = this.transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Renderer> ();
-
-		//sets up the spheres for the players (Daniel Schlesinger)
-		sphereSize = 10 * sphereSize;
+        if(!UsingModel)
+		    playerRenderer = this.transform.GetChild(1)/*.transform.GetChild(1)*/.gameObject.GetComponent<Renderer> ();
+        else
+            playerRenderer = this.transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
+        //sets up the spheres for the players (Daniel Schlesinger)
+        sphereSize = 10 * sphereSize;
 		sphereController = this.gameObject.transform.GetChild (0).gameObject;
 		sphereRenderer = sphereController.GetComponent<Renderer> ();
 		transparentColor = sphereRenderer.material.color;
