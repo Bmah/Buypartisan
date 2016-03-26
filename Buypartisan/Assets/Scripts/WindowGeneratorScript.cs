@@ -148,6 +148,12 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 				}
 			}
+
+            //If there are no unique parties skip the party policies
+            if(gameController.uniqueParties == false)
+            {
+                continueGame();
+            }
 		}
 
 		//as the player sliders are adjusted the player's alignment is changed

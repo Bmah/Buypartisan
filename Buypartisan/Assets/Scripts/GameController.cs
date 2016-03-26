@@ -46,7 +46,7 @@ public class GameController : MonoBehaviour {
     public float VoterDistanceCheck = 1f;
     public float IgnoreNearestVoter = 0.3f;
     private bool votersAppear = true;
-    public bool uniqueParties;
+    public bool uniqueParties = true;
     
     //*************************************************************
     //
