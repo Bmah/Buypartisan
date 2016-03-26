@@ -21,8 +21,11 @@ public class PlayerVariables : MonoBehaviour {
 	//0 = going alone, 1 = coalition A, 2 = coalition B
 	public int alignment = 0;
 
-	//holds the player's political party (Alex Jungroth)
+	//holds the player's political party name (Alex Jungroth)
 	public string politicalPartyName;
+
+    //holds the player's number (Alex Jungorth)
+    public int playerNumber = 0;
 
 	//holds the player's choice of policy when they get elected (Alex Jungroth)
 	//= 0 means no policy was chosen >= 1 means a certain policy was picked
@@ -58,12 +61,25 @@ public class PlayerVariables : MonoBehaviour {
     
 
 	void Start () {
-        
-		//makes sure all of the players shadowPositions lists are empty at the start of the program (Alex Jungroth)
-		this.shadowPositions.Clear ();
+        //Brian Mah
+        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        if (gameController == null)
+        {
+            Debug.LogError("Could not find the Game controller");
+        }
 
-		//gets the players render (Alex Jungroth)
-        if(!UsingModel)
+        //makes sure all of the players shadowPositions lists are empty at the start of the program (Alex Jungroth)
+        this.shadowPositions.Clear ();
+
+        //If there are no unique parties then the parties will be renamed to "Apple Pie" and there sphere size set to 5 (Alex Jungroth
+        if(gameController.uniqueParties == false)
+        {
+            politicalPartyName = "Apple Pie";
+            sphereSize = 5;
+        }//if
+
+        //gets the players render (Alex Jungroth)
+        if (!UsingModel)
 		    playerRenderer = this.transform.GetChild(1)/*.transform.GetChild(1)*/.gameObject.GetComponent<Renderer> ();
         else
             playerRenderer = this.transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
@@ -83,10 +99,6 @@ public class PlayerVariables : MonoBehaviour {
 		//previous position initialization
 		prevPosition = this.transform.position;
 		prevSphereSize = sphereController.transform.localScale.x;
-		gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
-		if (gameController == null) {
-			Debug.LogError("Could not find the Game controller");
-		}
 
 		//an initial check for a player is spawned in (Alex Jungroth)
 		//gameController.UpdateVoterCanidates();
