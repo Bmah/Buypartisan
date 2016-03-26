@@ -670,51 +670,90 @@ public class GameController : MonoBehaviour {
 			//enables the player placement movement controls (Alex Jungroth)
 			UIController.enablePPButtonsPartySelection ();
 
-			//this is code for spawning different parites
-			//depending on what party the player chose, this is what they will spawn as
-			//each party can only be chosen once
-			switch (party[playerSpawning]) 
-			{
-				case 0: 
-					currentPlayer = Instantiate (coffeeTemplate, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject; 
-					this.playerTemplate = coffeeTemplate; 
-					
-					//Tells the user which party they picked (Alex Jungroth)
-					UIController.alterTextBox("You have chosen the Espresso Party.");
+            //this is code for spawning different parites
+            //depending on what party the player chose, this is what they will spawn as
+            //each party can only be chosen once
+            switch (party[playerSpawning])
+            {
+                case 0:
+                    currentPlayer = Instantiate(coffeeTemplate, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                    this.playerTemplate = coffeeTemplate;
+
+                    //Tells the user which party they picked (Alex Jungroth)
+                    if (uniqueParties == true)
+                    {
+                        UIController.alterTextBox("You have chosen the Espresso Party.");
+                    }//if
+                    else
+                    {
+                        UIController.alterTextBox("You have chosen the Apple Pie Party.");
+                    }//else
+
 				break;
 				
 				case 1: 
 					currentPlayer = Instantiate (party3Template, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
 					this.playerTemplate = party3Template;
 					
-					//Tells the user which party they picked (Alex Jungroth)
-					UIController.alterTextBox("You have chosen the Drone Party.");
-					
-				break;
+                    //Tells the user which party they picked (Alex Jungroth)
+                    if (uniqueParties == true)
+                    {
+                        UIController.alterTextBox("You have chosen the Drone Party.");
+                    }//if
+                    else
+                    {
+                        UIController.alterTextBox("You have chosen the Apple Pie Party.");
+                    }//else
+
+                break;
 
 				case 2:
 					currentPlayer = Instantiate (neutralTemplate, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject; 
 					this.playerTemplate = neutralTemplate; 
-				
-					//Tells the user which party they picked (Alex Jungroth)
-					UIController.alterTextBox("You have chosen the Apple Pie Party.");
-				break;
+				    
+                    //Tells the user which party they picked (Alex Jungroth)
+                    if (uniqueParties == true)
+                    {
+                        UIController.alterTextBox("You have chosen the Apple Pie Party.");
+                    }//if
+                    else
+                    {
+                        UIController.alterTextBox("You have chosen the Apple Pie Party.");
+                    }//else
+
+                    break;
 		
 				case 3:
 					currentPlayer = Instantiate (party4Template, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
 					this.playerTemplate = party4Template;
 					
-					//Tells the user which party they picked (Alex Jungroth)
-					UIController.alterTextBox("You have chosen the Windy Party.");
-				break;
+                    //Tells the user which party they picked (Alex Jungroth)
+                    if (uniqueParties == true)
+                    {
+                        UIController.alterTextBox("You have chosen the Windy Party.");
+                    }//if
+                    else
+                    {
+                        UIController.alterTextBox("You have chosen the Apple Pie Party.");
+                    }//else
+
+                    break;
 		
 				case 4:
 					currentPlayer = Instantiate (party5Template, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject; 
 					this.playerTemplate = party5Template;
 					
-					//Tells the user which party they picked (Alex Jungroth)
-					UIController.alterTextBox("You have chosen the Providence Party.");
-				break;
+                    //Tells the user which party they picked (Alex Jungroth)
+                    if (uniqueParties == true)
+                    {
+                        UIController.alterTextBox("You have chosen the Providence Party.");
+                    }//if
+                    else
+                    {
+                        UIController.alterTextBox("You have chosen the Apple Pie Party.");
+                    }//else
+
+                    break;
 			}
 
 			//stores the current player into the array of players (Alex Jungroth)

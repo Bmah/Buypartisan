@@ -152,7 +152,11 @@ public class WindowGeneratorScript : MonoBehaviour {
             //If there are no unique parties skip the party policies
             if(gameController.uniqueParties == false)
             {
-                continueGame();
+                policySlider.SetActive(false);
+                policyText.text = "";
+                policyText1.text = "";
+                policyText2.text = "";
+                policyText3.text = "";
             }
 		}
 
