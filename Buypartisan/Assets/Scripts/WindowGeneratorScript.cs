@@ -68,6 +68,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 	//holds the winner
 	public string winner = "no winner";
+    public int winnerNumber = 0;
 
 	//holds the number of players
 	private int totalPlayers = 0;
@@ -142,7 +143,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 			for(int i = 0; i < totalPlayers; i++)
 			{
 				//sets the winners policy
-				if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == winner)
+				if(gameController.players[i].GetComponent<PlayerVariables>().playerNumber == winnerNumber)
 				{
 					gameController.players[i].GetComponent<PlayerVariables>().chosenPolicy = (int) policySlider.GetComponent<Slider>().value;
 
@@ -205,6 +206,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 		//resets the winner
 		winner = "no winner";
+        winnerNumber = 0;
 
 		//enables the coalitions screen
 		coalitionScreen.SetActive(true);
@@ -575,8 +577,8 @@ public class WindowGeneratorScript : MonoBehaviour {
 					{
 						maxVotes = gameController.players [i].GetComponent<PlayerVariables> ().votes;
 						winner = gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName;
-
-					}
+                        winnerNumber = gameController.players[i].GetComponent<PlayerVariables>().playerNumber;
+                    }
 				}
 			}
 
@@ -594,8 +596,9 @@ public class WindowGeneratorScript : MonoBehaviour {
 						{
 							maxPercent = gameController.players [i].GetComponent<PlayerVariables> ().votes;
 							winner = gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName;
+                            winnerNumber = gameController.players[i].GetComponent<PlayerVariables>().playerNumber;
 
-						}
+                        }
 					}
 				}
 			} 
@@ -613,7 +616,8 @@ public class WindowGeneratorScript : MonoBehaviour {
 						{
 							maxPercent = gameController.players [i].GetComponent<PlayerVariables> ().votes;
 							winner = gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName;
-						}
+                            winnerNumber = gameController.players[i].GetComponent<PlayerVariables>().playerNumber;
+                        }
 					}
 				}
 			}
@@ -624,7 +628,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 				{
 					if (gameController.players [i].GetComponent<PlayerVariables> ().alignment == 1) 
 					{
-						if (winner == gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName) 
+						if (winner == gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName && winnerNumber == gameController.players[i].GetComponent<PlayerVariables>().playerNumber) 
 						{
 							gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints += 10;
 						}
@@ -635,7 +639,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 			//in the case that a coalition won this correctly updates max votes for display
 			for(int i = 0; i < totalPlayers; i++) 
 			{
-				if(gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName == winner) 
+				if(gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName == winner && winnerNumber == gameController.players[i].GetComponent<PlayerVariables>().playerNumber) 
 				{
 					maxVotes = gameController.players [i].GetComponent<PlayerVariables> ().votes;
 				}
@@ -694,7 +698,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 					for (int i = 0; i < totalPlayers; i++) 
 					{
 						//sets the winners policy
-						if (gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName == winner)
+						if (gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName == winner && winnerNumber == gameController.players[i].GetComponent<PlayerVariables>().playerNumber)
 						{
 							//prints the policy texts
 							policyText.text = gameController.players [i].GetComponent<PlayerVariables> ().policiesText [0];
@@ -712,6 +716,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 				{
 					//if no one won the election
 					winner = "no winner";
+                    winnerNumber = 0;
 
 					noOneVotedScreen.SetActive (true);
 
@@ -721,7 +726,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 				//prints each player's victory points to the big tv 
 				for (int i = 0; i < totalPlayers; i++)
 				{
-					partyNames += gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party:" + "\n\n";
+					partyNames += "Player " + (i + 1) + ":" + "\n" + gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party" + "\n";
 					voteTotals += gameController.players [i].GetComponent<PlayerVariables> ().votes + "\n\n";
 					victoryPointTotals += gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints + "\n\n";
 				}
@@ -743,7 +748,8 @@ public class WindowGeneratorScript : MonoBehaviour {
 					{
 						maxVictoryPoints = gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints;
 						winner = gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName;
-					}
+                        winnerNumber = gameController.players[i].GetComponent<PlayerVariables>().playerNumber;
+                    }
 				}
 			
 				//This code generates a window for the end of the game
@@ -796,7 +802,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 				//prints each player's victory points to the big tv 
 				for (int i = 0; i < totalPlayers; i++)
 				{
-					partyNames += gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party:" + "\n\n";
+					partyNames += "Player " + (i + 1) + ":" + "\n" + gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party" + "\n";
 					moneyTotals += gameController.players [i].GetComponent<PlayerVariables> ().money + "\n\n";
 					voteTotals += gameController.players [i].GetComponent<PlayerVariables> ().votes + "\n\n";
 					victoryPointTotals += gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints + "\n\n";

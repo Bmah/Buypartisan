@@ -21,8 +21,11 @@ public class PlayerVariables : MonoBehaviour {
 	//0 = going alone, 1 = coalition A, 2 = coalition B
 	public int alignment = 0;
 
-	//holds the player's political party (Alex Jungroth)
+	//holds the player's political party name (Alex Jungroth)
 	public string politicalPartyName;
+
+    //holds the player's number (Alex Jungorth)
+    public int playerNumber = 0;
 
 	//holds the player's choice of policy when they get elected (Alex Jungroth)
 	//= 0 means no policy was chosen >= 1 means a certain policy was picked

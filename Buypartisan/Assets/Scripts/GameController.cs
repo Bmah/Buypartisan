@@ -47,6 +47,7 @@ public class GameController : MonoBehaviour {
     public float IgnoreNearestVoter = 0.3f;
     private bool votersAppear = true;
     public bool uniqueParties = true;
+    private int totalPlayersSpawned = 0;
     
     //*************************************************************
     //
@@ -755,6 +756,12 @@ public class GameController : MonoBehaviour {
 
                     break;
 			}
+
+            //Increments the number of players that have spawned (Alex Jungroth)
+            totalPlayersSpawned++;
+
+            //Updates the current player with its player number (Alex Jungroth)
+            currentPlayer.GetComponent<PlayerVariables>().playerNumber = totalPlayersSpawned;
 
 			//stores the current player into the array of players (Alex Jungroth)
 			players [playersSpawned] = currentPlayer;
