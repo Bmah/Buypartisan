@@ -60,6 +60,13 @@ public class WindowGeneratorScript : MonoBehaviour {
 	public Image providenceHandleImage;
 	public Image whiteHandleImage;
 
+    //Holds images for when there are no unique parties that can be used for the coalition screen sliders (AAJ)
+    public Image player1Image;
+    public Image player2Image;
+    public Image player3Image;
+    public Image player4Image;
+    public Image player5Image;
+
 	//This is the same sprite that is used by the title screen sliders so don't delete it
 	public Image redHandleImage;
 
@@ -267,31 +274,43 @@ public class WindowGeneratorScript : MonoBehaviour {
 		votesText.text = "";
 		victoryPointsText.text = "";
 
-		//Sets the sliders nobes for the coalition screen to the correct image
-		for(int i = 0; i < gameController.numberPlayers; i++)
-		{
-			if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Espresso")
-			{
-				setHandleImage(i,gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
-			}
-			else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Drone")
-			{
-				setHandleImage(i,gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
-			}
-			else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Apple Pie")
-			{
-				setHandleImage(i,gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
-			}
-			else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Windy")
-			{
-				setHandleImage(i,gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
-			}
-			else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Providence")
-			{
-				setHandleImage(i,gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
-			}
-		}
-	}
+        //If there are unique parites give each player a unique party handle image
+        if (gameController.uniqueParties == true)
+        {
+            //Sets the sliders nobes for the coalition screen to the correct image
+            for (int i = 0; i < gameController.numberPlayers; i++)
+            {
+                if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Espresso")
+                {
+                    setHandleImage(i, gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+                }
+                else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Drone")
+                {
+                    setHandleImage(i, gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+                }
+                else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Apple Pie")
+                {
+                    setHandleImage(i, gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+                }
+                else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Windy")
+                {
+                    setHandleImage(i, gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+                }
+                else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Providence")
+                {
+                    setHandleImage(i, gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+                }
+            }//for
+        }//if
+        else
+        {
+            player1SliderHandle.GetComponent<Image>().sprite = player1Image.sprite;
+            player2SliderHandle.GetComponent<Image>().sprite = player2Image.sprite;
+            player3SliderHandle.GetComponent<Image>().sprite = player3Image.sprite;
+            player4SliderHandle.GetComponent<Image>().sprite = player4Image.sprite;
+            player5SliderHandle.GetComponent<Image>().sprite = player5Image.sprite;
+        }//else
+    }
 
 	/// <summary>
 	/// Sets the handle image.
