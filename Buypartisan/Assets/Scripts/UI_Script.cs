@@ -77,7 +77,7 @@ public class UI_Script : MonoBehaviour {
     public GameObject partyCover;
 
     //Holds whether the cover needs to be set or not at the start of the game
-    public bool uniqueParties;
+    public bool uniqueParties = true;
 
 	//holds the player sliders for the choose your token screen
 	public Slider player1TokenSlider;
