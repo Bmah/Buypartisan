@@ -1099,6 +1099,8 @@ public class GameController : MonoBehaviour {
             //throws an error if the gameController did not receive the title screen settings (Alex Jungroth)
             Debug.Log("You may continue play testing!");
 
+            //The default play test from the prototype scene is to have unique parties (Alex Jungroth)
+            uniqueParties = true;
         }
         else
         {
