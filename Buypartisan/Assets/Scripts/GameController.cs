@@ -26,6 +26,12 @@ public class GameController : MonoBehaviour {
 	public GameObject party5Template; //The fifth party(Alex Jungroth)
 	public GameObject playerTemplate;//generic
 
+    public GameObject neutralSphereTemplate;//apple pie
+    public GameObject coffeeSphereTemplate;//coffee
+    public GameObject party3SphereTemplate;//Drone
+    public GameObject party4SphereTemplate;//Windy
+    public GameObject party5SphereTemplate; //The fifth party(Alex Jungroth)
+
     //*************************************************************
     //
     //          Game Initialization
@@ -677,8 +683,17 @@ public class GameController : MonoBehaviour {
             switch (party[playerSpawning])
             {
                 case 0:
-                    currentPlayer = Instantiate(coffeeTemplate, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
-                    this.playerTemplate = coffeeTemplate;
+                    //If unique parties are enabled give the players each unique models (Alex Jungroth) 
+                    if(uniqueParties == true)
+                    {
+                        currentPlayer = Instantiate(coffeeTemplate, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                        this.playerTemplate = coffeeTemplate;
+                    }
+                    else
+                    {
+                        currentPlayer = Instantiate(coffeeSphereTemplate, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                        this.playerTemplate = coffeeSphereTemplate;
+                    }//else
 
                     //Tells the user which party they picked (Alex Jungroth)
                     if (uniqueParties == true)
@@ -692,9 +707,18 @@ public class GameController : MonoBehaviour {
 
 				break;
 				
-				case 1: 
-					currentPlayer = Instantiate (party3Template, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
-					this.playerTemplate = party3Template;
+				case 1:
+                    //If unique parties are enabled give the players each unique models (Alex Jungroth) 
+                    if (uniqueParties == true)
+                    {
+                        currentPlayer = Instantiate(party3Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                        this.playerTemplate = party3Template;
+                    }
+                    else
+                    {
+                        currentPlayer = Instantiate(party3SphereTemplate, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                        this.playerTemplate = party3SphereTemplate;
+                    }//else
 					
                     //Tells the user which party they picked (Alex Jungroth)
                     if (uniqueParties == true)
@@ -709,8 +733,17 @@ public class GameController : MonoBehaviour {
                 break;
 
 				case 2:
-					currentPlayer = Instantiate (neutralTemplate, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject; 
-					this.playerTemplate = neutralTemplate; 
+                    //If unique parties are enabled give the players each unique models (Alex Jungroth) 
+                    if (uniqueParties == true)
+                    {
+                        currentPlayer = Instantiate(neutralTemplate, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                        this.playerTemplate = neutralTemplate;
+                    }
+                    else
+                    {
+                        currentPlayer = Instantiate(neutralSphereTemplate, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                        this.playerTemplate = neutralSphereTemplate;
+                    }//else
 				    
                     //Tells the user which party they picked (Alex Jungroth)
                     if (uniqueParties == true)
@@ -725,8 +758,17 @@ public class GameController : MonoBehaviour {
                     break;
 		
 				case 3:
-					currentPlayer = Instantiate (party4Template, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
-					this.playerTemplate = party4Template;
+                    //If unique parties are enabled give the players each unique models (Alex Jungroth) 
+                    if (uniqueParties == true)
+                    {
+                        currentPlayer = Instantiate(party4Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                        this.playerTemplate = party4Template;
+                    }
+                    else
+                    {
+                        currentPlayer = Instantiate(party4SphereTemplate, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                        this.playerTemplate = party4SphereTemplate;
+                    }//else
 					
                     //Tells the user which party they picked (Alex Jungroth)
                     if (uniqueParties == true)
@@ -741,8 +783,17 @@ public class GameController : MonoBehaviour {
                     break;
 		
 				case 4:
-					currentPlayer = Instantiate (party5Template, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject; 
-					this.playerTemplate = party5Template;
+                    //If unique parties are enabled give the players each unique models (Alex Jungroth) 
+                    if (uniqueParties == true)
+                    {
+                        currentPlayer = Instantiate(party5Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                        this.playerTemplate = party5Template;
+                    }
+                    else
+                    {
+                        currentPlayer = Instantiate(party5SphereTemplate, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                        this.playerTemplate = party5SphereTemplate;
+                    }//else
 					
                     //Tells the user which party they picked (Alex Jungroth)
                     if (uniqueParties == true)
