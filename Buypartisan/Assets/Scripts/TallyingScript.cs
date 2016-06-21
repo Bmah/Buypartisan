@@ -7,7 +7,7 @@ public class TallyingScript : MonoBehaviour {
 	//holds the game controller 
 	public GameObject gameController;
 
-	private int currentPlayer;
+	//private int currentPlayer;
 
 	//holds the players
 	private GameObject[] players;

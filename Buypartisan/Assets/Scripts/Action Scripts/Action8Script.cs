@@ -18,7 +18,7 @@ public class Action8Script : MonoBehaviour {
 	public GameObject gameController; //this is the game controller variable. It is obtained from the scene
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the scene
 	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
-	private GameObject visualAid; //this is if you need the visual aid on whatever object you're moving
+	//private GameObject visualAid; //this is if you need the visual aid on whatever object you're moving
 	private GameObject[] voters; //array which houses the voters. Obtained from the Game Controller
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 	

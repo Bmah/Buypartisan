@@ -640,7 +640,7 @@ public class UI_Script : MonoBehaviour {
 	}
 
 	public void AlterTextBoxAndDisplayNewsflash(string text){
-		Debug.Log ("Newsflash animation set!");
+		//Debug.Log ("Newsflash animation set!");
 		tvAnimator.SetTrigger ("NewsflashAnimation");
 		tvAnimator.SetBool ("ReturnToDefault",false);
 		alterTextBox (text);

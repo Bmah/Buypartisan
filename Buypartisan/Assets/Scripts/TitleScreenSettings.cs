@@ -16,11 +16,14 @@ public class TitleScreenSettings : MonoBehaviour
 	public float musicVolume = 0.1f;
 	public float sFXVolume = 0.1f;
 
-    //Holds whether or not the there will be unique parties
+    //Holds whether or not there will be unique parties
     public bool uniqueParites;
 
-	// Use this for initialization
-	void Start () 
+    //Holds whether or not window generator will be used (AAJ)
+    public bool complexElections;
+
+    // Use this for initialization
+    void Start () 
 	{
 		//potetnially finds duplicate TitleSceenUIScripts if there are any
 		duplicateTitleSettingsUI = GameObject.FindGameObjectsWithTag("TitleSettings");
@@ -48,7 +51,7 @@ public class TitleScreenSettings : MonoBehaviour
 	/// <summary>
 	/// Finalizes the settings. (Alex Jungroth)
 	/// </summary>
-	public void FinalizeSettings(float size, float rounds, float elections, float voters, float music, float sFX, bool unique)
+	public void FinalizeSettings(float size, float rounds, float elections, float voters, float music, float sFX, bool unique, bool complex)
 	{
 		//gets the values that will be sent to the gameController
 		gridSize = (int)size;
@@ -58,5 +61,6 @@ public class TitleScreenSettings : MonoBehaviour
 		musicVolume = music;
 		sFXVolume = sFX;
         uniqueParites = unique;
+        complexElections = complex;
 	}
 }

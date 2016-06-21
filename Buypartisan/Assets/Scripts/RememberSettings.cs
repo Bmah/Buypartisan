@@ -16,9 +16,10 @@ public class RememberSettings : MonoBehaviour
 	public float musicVolume = 0.1f;
 	public float sFXVolume = 0.1f;
     public bool uniqueParties = true;
+    public bool complexElections = true;
 
-	// Use this for initialization
-	void Start () 
+    // Use this for initialization
+    void Start () 
 	{
 		//potetnially finds duplicate RememberSettings if there are any
 		duplicateRememberSettings = GameObject.FindGameObjectsWithTag("RememberSettings");
@@ -46,7 +47,7 @@ public class RememberSettings : MonoBehaviour
 	/// <summary>
 	/// Saves the settings.
 	/// </summary>
-	public void SaveSettings(float size, float rounds, float elections, float voters, float music, float sFX, bool unique)
+	public void SaveSettings(float size, float rounds, float elections, float voters, float music, float sFX, bool unique, bool complex)
 	{
 		//gets the values that will be sent to the Game Controller
 		gridSize = (int)size;
@@ -56,5 +57,6 @@ public class RememberSettings : MonoBehaviour
 		musicVolume = music;
 		sFXVolume = sFX;
         uniqueParties = unique;
+        complexElections = complex;
 	}
 }

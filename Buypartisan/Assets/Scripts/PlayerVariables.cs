@@ -18,8 +18,8 @@ public class PlayerVariables : MonoBehaviour {
 	public int victoryPoints = 0;
 
 	//holds the alignment for forming coalitions  (Alex Jungroth)
-	//0 = going alone, 1 = coalition A, 2 = coalition B
-	public int alignment = 0;
+	//1 = going alone, 2 = coalition A, 3 = coalition B
+	public int alignment = 1;
 
 	//holds the player's political party name (Alex Jungroth)
 	public string politicalPartyName;
