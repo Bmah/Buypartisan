@@ -21,7 +21,7 @@ public class Action3Script : MonoBehaviour {
 
 	private int currentPlayer; //this variable finds which player is currently using his turn.
 
-	private float distance;
+	//private float distance;
 
 	private Vector3 originalPosition; //this will save the original position that the player started at.
 	private bool chosenPositionConfirmed = false; //final position has been chosen and confirmed.

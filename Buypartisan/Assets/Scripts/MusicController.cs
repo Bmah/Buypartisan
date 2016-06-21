@@ -12,7 +12,7 @@ public class MusicController : MonoBehaviour {
 	public bool[] fadingIn;
 	public bool[] fadingOut;
 	public float musicVolume = 0.5f;
-	private float newVolume;
+	//private float newVolume;
 	private TitleScreenSettings titleScreenSettings;
 
 	private float ElectionThemeTime = 111.449f;
@@ -84,7 +84,7 @@ public class MusicController : MonoBehaviour {
 	}
 
 	public void FadeOut(int channel){
-		Debug.Log ("start fadeout: " + Time.time);
+		//Debug.Log ("start fadeout: " + Time.time);
 		if (channel >= 0 && channel < fadingOut.Length) {
 			fadingOut [channel] = true;
 		} else {

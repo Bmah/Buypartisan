@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System.Text;
 using System.IO;
 using System.Runtime;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 	//TODO:  FURTHER REFINE THE ORGANIZATION WITHIN THE SUBGROUPS
@@ -52,7 +53,8 @@ public class GameController : MonoBehaviour {
     public float VoterDistanceCheck = 1f;
     public float IgnoreNearestVoter = 0.3f;
     private bool votersAppear = true;
-    public bool uniqueParties = true;
+    public bool uniqueParties = false;
+    public bool complexElections = false;//If this is false, window generator will not be used (Alex Jungroth)
     private int totalPlayersSpawned = 0;
     
     //*************************************************************
@@ -77,11 +79,15 @@ public class GameController : MonoBehaviour {
     private int roundCounter = 0;//will be used to keep track of rounds
     public bool playerTakingAction = false;
     public bool messaged;//Checks if Player has finished taking an action
-    public bool spawnFinished = false;//holds whether or not a player needs to spawned (Alex Jungroth)
-    public bool isActionTurns = false;//holds wether or not it is the action turns state yet (Alex Jungroth)
-    public bool isREAInitialized = false;//holds whether or not the random events arrays have been initialized (Alex Jungroth)
-    public bool totalPlayersPicked = false; //holds whether or not the number of players has been selected (Alex Jungroth)
-    private int electionCounter = 0;//holds the number of elections that have happened (Alex Jungroth)
+    public bool spawnFinished = false;//Holds whether or not a player needs to spawned (Alex Jungroth)
+    public bool isActionTurns = false;//Holds wether or not it is the action turns state yet (Alex Jungroth)
+    public bool isREAInitialized = false;//Holds whether or not the random events arrays have been initialized (Alex Jungroth)
+    public bool totalPlayersPicked = false;//Holds whether or not the number of players has been selected (Alex Jungroth)
+    private int electionCounter = 0;//Holds the number of elections that have happened (Alex Jungroth)
+    public string winner = "no winner";//Holds the winner of an election's name (Alex Jungroth)
+    public int winnerNumber = 0;//Holds the winner of an elections number (Alex Jungroth)
+    public int maxVotes = 0;//Holds the highest vote total (Alex Jungroth)
+    public int maxVictoryPoints = 0;//Holds the highest victory point total (Alex Jungroth)
 
     //*******************************************************************
     //
@@ -121,13 +127,15 @@ public class GameController : MonoBehaviour {
     private SFXController SFX;
     public TallyingScript tallyRoutine;//does the tallying at the start of each turn (Alex Jungroth)
     private InputManagerScript inputManager;
+    public CalculateWinner calculateWinnnerManager;//Calcuates the winner of elections and the game (Alex Jungroth)
+
     //*********************************************************************
     //
     //      Misc
     // Didn't know what they were, or what to do with them
     //
     //*********************************************************************
-    
+
     private bool PreAnnouncmentSFXPlaying = false;
 	private float PreAnnouncmentSFXTime = 3.7f;
     private int tracker = 0;
@@ -378,14 +386,13 @@ public class GameController : MonoBehaviour {
 		}
 		else if(currentState == GameState.EnactPolicies)
 		{
-            //Enacts the party policies depending on which party won (AAJ)
+            //Enacts the party policies depending on which party won (Alex Jungroth)
             EnactThePolicies();
-            
 		}//else if
 
 		if (inputManager.escButtonDown) 
 		{
-			Application.LoadLevel("TitleScene");
+			SceneManager.LoadScene("TitleScene");
 		}
 		
 	}// Update
@@ -401,7 +408,7 @@ public class GameController : MonoBehaviour {
         //stores the settings into the Remember Settings Manager (Alex Jungroth)
         rememberSettings = GameObject.FindGameObjectWithTag("RememberSettings").GetComponent<RememberSettings>();
 
-        rememberSettings.SaveSettings(gridSize, numberOfRounds, numberOfElections, NumVoters, gameSettings.musicVolume, SFXVolume, uniqueParties);
+        rememberSettings.SaveSettings(gridSize, numberOfRounds, numberOfElections, NumVoters, gameSettings.musicVolume, SFXVolume, uniqueParties, complexElections);
 
         //sets music settings recieved to false so it doesn't update 
         //the volume every time update is called (Alex Jungroth)
@@ -442,8 +449,8 @@ public class GameController : MonoBehaviour {
 
         currentState = GameState.ActionTurns;
         playerTakingAction = false;
-        Debug.Log("Round " + (roundCounter + 1) + " begin!");
-        Debug.Log("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+        //Debug.Log("Round " + (roundCounter + 1) + " begin!");
+        //Debug.Log("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 
         PlayStartOfTurnAudio();
 
@@ -472,7 +479,7 @@ public class GameController : MonoBehaviour {
     }//SetUpFirstTurn()
 
     /// <summary>
-    /// Ends one round of the players turns (AAJ)
+    /// Ends one round of the players turns (Alex Jungroth)
     /// </summary>
     void EndTheRound()
     {
@@ -546,11 +553,25 @@ public class GameController : MonoBehaviour {
 
         if (electionCounter < numberOfElections)
         {
-            //tells the game controller to not skip over enact policies (Alex Jungroth)
-            WindowGenerator.resumeGame = false;
+            //If the user does not want extra windows, window genrator will not run (Alex Jungroth)
+            if (complexElections == true)
+            {
+                //tells the game controller to not skip over enact policies (Alex Jungroth)
+                WindowGenerator.resumeGame = false;
 
-            //displays who won an election (Alex Jungroth)
-            WindowGenerator.generateElectionVictory(false);
+                //displays who won an election (Alex Jungroth)
+                WindowGenerator.generateElectionVictory(false);
+            }//if
+            else
+            {
+                //Calculates the votes independently of window generator (Alex Jungroth)
+                callCalculateVotes();
+
+                //Test Print (Alex Jungroth)
+                Debug.Log(winner);
+                Debug.Log(winnerNumber);
+
+            }//else
 
             //manages things between elections (Alex Jungroth)
             prepareElection();
@@ -560,9 +581,31 @@ public class GameController : MonoBehaviour {
         }//if
         else
         {
-            //displays who won the game (Alex Jungroth)
-            WindowGenerator.generateElectionVictory(true);
+            //If the user does not want extra windows, window genrator will not run (Alex Jungroth)
+            if (complexElections == true)
+            {
+                //displays who won the game (Alex Jungroth)
+                WindowGenerator.generateElectionVictory(true);
 
+                //lets the user know they can reset the game
+                UIController.alterTextBox("Press confirm or the escape key to return to the title screen. Thanks for playing!");
+            }//if
+            else
+            {
+                //Calculates the votes independently of window generator (Alex Jungroth)
+                callCalculateVotes();
+
+                //Calculates the victory points independently of window generator (Alex Jungroth)
+                callCalculateVictoryPoints();
+
+                //Test Print (Alex Jungroth)
+                Debug.Log(winner);
+                Debug.Log(winnerNumber);
+
+                //lets the user know they can reset the game
+                UIController.alterTextBox("Press the escape key to return to the title screen. Thanks for playing!");
+            }//else
+            
             //ends the game (Alex Jungroth)
             currentState = GameState.AfterEnd;
         }//else
@@ -574,83 +617,129 @@ public class GameController : MonoBehaviour {
     /// </summary>
     void EnactThePolicies()
     {
-        //only enacts policies when the window generator has finished
-        if (WindowGenerator.resumeGame == true)
+        //If the user does not want extra windows, window genrator will not run (Alex Jungroth)
+        if (complexElections == true)
         {
-            //enacts a policy (Alex Jungroth)
-            if (WindowGenerator.winner != "no winner")
+            //only enacts policies when the window generator has finished
+            if (WindowGenerator.resumeGame == true)
             {
+                //enacts a policy (Alex Jungroth)
+                if (WindowGenerator.winner != "no winner")
+                {
+                    for (int i = 0; i < numberPlayers; i++)
+                    {
+                        if (players[i].GetComponent<PlayerVariables>().politicalPartyName == WindowGenerator.winner)
+                        {
+                            //sets electionWinner to the player who won (Alex Jungroth)
+                            electionWinner = i;
+                        }//if
+                    }//for
+
+                    //The winner deposits 25% of their money into a war chest for their constituents (Alex Jungroth)
+                    players[electionWinner].GetComponent<PlayerVariables>().money = (int)Mathf.Floor
+                        (players[electionWinner].GetComponent<PlayerVariables>().money * threeQuatersDecrease);
+
+                    if (players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy != 0)
+                    {
+                        //a case structure for calling the correct set of functions based on which player won (Alex Jungroth)
+                        switch (players[electionWinner].GetComponent<PlayerVariables>().politicalPartyName)
+                        {
+                            case "Apple Pie":
+                                partyPolicyManager.GetComponent<NeutralPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+                                break;
+
+                            case "Espresso":
+                                partyPolicyManager.GetComponent<EspressoPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+                                break;
+
+                            case "Drone":
+                                partyPolicyManager.GetComponent<DronePolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+                                break;
+
+                            case "Windy":
+                                partyPolicyManager.GetComponent<WindyPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+                                break;
+
+                            case "Providence":
+                                partyPolicyManager.GetComponent<Party5Policies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
+                                break;
+
+                            default:
+                                //something went wrong with the players names
+                                Debug.LogError("Unrecognized player name!");
+                                break;
+                        }//switch
+
+                        //determines if the party's policy was well received or not (Alex Jungroth)
+                        if (Random.value >= half)
+                        {
+                            //If the party's policy was well received then the party gains money equal to 10% of its total money (Alex Jungroth)
+                            players[electionWinner].GetComponent<PlayerVariables>().money = (int)Mathf.Ceil
+                                (players[electionWinner].GetComponent<PlayerVariables>().money * tenPercentIncrease);
+                            SFX.PlayAudioClip(13, 0, SFXVolume);
+                        }
+                        else
+                        {
+                            //If the party's policy was poorly received then the party loses money equal to 10% of its total money (Alex Jungroth)
+                            players[electionWinner].GetComponent<PlayerVariables>().money = (int)Mathf.Floor
+                                (players[electionWinner].GetComponent<PlayerVariables>().money * tenPercentDecrease);
+                            SFX.PlayAudioClip(14, 0, SFXVolume);
+                        }//else
+                    }//if
+                }//if
+
+                //resets the selected policies for all players (Alex Jungroth)
                 for (int i = 0; i < numberPlayers; i++)
                 {
-                    if (players[i].GetComponent<PlayerVariables>().politicalPartyName == WindowGenerator.winner)
-                    {
-                        //sets electionWinner to the player who won (Alex Jungroth)
-                        electionWinner = i;
-                    }//if
+                    players[i].GetComponent<PlayerVariables>().chosenPolicy = 0;
                 }//for
 
-                //The winner deposits 25% of their money into a war chest for their constituents (Alex Jungroth)
-                players[electionWinner].GetComponent<PlayerVariables>().money = (int)Mathf.Floor
-                    (players[electionWinner].GetComponent<PlayerVariables>().money * threeQuatersDecrease);
+                //The UI will not be updated until window generator finishes (Alex Jungroth)
 
-                if (players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy != 0)
+                //updates the winner's money on the main TV and displays to the TV that it is player 1's turn (Alex Jungroth)
+                UIController.alterTextBox("It is the " + players[0].GetComponent<PlayerVariables>().politicalPartyName +
+                    " Party's turn.\n" + displayPlayerStats());
+
+                //enables the end turn and player stats buttons
+                UIController.endTurnButton.SetActive(true);
+
+                //enables the action buttons
+                for (int i = 0; i < 10; i++)
                 {
-                    //a case structure for calling the correct set of functions based on which player won (Alex Jungroth)
-                    switch (players[electionWinner].GetComponent<PlayerVariables>().politicalPartyName)
-                    {
-                        case "Apple Pie":
-                            partyPolicyManager.GetComponent<NeutralPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-                            break;
+                    UIController.ActionButtonObject[i].SetActive(true);
+                }
 
-                        case "Espresso":
-                            partyPolicyManager.GetComponent<EspressoPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-                            break;
+                UIController.SetPlayerAndParyNameInUpperLeft(players[0].GetComponent<PlayerVariables>().politicalPartyName, 1);
 
-                        case "Drone":
-                            partyPolicyManager.GetComponent<DronePolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-                            break;
+                //resets the game state to action turns (Alex Jungroth)
+                currentState = GameState.ActionTurns;
 
-                        case "Windy":
-                            partyPolicyManager.GetComponent<WindyPolicies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-                            break;
-
-                        case "Providence":
-                            partyPolicyManager.GetComponent<Party5Policies>().redirectPolicyRequest(players[electionWinner].GetComponent<PlayerVariables>().chosenPolicy);
-                            break;
-
-                        default:
-                            //something went wrong with the players names
-                            Debug.LogError("Unrecognized player name!");
-                            break;
-                    }//switch
-
-                    //determines if the party's policy was well received or not (Alex Jungroth)
-                    if (Random.value >= half)
-                    {
-                        //If the party's policy was well received then the party gains money equal to 10% of its total money (Alex Jungroth)
-                        players[electionWinner].GetComponent<PlayerVariables>().money = (int)Mathf.Ceil
-                            (players[electionWinner].GetComponent<PlayerVariables>().money * tenPercentIncrease);
-                        SFX.PlayAudioClip(13, 0, SFXVolume);
-                    }
-                    else
-                    {
-                        //If the party's policy was poorly received then the party loses money equal to 10% of its total money (Alex Jungroth)
-                        players[electionWinner].GetComponent<PlayerVariables>().money = (int)Mathf.Floor
-                            (players[electionWinner].GetComponent<PlayerVariables>().money * tenPercentDecrease);
-                        SFX.PlayAudioClip(14, 0, SFXVolume);
-                    }//else
-                }//if
+                //Brian Mah
+                //audio stuff, fades in regular music, fades out election music
+                //also stops the custom loop in music controller
+                gameMusic.FadeIn(0);
+                gameMusic.FadeOut(1);
+                gameMusic.StopElectionTheme();
             }//if
-
-            //resets the selected policies for all players (Alex Jungroth)
-            for (int i = 0; i < numberPlayers; i++)
-            {
-                players[i].GetComponent<PlayerVariables>().chosenPolicy = 0;
-            }//for
+        }//if
+        else
+        {
+            //Updates the UI immediately if window generator is not being used (Alex Jungroth)
 
             //updates the winner's money on the main TV and displays to the TV that it is player 1's turn (Alex Jungroth)
             UIController.alterTextBox("It is the " + players[0].GetComponent<PlayerVariables>().politicalPartyName +
                 " Party's turn.\n" + displayPlayerStats());
+
+            //enables the end turn and player stats buttons
+            UIController.endTurnButton.SetActive(true);
+
+            //enables the action buttons
+            for (int i = 0; i < 10; i++)
+            {
+                UIController.ActionButtonObject[i].SetActive(true);
+            }
+
+            UIController.SetPlayerAndParyNameInUpperLeft(players[0].GetComponent<PlayerVariables>().politicalPartyName, 1);
 
             //resets the game state to action turns (Alex Jungroth)
             currentState = GameState.ActionTurns;
@@ -661,7 +750,7 @@ public class GameController : MonoBehaviour {
             gameMusic.FadeIn(0);
             gameMusic.FadeOut(1);
             gameMusic.StopElectionTheme();
-        }//if
+        }  
     }//EnactThePolicies()
 
     /// <summary>
@@ -877,7 +966,7 @@ public class GameController : MonoBehaviour {
 
 			if (currentPlayerTurn < numberPlayers) {
 				playerTakingAction = false;
-				Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+				//Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 				//updates the tv so the users know whose turn it is (Alex Jungroth)
 				UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName +
 					" party's turn.\n" + displayPlayerStats());
@@ -902,8 +991,8 @@ public class GameController : MonoBehaviour {
 					playerTakingAction = false;
 					
 					if (roundCounter < numberOfRounds) {
-						Debug.Log ("Round " + (roundCounter + 1) + " begin!");
-						Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
+						//Debug.Log ("Round " + (roundCounter + 1) + " begin!");
+						//Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 
 						//updates the tv so the users know whose turn it is (Alex Jungroth)
 						UIController.alterTextBox("It is the " + players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName +
@@ -911,7 +1000,7 @@ public class GameController : MonoBehaviour {
 						UIController.SetPlayerAndParyNameInUpperLeft(players[currentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName, currentPlayerTurn + 1);
 						PlayStartOfTurnAudio ();
 					} else {
-						Debug.Log ("Game Ends!");
+						//Debug.Log ("Game Ends!");
 					}
 				}
 			}
@@ -1014,9 +1103,9 @@ public class GameController : MonoBehaviour {
 		
 		//holds a random float to determine the direction the voters are moving in (Alex Jungroth)
 		float tempRandom = 0;
-		
-		//resets the drum roll (Alex Jungroth)
-		PreAnnouncmentSFXPlaying = false;
+        
+        //resets the drum roll (Alex Jungroth)
+        PreAnnouncmentSFXPlaying = false;
 		PreAnnouncmentSFXTime = 3.7f;
 		
 		for (int i = 0; i < NumVoters; i++) 
@@ -1196,8 +1285,9 @@ public class GameController : MonoBehaviour {
             //throws an error if the gameController did not receive the title screen settings (Alex Jungroth)
             Debug.Log("You may continue play testing!");
 
-            //The default play test from the prototype scene is to have unique parties (Alex Jungroth)
+            //The default play test from the prototype scene is to have unique parties and complex elections (Alex Jungroth)
             uniqueParties = true;
+            complexElections = true;
         }
         else
         {
@@ -1210,6 +1300,7 @@ public class GameController : MonoBehaviour {
             musicSettingsReceived = true;
             SFXVolume = gameSettings.sFXVolume;
             uniqueParties = gameSettings.uniqueParites;
+            complexElections = gameSettings.complexElections;
         }
         gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
         if (gameMusic == null)
@@ -1229,6 +1320,22 @@ public class GameController : MonoBehaviour {
             Debug.LogError("The Game Controller could not find the Input manager please place it in the scene.");
         }
 
+    }
+
+    /// <summary>
+    /// Calls the function that calculates the votes. (Alex Jungroth)
+    /// </summary>
+    public void callCalculateVotes()
+    {
+        calculateWinnnerManager.GetComponent<CalculateWinner>().CalculateVotes();
+    }
+
+    /// <summary>
+    /// Calls the function that calculates the victory points. (Alex Jungroth)
+    /// </summary>
+    public void callCalculateVictoryPoints()
+    {
+        calculateWinnnerManager.GetComponent<CalculateWinner>().CalculateVictoryPoints();
     }
 
 }//Gamecontroller Class

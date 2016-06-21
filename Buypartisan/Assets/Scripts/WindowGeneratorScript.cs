@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class WindowGeneratorScript : MonoBehaviour {
 
@@ -9,7 +10,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 	public GameController gameController;
 
 	//holds the UI script
-	public UI_Script uiController;
+	//public UI_Script uiController;
 	
 	//holds the end game screen
 	public GameObject endGame;
@@ -72,7 +73,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 	//holds whether or not the game is over
 	private bool gameOver;
-
+   
 	//holds the winner
 	public string winner = "no winner";
     public int winnerNumber = 0;
@@ -87,16 +88,16 @@ public class WindowGeneratorScript : MonoBehaviour {
 	private bool coalitionsFormed = false;
 
 	//holds coalition A's votes
-	private int coalitionA = 0;
+	//private int coalitionA = 0;
 
 	//holds coalition B's votes
-	private int coalitionB = 0;
+	//private int coalitionB = 0;
 
 	//holds the highest vote total
 	private int maxVotes = 0;
 
 	//holds the highest percentage total
-	private int maxPercent = 0;
+	//private int maxPercent = 0;
 
 	//hols the highest victory point total
 	private int maxVictoryPoints = 0;
@@ -240,13 +241,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 			player5Slider.SetActive(true);
 		}
 
-		//updates the player text
-		/*for(int i = 0; i < totalPlayers; i++)
-		{
-			playerText.text +=  gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName + " Party\n\n";
-		}
-		*/
-
 		//This code generates a window for forming coalitions
 
 		//disables the statistic labels
@@ -257,12 +251,6 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 		//enables the end game screen
 		endGame.SetActive(true);
-
-		//alters the window's name
-		//windowName.text = "Go it Alone or Choose a Coalition!";
-
-		//uses the vicotry text to display the coalilitions
-		//victoryText.text = "Single       A               B";
 
 		//diables some elements on the end game screen
 		policySlider.SetActive(false);
@@ -487,44 +475,42 @@ public class WindowGeneratorScript : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Continues the game. (Alex Jungroth)
+	/// Continues the game. This is called by a button that is part of the window. (Alex Jungroth)
 	/// </summary>
 	public void continueGame()
 	{		
 		if (resultsDisplayed)
 		{
 			//enables the end turn and player stats buttons
-			uiController.endTurnButton.SetActive (true);
+			//uiController.endTurnButton.SetActive (true);
 
 			//resets the policy slider
 			policySlider.GetComponent<Slider> ().value = 0;
 
 			//enables the action buttons
+            /*
 			for (int i = 0; i < 10; i++)
 			{
 				uiController.ActionButtonObject [i].SetActive (true);
 			}
-		    
+		    */
+
 			//resets the bools
 			resultsDisplayed = false;
 			coalitionsFormed = false;
 
 			//resets the coalitions vote totals and all of the max values
-			coalitionA = 0;
-			coalitionB = 0;
+			//coalitionA = 0;
+			//coalitionB = 0;
 			maxVotes = 0;
-			maxPercent = 0;
 			maxVictoryPoints = 0;
-
-			//disables the victory token
-			//victoryToken.SetActive(false);
 
 			//resets the scores
 			partyNames = "";
 			voteTotals = "";
 			victoryPointTotals = "";
 
-			uiController.SetPlayerAndParyNameInUpperLeft (gameController.players [0].GetComponent<PlayerVariables> ().politicalPartyName, 1);
+			//uiController.SetPlayerAndParyNameInUpperLeft (gameController.players [0].GetComponent<PlayerVariables> ().politicalPartyName, 1);
 
 			//disables the win screens
 			espressoScreen.SetActive (false);
@@ -556,7 +542,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 			player3Slider.SetActive (false);
 			player4Slider.SetActive (false);
 			player5Slider.SetActive (false);
-
+            /*
 			//tallies the votes in the coalitions
 			for (int i = 0; i < totalPlayers; i++) 
 			{
@@ -663,9 +649,18 @@ public class WindowGeneratorScript : MonoBehaviour {
 					maxVotes = gameController.players [i].GetComponent<PlayerVariables> ().votes;
 				}
 			}
+            */
 
-			//generates the correct window
-			if (gameOver == false) 
+            //Game Controller calculates the winner of the election (AAJ)
+            gameController.callCalculateVotes();
+
+            //Gets the vote totals from Game Controller
+            winner = gameController.winner;
+            winnerNumber = gameController.winnerNumber;
+            maxVotes = gameController.maxVotes;
+
+            //generates the correct window
+            if (gameOver == false) 
 			{
 				//This code generates a window for the end of an election
 				if (maxVotes > 0) 
@@ -730,7 +725,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 							
 						}//if
 					}//for
-				} 
+				}//if
 				else
 				{
 					//if no one won the election
@@ -741,7 +736,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 					policySlider.SetActive (false);
 				}
-
+                
 				//prints each player's victory points to the big tv 
 				for (int i = 0; i < totalPlayers; i++)
 				{
@@ -749,7 +744,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 					voteTotals += gameController.players [i].GetComponent<PlayerVariables> ().votes + "\n\n";
 					victoryPointTotals += gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints + "\n\n";
 				}
-				
+			    
 				//updates the election victory screen with the parties' votes and victory point stats
 				victoryText.text = partyNames;
 				votesText.text = voteTotals;
@@ -757,9 +752,10 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 				//the results have been displayed
 				resultsDisplayed = true;
-			} 
+			}//else if 
 			else
 			{
+                /*
 				//determines who won the game
 				for (int i = 0; i < totalPlayers; i++) 
 				{
@@ -770,11 +766,17 @@ public class WindowGeneratorScript : MonoBehaviour {
                         winnerNumber = gameController.players[i].GetComponent<PlayerVariables>().playerNumber;
                     }
 				}
-			
-				//This code generates a window for the end of the game
-			
-				//enables the end game screen
-				endGame.SetActive (true);
+			    */
+                //Game Controller calculates the winner of the game (AAJ)
+                gameController.callCalculateVictoryPoints();
+
+                //Gets the victory point totals from Game Controller
+                maxVictoryPoints = gameController.maxVictoryPoints;
+
+                //This code generates a window for the end of the game
+
+                //enables the end game screen
+                endGame.SetActive (true);
 
 				//enables the statistic labels
 				statsText.SetActive (true);
@@ -834,7 +836,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 				victoryPointsText.text = victoryPointTotals;
 
 				//lets the user know they can reset the game
-				uiController.alterTextBox("Press confirm or the escape key to return to the title screen. Thanks for playing!");
+				//uiController.alterTextBox("Press confirm or the escape key to return to the title screen. Thanks for playing!");
 
 				//allows the game to be reset
 				resetGame = true;
@@ -850,7 +852,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 		else if(resetGame)
 		{
 			//resets the game
-			Application.LoadLevel("TitleScene");
+			SceneManager.LoadScene("TitleScene");
 
 		}//else
 	}//continueGame()

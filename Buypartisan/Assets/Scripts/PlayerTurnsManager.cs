@@ -84,7 +84,7 @@ public class PlayerTurnsManager : MonoBehaviour {
 		//voters = gameController.GetComponent<GameController> ().voters;
 		players = gameController.GetComponent<GameController> ().players;
 		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
-		Debug.Log (currentPlayer);
+		//Debug.Log (currentPlayer);
         costMultiplier += costMultiplierIncreaseAmount;
 
 		//This is the Espresso Party's passive

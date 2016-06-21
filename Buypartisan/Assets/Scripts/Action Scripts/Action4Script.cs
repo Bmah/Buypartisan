@@ -365,7 +365,7 @@ public class Action4Script : MonoBehaviour {
 					//resets the voters postions if they resist the action (Alex Jungroth)
 					voterFinalPositions[i] = voterOriginalPositions[i];
 					running = true;
-					Debug.Log (i + " " + voterFinalPositions[i] + " " + voterOriginalPositions[i]);
+					//Debug.Log (i + " " + voterFinalPositions[i] + " " + voterOriginalPositions[i]);
 				}
 			}
 		}
@@ -374,7 +374,7 @@ public class Action4Script : MonoBehaviour {
 			for (int p = 0; p < voters.Length; p++) {
 				voterFinalPositions[p] = voterAdjustedPositions[p];
 			}
-			Debug.Log ("all passed");
+			//Debug.Log ("all passed");
 		}
 	}
 

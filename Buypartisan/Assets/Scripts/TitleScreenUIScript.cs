@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class TitleScreenUIScript : MonoBehaviour 
 {
@@ -72,6 +73,9 @@ public class TitleScreenUIScript : MonoBehaviour
 
     //Holds a reference to the toggle for unique parties
     public Toggle uniquePartiesToggle;
+
+    //Holds a reference to the toggle for complex elections
+    public Toggle complexElectionsToggle;
 
     //holds the values that the gameController will get in the next scene (Alex Jungroth)
     public float gridSize = gSSlider;
@@ -148,7 +152,8 @@ public class TitleScreenUIScript : MonoBehaviour
 			sFXSlider.GetComponent<Slider>().value = sFXVolume;
 
             uniquePartiesToggle.GetComponent<Toggle>().isOn = rememberSettings.uniqueParties;
-		}
+            complexElectionsToggle.GetComponent<Toggle>().isOn = rememberSettings.complexElections;
+        }
 	}
 	
 	// Update is called once per frame
@@ -206,7 +211,7 @@ public class TitleScreenUIScript : MonoBehaviour
         }
 
 		if (LoadingGameScene && Time.time > LoadSceneTime) {
-			Application.LoadLevel("PrototypeScene");
+			SceneManager.LoadScene("PrototypeScene");
 		}
 	}
 
@@ -214,7 +219,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	{
 		//sends the decided game settings to the object that the gameController will see (Alex Jungroth)
 		settingsCover.SetActive(true);
-		gameSettings.FinalizeSettings (gridSize, totalRounds,totalElections, totalVoters, musicVolume, sFXVolume, uniquePartiesToggle.GetComponent<Toggle>().isOn);
+		gameSettings.FinalizeSettings (gridSize, totalRounds,totalElections, totalVoters, musicVolume, sFXVolume, uniquePartiesToggle.GetComponent<Toggle>().isOn, complexElectionsToggle.GetComponent<Toggle>().isOn);
 		//Brian Mah
 		LoadSceneTime = Time.time + 0.5f;
 		LoadingGameScene = true;
@@ -318,6 +323,10 @@ public class TitleScreenUIScript : MonoBehaviour
 		voterCounterSlider.GetComponent<Slider>().value = vCSValue;
 		sFXSlider.GetComponent<Slider>().value = sSlider;
 		musicSlider.GetComponent<Slider>().value = mSlider;
+
+        //Resets the toggles (Alex Jungroth)
+        uniquePartiesToggle.isOn = true;
+        complexElectionsToggle.isOn = true;
 	}
 
 	public void QuitGame()
