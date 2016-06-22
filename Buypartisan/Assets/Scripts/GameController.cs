@@ -128,6 +128,7 @@ public class GameController : MonoBehaviour {
     public TallyingScript tallyRoutine;//does the tallying at the start of each turn (Alex Jungroth)
     private InputManagerScript inputManager;
     public CalculateWinner calculateWinnnerManager;//Calcuates the winner of elections and the game (Alex Jungroth)
+    public SimpleVictoryDisplay simpleVictoryDispaly;//Displays the winner in on single screen that does not impact game flow (Alex Jungroth)
 
     //*********************************************************************
     //
@@ -527,8 +528,7 @@ public class GameController : MonoBehaviour {
                 gameMusic.audioChannels[1].Stop();
                 gameMusic.PlayElectionTheme();
             }
-
-
+            
             //does the tallying at the end of the game (Alex Jungroth)
             tallyRoutine.preTurnTalling();
 
@@ -567,10 +567,8 @@ public class GameController : MonoBehaviour {
                 //Calculates the votes independently of window generator (Alex Jungroth)
                 callCalculateVotes();
 
-                //Test Print (Alex Jungroth)
-                Debug.Log(winner);
-                Debug.Log(winnerNumber);
-
+                //Displays the winner of the election based on votes (Alex Jungroth)
+                simpleVictoryDispaly.GetComponent<SimpleVictoryDisplay>().displayWinner(true);
             }//else
 
             //manages things between elections (Alex Jungroth)
@@ -598,11 +596,10 @@ public class GameController : MonoBehaviour {
                 //Calculates the victory points independently of window generator (Alex Jungroth)
                 callCalculateVictoryPoints();
 
-                //Test Print (Alex Jungroth)
-                Debug.Log(winner);
-                Debug.Log(winnerNumber);
+                //Displays the winner of the game based on victory points (Alex Jungroth)
+                simpleVictoryDispaly.GetComponent<SimpleVictoryDisplay>().displayWinner(false);
 
-                //lets the user know they can reset the game
+                //Lets the user know they can reset the game
                 UIController.alterTextBox("Press the escape key to return to the title screen. Thanks for playing!");
             }//else
             

@@ -99,7 +99,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 	//holds the highest percentage total
 	//private int maxPercent = 0;
 
-	//hols the highest victory point total
+	//holds the highest victory point total
 	private int maxVictoryPoints = 0;
 
 	//hold the scores at the end of election
