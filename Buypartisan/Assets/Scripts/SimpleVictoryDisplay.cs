@@ -82,7 +82,7 @@ public class SimpleVictoryDisplay : MonoBehaviour {
             {
                 for(int j = i + 1; j < gameController.numberPlayers; j++)
                 {
-                    if(gameController.players[playerArray[j]].GetComponent<PlayerVariables>().votes > gameController.players[playerArray[i]].GetComponent<PlayerVariables>().votes)
+                    if(gameController.players[playerArray[j]].GetComponent<PlayerVariables>().votes >= gameController.players[playerArray[i]].GetComponent<PlayerVariables>().votes)
                     {
                         //Swaps the order of the players
                         temp = playerArray[i];
@@ -102,7 +102,7 @@ public class SimpleVictoryDisplay : MonoBehaviour {
             {
                 for (int j = i + 1; j < gameController.numberPlayers; j++)
                 {
-                    if (gameController.players[playerArray[j]].GetComponent<PlayerVariables>().victoryPoints > gameController.players[playerArray[i]].GetComponent<PlayerVariables>().victoryPoints)
+                    if (gameController.players[playerArray[j]].GetComponent<PlayerVariables>().victoryPoints >= gameController.players[playerArray[i]].GetComponent<PlayerVariables>().victoryPoints)
                     {
                         //Swaps the order of the players
                         temp = playerArray[i];
@@ -176,6 +176,12 @@ public class SimpleVictoryDisplay : MonoBehaviour {
         voteTotalText.text = "";
         victoryPointTotalText.text = "";
         moneyTotalText.text = "";
+
+        //Resets the player array (AAJ)
+        for (int i = 0; i < 5; i++)
+        {
+            playerArray[i] = i;
+        }//for
 
     }//dismissWindow
 }

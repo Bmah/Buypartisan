@@ -14,10 +14,10 @@ public class TitleScreenSettings : MonoBehaviour
 	public int totalElections = 2;
 	public int totalVoters = 40;
 	public float musicVolume = 0.1f;
-	public float sFXVolume = 0.1f;
+    public float sFXVolume = 0.1f;
 
     //Holds whether or not there will be unique parties
-    public bool uniqueParites;
+    public bool uniqueParties;
 
     //Holds whether or not window generator will be used (AAJ)
     public bool complexElections;
@@ -60,7 +60,7 @@ public class TitleScreenSettings : MonoBehaviour
 		totalVoters = (int)voters;
 		musicVolume = music;
 		sFXVolume = sFX;
-        uniqueParites = unique;
+        uniqueParties = unique;
         complexElections = complex;
 	}
 }

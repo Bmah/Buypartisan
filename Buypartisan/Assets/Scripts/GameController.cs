@@ -1296,7 +1296,7 @@ public class GameController : MonoBehaviour {
             //the music has to set during the update function (Alex Jungroth)
             musicSettingsReceived = true;
             SFXVolume = gameSettings.sFXVolume;
-            uniqueParties = gameSettings.uniqueParites;
+            uniqueParties = gameSettings.uniqueParties;
             complexElections = gameSettings.complexElections;
         }
         gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
