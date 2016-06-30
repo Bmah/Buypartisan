@@ -116,7 +116,7 @@ public class GameController : MonoBehaviour {
     //*******************************************************************
     public GridInstanced GridInstancedController;
 	private TitleScreenSettings gameSettings; //holds the title screen settings (Alex Jungroth)
-    private RememberSettings rememberSettings;//holds the title screen settings during the game (Alex Jungroth)
+    //private RememberSettings rememberSettings;//holds the title screen settings during the game (Alex Jungroth)
     public UI_Script UIController;
 	public PopUpTVScript popUpTVScript;
     public WindowGeneratorScript WindowGenerator;//holds the WindowGenerator script (Alex Jungroth)
@@ -405,12 +405,7 @@ public class GameController : MonoBehaviour {
     void AdjustMusic()
     {
         gameMusic.audioChannels[0].volume = gameSettings.musicVolume;
-
-        //stores the settings into the Remember Settings Manager (Alex Jungroth)
-        rememberSettings = GameObject.FindGameObjectWithTag("RememberSettings").GetComponent<RememberSettings>();
-
-        rememberSettings.SaveSettings(gridSize, numberOfRounds, numberOfElections, NumVoters, gameSettings.musicVolume, SFXVolume, uniqueParties, complexElections);
-
+        
         //sets music settings recieved to false so it doesn't update 
         //the volume every time update is called (Alex Jungroth)
         musicSettingsReceived = false;

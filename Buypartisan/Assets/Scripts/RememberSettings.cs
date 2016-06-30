@@ -1,4 +1,11 @@
 ﻿//Alex Jungroth
+//I made RememberSettings to make the process of moving the settings from one scene to the next easier. However  it did the opposite of that. 
+//I think that there is a race condition where the game controller runs before remember settings does. Game Controller will update the settings
+//and then RememberSettings runs and deletes what game controller did. There are ways to change the priority, we could use a different start
+//function in Remember settings so it always runs first, but I don't want to try to enforce that priority in the code. It ultimately makes
+//things more complicated which was the opposite of what I wanted to achieve when I made this. It will be much simpler to go back to just using
+//TitleScreenSettings. 
+//This code is now deprecated. I'm talking RememberSettings out of the prototype scene. 
 using UnityEngine;
 using System.Collections;
 
