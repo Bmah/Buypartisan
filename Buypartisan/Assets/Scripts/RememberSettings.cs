@@ -14,7 +14,7 @@ public class RememberSettings : MonoBehaviour
 	public int totalElections = 2;
 	public int totalVoters = 40;
 	public float musicVolume = 0.1f;
-	public float sFXVolume = 0.1f;
+    public float sFXVolume = 0.1f;
     public bool uniqueParties = true;
     public bool complexElections = true;
 

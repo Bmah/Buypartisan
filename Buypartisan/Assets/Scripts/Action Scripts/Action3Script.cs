@@ -413,11 +413,22 @@ public class Action3Script : MonoBehaviour {
 				//marks the this instance of the player as a shadow position so it will not be moused over
 				shadowPosition.GetComponent<PlayerVariables>().isShadowPosition = true;
 
-				//gets the players Renderer
-				playerRenderer = players[currentPlayer].transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
+                //gets the players Renderer
+                if(gameController.GetComponent<GameController>().uniqueParties == true)
+                {
+                    playerRenderer = players[currentPlayer].transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
 
-				//gets the shadows position's renderer
-				shadowRenderer = shadowPosition.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
+                    //gets the shadows position's renderer
+                    shadowRenderer = shadowPosition.transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
+                }//if
+                else
+                {
+                    //If there are no unique parties, this will correctly interact with the sphere models
+                    playerRenderer = players[currentPlayer].transform.GetChild(1).gameObject.GetComponent<Renderer>();
+
+                    //gets the shadows position's renderer when there are no unique parties
+                    shadowRenderer = shadowPosition.transform.GetChild(1).gameObject.GetComponent<Renderer>();
+                }//else
 
 				//
 				shadowRenderer.material = players[currentPlayer].GetComponent<PlayerVariables>().transparentTexture;
