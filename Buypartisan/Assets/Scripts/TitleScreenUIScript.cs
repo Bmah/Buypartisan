@@ -325,8 +325,8 @@ public class TitleScreenUIScript : MonoBehaviour
 		musicSlider.GetComponent<Slider>().value = mSlider;
 
         //Resets the toggles (Alex Jungroth)
-        uniquePartiesToggle.isOn = true;
-        complexElectionsToggle.isOn = true;
+        uniquePartiesToggle.isOn = false;
+        complexElectionsToggle.isOn = false;
 	}
 
 	public void QuitGame()
