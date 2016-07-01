@@ -31,7 +31,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	public TitleScreenSettings gameSettings;
 
 	//holds the settings from the Game Controller (Alex Jungroth)
-	public RememberSettings rememberSettings;
+	//public RememberSettings rememberSettings;
 
 	//holds the music controller (Alex Jungroth)
 	public MusicController musicPlayer;
@@ -128,21 +128,21 @@ public class TitleScreenUIScript : MonoBehaviour
 		//gets the settings from the remember settings if it exists (Alex Jungroth)
 		try 
 		{
-			rememberSettings = GameObject.FindGameObjectWithTag("RememberSettings").GetComponent<RememberSettings>();
+            gameSettings = GameObject.FindGameObjectWithTag("TitleSettings").GetComponent<TitleScreenSettings>();
 		}
 		catch
 		{
 			
 		}
-		if (rememberSettings != null) 
+		if (gameSettings != null) 
 		{
 			//gets the following variables from the title UI settings (Alex Jungroth)
-			gridSize = rememberSettings.gridSize;
-			totalRounds = rememberSettings.totalRounds;
-			totalElections = rememberSettings.totalElections;
-			totalVoters = rememberSettings.totalVoters;
-			musicVolume = rememberSettings.musicVolume;
-			sFXVolume = rememberSettings.sFXVolume;
+			gridSize = gameSettings.gridSize;
+			totalRounds = gameSettings.totalRounds;
+			totalElections = gameSettings.totalElections;
+			totalVoters = gameSettings.totalVoters;
+			musicVolume = gameSettings.musicVolume;
+			sFXVolume = gameSettings.sFXVolume;
 
 			gridSizeSlider.GetComponent<Slider>().value = gridSize;
 			roundsSlider.GetComponent<Slider>().value = totalRounds;
@@ -151,8 +151,8 @@ public class TitleScreenUIScript : MonoBehaviour
 			musicSlider.GetComponent<Slider>().value = musicVolume;
 			sFXSlider.GetComponent<Slider>().value = sFXVolume;
 
-            uniquePartiesToggle.GetComponent<Toggle>().isOn = rememberSettings.uniqueParties;
-            complexElectionsToggle.GetComponent<Toggle>().isOn = rememberSettings.complexElections;
+            uniquePartiesToggle.GetComponent<Toggle>().isOn = gameSettings.uniqueParties;
+            complexElectionsToggle.GetComponent<Toggle>().isOn = gameSettings.complexElections;
         }
 	}
 	

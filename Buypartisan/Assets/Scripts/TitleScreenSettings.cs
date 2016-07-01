@@ -36,9 +36,9 @@ public class TitleScreenSettings : MonoBehaviour
 		}
 		else
 		{
-			//deletes copies of the TitleScreenSettings Script
-			Destroy(duplicateTitleSettingsUI[0]);
-			DontDestroyOnLoad(duplicateTitleSettingsUI[1]);
+            //deletes copies of the TitleScreenSettings Script
+            Destroy(duplicateTitleSettingsUI[1]);
+            DontDestroyOnLoad(duplicateTitleSettingsUI[0]);
 		}
 	}
 	
