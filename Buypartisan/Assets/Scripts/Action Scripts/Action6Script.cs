@@ -93,7 +93,8 @@ public class Action6Script : MonoBehaviour {
 		}
 		if (Input.GetMouseButtonDown (0)) {
 			for (selectedPlayer = 0; selectedPlayer < players.Length; selectedPlayer++) {
-				if(players[selectedPlayer].GetComponent<PlayerVariables>().GetSelected()) {
+                //The second check prevents the sphere from being shrunk to a negative size (AAJ)
+                if (players[selectedPlayer].GetComponent<PlayerVariables>().GetSelected() && players[selectedPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale.x > 0) {
 					//foundPlayer = true;
 					playerSelected = true;
 					Debug.Log (playerSelected);
