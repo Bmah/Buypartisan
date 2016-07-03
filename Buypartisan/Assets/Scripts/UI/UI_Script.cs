@@ -166,8 +166,10 @@ public class UI_Script : MonoBehaviour {
 
 		//disables the left, right, and end turn buttons
 		endTurnButton.SetActive (false);
-		leftButton.SetActive (false);
-		rightButton.SetActive (false);
+		
+        //LEFT AND RIGHT BUTTONS DEPRECATED
+        //leftButton.SetActive (false);
+		//rightButton.SetActive (false);
 
 		//disables the confirm button
 		confirmButton.SetActive(false);
@@ -825,21 +827,22 @@ public class UI_Script : MonoBehaviour {
 		cancelButton.SetActive (true);
 	}
 
-	public void leftButtonClicked()
-	{
-		if (chosenAction == 2)
-			instantiatedAction.GetComponent<Action2Script> ().leftButton = true;
-		if (chosenAction == 0)
-			instantiatedAction.GetComponent<Action0Script> ().leftButton = true;
-	}
+    //TYLER WELSH - Commenting out old button functionality. Now unused
+	//public void leftButtonClicked()
+	//{
+	//	if (chosenAction == 2)
+	//		instantiatedAction.GetComponent<Action2Script> ().leftButton = true;
+	//	if (chosenAction == 0)
+	//		instantiatedAction.GetComponent<Action0Script> ().leftButton = true;
+	//}
 
-	public void rightButtonClicked()
-	{
-		if (chosenAction == 2)
-			instantiatedAction.GetComponent<Action2Script> ().rightButton = true;
-		if (chosenAction == 0)
-			instantiatedAction.GetComponent<Action0Script> ().rightButton = true;
-	}
+	//public void rightButtonClicked()
+	//{
+	//	if (chosenAction == 2)
+	//		instantiatedAction.GetComponent<Action2Script> ().rightButton = true;
+	//	if (chosenAction == 0)
+	//		instantiatedAction.GetComponent<Action0Script> ().rightButton = true;
+	//}
 
 	/// <summary>
 	/// Sound Effect player
