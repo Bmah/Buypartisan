@@ -19,8 +19,11 @@ public class TitleScreenSettings : MonoBehaviour
     //Holds whether or not there will be unique parties
     public bool uniqueParties;
 
-    //Holds whether or not window generator will be used (AAJ)
+    //Holds whether or not window generator will be used
     public bool complexElections;
+
+    //Holds whether or not the pedestals will be used 
+    public bool usePedestals;
 
     // Use this for initialization
     void Start () 
@@ -41,17 +44,11 @@ public class TitleScreenSettings : MonoBehaviour
             DontDestroyOnLoad(duplicateTitleSettingsUI[0]);
 		}
 	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-		
-	}
 
 	/// <summary>
 	/// Finalizes the settings. (Alex Jungroth)
 	/// </summary>
-	public void FinalizeSettings(float size, float rounds, float elections, float voters, float music, float sFX, bool unique, bool complex)
+	public void FinalizeSettings(float size, float rounds, float elections, float voters, float music, float sFX, bool unique, bool complex, bool pedestals)
 	{
 		//gets the values that will be sent to the gameController
 		gridSize = (int)size;
@@ -62,5 +59,6 @@ public class TitleScreenSettings : MonoBehaviour
 		sFXVolume = sFX;
         uniqueParties = unique;
         complexElections = complex;
-	}
+        usePedestals = pedestals;
+    }
 }
