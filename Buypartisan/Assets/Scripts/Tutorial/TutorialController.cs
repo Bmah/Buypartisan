@@ -40,6 +40,9 @@ public class TutorialController : MonoBehaviour {
     //Use this for initialization
     void Start()
     {
+        //Initializes the size of the tutorial sections used
+        tutorialSectionsUsed = new bool[numberOfTutorialSections];
+
         //Initializes the tutorial sections that have been used
         for (int i = 0; i < numberOfTutorialSections; i++)
         {
