@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class TitleScreenUIScript : MonoBehaviour 
 {
-	//constants values that will be used throughout the scripts (Alex Jungroth)
+	//Constants values that will be used throughout the scripts (Alex Jungroth)
 	//vCS = voter Counter Slider
 	//vCB = voter Counter Button
 	//gS = grid Size
@@ -27,24 +27,24 @@ public class TitleScreenUIScript : MonoBehaviour
 	private const int sChannel = 0;
 	private const int mouseDown = 0;
 
-	//holds the script that the gameController will take the setting values from (Alex Jungroth)
+	//Holds the script that the gameController will take the setting values from (Alex Jungroth)
 	public TitleScreenSettings gameSettings;
 
-	//holds the settings from the Game Controller (Alex Jungroth)
+	//Holds the settings from the Game Controller (Alex Jungroth)
 	//public RememberSettings rememberSettings;
 
-	//holds the music controller (Alex Jungroth)
+	//Holds the music controller (Alex Jungroth)
 	public MusicController musicPlayer;
 
-	//holds the SFX controller (Alex Jungroth)
+	//Holds the SFX controller (Alex Jungroth)
 	public SFXController sFXPlayer;
 
-	//holds the title screen images (Alex Jungroth)
+	//Holds the title screen images (Alex Jungroth)
 	public GameObject panel2;
 	public GameObject panel2BG;
 	public GameObject settingsText;
 
-	//holds the title screen buttons (Alex Jungroth)
+	//Holds the title screen buttons (Alex Jungroth)
 	public GameObject backButton;
 	public GameObject resetButton;
 	public GameObject playButton;
@@ -52,7 +52,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	public GameObject quitButton;
     public GameObject creditsButton;
 
-	//holds the text the title screens text elements (Alex Jungroth)
+	//Holds the text the title screens text elements (Alex Jungroth)
 	public GameObject gridText;
 	public GameObject roundsText;
 	public GameObject electionText;
@@ -60,10 +60,10 @@ public class TitleScreenUIScript : MonoBehaviour
 	public GameObject sFXText;
 	public GameObject musicText;
     
-	//holds the credits background and text
+	//Holds the credits background and text
 	public GameObject creditsTextBackground;
 
-	//holds the title screen sliders (Alex Jungroth)
+	//Holds the title screen sliders (Alex Jungroth)
 	public GameObject gridSizeSlider;
 	public GameObject roundsSlider;
 	public GameObject electionSlider;
@@ -71,13 +71,16 @@ public class TitleScreenUIScript : MonoBehaviour
 	public GameObject sFXSlider;
 	public GameObject musicSlider;
 
-    //Holds a reference to the toggle for unique parties
+    //Holds a reference to the toggle for unique parties (Alex Jungroth)
     public Toggle uniquePartiesToggle;
 
-    //Holds a reference to the toggle for complex elections
+    //Holds a reference to the toggle for complex elections (Alex Jungroth)
     public Toggle complexElectionsToggle;
 
-    //holds the values that the gameController will get in the next scene (Alex Jungroth)
+    //Holds a reference to the toggle for pedestals (Alex Jungroth)
+    public Toggle usePedestalsToggle;
+
+    //Holds the values that the gameController will get in the next scene (Alex Jungroth)
     public float gridSize = gSSlider;
 	public float totalRounds = rSlider;
 	public float totalElections = eSlider;
@@ -87,25 +90,25 @@ public class TitleScreenUIScript : MonoBehaviour
 
     private bool inCredits = false;
 
-	//holds the cover the other buttons when the settings are being adjusted (Alex Jungroth)
+	//Holds the cover the other buttons when the settings are being adjusted (Alex Jungroth)
 	public GameObject settingsCover;
 
 	private bool LoadingGameScene = false;
 	private float LoadSceneTime;
 
-	// Use this for initialization
+	//Use this for initialization
 	void Start () 
 	{
-		//disables the settings images (Alex Jungroth)
+		//Disables the settings images (Alex Jungroth)
 		panel2.SetActive(false);
 		panel2BG.SetActive(false);
 		settingsText.SetActive(false);
 
-		//disables the back button and the reset button (Alex Jungroth)
+		//Disables the back button and the reset button (Alex Jungroth)
 		backButton.SetActive(false);
 		resetButton.SetActive(false);
 
-		//disables the text for the title screen (Alex Jungroth)
+		//Disables the text for the title screen (Alex Jungroth)
 		gridText.SetActive(false);
 		roundsText.SetActive(false);
 		electionText.SetActive(false);
@@ -114,7 +117,7 @@ public class TitleScreenUIScript : MonoBehaviour
 		musicText.SetActive(false);
         creditsTextBackground.SetActive(false);
 
-		//disables the sliders for the title screen (Alex Jungroth)
+		//Disables the sliders for the title screen (Alex Jungroth)
 		gridSizeSlider.SetActive(false);
 		roundsSlider.SetActive(false);
 		electionSlider.SetActive(false);
@@ -122,10 +125,10 @@ public class TitleScreenUIScript : MonoBehaviour
 		sFXSlider.SetActive(false);
 		musicSlider.SetActive(false);
 
-		//disable the setting cover at the start (Alex Jungroth)
+		//Disable the setting cover at the start (Alex Jungroth)
 		settingsCover.SetActive(false);
 
-		//gets the settings from the remember settings if it exists (Alex Jungroth)
+		//Gets the settings from the remember settings if it exists (Alex Jungroth)
 		try 
 		{
             gameSettings = GameObject.FindGameObjectWithTag("TitleSettings").GetComponent<TitleScreenSettings>();
@@ -136,7 +139,7 @@ public class TitleScreenUIScript : MonoBehaviour
 		}
 		if (gameSettings != null) 
 		{
-			//gets the following variables from the title UI settings (Alex Jungroth)
+			//Gets the following variables from the title UI settings (Alex Jungroth)
 			gridSize = gameSettings.gridSize;
 			totalRounds = gameSettings.totalRounds;
 			totalElections = gameSettings.totalElections;
@@ -153,6 +156,7 @@ public class TitleScreenUIScript : MonoBehaviour
 
             uniquePartiesToggle.GetComponent<Toggle>().isOn = gameSettings.uniqueParties;
             complexElectionsToggle.GetComponent<Toggle>().isOn = gameSettings.complexElections;
+            usePedestalsToggle.GetComponent<Toggle>().isOn = gameSettings.usePedestals;
         }
 	}
 	
@@ -219,7 +223,7 @@ public class TitleScreenUIScript : MonoBehaviour
 	{
 		//sends the decided game settings to the object that the gameController will see (Alex Jungroth)
 		settingsCover.SetActive(true);
-		gameSettings.FinalizeSettings (gridSize, totalRounds,totalElections, totalVoters, musicVolume, sFXVolume, uniquePartiesToggle.GetComponent<Toggle>().isOn, complexElectionsToggle.GetComponent<Toggle>().isOn);
+		gameSettings.FinalizeSettings (gridSize, totalRounds,totalElections, totalVoters, musicVolume, sFXVolume, uniquePartiesToggle.GetComponent<Toggle>().isOn, complexElectionsToggle.GetComponent<Toggle>().isOn, usePedestalsToggle.GetComponent<Toggle>().isOn);
 		//Brian Mah
 		LoadSceneTime = Time.time + 0.5f;
 		LoadingGameScene = true;
@@ -327,6 +331,7 @@ public class TitleScreenUIScript : MonoBehaviour
         //Resets the toggles (Alex Jungroth)
         uniquePartiesToggle.isOn = false;
         complexElectionsToggle.isOn = false;
+        usePedestalsToggle.isOn = false;
 	}
 
 	public void QuitGame()

@@ -55,6 +55,7 @@ public class GameController : MonoBehaviour {
     private bool votersAppear = true;
     public bool uniqueParties = false;
     public bool complexElections = false;//If this is false, window generator will not be used (Alex Jungroth)
+    public bool usePedestals = false;
     private int totalPlayersSpawned = 0;
     
     //*************************************************************
@@ -1277,9 +1278,10 @@ public class GameController : MonoBehaviour {
             //throws an error if the gameController did not receive the title screen settings (Alex Jungroth)
             Debug.Log("You may continue play testing!");
 
-            //The default play test from the prototype scene is to have unique parties and complex elections (Alex Jungroth)
+            //The default play test from the prototype scene is to have unique parties, complex elections, and pedestals (Alex Jungroth)
             uniqueParties = true;
             complexElections = true;
+            usePedestals = true;
         }
         else
         {
@@ -1293,6 +1295,7 @@ public class GameController : MonoBehaviour {
             SFXVolume = gameSettings.sFXVolume;
             uniqueParties = gameSettings.uniqueParties;
             complexElections = gameSettings.complexElections;
+            usePedestals = gameSettings.usePedestals;
         }
         gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
         if (gameMusic == null)
