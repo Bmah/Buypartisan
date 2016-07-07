@@ -59,11 +59,8 @@ public class TutorialController : MonoBehaviour {
     /// <summary>
     /// Exits the current section of the tutorial (Alex Jungroth)
     /// </summary>
-    public void tutorialExit(int sectionNumber)
+    public void tutorialExit()
     {
-        //Sets the current section of the tutorial to true so it won't be called again
-        tutorialSectionsUsed[sectionNumber] = true;
-
         //Disables the tutorial speech bubble and cover
         tutorialSpeechBubble.SetActive(false);
         tutorialCover.SetActive(false);
@@ -77,8 +74,8 @@ public class TutorialController : MonoBehaviour {
         //Prevents this function from being called more than once a game
         if(tutorialSectionsUsed[goalSection] == false)
         {
-            //Exits this section of the tutorial
-            tutorialExit(goalSection);
+            //Sets the current section of the tutorial to true so it won't be called again
+            tutorialSectionsUsed[goalSection] = true;
         }//if
     }//goalExplainer
 
@@ -90,8 +87,8 @@ public class TutorialController : MonoBehaviour {
         //Prevents this function from being called more than once a game
         if (tutorialSectionsUsed[sliderSection] == false)
         {
-            //Exits this section of the tutorial
-            tutorialExit(sliderSection);
+            //Sets the current section of the tutorial to true so it won't be called again
+            tutorialSectionsUsed[sliderSection] = true;
         }//if
     }//sliderExplainer
 
@@ -103,8 +100,8 @@ public class TutorialController : MonoBehaviour {
         //Prevents this function from being called more than once a game
         if (tutorialSectionsUsed[voterSection] == false)
         {
-            //Exits this section of the tutorial
-            tutorialExit(voterSection);
+            //Sets the current section of the tutorial to true so it won't be called again
+            tutorialSectionsUsed[voterSection] = true;
         }//if
     }//voterExplainer
 
@@ -116,8 +113,8 @@ public class TutorialController : MonoBehaviour {
         //Prevents this function from being called more than once a game
         if (tutorialSectionsUsed[positioningSection] == false)
         {
-            //Exits this section of the tutorial
-            tutorialExit(positioningSection);
+            //Sets the current section of the tutorial to true so it won't be called again
+            tutorialSectionsUsed[positioningSection] = true;
         }//if
     }//positioningExplainer
 
@@ -129,8 +126,8 @@ public class TutorialController : MonoBehaviour {
         //Prevents this function from being called more than once a game
         if (tutorialSectionsUsed[actionSection] == false)
         {
-            //Exits this section of the tutorial
-            tutorialExit(actionSection);
+            //Sets the current section of the tutorial to true so it won't be called again
+            tutorialSectionsUsed[actionSection] = true;
         }//if
     }//actionExplainer
 
@@ -142,8 +139,8 @@ public class TutorialController : MonoBehaviour {
         //Prevents this function from being called more than once a game
         if (tutorialSectionsUsed[randomEventSection] == false)
         {
-            //Exits this section of the tutorial
-            tutorialExit(randomEventSection);
+            //Sets the current section of the tutorial to true so it won't be called again
+            tutorialSectionsUsed[randomEventSection] = true;
         }//if
     }//randomEventExplainer
 
@@ -155,8 +152,8 @@ public class TutorialController : MonoBehaviour {
         //Prevents this function from being called more than once a game
         if (tutorialSectionsUsed[electionSection] == false)
         {
-            //Exits this section of the tutorial
-            tutorialExit(electionSection);
+            //Sets the current section of the tutorial to true so it won't be called again
+            tutorialSectionsUsed[electionSection] = true;
         }//if
     }//electionExplainer
 }
