@@ -185,20 +185,25 @@ public class UI_Script : MonoBehaviour {
         // Initializes cost
         updateCost();
 
+
+        //TYLER WELSH 
+        //SCROLL WHEEL POSITION DISABLED IN CODE
+
 		//set size and position of scrollview and scrollBar
 		//Brian Mah
-		float scrollViewHeight = Screen.height - (titleHeight + bottomTVHeight);
-		float heightToMove = scrollViewHeight - rectScrollBar.sizeDelta.y;
-		heightToMove /= 2;
-		if (scrollViewHeight < 1f) {
-			Debug.LogError("Screen Height not supported");
-			scrollViewHeight = 100f;
-		}
-		rectScrollView.sizeDelta = new Vector2 (scrollViewWidth, scrollViewHeight);
-		rectScrollBar.sizeDelta = new Vector2(rectScrollBar.rect.width,scrollViewHeight);
-		rectScrollView.anchoredPosition = new Vector2 (rectScrollView.anchoredPosition.x, rectScrollView.anchoredPosition.y - heightToMove);
-		rectScrollBar.anchoredPosition = new Vector2 (rectScrollBar.anchoredPosition.x, rectScrollBar.anchoredPosition.y - heightToMove);
-		//rectScrollView.position = new Vector3 (rectScrollView.position.x, 0, rectScrollView.position.z);
+		//float scrollViewHeight = Screen.height - (titleHeight + bottomTVHeight);
+		//float heightToMove = scrollViewHeight - rectScrollBar.sizeDelta.y;
+		//heightToMove /= 2;
+		//if (scrollViewHeight < 1f) {
+		//	Debug.LogError("Screen Height not supported");
+		//	scrollViewHeight = 100f;
+		//}
+        
+        //rectScrollView.sizeDelta = new Vector2 (scrollViewWidth, scrollViewHeight);
+		//rectScrollBar.sizeDelta = new Vector2(rectScrollBar.rect.width,scrollViewHeight);
+		//rectScrollView.anchoredPosition = new Vector2 (rectScrollView.anchoredPosition.x, rectScrollView.anchoredPosition.y - heightToMove);
+		//rectScrollBar.anchoredPosition = new Vector2 (rectScrollBar.anchoredPosition.x, rectScrollBar.anchoredPosition.y - heightToMove);
+        //rectScrollView.position = new Vector3 (rectScrollView.position.x, 0, rectScrollView.position.z);
 		//rectScrollBar.position = new Vector3 (rectScrollBar.position.x, 0, rectScrollBar.position.z);
 		//Debug.Log ("The Height is: " + rectScrollView.localPosition.y);
 		//Debug.Log ("Height move is: " + heightToMove);
