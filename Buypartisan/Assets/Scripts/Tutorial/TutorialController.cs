@@ -19,7 +19,7 @@ public class TutorialController : MonoBehaviour {
 
     //Holds an array of bools for which tutorial sections have been used during the game
     private bool[] tutorialSectionsUsed;
-    
+
     //Hold strings for the different sections the of tutorial
     private List<string> goalStrings;
     private List<string> sliderStrings;
@@ -156,4 +156,7 @@ public class TutorialController : MonoBehaviour {
             tutorialSectionsUsed[electionSection] = true;
         }//if
     }//electionExplainer
+
+
+
 }
