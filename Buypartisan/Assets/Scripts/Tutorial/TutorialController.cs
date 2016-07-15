@@ -1,7 +1,10 @@
 ﻿//Alex Jungroth
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 public class TutorialController : MonoBehaviour {
 
@@ -21,12 +24,18 @@ public class TutorialController : MonoBehaviour {
     private bool[] tutorialSectionsUsed;
 
     //Hold strings for the different sections the of tutorial
-    private List<string> goalStrings;
-    private List<string> sliderStrings;
-    private List<string> voterStrings;
-    private List<string> actionStrings;
-    private List<string> randomEventStrings;
-    private List<string> electionStrings;
+    private List<string> goalStrings = new List<string>();
+    private List<string> sliderStrings = new List<string>();
+    private List<string> voterStrings = new List<string>();
+    private List<string> actionStrings = new List<string>();
+    private List<string> randomEventStrings = new List<string>();
+    private List<string> electionStrings = new List<string>();
+
+    //Holds the strings for the current section of the tutorial
+    private List<string> currentStrings = new List<string>();
+
+    //Holds a counter for which string the tutorial is currently on (AAJ)
+    private int currentStringCounter = 0;
 
     //Holds a temporary string that is read in from a text file and stored into one of the list of strings
     private string tempString;
@@ -36,6 +45,9 @@ public class TutorialController : MonoBehaviour {
     
     //Holds the cover that grays out sections of the screen
     public GameObject tutorialCover;
+
+    //Used to read in the text files
+    StreamReader sampleReader;
     
     //Use this for initialization
     void Start()
@@ -48,6 +60,32 @@ public class TutorialController : MonoBehaviour {
         {
             tutorialSectionsUsed[i] = false;
         }//for
+
+        //Clears the tutorial text box
+        tutorialSpeechBubble.gameObject.transform.GetChild(0).gameObject.transform.GetChild(0).GetComponent<Text>().text = "";
+
+        //Parses the text files to get the strings
+        sampleReader = new StreamReader(Application.dataPath + "\\Tutorial Text Files\\Sample.txt", Encoding.Default);
+
+        using(sampleReader)
+        {
+            //Reads the first line of the file
+            tempString = sampleReader.ReadLine();
+
+            //Reads line by line to the end of the text file
+            while(tempString != null)
+            {
+                goalStrings.Add(tempString);
+               tempString = sampleReader.ReadLine();
+            }//while
+
+            //Closes this sections reader
+            sampleReader.Close();
+        }//using
+
+        //A test of goal explainer
+        goalExplainer();
+
     }//Start
 
     //Update is called once per frame
@@ -61,9 +99,15 @@ public class TutorialController : MonoBehaviour {
     /// </summary>
     public void tutorialExit()
     {
+        //Clears the tutorial text box
+        tutorialSpeechBubble.gameObject.transform.GetChild(0).gameObject.transform.GetChild(0).GetComponent<Text>().text = "";
+
         //Disables the tutorial speech bubble and cover
         tutorialSpeechBubble.SetActive(false);
         tutorialCover.SetActive(false);
+
+        //Resets the current string counter
+        currentStringCounter = 0;
     }//tutorialExit
 
     /// <summary>
@@ -76,6 +120,15 @@ public class TutorialController : MonoBehaviour {
         {
             //Sets the current section of the tutorial to true so it won't be called again
             tutorialSectionsUsed[goalSection] = true;
+    
+            //Displays the tutorial speech bubble
+            tutorialSpeechBubble.SetActive(true);
+
+            //Updates the current strings to this sections text
+            currentStrings = goalStrings;
+
+            //Sets the tutorial speech bubble to the first line of text
+            tutorialSpeechBubble.gameObject.transform.GetChild(0).gameObject.transform.GetChild(0).GetComponent<Text>().text = goalStrings[0];
         }//if
     }//goalExplainer
 
@@ -157,6 +210,32 @@ public class TutorialController : MonoBehaviour {
         }//if
     }//electionExplainer
 
+    /// <summary>
+    /// Cycles backwards through the tutorial text (Alex Jungroth)
+    /// </summary>
+    public void backButton()
+    {
+        //Decrements the counter if it is greater than zero
+        if(currentStringCounter > 0)
+        {
+            currentStringCounter--;
 
+            //Displays the new line of text
+            tutorialSpeechBubble.gameObject.transform.GetChild(0).gameObject.transform.GetChild(0).GetComponent<Text>().text = currentStrings[currentStringCounter];
+        }//if
+    }//backButton
 
+    /// <summary>
+    /// Cycles forward throught the tutorial text (Alex JUngroth)
+    public void forwardButton()
+    {
+        //Increments the counter if it is less than the length of the current string list
+        if (currentStringCounter < currentStrings.Count - 1)
+        {
+            currentStringCounter++;
+
+            //Displays the new line of text
+            tutorialSpeechBubble.gameObject.transform.GetChild(0).gameObject.transform.GetChild(0).GetComponent<Text>().text = currentStrings[currentStringCounter];
+        }//if
+    }//forwardButton
 }
