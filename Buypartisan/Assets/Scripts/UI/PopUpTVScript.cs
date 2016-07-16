@@ -8,30 +8,33 @@ using UnityEngine.UI;
 /// </summary>
 public class PopUpTVScript : MonoBehaviour {
 
-	private float yLocation = -1f;
-	private float downyloaction = -1f;
 
-	private float scrollSpeed = 1000f;
-	private float timeTillToolTip = 1.5f;
+	public float downyloaction = -1f;
+    public float timeTillToolTip = 1.5f;
+
+    public float yLocation = -1f;
+    private float scrollSpeed = 1000f;
 	private float TimeOfToolTip = -1f;
+    private bool prevConfirm, prevCancel;
+    private bool ConfirmCancelButtonLock = false;
 
-	private bool mouseIsOnButton = false;
-
+    private bool mouseIsOnButton = false;
 	public bool bringPopupDown = false;
 
 	public Text popUpText;
 
 	public GameObject Confirm, Cancel;
-	private bool prevConfirm, prevCancel;
-	private bool ConfirmCancelButtonLock = false;
+
 
 	/// <summary>
 	/// gets y location of the popupTV
 	/// sets the location for it when it moves down.
 	/// </summary>
 	void Start () {
-		yLocation = this.transform.position.y;
-		downyloaction = yLocation - 250;
+        
+		yLocation = this.GetComponent<RectTransform>().localPosition.y;
+		downyloaction = yLocation - 210.17f;
+        //-21 | 250
 		prevConfirm = Confirm.activeSelf;
 		prevCancel = Cancel.activeSelf;
 	}
