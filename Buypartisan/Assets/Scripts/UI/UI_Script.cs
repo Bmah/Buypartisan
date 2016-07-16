@@ -9,109 +9,90 @@ public class UI_Script : MonoBehaviour {
 
 	private GameController controller;
 
-    public GameObject playerTurnsManager;
+    //holds the buttons for player placement as game objects
+    [Header("Buttons")]
+    public GameObject xPlusButton;
+    public GameObject xMinusButton;
+    public GameObject yPlusButton;
+    public GameObject yMinusButton;
+    public GameObject zPlusButton;
+    public GameObject zMinusButton;
+    public GameObject confirmButton;
+    public GameObject cancelButton;
+    public GameObject endTurnButton;
 
-	public int gridSize;
-
-	//holds the main text box object
-	public GameObject mainTextBox;
-
-	//holds the main text box's text
-	public Text visualText;
-
-    //holds all the action button's texts
-    public Text text0, text1, text2, text3, text4, text5, text6, text7, text8, text9;
-
-	//used for the increment and decrement of X,Y, and Z
-	Vector3 ppMove = Vector3.zero;
-
-	//holds the buttons for player placement as game objects
-	public GameObject xPlusButton;
-	public GameObject xMinusButton;
-	public GameObject yPlusButton;
-	public GameObject yMinusButton;
-	public GameObject zPlusButton;
-	public GameObject zMinusButton;
-	public GameObject confirmButton;
-	public GameObject endTurnButton;
-	public GameObject leftButton;
-	public GameObject rightButton;
-
-	//holds the cancel button
-	public GameObject cancelButton;
-
-	//holds the Action Buttons by the tag ActionButton
-	public GameObject[] ActionButtonObject;
-
-	//holds the Turn Manager prefab
-	public PlayerTurnsManager actionManager;
-
-	//holds the current Player
-	public GameObject[] currentPlayerPrefab;
-
-	//this will allow us to change states for some of the buttons, so that when the turn phase begins,
-	//the buttons can therefore do something else.
-	private bool turnPhase = false;
-
-	//this is to keep track of which action has been chosen.
-	private int chosenAction = 0;
-
-	//this is so that this script can communicate with the Action script
-	public GameObject instantiatedAction;
-
-	//this allows the UI to talk to the SFX controller to play sounds
-	private SFXController sfx;
-	public float SFXvolume = 1;
-
-	//holds the choose your token screen
-	public GameObject chooseTokenScreen;
+    [Header("Choose Token Screen")]
+    //holds the choose your token screen
+    public GameObject chooseTokenScreen;
+    public GameObject confirmTokenButton;
 
 	//holds the gameobjects that are responsible for showing the partys' tool tips
+    [Header("Tooltips")]
 	public GameObject espressoToolTip;
 	public GameObject droneToolTip;
 	public GameObject applePieToolTip;
 	public GameObject windyToolTip;
 	public GameObject providenceToolTip;
 
-    //Holds the cover for the party tokens and names if unique parties is disabled
-    public GameObject partyCover;
-
-    //Holds whether the cover needs to be set or not at the start of the game
-    public bool uniqueParties = true;
-
 	//holds the player sliders for the choose your token screen
+    [Header("Player Token Slider")]
 	public Slider player1TokenSlider;
 	public Slider player2TokenSlider;
 	public Slider player3TokenSlider;
 	public Slider player4TokenSlider;
 	public Slider player5TokenSlider;
 
-	//holds the confirm token button
-	public GameObject confirmTokenButton;
-
-	//holds whether or not the requirements have been met for the players to begin spawning in
-	public bool requirementsMet = true;
-
-	//this code takes care of the scaling of the scroll rect dynamically.
-	//Brian Mah
-	public RectTransform rectScrollView;
-	public RectTransform rectScrollBar;
-	public float scrollViewWidth = 360f;
-	public float titleHeight = 114f;
-	public float bottomTVHeight = 300f;
-
-	//Text at the top left of the screen which displays player and party
+    [Header("Misc")]
+    public GameObject partyCover;
+    public PlayerTurnsManager actionManager;
 	public Text UpperLeftDisplayPlayer;
 	public Text UpperLeftDisplayParty;
-
-	//controls the tv animations
 	public Animator tvAnimator;
 
-	// Use this for initialization
-	void Start () {
-		controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 
-        playerTurnsManager = GameObject.FindGameObjectWithTag("ActionManager");
+    //holds the Action Buttons by the tag ActionButton
+    [System.NonSerialized]
+    public GameObject[] ActionButtonObject;
+    [System.NonSerialized]
+    public bool requirementsMet = true;
+    [System.NonSerialized]
+    public int gridSize;
+    //holds the main text box object
+    [System.NonSerialized]
+    public GameObject mainTextBox;
+    //holds the main text box's text
+    [System.NonSerialized]
+    public Text visualText;
+    //holds all the action button's texts
+    [System.NonSerialized]
+    public Text text0, text1, text2, text3, text4, text5, text6, text7, text8, text9;
+    //used for the increment and decrement of X,Y, and Z
+    [System.NonSerialized]
+    Vector3 ppMove = Vector3.zero;
+    //holds the current Player
+    [System.NonSerialized]
+    public GameObject[] currentPlayerPrefab;
+    //this will allow us to change states for some of the buttons, so that when the turn phase begins, the buttons can therefore do something else.
+    private bool turnPhase = false;
+    //this is to keep track of which action has been chosen.
+    private int chosenAction = 0;
+    //this is so that this script can communicate with the Action script
+    [System.NonSerialized]
+    public GameObject instantiatedAction;
+    //this allows the UI to talk to the SFX controller to play sounds
+    private SFXController sfx;
+    [System.NonSerialized]
+    public float SFXvolume = 1;
+    //Holds whether the cover needs to be set or not at the start of the game
+    [System.NonSerialized]
+    public bool uniqueParties = true;
+
+
+
+
+    // Use this for initialization
+    void Start () {
+		controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 
 		//gets the text box
 		mainTextBox = GameObject.Find ("Game Announcements TBox");
@@ -134,19 +115,6 @@ public class UI_Script : MonoBehaviour {
         text8 = GameObject.Find("Text8").GetComponent<Text>();
         text9 = GameObject.Find("Text9").GetComponent<Text>();
 
-		//gets the buttons for player placement
-		xPlusButton = GameObject.Find ("+X");
-		xMinusButton = GameObject.Find ("-X");
-		yPlusButton = GameObject.Find ("+Y");
-		yMinusButton = GameObject.Find ("-Y");
-		zPlusButton = GameObject.Find ("+Z");
-		zMinusButton = GameObject.Find ("-Z");
-		confirmButton = GameObject.Find ("Confirm");
-		endTurnButton = GameObject.Find ("End Turn");
-		leftButton = GameObject.Find ("Left");
-		rightButton = GameObject.Find ("Right");
-		cancelButton = GameObject.Find ("Cancel");
-		
 		//gets the Action Buttons
 		ActionButtonObject = GameObject.FindGameObjectsWithTag ("ActionButton");
 
@@ -761,11 +729,8 @@ public class UI_Script : MonoBehaviour {
 	}
 
 	public void activateAction0UI2()
-	{	
-		confirmButton.SetActive (true);
-		leftButton.SetActive (false);
-		rightButton.SetActive (false);
-
+	{
+        confirmButton.SetActive(true);
 	}
 
 	public void activateAction1UI()
@@ -791,8 +756,6 @@ public class UI_Script : MonoBehaviour {
 	public void activateAction2UI2()
 	{	
 		confirmButton.SetActive (true);
-		leftButton.SetActive (false);
-		rightButton.SetActive (false);
 		xPlusButton.SetActive (true);
 		xMinusButton.SetActive (true);
 		yPlusButton.SetActive (true);
@@ -815,8 +778,6 @@ public class UI_Script : MonoBehaviour {
 
 	public void activateAction4UI()
 	{
-		leftButton.SetActive (false);
-		rightButton.SetActive (false);
 		xPlusButton.SetActive (true);
 		xMinusButton.SetActive (true);
 		yPlusButton.SetActive (true);
@@ -879,22 +840,22 @@ public class UI_Script : MonoBehaviour {
     public void updateCost()
     {
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().actionName + "\n$" +
-		text0.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		text0.text = ("$" + actionManager.GetComponent<PlayerTurnsManager>().actionArray[0].GetComponent<Action0Script>().baseCost * actionManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().actionName + "\n$" + 
-        text1.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+        text1.text = ("$" + actionManager.GetComponent<PlayerTurnsManager>().actionArray[1].GetComponent<Action1Script>().baseCost * actionManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().actionName + "\n$" + 
-        text2.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+        text2.text = ("$" + actionManager.GetComponent<PlayerTurnsManager>().actionArray[2].GetComponent<Action2Script>().baseCost * actionManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().actionName + "\n$" + 
-        text3.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+        text3.text = ("$" + actionManager.GetComponent<PlayerTurnsManager>().actionArray[3].GetComponent<Action3Script>().baseCost * actionManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().actionName + "\n$" + 
-        text4.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+        text4.text = ("$" + actionManager.GetComponent<PlayerTurnsManager>().actionArray[4].GetComponent<Action4Script>().baseCost * actionManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 		//playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().actionName + "\n$" + 
-        text5.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+        text5.text = ("$" + actionManager.GetComponent<PlayerTurnsManager>().actionArray[5].GetComponent<Action5Script>().baseCost * actionManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 
 		//I am adding in the code for actions 6,7, and 8. I will leave 9 commented out for later. (Alex Jungroth)
-		text6.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[6].GetComponent<Action6Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
-		text7.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[7].GetComponent<Action7Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
-		text8.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[8].GetComponent<Action8Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		text6.text = ("$" + actionManager.GetComponent<PlayerTurnsManager>().actionArray[6].GetComponent<Action6Script>().baseCost * actionManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		text7.text = ("$" + actionManager.GetComponent<PlayerTurnsManager>().actionArray[7].GetComponent<Action7Script>().baseCost * actionManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
+		text8.text = ("$" + actionManager.GetComponent<PlayerTurnsManager>().actionArray[8].GetComponent<Action8Script>().baseCost * actionManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
 		//text9.text = ("$" + playerTurnsManager.GetComponent<PlayerTurnsManager>().actionArray[9].GetComponent<Action9Script>().baseCost * playerTurnsManager.GetComponent<PlayerTurnsManager>().costMultiplier + "m");
     }
 }

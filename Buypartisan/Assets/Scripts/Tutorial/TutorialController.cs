@@ -40,11 +40,17 @@ public class TutorialController : MonoBehaviour {
     //Holds a temporary string that is read in from a text file and stored into one of the list of strings
     private string tempString;
 
+    //Which cover we are on
+    private int currentCover;
+
     //Holds the speech bubble for the tutorial
     public GameObject tutorialSpeechBubble;
     
     //Holds the cover that grays out sections of the screen
-    public GameObject tutorialCover;
+    public GameObject[] TutorialCovers;
+
+    //Holds positions for all tutorials
+    public Transform[] TutorialTransforms;
 
     //Used to read in the text files
     StreamReader sampleReader;
@@ -104,7 +110,7 @@ public class TutorialController : MonoBehaviour {
 
         //Disables the tutorial speech bubble and cover
         tutorialSpeechBubble.SetActive(false);
-        tutorialCover.SetActive(false);
+        TutorialCovers[currentCover].SetActive(false);
 
         //Resets the current string counter
         currentStringCounter = 0;
@@ -120,9 +126,11 @@ public class TutorialController : MonoBehaviour {
         {
             //Sets the current section of the tutorial to true so it won't be called again
             tutorialSectionsUsed[goalSection] = true;
-    
+
             //Displays the tutorial speech bubble
+            tutorialSpeechBubble.transform.position = TutorialTransforms[goalSection].position;
             tutorialSpeechBubble.SetActive(true);
+            TutorialCovers[goalSection].SetActive(true);
 
             //Updates the current strings to this sections text
             currentStrings = goalStrings;
