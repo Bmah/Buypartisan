@@ -1,0 +1,2 @@
+RandomText
+Explains the random events. 

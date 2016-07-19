@@ -1,0 +1,2 @@
+GoalText
+Explains the goal of the game. 

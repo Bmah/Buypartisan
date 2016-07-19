@@ -56,7 +56,10 @@ public class GameController : MonoBehaviour {
     public bool uniqueParties = false;
     public bool complexElections = false;//If this is false, window generator will not be used (Alex Jungroth)
     public bool usePedestals = false;
+    public bool useTutorial = true;
     private int totalPlayersSpawned = 0;
+    private bool goalSectionDisplayed = false; //The first three sections of the tutorial happen in the same game state, so two booleans are needed to separate them (Alex Jungroth)
+    private bool sliderSectionDisplayed = false;
     
     //*************************************************************
     //
@@ -130,6 +133,7 @@ public class GameController : MonoBehaviour {
     private InputManagerScript inputManager;
     public CalculateWinner calculateWinnnerManager;//Calcuates the winner of elections and the game (Alex Jungroth)
     public SimpleVictoryDisplay simpleVictoryDispaly;//Displays the winner in on single screen that does not impact game flow (Alex Jungroth)
+    public TutorialController tutorialController;//Controls the game's tutorial (Alex Jungroth)
 
     //*********************************************************************
     //
@@ -315,7 +319,7 @@ public class GameController : MonoBehaviour {
 	
 	}
 	// Update is called once per frame
-	void Update () 
+	void Update() 
 	{	
 		if(currentState == GameState.TotalPlayersSelect)
 		{
@@ -325,16 +329,57 @@ public class GameController : MonoBehaviour {
                 AdjustMusic();
             }//if
 
-			//waits until the number of players has been determined (Alex Jungroth)
-			if(totalPlayersPicked)
+            //Displays the goal, slider, and voter sections of the tutorial if the tutorial is being used (Alex Jungroth)
+            if(useTutorial == true)
+            {
+                //These if statements make sure each section waits for the others to finsih (Alex Jungroth)
+                //Goal Explainer
+                if(goalSectionDisplayed == false)
+                {
+                    tutorialController.goalExplainer();
+
+                    //Moves to the next section of the tutorial when this one has finished (Alex Jungroth)
+                    if(tutorialController.isActiveTutorial == false)
+                    {
+                        goalSectionDisplayed = true;
+                    }//if
+                }//if
+
+                 //Slider Explainer
+                if(goalSectionDisplayed == true && sliderSectionDisplayed == false)
+                {
+                    tutorialController.sliderExplainer();
+
+                    //Moves to the next section of the tutorial when this one has finished (Alex Jungroth)
+                    if(tutorialController.isActiveTutorial == false)
+                    {
+                        sliderSectionDisplayed = true;
+                    }//if
+                }//if
+
+                //Voter Explainer
+                if(sliderSectionDisplayed == true)
+                {
+                    tutorialController.voterExplainer();
+                }//if
+            }//if
+
+            //waits until the number of players has been determined (Alex Jungroth)
+            if(totalPlayersPicked)
 			{
                 SelectParties();
             }//if
 		}
-		else if (currentState == GameState.PlayerSpawn)
+		else if(currentState == GameState.PlayerSpawn)
 		{	
+            //Displays the positioning section of the tutorial if the tutorial is being used (Alex Jungroth)
+            if(useTutorial == true)
+            {
+                tutorialController.positioningExplainer();
+            }//if
+
 			//spawns players until every player has been spawned (Alex Jungroth)
-			if (playersSpawned < numberPlayers)
+			if(playersSpawned < numberPlayers)
 			{
 				if(votersAppear) 
 				{
@@ -350,10 +395,16 @@ public class GameController : MonoBehaviour {
                 SetUpFirstTurn();
 			}//else
 		}//else if 
-		else if (currentState == GameState.ActionTurns)
+		else if(currentState == GameState.ActionTurns)
 		{
-			//checks to see if the real event array has been initialized (Alex Jungroth)
-			if(!isREAInitialized)
+            //Displays the action section of the tutorial if the tutorial is being used (Alex Jungroth)
+            if(useTutorial == true)
+            {
+                tutorialController.actionExplainer();
+            }//if
+
+            //checks to see if the real event array has been initialized (Alex Jungroth)
+            if (!isREAInitialized)
 			{
 				//sets the isActionTurns to true (Alex Jungroth)
 				isActionTurns = true;
@@ -366,7 +417,7 @@ public class GameController : MonoBehaviour {
 			}//if
 
 			// In Game Heirchy, GameController must set Number Of Rounds greater than 0 in order for this to be called
-			if (roundCounter < numberOfRounds)
+			if(roundCounter < numberOfRounds)
 			{
 				PlayerTurn();
 			}//if
@@ -375,14 +426,20 @@ public class GameController : MonoBehaviour {
 				currentState = GameState.RoundEnd;
 			}//else
 		}//else if
-		else if (currentState == GameState.RoundEnd)
+		else if(currentState == GameState.RoundEnd)
 		{
             //Ends the round (Alex Jungroth)
             EndTheRound();
 
 		}//else if
-		else if (currentState == GameState.GameEnd)
+		else if(currentState == GameState.GameEnd)
 		{
+            //Displays the election section of the tutorial if the tutorial is being used (Alex Jungroth)
+            if(useTutorial == true)
+            {
+                tutorialController.electionExplainer();
+            }//if
+
             //Ends the election (Alex Jungroth)
             EndTheElection();
 		}
@@ -392,12 +449,12 @@ public class GameController : MonoBehaviour {
             EnactThePolicies();
 		}//else if
 
-		if (inputManager.escButtonDown) 
+		if(inputManager.escButtonDown) 
 		{
 			SceneManager.LoadScene("TitleScene");
 		}
 		
-	}// Update
+	}//Update
 
     /// <summary>
     /// This sets the audio settings at the start of the game based on the
@@ -945,7 +1002,7 @@ public class GameController : MonoBehaviour {
 	/// Another note, in order to end the turn, an outside script needs to tell the Game Controller that "playerTakingAction" is true for the turn to end.
 	/// </summary>
 	void PlayerTurn(){
-		if (playerTakingAction) {
+		if(playerTakingAction) {
 
 			if(currentPlayerTurn < numberPlayers)
 			{
@@ -957,7 +1014,7 @@ public class GameController : MonoBehaviour {
 				currentPlayerTurn++;
 			}
 
-			if (currentPlayerTurn < numberPlayers) {
+			if(currentPlayerTurn < numberPlayers) {
 				playerTakingAction = false;
 				//Debug.Log ("It's Player " + (currentPlayerTurn + 1) + "'s turn!");
 				//updates the tv so the users know whose turn it is (Alex Jungroth)
@@ -967,11 +1024,17 @@ public class GameController : MonoBehaviour {
 				PlayStartOfTurnAudio ();
 			}
 
-			if (currentPlayerTurn >= numberPlayers) {
-				//this is when all players have made their turns
+			if(currentPlayerTurn >= numberPlayers) {
+                //this is when all players have made their turns
 
-				//disables the action buttons during the random events (Alex Jungroth)
-				UIController.disableActionButtons();
+                //Displays the random event section of the tutorial if the tutorial is being used (Alex Jungroth)
+                if(useTutorial == true)
+                {
+                    tutorialController.randomEventExplainer();
+                }//if
+
+                //disables the action buttons during the random events (Alex Jungroth)
+                UIController.disableActionButtons();
 
 				if(randomEventController.ActivateEvents()){  //continually goes to random event controller until randomEventController returns true
 
@@ -1005,7 +1068,7 @@ public class GameController : MonoBehaviour {
 	/// </summary>
 	void PlayStartOfTurnAudio ()
 	{
-		switch (players [currentPlayerTurn].GetComponent<PlayerVariables> ().politicalPartyName) {
+		switch(players [currentPlayerTurn].GetComponent<PlayerVariables> ().politicalPartyName) {
 		case "Espresso":
 			SFX.PlayAudioClip (8, 0, SFXVolume);
 			break;
@@ -1270,18 +1333,19 @@ public class GameController : MonoBehaviour {
         }
         catch
         {
-            Debug.LogError("Could not find the title screen settings, because you did not start from the title screen!");
+            //Debug.LogError("Could not find the title screen settings, because you did not start from the title screen!");
 
         }
         if (gameSettings == null)
         {
             //throws an error if the gameController did not receive the title screen settings (Alex Jungroth)
-            Debug.Log("You may continue play testing!");
+            //Debug.Log("You may continue play testing!");
 
-            //The default play test from the prototype scene is to have unique parties, complex elections, and pedestals (Alex Jungroth)
+            //The default play test from the prototype scene is to have unique parties, complex elections, pedestals, and the tutorial (Alex Jungroth)
             uniqueParties = true;
             complexElections = true;
             usePedestals = true;
+            useTutorial = true;
         }
         else
         {
@@ -1296,6 +1360,7 @@ public class GameController : MonoBehaviour {
             uniqueParties = gameSettings.uniqueParties;
             complexElections = gameSettings.complexElections;
             usePedestals = gameSettings.usePedestals;
+            useTutorial = gameSettings.useTutorial;
         }
         gameMusic = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicController>();
         if (gameMusic == null)

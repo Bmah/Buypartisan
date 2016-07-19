@@ -80,6 +80,9 @@ public class TitleScreenUIScript : MonoBehaviour
     //Holds a reference to the toggle for pedestals (Alex Jungroth)
     public Toggle usePedestalsToggle;
 
+    //Holds a reference to the toggle for the tutorial (Alex Jungroth)
+    public Toggle tutorialToggle;
+
     //Holds the values that the gameController will get in the next scene (Alex Jungroth)
     public float gridSize = gSSlider;
 	public float totalRounds = rSlider;
@@ -157,6 +160,7 @@ public class TitleScreenUIScript : MonoBehaviour
             uniquePartiesToggle.GetComponent<Toggle>().isOn = gameSettings.uniqueParties;
             complexElectionsToggle.GetComponent<Toggle>().isOn = gameSettings.complexElections;
             usePedestalsToggle.GetComponent<Toggle>().isOn = gameSettings.usePedestals;
+            tutorialToggle.GetComponent<Toggle>().isOn = gameSettings.useTutorial;
         }
 	}
 	
@@ -223,7 +227,9 @@ public class TitleScreenUIScript : MonoBehaviour
 	{
 		//sends the decided game settings to the object that the gameController will see (Alex Jungroth)
 		settingsCover.SetActive(true);
-		gameSettings.FinalizeSettings (gridSize, totalRounds,totalElections, totalVoters, musicVolume, sFXVolume, uniquePartiesToggle.GetComponent<Toggle>().isOn, complexElectionsToggle.GetComponent<Toggle>().isOn, usePedestalsToggle.GetComponent<Toggle>().isOn);
+		gameSettings.FinalizeSettings(gridSize, totalRounds,totalElections, totalVoters, musicVolume, sFXVolume, 
+            uniquePartiesToggle.GetComponent<Toggle>().isOn, complexElectionsToggle.GetComponent<Toggle>().isOn, 
+            usePedestalsToggle.GetComponent<Toggle>().isOn, tutorialToggle.GetComponent<Toggle>().isOn);
 		//Brian Mah
 		LoadSceneTime = Time.time + 0.5f;
 		LoadingGameScene = true;
@@ -332,6 +338,7 @@ public class TitleScreenUIScript : MonoBehaviour
         uniquePartiesToggle.isOn = false;
         complexElectionsToggle.isOn = false;
         usePedestalsToggle.isOn = false;
+        tutorialToggle.isOn = true;
 	}
 
 	public void QuitGame()
