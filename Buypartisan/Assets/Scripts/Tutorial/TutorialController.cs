@@ -27,6 +27,7 @@ public class TutorialController : MonoBehaviour {
     private List<string> goalStrings = new List<string>();
     private List<string> sliderStrings = new List<string>();
     private List<string> voterStrings = new List<string>();
+    private List<string> positionStrings = new List<string>();
     private List<string> actionStrings = new List<string>();
     private List<string> randomEventStrings = new List<string>();
     private List<string> electionStrings = new List<string>();
@@ -45,6 +46,10 @@ public class TutorialController : MonoBehaviour {
 
     //Holds the speech bubble for the tutorial
     public GameObject tutorialSpeechBubble;
+    //Variable to hold a picture of a voter for tutorial purposes
+    public GameObject voterImage;
+    //Holds the movement buttons to disable them when needed
+    public GameObject movementKeys;
     
     //Holds the cover that grays out sections of the screen
     public GameObject[] TutorialCovers;
@@ -127,9 +132,11 @@ public class TutorialController : MonoBehaviour {
             //Sets the current section of the tutorial to true so it won't be called again
             tutorialSectionsUsed[goalSection] = true;
 
-            //Displays the tutorial speech bubble
+            //Moves the speech bubble to the correct location
             tutorialSpeechBubble.transform.position = TutorialTransforms[goalSection].position;
+            //Displays the tutorial speech bubble
             tutorialSpeechBubble.SetActive(true);
+            //Activates the correct dark screen mask
             TutorialCovers[goalSection].SetActive(true);
 
             //Updates the current strings to this sections text
@@ -150,6 +157,15 @@ public class TutorialController : MonoBehaviour {
         {
             //Sets the current section of the tutorial to true so it won't be called again
             tutorialSectionsUsed[sliderSection] = true;
+
+            //Moves the speech bubble to the correct location
+            tutorialSpeechBubble.transform.position = TutorialTransforms[sliderSection].position;
+            //Displays the tutorial speech bubble
+            tutorialSpeechBubble.SetActive(true);
+            //Activates the correct dark screen mask
+            TutorialCovers[sliderSection].SetActive(true);
+
+
         }//if
     }//sliderExplainer
 
@@ -163,6 +179,13 @@ public class TutorialController : MonoBehaviour {
         {
             //Sets the current section of the tutorial to true so it won't be called again
             tutorialSectionsUsed[voterSection] = true;
+
+            //Moves the speech bubble to the correct location
+            tutorialSpeechBubble.transform.position = TutorialTransforms[voterSection].position;
+            //Displays the tutorial speech bubble
+            tutorialSpeechBubble.SetActive(true);
+            //Activates the correct dark screen mask
+            TutorialCovers[voterSection].SetActive(true);
         }//if
     }//voterExplainer
 
@@ -176,6 +199,13 @@ public class TutorialController : MonoBehaviour {
         {
             //Sets the current section of the tutorial to true so it won't be called again
             tutorialSectionsUsed[positioningSection] = true;
+
+            //Moves the speech bubble to the correct location
+            tutorialSpeechBubble.transform.position = TutorialTransforms[positioningSection].position;
+            //Displays the tutorial speech bubble
+            tutorialSpeechBubble.SetActive(true);
+            //Activates the correct dark screen mask
+            TutorialCovers[positioningSection].SetActive(true);
         }//if
     }//positioningExplainer
 
@@ -189,6 +219,13 @@ public class TutorialController : MonoBehaviour {
         {
             //Sets the current section of the tutorial to true so it won't be called again
             tutorialSectionsUsed[actionSection] = true;
+
+            //Moves the speech bubble to the correct location
+            tutorialSpeechBubble.transform.position = TutorialTransforms[actionSection].position;
+            //Displays the tutorial speech bubble
+            tutorialSpeechBubble.SetActive(true);
+            //Activates the correct dark screen mask
+            TutorialCovers[actionSection].SetActive(true);
         }//if
     }//actionExplainer
 
@@ -202,6 +239,13 @@ public class TutorialController : MonoBehaviour {
         {
             //Sets the current section of the tutorial to true so it won't be called again
             tutorialSectionsUsed[randomEventSection] = true;
+
+            //Moves the speech bubble to the correct location
+            tutorialSpeechBubble.transform.position = TutorialTransforms[randomEventSection].position;
+            //Displays the tutorial speech bubble
+            tutorialSpeechBubble.SetActive(true);
+            //Activates the correct dark screen mask
+            TutorialCovers[randomEventSection].SetActive(true);
         }//if
     }//randomEventExplainer
 
@@ -215,6 +259,13 @@ public class TutorialController : MonoBehaviour {
         {
             //Sets the current section of the tutorial to true so it won't be called again
             tutorialSectionsUsed[electionSection] = true;
+
+            //Moves the speech bubble to the correct location
+            tutorialSpeechBubble.transform.position = TutorialTransforms[electionSection].position;
+            //Displays the tutorial speech bubble
+            tutorialSpeechBubble.SetActive(true);
+            //Activates the correct dark screen mask
+            TutorialCovers[electionSection].SetActive(true);
         }//if
     }//electionExplainer
 
