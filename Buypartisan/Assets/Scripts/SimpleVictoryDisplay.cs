@@ -9,20 +9,23 @@ public class SimpleVictoryDisplay : MonoBehaviour {
     public GameController gameController;
 
     //These objects will be unique to this script
+    
     public GameObject victoryScreens;
 
     //Holds the components of the victory screens
+    [Header("Player Victory Screens")]
     public GameObject espressoGameOver;
     public GameObject droneGameOver;
     public GameObject applePieGameOver;
     public GameObject windTurbinoGameOver;
     public GameObject providenceGameOver;
     public GameObject noOneVotedGameOver;
+    [Header("Victory Texts")]
     public Text playerText;
     public Text voteTotalText;
     public Text victoryPointTotalText;
     public Text moneyTotalText;
-
+    [Space(10)]
     //Holds the winner
     public string winner = "no winner";
     public int winnerNumber = 0;
