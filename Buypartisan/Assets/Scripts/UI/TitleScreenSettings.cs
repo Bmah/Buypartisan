@@ -25,6 +25,9 @@ public class TitleScreenSettings : MonoBehaviour
     //Holds whether or not the pedestals will be used 
     public bool usePedestals;
 
+    //Holds whether or not the tutorial will be used 
+    public bool useTutorial;
+
     // Use this for initialization
     void Start () 
 	{
@@ -48,7 +51,7 @@ public class TitleScreenSettings : MonoBehaviour
 	/// <summary>
 	/// Finalizes the settings. (Alex Jungroth)
 	/// </summary>
-	public void FinalizeSettings(float size, float rounds, float elections, float voters, float music, float sFX, bool unique, bool complex, bool pedestals)
+	public void FinalizeSettings(float size, float rounds, float elections, float voters, float music, float sFX, bool unique, bool complex, bool pedestals, bool tutorial)
 	{
 		//gets the values that will be sent to the gameController
 		gridSize = (int)size;
@@ -60,5 +63,6 @@ public class TitleScreenSettings : MonoBehaviour
         uniqueParties = unique;
         complexElections = complex;
         usePedestals = pedestals;
+        useTutorial = tutorial;
     }
 }
