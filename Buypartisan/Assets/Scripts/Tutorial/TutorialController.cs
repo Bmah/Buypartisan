@@ -115,7 +115,12 @@ public class TutorialController : MonoBehaviour {
 
         //Disables the tutorial speech bubble and cover
         tutorialSpeechBubble.SetActive(false);
+        //Disable the dark tutorial cover
         TutorialCovers[currentCover].SetActive(false);
+        //Overkill; deactivates the voter image, but will only actually do anything after the voter tutorial
+        voterImage.SetActive(false);
+        //Overkill; reenables the movement buttons, only actually happening after the actions tutorial
+        movementKeys.SetActive(true);
 
         //Resets the current string counter
         currentStringCounter = 0;
@@ -186,6 +191,8 @@ public class TutorialController : MonoBehaviour {
             tutorialSpeechBubble.SetActive(true);
             //Activates the correct dark screen mask
             TutorialCovers[voterSection].SetActive(true);
+            //Makes the image of the voter active so we can see what they look like
+            voterImage.SetActive(true);
         }//if
     }//voterExplainer
 
@@ -219,6 +226,9 @@ public class TutorialController : MonoBehaviour {
         {
             //Sets the current section of the tutorial to true so it won't be called again
             tutorialSectionsUsed[actionSection] = true;
+
+            //Disable the movement buttons so they are not in the way
+            movementKeys.SetActive(false);
 
             //Moves the speech bubble to the correct location
             tutorialSpeechBubble.transform.position = TutorialTransforms[actionSection].position;
