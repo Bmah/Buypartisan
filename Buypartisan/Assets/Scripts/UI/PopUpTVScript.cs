@@ -78,18 +78,18 @@ public class PopUpTVScript : MonoBehaviour {
 
 		if (bringPopupDown && this.transform.position.y > DropdownLocation.position.y)
         {
-            Debug.Log("DROPDOWN");
+            //Debug.Log("DROPDOWN");
 			//this.transform.Translate (new Vector3 (0, -scrollSpeed * ((this.transform.position.y - downyloaction) / 250), 0) * Time.deltaTime);
             this.transform.Translate(new Vector3(0f, (this.transform.position.y - DropdownLocation.position.y) * -scrollSpeed, 0f)  * Time.deltaTime);
 		}
         else if (!bringPopupDown && this.transform.position.y < OriginalLocation.position.y)
         {
-            Debug.Log("GO UP");
+            //Debug.Log("GO UP");
 			//this.transform.Translate (new Vector3 (0, scrollSpeed * ((yLocation - this.transform.position.y) / 250), 0) * Time.deltaTime);
             this.transform.Translate ( new Vector3 (0f, (OriginalLocation.position.y - this.transform.position.y) * scrollSpeed, 0f)  * Time.deltaTime);
 		}
 
-        Debug.Log(this.transform.position.y + " " + OriginalLocation.position.y);
+        //Debug.Log(this.transform.position.y + " " + OriginalLocation.position.y);
 	}
 
 	public void SetPopupTextBox(string inputText)

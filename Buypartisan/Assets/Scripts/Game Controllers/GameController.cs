@@ -336,7 +336,9 @@ public class GameController : MonoBehaviour {
                 //Goal Explainer
                 if(goalSectionDisplayed == false)
                 {
-                    tutorialController.goalExplainer();
+                    //Tyler - DEPRECATED, NEW SYSTEM
+                    //tutorialController.goalExplainer();
+                    tutorialController.loadTutorial(TutorialController.goalSection);
 
                     //Moves to the next section of the tutorial when this one has finished (Alex Jungroth)
                     if(tutorialController.isActiveTutorial == false)
@@ -348,7 +350,9 @@ public class GameController : MonoBehaviour {
                  //Slider Explainer
                 if(goalSectionDisplayed == true && sliderSectionDisplayed == false)
                 {
-                    tutorialController.sliderExplainer();
+                    //Tyler - DEPRECATED, NEW SYSTEM
+                    //tutorialController.sliderExplainer();
+                    tutorialController.loadTutorial(TutorialController.sliderSection);
 
                     //Moves to the next section of the tutorial when this one has finished (Alex Jungroth)
                     if(tutorialController.isActiveTutorial == false)
@@ -360,7 +364,9 @@ public class GameController : MonoBehaviour {
                 //Voter Explainer
                 if(sliderSectionDisplayed == true)
                 {
-                    tutorialController.voterExplainer();
+                    //Tyler - DEPRECATED, NEW SYSTEM
+                    //tutorialController.voterExplainer();
+                    tutorialController.loadTutorial(TutorialController.voterSection);
                 }//if
             }//if
 
@@ -375,7 +381,9 @@ public class GameController : MonoBehaviour {
             //Displays the positioning section of the tutorial if the tutorial is being used (Alex Jungroth)
             if(useTutorial == true)
             {
-                tutorialController.positioningExplainer();
+                //Tyler - DEPRECATED, NEW SYSTEM
+                //tutorialController.positioningExplainer();
+                tutorialController.loadTutorial(TutorialController.positioningSection);
             }//if
 
 			//spawns players until every player has been spawned (Alex Jungroth)
@@ -400,7 +408,9 @@ public class GameController : MonoBehaviour {
             //Displays the action section of the tutorial if the tutorial is being used (Alex Jungroth)
             if(useTutorial == true)
             {
-                tutorialController.actionExplainer();
+                //Tyler - DEPRECATED, NEW SYSTEM
+                //tutorialController.actionExplainer();
+                tutorialController.loadTutorial(TutorialController.actionSection);
             }//if
 
             //checks to see if the real event array has been initialized (Alex Jungroth)
@@ -437,7 +447,9 @@ public class GameController : MonoBehaviour {
             //Displays the election section of the tutorial if the tutorial is being used (Alex Jungroth)
             if(useTutorial == true)
             {
-                tutorialController.electionExplainer();
+                //Tyler - DEPRECATED, NEW SYSTEM
+                //tutorialController.electionExplainer();
+                tutorialController.loadTutorial(TutorialController.electionSection);
             }//if
 
             //Ends the election (Alex Jungroth)
@@ -1030,7 +1042,9 @@ public class GameController : MonoBehaviour {
                 //Displays the random event section of the tutorial if the tutorial is being used (Alex Jungroth)
                 if(useTutorial == true)
                 {
-                    tutorialController.randomEventExplainer();
+                    //Tyler - DEPRECATED, NEW SYSTEM
+                    //tutorialController.randomEventExplainer();
+                    tutorialController.loadTutorial(TutorialController.randomEventSection);
                 }//if
 
                 //disables the action buttons during the random events (Alex Jungroth)
