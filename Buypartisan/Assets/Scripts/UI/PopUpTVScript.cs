@@ -8,30 +8,39 @@ using UnityEngine.UI;
 /// </summary>
 public class PopUpTVScript : MonoBehaviour {
 
-	private float yLocation = -1f;
-	private float downyloaction = -1f;
 
-	private float scrollSpeed = 1000f;
-	private float timeTillToolTip = 1.5f;
-	private float TimeOfToolTip = -1f;
+	//public float downyloaction = -1f;
+    public float timeTillToolTip = 1.5f;
+    public float timeTillDecay = 1.0f;
+    public float scrollSpeed = 2f;
 
-	private bool mouseIsOnButton = false;
+    //public float yLocation = -1f;
+    private float TimeOfToolTip = -1f;
+    private float TimeOfDecay = -1f;
+    private bool prevConfirm, prevCancel;
+    private bool ConfirmCancelButtonLock = false;
 
+    private bool mouseIsOnButton = false;
 	public bool bringPopupDown = false;
 
 	public Text popUpText;
 
 	public GameObject Confirm, Cancel;
-	private bool prevConfirm, prevCancel;
-	private bool ConfirmCancelButtonLock = false;
+
+    public Transform OriginalLocation;
+    public Transform DropdownLocation;
+
 
 	/// <summary>
 	/// gets y location of the popupTV
 	/// sets the location for it when it moves down.
 	/// </summary>
 	void Start () {
-		yLocation = this.transform.position.y;
-		downyloaction = yLocation - 250;
+
+        //yLocation = this.GetComponent<RectTransform>().localPosition.y;
+        //OriginalLocation = this.GetComponent<RectTransform>();
+		//downyloaction = yLocation - 210.17f;
+        //-21 | 250
 		prevConfirm = Confirm.activeSelf;
 		prevCancel = Cancel.activeSelf;
 	}
@@ -62,28 +71,38 @@ public class PopUpTVScript : MonoBehaviour {
 		if (!ConfirmCancelButtonLock) {
 			if (mouseIsOnButton && Time.time > TimeOfToolTip) {
 				bringPopupDown = true;
-			} else if (!mouseIsOnButton) {
+			} else if (!mouseIsOnButton && Time.time > TimeOfDecay) {
 				bringPopupDown = false;
 			}
 		}
 
-		if (bringPopupDown && this.transform.position.y > downyloaction) {
-
-			this.transform.Translate (new Vector3 (0, -scrollSpeed * ((this.transform.position.y - downyloaction) / 250), 0) * Time.deltaTime);
-		} else if (!bringPopupDown && this.transform.position.y < yLocation) {
-
-			this.transform.Translate (new Vector3 (0, scrollSpeed * ((yLocation - this.transform.position.y) / 250), 0) * Time.deltaTime);
+		if (bringPopupDown && this.transform.position.y > DropdownLocation.position.y)
+        {
+            //Debug.Log("DROPDOWN");
+			//this.transform.Translate (new Vector3 (0, -scrollSpeed * ((this.transform.position.y - downyloaction) / 250), 0) * Time.deltaTime);
+            this.transform.Translate(new Vector3(0f, (this.transform.position.y - DropdownLocation.position.y) * -scrollSpeed, 0f)  * Time.deltaTime);
 		}
+        else if (!bringPopupDown && this.transform.position.y < OriginalLocation.position.y)
+        {
+            //Debug.Log("GO UP");
+			//this.transform.Translate (new Vector3 (0, scrollSpeed * ((yLocation - this.transform.position.y) / 250), 0) * Time.deltaTime);
+            this.transform.Translate ( new Vector3 (0f, (OriginalLocation.position.y - this.transform.position.y) * scrollSpeed, 0f)  * Time.deltaTime);
+		}
+
+        //Debug.Log(this.transform.position.y + " " + OriginalLocation.position.y);
 	}
 
-	public void SetPopupTextBox(string inputText){
+	public void SetPopupTextBox(string inputText)
+    {
 		popUpText.text = inputText;
 	}
 
-	public void StartWaitingForUIToolTip(){
+	public void StartWaitingForUIToolTip()
+    {
 		mouseIsOnButton = true;
 		TimeOfToolTip = Time.time + timeTillToolTip;
 	}
+
 
 	/// <summary>
 	/// I need this for when you mouse over voters and players.
@@ -96,5 +115,6 @@ public class PopUpTVScript : MonoBehaviour {
 
 	public void ExitUIToolTip(){
 		mouseIsOnButton = false;
+        TimeOfDecay = Time.time + timeTillDecay;
 	}
 }

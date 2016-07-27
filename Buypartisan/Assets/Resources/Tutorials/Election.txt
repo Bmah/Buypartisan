@@ -1,0 +1,2 @@
+ElectionText
+Explains the elections. 

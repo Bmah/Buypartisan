@@ -1,6 +1,0 @@
-"This is a sample text file for BuyPartisan!" 
-"It follows a basic format."
-"Hopefully this is easy to load into Unity."
-"This is on a new line."
-"The parser should read to the end of the file."
-"Sentence number six!"
