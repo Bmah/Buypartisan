@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 2f70570f854f6b041b2dc2daa2d78a29
-timeCreated: 1469472435
+guid: 0f7c45139a94a824d950ef232e55f754
+timeCreated: 1469751656
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -53,6 +53,9 @@ ModelImporter:
     4300002: VoterModel_Voter_Body_group1_Voter_Model
     4300004: VoterRig1
     7400000: Default Take
+    7400002: Armature_001Action_001
+    7400004: Breathing
+    7400006: HeadBob
     9500000: //RootNode
     13700000: group1_Voter_Model_Head
     13700002: VoterModel_Voter_Body_group1_Voter_Model
@@ -76,7 +79,213 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Default Take
+      takeName: Default Take
+      firstFrame: 0
+      lastFrame: 39
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature_001
+        weight: 1
+      - path: Armature_001/Hips
+        weight: 1
+      - path: Armature_001/Hips/LeftLeg
+        weight: 1
+      - path: Armature_001/Hips/LeftLeg/LeftKnee
+        weight: 1
+      - path: Armature_001/Hips/RightLeg
+        weight: 1
+      - path: Armature_001/Hips/RightLeg/RightKnee
+        weight: 1
+      - path: Armature_001/Hips/Spine
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/Chest
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/Chest/Head
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/LeftShoulder
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/LeftShoulder/LeftArm
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/LeftShoulder/LeftArm/LeftElbow
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/RightShoulder
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/RightShoulder/RightArm
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/RightShoulder/RightArm/RightElbow
+        weight: 1
+      - path: group1_Voter_Model_Head
+        weight: 1
+      - path: HeadPart
+        weight: 1
+      - path: VoterModel_Voter_Body_group1_Voter_Model
+        weight: 1
+      - path: VoterRig1
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Breathing
+      takeName: Breathing
+      firstFrame: -1
+      lastFrame: 39
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature_001
+        weight: 1
+      - path: Armature_001/Hips
+        weight: 1
+      - path: Armature_001/Hips/LeftLeg
+        weight: 1
+      - path: Armature_001/Hips/LeftLeg/LeftKnee
+        weight: 1
+      - path: Armature_001/Hips/RightLeg
+        weight: 1
+      - path: Armature_001/Hips/RightLeg/RightKnee
+        weight: 1
+      - path: Armature_001/Hips/Spine
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/Chest
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/Chest/Head
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/LeftShoulder
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/LeftShoulder/LeftArm
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/LeftShoulder/LeftArm/LeftElbow
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/RightShoulder
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/RightShoulder/RightArm
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/RightShoulder/RightArm/RightElbow
+        weight: 1
+      - path: group1_Voter_Model_Head
+        weight: 1
+      - path: VoterModel_Voter_Body_group1_Voter_Model
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: HeadBob
+      takeName: HeadBob
+      firstFrame: 0
+      lastFrame: 43
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature_001
+        weight: 1
+      - path: Armature_001/Hips
+        weight: 1
+      - path: Armature_001/Hips/LeftLeg
+        weight: 1
+      - path: Armature_001/Hips/LeftLeg/LeftKnee
+        weight: 1
+      - path: Armature_001/Hips/RightLeg
+        weight: 1
+      - path: Armature_001/Hips/RightLeg/RightKnee
+        weight: 1
+      - path: Armature_001/Hips/Spine
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/Chest
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/Chest/Head
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/LeftShoulder
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/LeftShoulder/LeftArm
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/LeftShoulder/LeftArm/LeftElbow
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/RightShoulder
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/RightShoulder/RightArm
+        weight: 1
+      - path: Armature_001/Hips/Spine/UpperSpine/RightShoulder/RightArm/RightElbow
+        weight: 1
+      - path: group1_Voter_Model_Head
+        weight: 1
+      - path: HeadPart
+        weight: 1
+      - path: VoterModel_Voter_Body_group1_Voter_Model
+        weight: 1
+      - path: VoterRig1
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
