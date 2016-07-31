@@ -51,40 +51,40 @@ public class UI_Script : MonoBehaviour {
 
 
     //holds the Action Buttons by the tag ActionButton
-    [System.NonSerialized]
+    [HideInInspector]
     public GameObject[] ActionButtonObject;
-    [System.NonSerialized]
+    [HideInInspector]
     public bool requirementsMet = true;
-    [System.NonSerialized]
+    [HideInInspector]
     public int gridSize;
     //holds the main text box object
-    [System.NonSerialized]
+    [HideInInspector]
     public GameObject mainTextBox;
     //holds the main text box's text
-    [System.NonSerialized]
+    [HideInInspector]
     public Text visualText;
     //holds all the action button's texts
-    [System.NonSerialized]
+    [HideInInspector]
     public Text text0, text1, text2, text3, text4, text5, text6, text7, text8, text9;
     //used for the increment and decrement of X,Y, and Z
-    [System.NonSerialized]
+    [HideInInspector]
     Vector3 ppMove = Vector3.zero;
     //holds the current Player
-    [System.NonSerialized]
+    [HideInInspector]
     public GameObject[] currentPlayerPrefab;
     //this will allow us to change states for some of the buttons, so that when the turn phase begins, the buttons can therefore do something else.
     private bool turnPhase = false;
     //this is to keep track of which action has been chosen.
     private int chosenAction = 0;
     //this is so that this script can communicate with the Action script
-    [System.NonSerialized]
+    [HideInInspector]
     public GameObject instantiatedAction;
     //this allows the UI to talk to the SFX controller to play sounds
     private SFXController sfx;
-    [System.NonSerialized]
+    [HideInInspector]
     public float SFXvolume = 1;
     //Holds whether the cover needs to be set or not at the start of the game
-    [System.NonSerialized]
+    [HideInInspector]
     public bool uniqueParties = true;
 
 

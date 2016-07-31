@@ -8,25 +8,33 @@ public class CalculateWinner : MonoBehaviour {
     public GameController gameController;
 
     //Holds the winner
-    public string winner = "no winner";
+    [HideInInspector]
+    public string winner = "No Winner";
+    [HideInInspector]
     public int winnerNumber = 0;
 
     //Holds the number of players
+    [HideInInspector]
     public int totalPlayers = 0;
 
     //Holds coalition A's votes
+    [HideInInspector]
     public int coalitionA = 0;
 
     //Holds coalition B's votes
+    [HideInInspector]
     public int coalitionB = 0;
 
     //Holds the highest vote total
+    [HideInInspector]
     public int maxVotes = 0;
 
     //Holds the highest percentage total
+    [HideInInspector]
     public int maxPercent = 0;
 
     //Holds the highest victory point total
+    [HideInInspector]
     public int maxVictoryPoints = 0;
 
     /// <summary>
