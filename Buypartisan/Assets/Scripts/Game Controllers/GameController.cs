@@ -550,7 +550,7 @@ public class GameController : MonoBehaviour {
     void EndTheRound()
     {
         //disables the action buttons (Alex Jungroth)
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < UIController.numActions; i++)
         {
             UIController.ActionButtonObject[i].SetActive(false);
         }//for
@@ -766,7 +766,7 @@ public class GameController : MonoBehaviour {
                 UIController.endTurnButton.SetActive(true);
 
                 //enables the action buttons
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < UIController.numActions; i++)
                 {
                     UIController.ActionButtonObject[i].SetActive(true);
                 }
@@ -796,7 +796,7 @@ public class GameController : MonoBehaviour {
             UIController.endTurnButton.SetActive(true);
 
             //enables the action buttons
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < UIController.numActions; i++)
             {
                 UIController.ActionButtonObject[i].SetActive(true);
             }

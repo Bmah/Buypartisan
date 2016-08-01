@@ -65,17 +65,14 @@ public class UI_Script : MonoBehaviour {
     public Text visualText;
     //holds all the action button's texts
     [HideInInspector]
-    public Text text0, text1, text2, text3, text4, text5, text6, text7, text8, text9;
+    public Text text0, text1, text2, text3, text4, text5, text6, text7, text8;
     //used for the increment and decrement of X,Y, and Z
     [HideInInspector]
     Vector3 ppMove = Vector3.zero;
     //holds the current Player
     [HideInInspector]
     public GameObject[] currentPlayerPrefab;
-    //this will allow us to change states for some of the buttons, so that when the turn phase begins, the buttons can therefore do something else.
-    private bool turnPhase = false;
-    //this is to keep track of which action has been chosen.
-    private int chosenAction = 0;
+
     //this is so that this script can communicate with the Action script
     [HideInInspector]
     public GameObject instantiatedAction;
@@ -86,6 +83,19 @@ public class UI_Script : MonoBehaviour {
     //Holds whether the cover needs to be set or not at the start of the game
     [HideInInspector]
     public bool uniqueParties = true;
+
+    //this will allow us to change states for some of the buttons, so that when the turn phase begins, the buttons can therefore do something else.
+    private bool turnPhase = false;
+    //this is to keep track of which action has been chosen.
+    private int chosenAction = 0;
+
+
+
+
+
+
+    [HideInInspector]
+    public int numActions = 9;
 
 
 
@@ -113,13 +123,12 @@ public class UI_Script : MonoBehaviour {
         text6 = GameObject.Find("Text6").GetComponent<Text>();
         text7 = GameObject.Find("Text7").GetComponent<Text>();
         text8 = GameObject.Find("Text8").GetComponent<Text>();
-        text9 = GameObject.Find("Text9").GetComponent<Text>();
 
 		//gets the Action Buttons
 		ActionButtonObject = GameObject.FindGameObjectsWithTag ("ActionButton");
 
 		//disables the Action Buttons at the start
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < numActions; i++)
 		{
 			ActionButtonObject[i].SetActive(false);
 		}
@@ -153,28 +162,6 @@ public class UI_Script : MonoBehaviour {
         // Initializes cost
         updateCost();
 
-
-        //TYLER WELSH 
-        //SCROLL WHEEL POSITION DISABLED IN CODE
-
-		//set size and position of scrollview and scrollBar
-		//Brian Mah
-		//float scrollViewHeight = Screen.height - (titleHeight + bottomTVHeight);
-		//float heightToMove = scrollViewHeight - rectScrollBar.sizeDelta.y;
-		//heightToMove /= 2;
-		//if (scrollViewHeight < 1f) {
-		//	Debug.LogError("Screen Height not supported");
-		//	scrollViewHeight = 100f;
-		//}
-        
-        //rectScrollView.sizeDelta = new Vector2 (scrollViewWidth, scrollViewHeight);
-		//rectScrollBar.sizeDelta = new Vector2(rectScrollBar.rect.width,scrollViewHeight);
-		//rectScrollView.anchoredPosition = new Vector2 (rectScrollView.anchoredPosition.x, rectScrollView.anchoredPosition.y - heightToMove);
-		//rectScrollBar.anchoredPosition = new Vector2 (rectScrollBar.anchoredPosition.x, rectScrollBar.anchoredPosition.y - heightToMove);
-        //rectScrollView.position = new Vector3 (rectScrollView.position.x, 0, rectScrollView.position.z);
-		//rectScrollBar.position = new Vector3 (rectScrollBar.position.x, 0, rectScrollBar.position.z);
-		//Debug.Log ("The Height is: " + rectScrollView.localPosition.y);
-		//Debug.Log ("Height move is: " + heightToMove);
 	}
 
 	/// <summary>
@@ -684,7 +671,7 @@ public class UI_Script : MonoBehaviour {
 		//this enables the action buttons
 		//Note: could recode it so that specific 
 		//buttons can be toggled on or off
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < numActions; i++)
 		{
 			ActionButtonObject[i].SetActive(true);
 		}
@@ -708,7 +695,7 @@ public class UI_Script : MonoBehaviour {
 
 	public void disableActionButtons()
 	{
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < numActions; i++)
 		{
 			ActionButtonObject[i].SetActive(false);
 		}
@@ -793,22 +780,6 @@ public class UI_Script : MonoBehaviour {
 		cancelButton.SetActive (true);
 	}
 
-    //TYLER WELSH - Commenting out old button functionality. Now unused
-	//public void leftButtonClicked()
-	//{
-	//	if (chosenAction == 2)
-	//		instantiatedAction.GetComponent<Action2Script> ().leftButton = true;
-	//	if (chosenAction == 0)
-	//		instantiatedAction.GetComponent<Action0Script> ().leftButton = true;
-	//}
-
-	//public void rightButtonClicked()
-	//{
-	//	if (chosenAction == 2)
-	//		instantiatedAction.GetComponent<Action2Script> ().rightButton = true;
-	//	if (chosenAction == 0)
-	//		instantiatedAction.GetComponent<Action0Script> ().rightButton = true;
-	//}
 
 	/// <summary>
 	/// Sound Effect player
