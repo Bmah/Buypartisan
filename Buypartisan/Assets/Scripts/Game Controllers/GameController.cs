@@ -19,9 +19,15 @@ public class GameController : MonoBehaviour {
     // templates of parties and models
     //
     //***********************************************************
+    [Header("Debug Settings")]
+    public bool TOGGLE_TUT;
+    public bool TOGGLE_PEDESTAL;
+    public int GRID_SIZE;
+    public int NUM_OF_ROUNDS;
+    public int NUM_OF_ELECTIONS;
+
     [Header("Templates")]
     public GameObject voterTemplate;
-
 	public GameObject Party_1Template;
     public GameObject Party_2Template;
     public GameObject Party_3Template;
@@ -197,7 +203,7 @@ public class GameController : MonoBehaviour {
     public PlayerTurnsManager turnsManager;
     public TallyingScript tallyRoutine;//does the tallying at the start of each turn (Alex Jungroth)
     public CalculateWinner calculateWinnnerManager;//Calcuates the winner of elections and the game (Alex Jungroth)
-    public SimpleVictoryDisplay simpleVictoryDispaly;//Displays the winner in on single screen that does not impact game flow (Alex Jungroth)
+    public SimpleVictoryDisplay simpleVictoryDisplay;//Displays the winner in on single screen that does not impact game flow (Alex Jungroth)
     public TutorialController tutorialController;//Controls the game's tutorial (Alex Jungroth)
 
     //*********************************************************************
@@ -687,18 +693,18 @@ public class GameController : MonoBehaviour {
             if (complexElections == true)
             {
                 //tells the game controller to not skip over enact policies (Alex Jungroth)
-                WindowGenerator.resumeGame = false;
-
+                //WindowGenerator.resumeGame = false;
+                Debug.Log("ERROR: COMPLEX ELECTIONS HAVE BEEN DISABLED.");
                 //displays who won an election (Alex Jungroth)
-                WindowGenerator.generateElectionVictory(false);
+                //WindowGenerator.generateElectionVictory(false);
             }//if
             else
             {
                 //Calculates the votes independently of window generator (Alex Jungroth)
-                callCalculateVotes();
+                calculateWinnnerManager.CalculateVotes();
 
                 //Displays the winner of the election based on votes (Alex Jungroth)
-                simpleVictoryDispaly.GetComponent<SimpleVictoryDisplay>().displayWinner(true);
+                simpleVictoryDisplay.displayWinner(true);
             }//else
 
             //manages things between elections (Alex Jungroth)
@@ -713,21 +719,21 @@ public class GameController : MonoBehaviour {
             if (complexElections == true)
             {
                 //displays who won the game (Alex Jungroth)
-                WindowGenerator.generateElectionVictory(true);
-
+                //WindowGenerator.generateElectionVictory(true);
+                Debug.Log("ERROR: COMPLEX ELECTIONS HAVE BEEN DISABLED.");
                 //lets the user know they can reset the game
-                UIController.alterTextBox("Press confirm or the escape key to return to the title screen. Thanks for playing!");
+                //UIController.alterTextBox("Press confirm or the escape key to return to the title screen. Thanks for playing!");
             }//if
             else
             {
                 //Calculates the votes independently of window generator (Alex Jungroth)
-                callCalculateVotes();
+                calculateWinnnerManager.CalculateVotes();
 
                 //Calculates the victory points independently of window generator (Alex Jungroth)
-                callCalculateVictoryPoints();
+                calculateWinnnerManager.CalculateVictoryPoints();
 
                 //Displays the winner of the game based on victory points (Alex Jungroth)
-                simpleVictoryDispaly.GetComponent<SimpleVictoryDisplay>().displayWinner(false);
+                simpleVictoryDisplay.displayWinner(false);
 
                 //Lets the user know they can reset the game
                 UIController.alterTextBox("Press the escape key to return to the title screen. Thanks for playing!");
@@ -1378,9 +1384,11 @@ public class GameController : MonoBehaviour {
 	}
 
 	//function to make all voters check who they are closest to
-	public void UpdateVoterCanidates(){
+	public void UpdateVoterCanidates()
+    {
 		//Debug.Log("voters updated");
-		for (int i = 0; i < Voters.Length; i++) {
+		for (int i = 0; i < Voters.Length; i++)
+        {
 			Voters[i].GetComponent<VoterVariables>().FindCanidate();
 		}
 	}
@@ -1413,7 +1421,7 @@ public class GameController : MonoBehaviour {
         }
         catch
         {
-            //Debug.LogError("Could not find the title screen settings, because you did not start from the title screen!");
+            Debug.LogError("Could not find the title screen settings, because you did not start from the title screen!");
         }
         if (gameSettings == null)
         {
@@ -1423,8 +1431,11 @@ public class GameController : MonoBehaviour {
             //The default play test from the prototype scene is to have unique parties, complex elections, pedestals, and the tutorial (Alex Jungroth)
             uniqueParties = false;
             complexElections = false;
-            usePedestals = true;
-            useTutorial = true;
+            usePedestals = TOGGLE_PEDESTAL;
+            useTutorial = TOGGLE_TUT;
+            gridSize = GRID_SIZE;
+            numberOfRounds = NUM_OF_ROUNDS;
+            numberOfElections = NUM_OF_ELECTIONS;
         }
         else
         {
@@ -1461,12 +1472,14 @@ public class GameController : MonoBehaviour {
 
     }
 
+    //THESE FUNCTIONS ARE COMPLETELY UNNECCASARY 
+    /*
     /// <summary>
     /// Calls the function that calculates the votes. (Alex Jungroth)
     /// </summary>
     public void callCalculateVotes()
     {
-        calculateWinnnerManager.GetComponent<CalculateWinner>().CalculateVotes();
+        
     }
 
     /// <summary>
@@ -1474,7 +1487,7 @@ public class GameController : MonoBehaviour {
     /// </summary>
     public void callCalculateVictoryPoints()
     {
-        calculateWinnnerManager.GetComponent<CalculateWinner>().CalculateVictoryPoints();
+        
     }
-
+    */
 }//Gamecontroller Class

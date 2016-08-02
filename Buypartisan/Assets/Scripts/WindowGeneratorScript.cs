@@ -115,7 +115,7 @@ public class WindowGeneratorScript : MonoBehaviour {
 	private bool resetGame = false;
 
 	// Use this for initialization
-	void Start () 
+/*	void Start () 
 	{
 		//diables the end game screen at the start of the game
 		endGame.SetActive(false);
@@ -141,9 +141,9 @@ public class WindowGeneratorScript : MonoBehaviour {
 		providenceGameOver.SetActive(false);
 		noOneVotedGameOver.SetActive(false);
 	}
-	
+	*/
 	// Update is called once per frame
-	void Update ()
+/*	void Update ()
 	{
 		//as the slider is adjusted the policy text will change
 		if (coalitionsFormed && !gameOver) 
@@ -200,110 +200,13 @@ public class WindowGeneratorScript : MonoBehaviour {
 			}//for
 		}//if
 	}//update
-	
-	/// <summary>
-	/// Manages window generation. (Alex Jungroth)
-	/// </summary>
-	public void generateElectionVictory(bool gameFinished)
-	{
-		//gets whether or not the game is over from the gameController
-		gameOver = gameFinished;
+	*/
 
-		//gets the number of players from the game controller
-		totalPlayers = gameController.numberPlayers;
-
-		//resets the winner
-		winner = "no winner";
-        winnerNumber = 0;
-
-		//enables the coalitions screen
-		coalitionScreen.SetActive(true);
-
-		//enables the sliders for the players who are present
-		if(totalPlayers >= 2) 
-		{
-			player1Slider.SetActive(true);
-			player2Slider.SetActive(true);
-		}
-
-		if(totalPlayers >= 3)
-		{
-			player3Slider.SetActive(true);
-		}
-
-		if(totalPlayers >= 4)
-		{
-			player4Slider.SetActive(true);
-		}
-
-		if(totalPlayers >= 5)
-		{
-			player5Slider.SetActive(true);
-		}
-
-		//This code generates a window for forming coalitions
-
-		//disables the statistic labels
-		statsText.SetActive(false);
-
-		//clears the money totals
-		moneyText.text = "";
-
-		//enables the end game screen
-		endGame.SetActive(true);
-
-		//diables some elements on the end game screen
-		policySlider.SetActive(false);
-		policyText.text = "";
-		policyText1.text = "";
-		policyText2.text = "";
-		policyText3.text = "";
-		victoryText.text = "";
-		votesText.text = "";
-		victoryPointsText.text = "";
-
-        //If there are unique parites give each player a unique party handle image
-        if (gameController.uniqueParties == true)
-        {
-            //Sets the sliders nobes for the coalition screen to the correct image
-            for (int i = 0; i < gameController.numberPlayers; i++)
-            {
-                if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Espresso")
-                {
-                    setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
-                }
-                else if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Drone")
-                {
-                    setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
-                }
-                else if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Apple Pie")
-                {
-                    setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
-                }
-                else if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Windy")
-                {
-                    setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
-                }
-                else if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Providence")
-                {
-                    setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
-                }
-            }//for
-        }//if
-        else
-        {
-            player1SliderHandle.GetComponent<Image>().sprite = player1Image.sprite;
-            player2SliderHandle.GetComponent<Image>().sprite = player2Image.sprite;
-            player3SliderHandle.GetComponent<Image>().sprite = player3Image.sprite;
-            player4SliderHandle.GetComponent<Image>().sprite = player4Image.sprite;
-            player5SliderHandle.GetComponent<Image>().sprite = player5Image.sprite;
-        }//else
-    }
 
 	/// <summary>
 	/// Sets the handle image.
 	/// </summary>
-	void setHandleImage(int i, string politicalPartyName)
+/*	void setHandleImage(int i, string politicalPartyName)
 	{
 		switch(i)
 		{
@@ -472,12 +375,12 @@ public class WindowGeneratorScript : MonoBehaviour {
 					
 			break;
 		}
-	}
+	}*/
 
 	/// <summary>
 	/// Continues the game. This is called by a button that is part of the window. (Alex Jungroth)
 	/// </summary>
-	public void continueGame()
+/*	public void continueGame()
 	{		
 		if (resultsDisplayed)
 		{
@@ -488,12 +391,12 @@ public class WindowGeneratorScript : MonoBehaviour {
 			policySlider.GetComponent<Slider> ().value = 0;
 
 			//enables the action buttons
-            /*
-			for (int i = 0; i < 10; i++)
-			{
-				uiController.ActionButtonObject [i].SetActive (true);
-			}
-		    */
+            
+			//for (int i = 0; i < 10; i++)
+			//{
+			//	uiController.ActionButtonObject [i].SetActive (true);
+			//}
+		    
 
 			//resets the bools
 			resultsDisplayed = false;
@@ -647,18 +550,18 @@ public class WindowGeneratorScript : MonoBehaviour {
 			}//else if 
 			else
 			{
-                /*
+                
 				//determines who won the game
-				for (int i = 0; i < totalPlayers; i++) 
-				{
-					if (gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints >= maxVictoryPoints) 
-					{
-						maxVictoryPoints = gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints;
-						winner = gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName;
-                        winnerNumber = gameController.players[i].GetComponent<PlayerVariables>().playerNumber;
-                    }
-				}
-			    */
+				//for (int i = 0; i < totalPlayers; i++) 
+				//{
+				//	if (gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints >= maxVictoryPoints) 
+				//	{
+				//		maxVictoryPoints = gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints;
+				//		winner = gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName;
+                //        winnerNumber = gameController.players[i].GetComponent<PlayerVariables>().playerNumber;
+                //    }
+				//}
+			    
                 //Game Controller calculates the winner of the game (AAJ)
                 gameController.callCalculateVictoryPoints();
 
@@ -748,4 +651,105 @@ public class WindowGeneratorScript : MonoBehaviour {
 
 		}//else
 	}//continueGame()
+    */
+    
 }//WindowGeneratorScript()
+
+/// <summary>
+/// Manages window generation. (Alex Jungroth)
+/// </summary>
+/*public void generateElectionVictory(bool gameFinished)
+{
+    //gets whether or not the game is over from the gameController
+    gameOver = gameFinished;
+
+    //gets the number of players from the game controller
+    totalPlayers = gameController.numberPlayers;
+
+    //resets the winner
+    winner = "no winner";
+    winnerNumber = 0;
+
+    //enables the coalitions screen
+    coalitionScreen.SetActive(true);
+
+    //enables the sliders for the players who are present
+    if(totalPlayers >= 2) 
+    {
+        player1Slider.SetActive(true);
+        player2Slider.SetActive(true);
+    }
+
+    if(totalPlayers >= 3)
+    {
+        player3Slider.SetActive(true);
+    }
+
+    if(totalPlayers >= 4)
+    {
+        player4Slider.SetActive(true);
+    }
+
+    if(totalPlayers >= 5)
+    {
+        player5Slider.SetActive(true);
+    }
+
+    //This code generates a window for forming coalitions
+
+    //disables the statistic labels
+    statsText.SetActive(false);
+
+    //clears the money totals
+    moneyText.text = "";
+
+    //enables the end game screen
+    endGame.SetActive(true);
+
+    //diables some elements on the end game screen
+    policySlider.SetActive(false);
+    policyText.text = "";
+    policyText1.text = "";
+    policyText2.text = "";
+    policyText3.text = "";
+    victoryText.text = "";
+    votesText.text = "";
+    victoryPointsText.text = "";
+
+    //If there are unique parites give each player a unique party handle image
+    if (gameController.uniqueParties == true)
+    {
+        //Sets the sliders nobes for the coalition screen to the correct image
+        for (int i = 0; i < gameController.numberPlayers; i++)
+        {
+            if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Espresso")
+            {
+                setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
+            }
+            else if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Drone")
+            {
+                setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
+            }
+            else if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Apple Pie")
+            {
+                setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
+            }
+            else if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Windy")
+            {
+                setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
+            }
+            else if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Providence")
+            {
+                setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
+            }
+        }//for
+    }//if
+    else
+    {
+        player1SliderHandle.GetComponent<Image>().sprite = player1Image.sprite;
+        player2SliderHandle.GetComponent<Image>().sprite = player2Image.sprite;
+        player3SliderHandle.GetComponent<Image>().sprite = player3Image.sprite;
+        player4SliderHandle.GetComponent<Image>().sprite = player4Image.sprite;
+        player5SliderHandle.GetComponent<Image>().sprite = player5Image.sprite;
+    }//else
+}*/

@@ -10,16 +10,17 @@ public class SimpleVictoryDisplay : MonoBehaviour {
 
     //These objects will be unique to this script
     
-    public GameObject victoryScreens;
+    public GameObject EndGameObject;
+    public GameObject VictoryScreen;
 
     //Holds the components of the victory screens
-    [Header("Player Victory Screens")]
-    public GameObject espressoGameOver;
-    public GameObject droneGameOver;
-    public GameObject applePieGameOver;
-    public GameObject windTurbinoGameOver;
-    public GameObject providenceGameOver;
-    public GameObject noOneVotedGameOver;
+    [Header("Player Victory Images")]
+    public Sprite BrownGameOver;
+    public Sprite RedGameOver;
+    public Sprite YellowGameOver;
+    public Sprite GreenGameOver;
+    public Sprite PurpleGameOver;
+    public Sprite NoWinner;
     [Header("Victory Texts")]
     public Text playerText;
     public Text voteTotalText;
@@ -43,13 +44,8 @@ public class SimpleVictoryDisplay : MonoBehaviour {
     void Start()
     {
         //Diables the victory screens at the start of the game
-        victoryScreens.SetActive(false);
-        espressoGameOver.SetActive(false);
-        droneGameOver.SetActive(false);
-        applePieGameOver.SetActive(false);
-        windTurbinoGameOver.SetActive(false);
-        providenceGameOver.SetActive(false);
-        noOneVotedGameOver.SetActive(false);
+        EndGameObject.SetActive(false);
+
 
         //Clears the player text
         playerText.text = "";
@@ -119,32 +115,34 @@ public class SimpleVictoryDisplay : MonoBehaviour {
         if (max > 0)
         {
             //enables the win screens
-            if (winner == "Espresso")
+            if (winner == "Brown")
             {
-                espressoGameOver.SetActive(true);
+                SetVictoryImage(BrownGameOver);
             }
-            else if (winner == "Drone")
+            else if (winner == "Red")
             {
-                droneGameOver.SetActive(true);
+                SetVictoryImage(RedGameOver);
             }
-            else if (winner == "Apple Pie")
+            else if (winner == "Yellow")
             {
-                applePieGameOver.SetActive(true);
+                SetVictoryImage(YellowGameOver);
             }
-            else if (winner == "Windy")
+            else if (winner == "Green")
             {
-                windTurbinoGameOver.SetActive(true);
+                SetVictoryImage(GreenGameOver);
             }
-            else if (winner == "Providence")
+            else if (winner == "Purple")
             {
-                providenceGameOver.SetActive(true);
+                SetVictoryImage(PurpleGameOver);
             }
         }
         else
         {
             //A special screen for the case where no one voted
-            noOneVotedGameOver.SetActive(true);
+            SetVictoryImage(NoWinner);
         }//else
+
+        VictoryScreen.SetActive(true);
 
         //Prints the players scores in the correct order 
         for (int i = 0; i < gameController.numberPlayers; i++)
@@ -156,7 +154,7 @@ public class SimpleVictoryDisplay : MonoBehaviour {
         }//for
 
         //Enables the victory screens when everything else is ready (AAJ)
-        victoryScreens.SetActive(true);
+        EndGameObject.SetActive(true);
 
     }//displayWinner
 
@@ -166,13 +164,8 @@ public class SimpleVictoryDisplay : MonoBehaviour {
     public void dismissWindow()
     {
         //Diables the victory screens
-        victoryScreens.SetActive(false);
-        espressoGameOver.SetActive(false);
-        droneGameOver.SetActive(false);
-        applePieGameOver.SetActive(false);
-        windTurbinoGameOver.SetActive(false);
-        providenceGameOver.SetActive(false);
-        noOneVotedGameOver.SetActive(false);
+        EndGameObject.SetActive(false);
+        VictoryScreen.SetActive(false);
 
         //Clears the player text
         playerText.text = "";
@@ -187,4 +180,10 @@ public class SimpleVictoryDisplay : MonoBehaviour {
         }//for
 
     }//dismissWindow
+
+    public void SetVictoryImage(Sprite imageToSet) 
+    {
+        VictoryScreen.GetComponent<Image>().sprite = imageToSet;
+    }
+
 }

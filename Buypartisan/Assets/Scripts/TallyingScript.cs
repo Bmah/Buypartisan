@@ -36,18 +36,6 @@ public class TallyingScript : MonoBehaviour {
 	//holds the size of the players shadow position's sphere of influence
 	private float shadowSphereSize;
 
-	// Use this for initialization
-	void Start ()
-	{
-		
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-		
-	}
-
 	/// <summary>
 	/// Tallying script. Tallies each players votes and money at the start of each turn.
 	/// This includes the votes and money earned by a player's shadow positions.
