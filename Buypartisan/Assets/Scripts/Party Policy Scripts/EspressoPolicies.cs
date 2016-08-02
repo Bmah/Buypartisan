@@ -51,7 +51,7 @@ public class EspressoPolicies : MonoBehaviour {
 	//get a ten perecent refund on all actions
 	void xAxisPolicy()
 	{
-		gameController.players[gameController.electionWinner].GetComponent<PlayerVariables> ().actionCostModifier += 0.1f;
+		gameController.Players[gameController.electionWinner].GetComponent<PlayerVariables> ().actionCostModifier += 0.1f;
 	}
 
 	//spilled coffee on a foreign leader's shoes, everyone moves one down on the y-axis 
@@ -61,13 +61,13 @@ public class EspressoPolicies : MonoBehaviour {
 		for(int i = 0; i < gameController.NumVoters; i++) 
 		{
 			//sets the temporary variable equal to the voter's current position
-			temp = gameController.voters[i].transform.position;
+			temp = gameController.Voters[i].transform.position;
 
 			temp -= new Vector3(0,1,0);
 					
 			if((temp.y > 0) && (overlapCheck(temp)))
 			{
-				gameController.voters[i].transform.position = temp;
+				gameController.Voters[i].transform.position = temp;
 			}
 		}
 	}
@@ -88,7 +88,7 @@ public class EspressoPolicies : MonoBehaviour {
 	{
 		for(int i = 0; i < gameController.NumVoters; i++)
 		{
-			if(temp == gameController.voters[i].transform.position)
+			if(temp == gameController.Voters[i].transform.position)
 			{
 				return false;
 			}

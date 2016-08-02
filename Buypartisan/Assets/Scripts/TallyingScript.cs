@@ -55,10 +55,10 @@ public class TallyingScript : MonoBehaviour {
 	public void preTurnTalling()
 	{
 		//gets the players
-		players = gameController.GetComponent<GameController> ().players;
+		players = gameController.GetComponent<GameController> ().Players;
 		
 		//gets the voters
-		voters = gameController.GetComponent<GameController> ().voters;
+		voters = gameController.GetComponent<GameController> ().Voters;
 
 		numberPlayers = gameController.GetComponent<GameController> ().numberPlayers;
 

@@ -93,7 +93,7 @@ public class VoterVariables : MonoBehaviour {
 		float closestDistance = 1000f;
 		float currentCanidateDistance;
 
-		for (int i = 0; i < gameController.playersSpawned; i++) {
+		for (int i = 0; i < gameController.NumPlayersSpawned; i++) {
 			for (int j = 0; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count; j++) {
 				//distance to the canidate's shadow positions being checked
 				currentCanidateDistance = (this.transform.position - players [i].GetComponent<PlayerVariables> ().shadowPositions [j].transform.position).magnitude;

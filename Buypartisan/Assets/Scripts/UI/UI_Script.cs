@@ -177,7 +177,7 @@ public class UI_Script : MonoBehaviour {
 	void Update ()
 	{
 		//updates the sliders for the confirm token screen
-		if (controller.totalPlayersPicked == false) 
+		if (controller.MaxNumPlayerSelected == false) 
 		{
 			if (player3TokenSlider.value == 0) {
 				player4TokenSlider.enabled = false;
@@ -194,11 +194,11 @@ public class UI_Script : MonoBehaviour {
 			}
 			
 			//updates players' list of parties that they have chosen
-			controller.party [0] = (int)player1TokenSlider.value;
-			controller.party [1] = (int)player2TokenSlider.value;
-			controller.party [2] = (int)player3TokenSlider.value - 1;
-			controller.party [3] = (int)player4TokenSlider.value - 1;
-			controller.party [4] = (int)player5TokenSlider.value - 1;
+			controller.ChosenParty [0] = (int)player1TokenSlider.value;
+			controller.ChosenParty [1] = (int)player2TokenSlider.value;
+			controller.ChosenParty [2] = (int)player3TokenSlider.value - 1;
+			controller.ChosenParty [3] = (int)player4TokenSlider.value - 1;
+			controller.ChosenParty [4] = (int)player5TokenSlider.value - 1;
 
             //Enables the cover if there are no unique parties (AAJ)
             if (uniqueParties == false)
@@ -461,10 +461,10 @@ public class UI_Script : MonoBehaviour {
 		//if all of the requirements are met then the players can begin spawning
 		if(requirementsMet)
 		{
-			controller.totalPlayersPicked = true;
+			controller.MaxNumPlayerSelected = true;
 
 			//allows the first player to be spawned
-			controller.spawnFinished = true;
+			controller.CurPlayerFinishedSpawning = true;
 
 			if(player5TokenSlider.value > 0)
 			{
@@ -494,7 +494,7 @@ public class UI_Script : MonoBehaviour {
 		if (!turnPhase)
 		{
 			//attempts a potential placement for the player to spawn in
-			controller.playerConfirmsPlacement = true;
+			controller.CurPlayerConfirmPlacement = true;
 		}
 		else
 		{
@@ -588,7 +588,7 @@ public class UI_Script : MonoBehaviour {
 		confirmButton.SetActive(false);
 	}
 
-	public void TotalPlayersDisable()
+	public void PlayerSelectDisable()
 	{
 		chooseTokenScreen.SetActive(false);
 		confirmTokenButton.SetActive(false);

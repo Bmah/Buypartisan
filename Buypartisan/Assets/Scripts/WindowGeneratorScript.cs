@@ -151,9 +151,9 @@ public class WindowGeneratorScript : MonoBehaviour {
 			for(int i = 0; i < totalPlayers; i++)
 			{
 				//sets the winners policy
-				if(gameController.players[i].GetComponent<PlayerVariables>().playerNumber == winnerNumber)
+				if(gameController.Players[i].GetComponent<PlayerVariables>().playerNumber == winnerNumber)
 				{
-					gameController.players[i].GetComponent<PlayerVariables>().chosenPolicy = (int) policySlider.GetComponent<Slider>().value;
+					gameController.Players[i].GetComponent<PlayerVariables>().chosenPolicy = (int) policySlider.GetComponent<Slider>().value;
 
 				}
 			}
@@ -177,23 +177,23 @@ public class WindowGeneratorScript : MonoBehaviour {
 				switch(i)
 				{
 					case 0:
-						gameController.players[i].GetComponent<PlayerVariables>().alignment = (int) player1Slider.GetComponent<Slider>().value;
+						gameController.Players[i].GetComponent<PlayerVariables>().alignment = (int) player1Slider.GetComponent<Slider>().value;
 					break;
 
 					case 1:
-						gameController.players[i].GetComponent<PlayerVariables>().alignment = (int) player2Slider.GetComponent<Slider>().value;
+						gameController.Players[i].GetComponent<PlayerVariables>().alignment = (int) player2Slider.GetComponent<Slider>().value;
 					break;
 
 					case 2:
-						gameController.players[i].GetComponent<PlayerVariables>().alignment = (int) player3Slider.GetComponent<Slider>().value;
+						gameController.Players[i].GetComponent<PlayerVariables>().alignment = (int) player3Slider.GetComponent<Slider>().value;
 					break;
 
 					case 3:
-						gameController.players[i].GetComponent<PlayerVariables>().alignment = (int) player4Slider.GetComponent<Slider>().value;
+						gameController.Players[i].GetComponent<PlayerVariables>().alignment = (int) player4Slider.GetComponent<Slider>().value;
 					break;
 
 					case 4:
-						gameController.players[i].GetComponent<PlayerVariables>().alignment = (int) player5Slider.GetComponent<Slider>().value;
+						gameController.Players[i].GetComponent<PlayerVariables>().alignment = (int) player5Slider.GetComponent<Slider>().value;
 					break;
 
 				}//switch
@@ -268,25 +268,25 @@ public class WindowGeneratorScript : MonoBehaviour {
             //Sets the sliders nobes for the coalition screen to the correct image
             for (int i = 0; i < gameController.numberPlayers; i++)
             {
-                if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Espresso")
+                if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Espresso")
                 {
-                    setHandleImage(i, gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+                    setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
                 }
-                else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Drone")
+                else if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Drone")
                 {
-                    setHandleImage(i, gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+                    setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
                 }
-                else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Apple Pie")
+                else if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Apple Pie")
                 {
-                    setHandleImage(i, gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+                    setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
                 }
-                else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Windy")
+                else if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Windy")
                 {
-                    setHandleImage(i, gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+                    setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
                 }
-                else if(gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == "Providence")
+                else if(gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == "Providence")
                 {
-                    setHandleImage(i, gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName);
+                    setHandleImage(i, gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName);
                 }
             }//for
         }//if
@@ -547,9 +547,9 @@ public class WindowGeneratorScript : MonoBehaviour {
             gameController.callCalculateVotes();
 
             //Gets the vote totals from Game Controller
-            winner = gameController.winner;
-            winnerNumber = gameController.winnerNumber;
-            maxVotes = gameController.maxVotes;
+            winner = gameController.WinnerName;
+            winnerNumber = gameController.WinnerPlayerNum;
+            maxVotes = gameController.MaxVote;
 
             //generates the correct window
             if (gameOver == false) 
@@ -604,16 +604,16 @@ public class WindowGeneratorScript : MonoBehaviour {
 					for (int i = 0; i < totalPlayers; i++) 
 					{
 						//sets the winners policy
-						if (gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName == winner && winnerNumber == gameController.players[i].GetComponent<PlayerVariables>().playerNumber)
+						if (gameController.Players [i].GetComponent<PlayerVariables> ().politicalPartyName == winner && winnerNumber == gameController.Players[i].GetComponent<PlayerVariables>().playerNumber)
 						{
 							//prints the policy texts
-							policyText.text = gameController.players [i].GetComponent<PlayerVariables> ().policiesText [0];
+							policyText.text = gameController.Players [i].GetComponent<PlayerVariables> ().policiesText [0];
 							
-							policyText1.text = gameController.players [i].GetComponent<PlayerVariables> ().policiesText [1];
+							policyText1.text = gameController.Players [i].GetComponent<PlayerVariables> ().policiesText [1];
 							
-							policyText2.text = gameController.players [i].GetComponent<PlayerVariables> ().policiesText [2];
+							policyText2.text = gameController.Players [i].GetComponent<PlayerVariables> ().policiesText [2];
 							
-							policyText3.text = gameController.players [i].GetComponent<PlayerVariables> ().policiesText [3];
+							policyText3.text = gameController.Players [i].GetComponent<PlayerVariables> ().policiesText [3];
 							
 						}//if
 					}//for
@@ -632,9 +632,9 @@ public class WindowGeneratorScript : MonoBehaviour {
 				//prints each player's victory points to the big tv 
 				for (int i = 0; i < totalPlayers; i++)
 				{
-					partyNames += "Player " + (i + 1) + ":" + "\n" + gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party" + "\n";
-					voteTotals += gameController.players [i].GetComponent<PlayerVariables> ().votes + "\n\n";
-					victoryPointTotals += gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints + "\n\n";
+					partyNames += "Player " + (i + 1) + ":" + "\n" + gameController.Players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party" + "\n";
+					voteTotals += gameController.Players [i].GetComponent<PlayerVariables> ().votes + "\n\n";
+					victoryPointTotals += gameController.Players [i].GetComponent<PlayerVariables> ().victoryPoints + "\n\n";
 				}
 			    
 				//updates the election victory screen with the parties' votes and victory point stats
@@ -663,7 +663,7 @@ public class WindowGeneratorScript : MonoBehaviour {
                 gameController.callCalculateVictoryPoints();
 
                 //Gets the victory point totals from Game Controller
-                maxVictoryPoints = gameController.maxVictoryPoints;
+                maxVictoryPoints = gameController.MaxVictoryPoints;
 
                 //This code generates a window for the end of the game
 
@@ -715,10 +715,10 @@ public class WindowGeneratorScript : MonoBehaviour {
 				//prints each player's victory points to the big tv 
 				for (int i = 0; i < totalPlayers; i++)
 				{
-					partyNames += "Player " + (i + 1) + ":" + "\n" + gameController.players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party" + "\n";
-					moneyTotals += gameController.players [i].GetComponent<PlayerVariables> ().money + "\n\n";
-					voteTotals += gameController.players [i].GetComponent<PlayerVariables> ().votes + "\n\n";
-					victoryPointTotals += gameController.players [i].GetComponent<PlayerVariables> ().victoryPoints + "\n\n";
+					partyNames += "Player " + (i + 1) + ":" + "\n" + gameController.Players [i].GetComponent<PlayerVariables> ().politicalPartyName + " Party" + "\n";
+					moneyTotals += gameController.Players [i].GetComponent<PlayerVariables> ().money + "\n\n";
+					voteTotals += gameController.Players [i].GetComponent<PlayerVariables> ().votes + "\n\n";
+					victoryPointTotals += gameController.Players [i].GetComponent<PlayerVariables> ().victoryPoints + "\n\n";
 				}
 				
 				//updates the election victory screen with the parties' votes and victory point stats

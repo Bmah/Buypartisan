@@ -54,13 +54,13 @@ public class CalculateWinner : MonoBehaviour {
         //tallies the votes in the coalitions
         for (int i = 0; i < totalPlayers; i++)
         {
-            if (gameController.players[i].GetComponent<PlayerVariables>().alignment == 2)
+            if (gameController.Players[i].GetComponent<PlayerVariables>().alignment == 2)
             {
-                coalitionA += gameController.players[i].GetComponent<PlayerVariables>().votes;
+                coalitionA += gameController.Players[i].GetComponent<PlayerVariables>().votes;
             }//if
-            else if (gameController.players[i].GetComponent<PlayerVariables>().alignment == 3)
+            else if (gameController.Players[i].GetComponent<PlayerVariables>().alignment == 3)
             {
-                coalitionB += gameController.players[i].GetComponent<PlayerVariables>().votes;
+                coalitionB += gameController.Players[i].GetComponent<PlayerVariables>().votes;
             }//if
         }//if
 
@@ -80,13 +80,13 @@ public class CalculateWinner : MonoBehaviour {
         //determines the player(s) with the most votes
         for (int i = 0; i < totalPlayers; i++)
         {
-            if (gameController.players[i].GetComponent<PlayerVariables>().alignment == 1)
+            if (gameController.Players[i].GetComponent<PlayerVariables>().alignment == 1)
             {
-                if (gameController.players[i].GetComponent<PlayerVariables>().votes >= maxVotes)
+                if (gameController.Players[i].GetComponent<PlayerVariables>().votes >= maxVotes)
                 {
-                    maxVotes = gameController.players[i].GetComponent<PlayerVariables>().votes;
-                    winner = gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName;
-                    winnerNumber = gameController.players[i].GetComponent<PlayerVariables>().playerNumber;
+                    maxVotes = gameController.Players[i].GetComponent<PlayerVariables>().votes;
+                    winner = gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName;
+                    winnerNumber = gameController.Players[i].GetComponent<PlayerVariables>().playerNumber;
                 }//if
             }//if
         }//for
@@ -96,16 +96,16 @@ public class CalculateWinner : MonoBehaviour {
             //if coalition A won, determines the winner in the coaliton and divides up the victory points
             for (int i = 0; i < totalPlayers; i++)
             {
-                if (gameController.players[i].GetComponent<PlayerVariables>().alignment == 2)
+                if (gameController.Players[i].GetComponent<PlayerVariables>().alignment == 2)
                 {
-                    gameController.players[i].GetComponent<PlayerVariables>().victoryPoints += (int)Mathf.Ceil
-                        (10 * gameController.players[i].GetComponent<PlayerVariables>().votes / maxVotes);
+                    gameController.Players[i].GetComponent<PlayerVariables>().victoryPoints += (int)Mathf.Ceil
+                        (10 * gameController.Players[i].GetComponent<PlayerVariables>().votes / maxVotes);
 
-                    if (gameController.players[i].GetComponent<PlayerVariables>().votes >= maxPercent)
+                    if (gameController.Players[i].GetComponent<PlayerVariables>().votes >= maxPercent)
                     {
-                        maxPercent = gameController.players[i].GetComponent<PlayerVariables>().votes;
-                        winner = gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName;
-                        winnerNumber = gameController.players[i].GetComponent<PlayerVariables>().playerNumber;
+                        maxPercent = gameController.Players[i].GetComponent<PlayerVariables>().votes;
+                        winner = gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName;
+                        winnerNumber = gameController.Players[i].GetComponent<PlayerVariables>().playerNumber;
                     }//if
                 }//if
             }//for
@@ -115,16 +115,16 @@ public class CalculateWinner : MonoBehaviour {
             //if coaliton B won, determines the winner in the coalition and divides up the victory points
             for (int i = 0; i < totalPlayers; i++)
             {
-                if (gameController.players[i].GetComponent<PlayerVariables>().alignment == 3)
+                if (gameController.Players[i].GetComponent<PlayerVariables>().alignment == 3)
                 {
-                    gameController.players[i].GetComponent<PlayerVariables>().victoryPoints += (int)Mathf.Ceil
-                        (10 * gameController.players[i].GetComponent<PlayerVariables>().votes / maxVotes);
+                    gameController.Players[i].GetComponent<PlayerVariables>().victoryPoints += (int)Mathf.Ceil
+                        (10 * gameController.Players[i].GetComponent<PlayerVariables>().votes / maxVotes);
 
-                    if (gameController.players[i].GetComponent<PlayerVariables>().votes >= maxPercent)
+                    if (gameController.Players[i].GetComponent<PlayerVariables>().votes >= maxPercent)
                     {
-                        maxPercent = gameController.players[i].GetComponent<PlayerVariables>().votes;
-                        winner = gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName;
-                        winnerNumber = gameController.players[i].GetComponent<PlayerVariables>().playerNumber;
+                        maxPercent = gameController.Players[i].GetComponent<PlayerVariables>().votes;
+                        winner = gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName;
+                        winnerNumber = gameController.Players[i].GetComponent<PlayerVariables>().playerNumber;
                     }//if
                 }//if
             }//for
@@ -134,11 +134,11 @@ public class CalculateWinner : MonoBehaviour {
             //if a single player won the election
             for (int i = 0; i < totalPlayers; i++)
             {
-                if (gameController.players[i].GetComponent<PlayerVariables>().alignment == 1)
+                if (gameController.Players[i].GetComponent<PlayerVariables>().alignment == 1)
                 {
-                    if (winner == gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName && winnerNumber == gameController.players[i].GetComponent<PlayerVariables>().playerNumber)
+                    if (winner == gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName && winnerNumber == gameController.Players[i].GetComponent<PlayerVariables>().playerNumber)
                     {
-                        gameController.players[i].GetComponent<PlayerVariables>().victoryPoints += 10;
+                        gameController.Players[i].GetComponent<PlayerVariables>().victoryPoints += 10;
                     }//if
                 }//if
             }//for
@@ -147,16 +147,16 @@ public class CalculateWinner : MonoBehaviour {
         //in the case that a coalition won this correctly updates max votes for display
         for (int i = 0; i < totalPlayers; i++)
         {
-            if (gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName == winner && winnerNumber == gameController.players[i].GetComponent<PlayerVariables>().playerNumber)
+            if (gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName == winner && winnerNumber == gameController.Players[i].GetComponent<PlayerVariables>().playerNumber)
             {
-                maxVotes = gameController.players[i].GetComponent<PlayerVariables>().votes;
+                maxVotes = gameController.Players[i].GetComponent<PlayerVariables>().votes;
             }//if
         }//for
 
         //The Game Controller gets the information on who won (Alex Jungroth)
-        gameController.winner = winner;
-        gameController.winnerNumber = winnerNumber;
-        gameController.maxVotes = maxVotes;
+        gameController.WinnerName = winner;
+        gameController.WinnerPlayerNum = winnerNumber;
+        gameController.MaxVote = maxVotes;
 
 }//Calculate Votes
 
@@ -171,16 +171,16 @@ public class CalculateWinner : MonoBehaviour {
         //determines who won the game
         for (int i = 0; i < totalPlayers; i++)
         {
-            if (gameController.players[i].GetComponent<PlayerVariables>().victoryPoints >= maxVictoryPoints)
+            if (gameController.Players[i].GetComponent<PlayerVariables>().victoryPoints >= maxVictoryPoints)
             {
-                maxVictoryPoints = gameController.players[i].GetComponent<PlayerVariables>().victoryPoints;
-                winner = gameController.players[i].GetComponent<PlayerVariables>().politicalPartyName;
-                winnerNumber = gameController.players[i].GetComponent<PlayerVariables>().playerNumber;
+                maxVictoryPoints = gameController.Players[i].GetComponent<PlayerVariables>().victoryPoints;
+                winner = gameController.Players[i].GetComponent<PlayerVariables>().politicalPartyName;
+                winnerNumber = gameController.Players[i].GetComponent<PlayerVariables>().playerNumber;
             }//if
         }//for
 
         //The Game Controller gets the information on who won (Alex Jungroth)
-        gameController.maxVictoryPoints = maxVictoryPoints;
+        gameController.MaxVictoryPoints = maxVictoryPoints;
 
     }//CalculateVictoryPoints
 }

@@ -71,21 +71,21 @@ public class SimpleVictoryDisplay : MonoBehaviour {
     public void displayWinner(bool isVotes)
     {
         //Gets the winner from game controller
-        winner = gameController.winner;
-        winnerNumber = gameController.winnerNumber;
+        winner = gameController.WinnerName;
+        winnerNumber = gameController.WinnerPlayerNum;
         
         //Determines how the players will be ordered
         if (isVotes == true)
         {
             //Sets the max to votes
-            max = gameController.maxVotes;
+            max = gameController.MaxVote;
 
             //Orders the players by votes (AAJ)
             for(int i = 0; i < gameController.numberPlayers; i++)
             {
                 for(int j = i + 1; j < gameController.numberPlayers; j++)
                 {
-                    if(gameController.players[playerArray[j]].GetComponent<PlayerVariables>().votes >= gameController.players[playerArray[i]].GetComponent<PlayerVariables>().votes)
+                    if(gameController.Players[playerArray[j]].GetComponent<PlayerVariables>().votes >= gameController.Players[playerArray[i]].GetComponent<PlayerVariables>().votes)
                     {
                         //Swaps the order of the players
                         temp = playerArray[i];
@@ -98,14 +98,14 @@ public class SimpleVictoryDisplay : MonoBehaviour {
         else
         {
             //Sets the max to victory points
-            max = gameController.maxVictoryPoints;
+            max = gameController.MaxVictoryPoints;
 
             //Orders the players by victory points
             for (int i = 0; i < gameController.numberPlayers; i++)
             {
                 for (int j = i + 1; j < gameController.numberPlayers; j++)
                 {
-                    if (gameController.players[playerArray[j]].GetComponent<PlayerVariables>().victoryPoints >= gameController.players[playerArray[i]].GetComponent<PlayerVariables>().victoryPoints)
+                    if (gameController.Players[playerArray[j]].GetComponent<PlayerVariables>().victoryPoints >= gameController.Players[playerArray[i]].GetComponent<PlayerVariables>().victoryPoints)
                     {
                         //Swaps the order of the players
                         temp = playerArray[i];
@@ -149,10 +149,10 @@ public class SimpleVictoryDisplay : MonoBehaviour {
         //Prints the players scores in the correct order 
         for (int i = 0; i < gameController.numberPlayers; i++)
         {
-            playerText.text += (i + 1) + ". Player " + (playerArray[i] + 1) + " " + gameController.players[playerArray[i]].GetComponent<PlayerVariables>().politicalPartyName + " Party\n\n";
-            voteTotalText.text += gameController.players[playerArray[i]].GetComponent<PlayerVariables>().votes + "\n\n";
-            victoryPointTotalText.text += gameController.players[playerArray[i]].GetComponent<PlayerVariables>().victoryPoints + "\n\n";
-            moneyTotalText.text += gameController.players[playerArray[i]].GetComponent<PlayerVariables>().money + "\n\n";
+            playerText.text += (i + 1) + ". Player " + (playerArray[i] + 1) + " " + gameController.Players[playerArray[i]].GetComponent<PlayerVariables>().politicalPartyName + " Party\n\n";
+            voteTotalText.text += gameController.Players[playerArray[i]].GetComponent<PlayerVariables>().votes + "\n\n";
+            victoryPointTotalText.text += gameController.Players[playerArray[i]].GetComponent<PlayerVariables>().victoryPoints + "\n\n";
+            moneyTotalText.text += gameController.Players[playerArray[i]].GetComponent<PlayerVariables>().money + "\n\n";
         }//for
 
         //Enables the victory screens when everything else is ready (AAJ)

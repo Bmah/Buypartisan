@@ -68,14 +68,14 @@ public class Action1Script : MonoBehaviour {
 		uiController.GetComponent<UI_Script> ().activateAction1UI ();
 		
 		if (gameController != null) {
-			players = gameController.GetComponent<GameController> ().players;
+			players = gameController.GetComponent<GameController> ().Players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
 			SFXVolume = gameController.GetComponent<GameController> ().SFXVolume;
 		} else {
 			Debug.Log ("Failed to obtain voters and players array from Game Controller");
 		}
 		
-		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+		currentPlayer = gameController.GetComponent<GameController> ().CurrentPlayerTurn;
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
 
 		originalPosition = players[currentPlayer].transform.position;
@@ -240,7 +240,7 @@ public class Action1Script : MonoBehaviour {
 		players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
 		//puts the current player and the event number into the action counter of the event controller
 		//Brian Mah
-		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [1]++; // the second number should be the number of the action!
+		eventController.actionCounter [gameController.GetComponent<GameController>().CurrentPlayerTurn] [1]++; // the second number should be the number of the action!
 
 		//updates the tv so the users know whose turn it is (Alex Jungroth)
 		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +

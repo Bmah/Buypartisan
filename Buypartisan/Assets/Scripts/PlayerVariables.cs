@@ -112,7 +112,7 @@ public class PlayerVariables : MonoBehaviour {
 
 	void Update () {
 		//checks if the position has changed from previous update
-		if ((prevPosition != this.transform.position || prevSphereSize != sphereController.transform.localScale.x) && (gameController.isActionTurns))
+		if ((prevPosition != this.transform.position || prevSphereSize != sphereController.transform.localScale.x) && (gameController.IsActionState))
 		{
 			gameController.UpdateVoterCanidates ();
 		}// if position is not the previous position
@@ -125,11 +125,13 @@ public class PlayerVariables : MonoBehaviour {
 	/// Brian Mah
 	/// </summary>
 	public void ToggleSelected(){
-		if (selected) {
+		if (selected)
+        {
 			selected = false;
 			playerRenderer.material = unselectedTexture;
 		}
-		else {
+		else
+        {
 			selected = true;
 			playerRenderer.material = selectedTexture;
 		}
@@ -162,7 +164,8 @@ public class PlayerVariables : MonoBehaviour {
 	void OnMouseExit()
 	{
 		//shadow positions should not be moused over (Alex Jungroth)
-		if (!isShadowPosition) {
+		if (!isShadowPosition)
+        {
 			ToggleSelected ();
 
 			//This was interfering with the parites money being updated after an action (Alex Jungroth)
@@ -175,7 +178,8 @@ public class PlayerVariables : MonoBehaviour {
 	/// Brian Mah
 	/// </summary>
 	/// <returns><c>true</c>, if selected was gotten, <c>false</c> otherwise.</returns>
-	public bool GetSelected(){
+	public bool GetSelected()
+    {
 		return selected;
 	}
 }

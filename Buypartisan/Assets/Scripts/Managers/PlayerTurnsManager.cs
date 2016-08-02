@@ -60,7 +60,7 @@ public class PlayerTurnsManager : MonoBehaviour
 
 			if (endTurnConfirmed)
             {
-				gameController.GetComponent<GameController> ().playerTakingAction = true;
+				gameController.GetComponent<GameController> ().CurPlayerAction = true;
 				endTurnConfirmed = false;
 				costMultiplier = 1;
                 uiController.GetComponent<UI_Script>().updateCost();
@@ -98,8 +98,8 @@ public class PlayerTurnsManager : MonoBehaviour
     public void IncreaseCostMultiplier()
     {   
 		//voters = gameController.GetComponent<GameController> ().voters;
-		players = gameController.GetComponent<GameController> ().players;
-		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+		players = gameController.GetComponent<GameController> ().Players;
+		currentPlayer = gameController.GetComponent<GameController> ().CurrentPlayerTurn;
 		//Debug.Log (currentPlayer);
         costMultiplier += costMultiplierIncreaseAmount;
 
