@@ -94,12 +94,12 @@ public class Action6Script : MonoBehaviour {
 		if (Input.GetMouseButtonDown (0)) {
 			for (selectedPlayer = 0; selectedPlayer < players.Length; selectedPlayer++) {
                 //The second check prevents the sphere from being shrunk to a negative size (AAJ)
-                if (players[selectedPlayer].GetComponent<PlayerVariables>().GetSelected() && players[selectedPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale.x > 0) {
+                if (players[selectedPlayer].GetComponent<PlayerVariables>().GetSelected() && players[selectedPlayer].GetComponent<PlayerVariables>().SphereObject.transform.localScale.x > 0) {
 					//foundPlayer = true;
 					playerSelected = true;
 					Debug.Log (playerSelected);
 					if (Random.value >= successRate) {
-						players [selectedPlayer].GetComponent<PlayerVariables> ().sphereController.transform.localScale -= new Vector3 (10f, 10f, 10f);
+						players [selectedPlayer].GetComponent<PlayerVariables> ().SphereObject.transform.localScale -= new Vector3 (10f, 10f, 10f);
 						SFX.PlayAudioClip (13, 0, SFXVolume);
 					}
 					else{

@@ -71,7 +71,7 @@ public class UI_Script : MonoBehaviour {
     Vector3 ppMove = Vector3.zero;
     //holds the current Player
     [HideInInspector]
-    public GameObject[] currentPlayerPrefab;
+    public GameObject[] currentPlayers;
 
     //this is so that this script can communicate with the Action script
     [HideInInspector]
@@ -167,10 +167,10 @@ public class UI_Script : MonoBehaviour {
 	/// <summary>
 	/// Gets the player array when game controller has finished setting it up (Alex Jungroth)
 	/// </summary>
-	public void getPlayerArray(GameObject[] players)
+	public void setPlayerArray(GameObject[] players)
 	{
 		//gets the array of players
-		currentPlayerPrefab = players;
+		currentPlayers = players;
 	}
 
 	// Update is called once per frame

@@ -431,7 +431,7 @@ public class Action3Script : MonoBehaviour {
                 }//else
 
 				//
-				shadowRenderer.material = players[currentPlayer].GetComponent<PlayerVariables>().transparentTexture;
+				shadowRenderer.material = players[currentPlayer].GetComponent<PlayerVariables>().PlayerTransparentTexture;
 
 				//sets the shadow position's color equal to the player's render color
 				shadowRenderer.material.color = playerRenderer.material.color;

@@ -89,7 +89,7 @@ public class Action5Script : MonoBehaviour {
 		}
 
 		if (confirmButton) {
-			players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale += new Vector3 (10f, 10f, 10f);
+			players [currentPlayer].GetComponent<PlayerVariables>().SphereObject.transform.localScale += new Vector3 (10f, 10f, 10f);
 			EndAction ();
 		}
 	}

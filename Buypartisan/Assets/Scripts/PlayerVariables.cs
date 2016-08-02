@@ -8,49 +8,58 @@ public class PlayerVariables : MonoBehaviour {
 
 	//holds the number of different policies that I'm going to code (Alex Jungroth)
 	private const int policyLimit = 4;
-    public bool UsingModel;
-    public int pTag = 0;
+    //public bool UsingModel;
+    [HideInInspector]
+    public int PlayerTag = 0;
     public int money = 100;
     public int votes = 0;
 	public int sphereSize = 4;
 
 	//holds the number of victory points the player has (Alex Jungroth)
+    [HideInInspector]
 	public int victoryPoints = 0;
 
 	//holds the alignment for forming coalitions  (Alex Jungroth)
 	//1 = going alone, 2 = coalition A, 3 = coalition B
+    [HideInInspector]
 	public int alignment = 1;
 
 	//holds the player's political party name (Alex Jungroth)
 	public string politicalPartyName;
 
     //holds the player's number (Alex Jungorth)
+    [HideInInspector]
     public int playerNumber = 0;
 
 	//holds the player's choice of policy when they get elected (Alex Jungroth)
 	//= 0 means no policy was chosen >= 1 means a certain policy was picked
+    [HideInInspector]
 	public int chosenPolicy = 0;
 
 	//holds the modifier for the cost of actions (Alex Jungroth)
+    [HideInInspector]
 	public float actionCostModifier = 0;
 
-	//holds the text for each of the parites policies
-	public string[] policiesText = new string[policyLimit];
+    //holds the text for each of the parites policies
+    //[TextArea]
+    //public string[] policiesText = new string[policyLimit];
+    //POLICIES ARE BEING DISABLED ENTIRELY FOR NOW
+    private Renderer playerRenderer;
+    private Renderer sphereRenderer;
+    private bool selected = false;
 
-	public Material selectedTexture;
-	public Material unselectedTexture;
-	public Material transparentTexture;
-	private Renderer playerRenderer;
-	public Renderer sphereRenderer;
-	public GameObject sphereController;
+    public Material PlayerSelectedTexture;
+	public Material PlayerUnselectedTexture;
+	public Material PlayerTransparentTexture;
+	public GameObject SphereObject;
 	public Color transparentColor;
 
-	private bool selected = false;
-
 	//holds whether or not this instance of the player is a shadow position (Alex Jungroth)
+    [HideInInspector]
 	public bool isShadowPosition = false;
 
 	//holds all of the shadow postions (Alex Jungroth)
+    [HideInInspector]
 	public List<GameObject> shadowPositions = new List<GameObject>();
 
 	//Brian Mah
@@ -72,25 +81,25 @@ public class PlayerVariables : MonoBehaviour {
         this.shadowPositions.Clear ();
 
         //If there are no unique parties then the parties will be renamed to "Apple Pie" and there sphere size set to 5 (Alex Jungroth
-        if(gameController.uniqueParties == false)
-        {
-            politicalPartyName = "Apple Pie";
-            sphereSize = 5;
-        }//if
+        //if(gameController.uniqueParties == false)
+        //{
+        //    politicalPartyName = "Apple Pie";
+        //    sphereSize = 5;
+        //}//if
 
         //gets the players render (Alex Jungroth)
-        if (!UsingModel)
-		    playerRenderer = this.transform.GetChild(1)/*.transform.GetChild(1)*/.gameObject.GetComponent<Renderer> ();
-        else
-            playerRenderer = this.transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
+        //if (!UsingModel)
+		playerRenderer = this.transform.GetChild(1).gameObject.GetComponent<Renderer> ();
+        //else
+        //    playerRenderer = this.transform.GetChild(1).transform.GetChild(1).gameObject.GetComponent<Renderer>();
         //sets up the spheres for the players (Daniel Schlesinger)
         sphereSize = 10 * sphereSize;
-		sphereController = this.gameObject.transform.GetChild (0).gameObject;
-		sphereRenderer = sphereController.GetComponent<Renderer> ();
+		SphereObject = this.gameObject.transform.GetChild (0).gameObject;
+		sphereRenderer = SphereObject.GetComponent<Renderer> ();
 		transparentColor = sphereRenderer.material.color;
 		transparentColor.a = 0.2f;
 		sphereRenderer.material.SetColor ("_Color", transparentColor);
-		sphereController.transform.localScale = new Vector3 (sphereSize, sphereSize, sphereSize);
+		SphereObject.transform.localScale = new Vector3 (sphereSize, sphereSize, sphereSize);
 
 		//resets the sphere size (Alex Jungroth)
 		sphereSize /= 10;
@@ -98,7 +107,7 @@ public class PlayerVariables : MonoBehaviour {
 		//Brian Mah
 		//previous position initialization
 		prevPosition = this.transform.position;
-		prevSphereSize = sphereController.transform.localScale.x;
+		prevSphereSize = SphereObject.transform.localScale.x;
 
 		//an initial check for a player is spawned in (Alex Jungroth)
 		//gameController.UpdateVoterCanidates();
@@ -112,12 +121,12 @@ public class PlayerVariables : MonoBehaviour {
 
 	void Update () {
 		//checks if the position has changed from previous update
-		if ((prevPosition != this.transform.position || prevSphereSize != sphereController.transform.localScale.x) && (gameController.IsActionState))
+		if ((prevPosition != this.transform.position || prevSphereSize != SphereObject.transform.localScale.x) && (gameController.IsActionState))
 		{
 			gameController.UpdateVoterCanidates ();
 		}// if position is not the previous position
 		prevPosition = this.transform.position;
-		prevSphereSize = sphereController.transform.localScale.x;
+		prevSphereSize = SphereObject.transform.localScale.x;
 	}
 
 	/// <summary>
@@ -128,12 +137,12 @@ public class PlayerVariables : MonoBehaviour {
 		if (selected)
         {
 			selected = false;
-			playerRenderer.material = unselectedTexture;
+			playerRenderer.material = PlayerUnselectedTexture;
 		}
 		else
         {
 			selected = true;
-			playerRenderer.material = selectedTexture;
+			playerRenderer.material = PlayerSelectedTexture;
 		}
 	}
 	/// <summary>

@@ -607,13 +607,13 @@ public class WindowGeneratorScript : MonoBehaviour {
 						if (gameController.Players [i].GetComponent<PlayerVariables> ().politicalPartyName == winner && winnerNumber == gameController.Players[i].GetComponent<PlayerVariables>().playerNumber)
 						{
 							//prints the policy texts
-							policyText.text = gameController.Players [i].GetComponent<PlayerVariables> ().policiesText [0];
+							//policyText.text = gameController.Players [i].GetComponent<PlayerVariables> ().policiesText [0];
 							
-							policyText1.text = gameController.Players [i].GetComponent<PlayerVariables> ().policiesText [1];
+							//policyText1.text = gameController.Players [i].GetComponent<PlayerVariables> ().policiesText [1];
 							
-							policyText2.text = gameController.Players [i].GetComponent<PlayerVariables> ().policiesText [2];
+							//policyText2.text = gameController.Players [i].GetComponent<PlayerVariables> ().policiesText [2];
 							
-							policyText3.text = gameController.Players [i].GetComponent<PlayerVariables> ().policiesText [3];
+							//policyText3.text = gameController.Players [i].GetComponent<PlayerVariables> ().policiesText [3];
 							
 						}//if
 					}//for

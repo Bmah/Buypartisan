@@ -91,8 +91,8 @@ public class Action7Script : MonoBehaviour {
 		}
 
 		if (confirmButton) {
-			if(players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale.x != players[currentPlayer].GetComponent<PlayerVariables>().sphereSize * 10) {
-				players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale = new Vector3
+			if(players [currentPlayer].GetComponent<PlayerVariables>().SphereObject.transform.localScale.x != players[currentPlayer].GetComponent<PlayerVariables>().sphereSize * 10) {
+				players [currentPlayer].GetComponent<PlayerVariables>().SphereObject.transform.localScale = new Vector3
 					(players[currentPlayer].GetComponent<PlayerVariables>().sphereSize * 10,
 					 players[currentPlayer].GetComponent<PlayerVariables>().sphereSize * 10,
 					 players[currentPlayer].GetComponent<PlayerVariables>().sphereSize * 10);

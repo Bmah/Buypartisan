@@ -22,11 +22,11 @@ public class GameController : MonoBehaviour {
     [Header("Templates")]
     public GameObject voterTemplate;
 
-	public GameObject Player_1Template;
-    public GameObject Player_2Template;
-    public GameObject Player_3Template;
-    public GameObject Player_4Template;
-    public GameObject Player_5Template;
+	public GameObject Party_1Template;
+    public GameObject Party_2Template;
+    public GameObject Party_3Template;
+    public GameObject Party_4Template;
+    public GameObject Party_5Template;
     //public GameObject coffeeTemplate;//coffee
     //public GameObject party3Template;//Drone
     //public GameObject party4Template;//Windy
@@ -556,7 +556,7 @@ public class GameController : MonoBehaviour {
         Players = new GameObject[numberPlayers];
 
         //sends the newly made array of players to the UIScript (Alex Jungroth)
-        UIController.getPlayerArray(Players);
+        UIController.setPlayerArray(Players);
 
         //disables the total party selection (Alex Jungroth)
         UIController.PlayerSelectDisable();
@@ -745,7 +745,7 @@ public class GameController : MonoBehaviour {
     void EnactThePolicies()
     {
         //If the user does not want extra windows, window genrator will not run (Alex Jungroth)
-        if (complexElections == true)
+        /*if (complexElections == true)
         {
             //only enacts policies when the window generator has finished
             if (WindowGenerator.resumeGame == true)
@@ -848,9 +848,9 @@ public class GameController : MonoBehaviour {
                 gameMusic.FadeOut(1);
                 gameMusic.StopElectionTheme();
             }//if
-        }//if
-        else
-        {
+        }*///if
+        //else
+        //{
             //Updates the UI immediately if window generator is not being used (Alex Jungroth)
 
             //updates the winner's money on the main TV and displays to the TV that it is player 1's turn (Alex Jungroth)
@@ -877,7 +877,7 @@ public class GameController : MonoBehaviour {
             gameMusic.FadeIn(0);
             gameMusic.FadeOut(1);
             gameMusic.StopElectionTheme();
-        }  
+        //}  
     }//EnactThePolicies()
 
     /// <summary>
@@ -902,7 +902,7 @@ public class GameController : MonoBehaviour {
                     //If unique parties are enabled give the players each unique models (Alex Jungroth) 
                     //if(uniqueParties == true)
                     //{
-                    currentPlayer = Instantiate(Player_1Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                    currentPlayer = Instantiate(Party_1Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
                         //this.playerTemplate = coffeeTemplate;
                     //}
                     //else
@@ -927,7 +927,7 @@ public class GameController : MonoBehaviour {
                     //If unique parties are enabled give the players each unique models (Alex Jungroth) 
                     //if (uniqueParties == true)
                     //{
-                    currentPlayer = Instantiate(Player_2Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                    currentPlayer = Instantiate(Party_2Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
                         //this.playerTemplate = party3Template;
                     //}
                     //else
@@ -952,7 +952,7 @@ public class GameController : MonoBehaviour {
                     //If unique parties are enabled give the players each unique models (Alex Jungroth) 
                     //if (uniqueParties == true)
                     //{
-                    currentPlayer = Instantiate(Player_3Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                    currentPlayer = Instantiate(Party_3Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
                         //this.playerTemplate = neutralTemplate;
                     //}
                     //else
@@ -977,7 +977,7 @@ public class GameController : MonoBehaviour {
                     //If unique parties are enabled give the players each unique models (Alex Jungroth) 
                     //if (uniqueParties == true)
                     //{
-                    currentPlayer = Instantiate(Player_4Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                    currentPlayer = Instantiate(Party_4Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
                         //this.playerTemplate = party4Template;
                     //}
                     //else
@@ -1002,7 +1002,7 @@ public class GameController : MonoBehaviour {
                     //If unique parties are enabled give the players each unique models (Alex Jungroth) 
                     //if (uniqueParties == true)
                     //{
-                    currentPlayer = Instantiate(Player_5Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+                    currentPlayer = Instantiate(Party_5Template, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
                         //this.playerTemplate = party5Template;
                     //}
                     //else
@@ -1421,8 +1421,8 @@ public class GameController : MonoBehaviour {
             //Debug.Log("You may continue play testing!");
 
             //The default play test from the prototype scene is to have unique parties, complex elections, pedestals, and the tutorial (Alex Jungroth)
-            uniqueParties = true;
-            complexElections = true;
+            uniqueParties = false;
+            complexElections = false;
             usePedestals = true;
             useTutorial = true;
         }
