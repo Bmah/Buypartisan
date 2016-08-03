@@ -43,7 +43,6 @@ public class UI_Script : MonoBehaviour {
 	public Slider player5TokenSlider;
 
     [Header("Misc")]
-    public GameObject partyCover;
     public PlayerTurnsManager actionManager;
 	public Text UpperLeftDisplayPlayer;
 	public Text UpperLeftDisplayParty;
@@ -199,12 +198,6 @@ public class UI_Script : MonoBehaviour {
 			controller.ChosenParty [2] = (int)player3TokenSlider.value - 1;
 			controller.ChosenParty [3] = (int)player4TokenSlider.value - 1;
 			controller.ChosenParty [4] = (int)player5TokenSlider.value - 1;
-
-            //Enables the cover if there are no unique parties (AAJ)
-            if (uniqueParties == false)
-            {
-                partyCover.SetActive(true);
-            }//if
         }
 	}
 

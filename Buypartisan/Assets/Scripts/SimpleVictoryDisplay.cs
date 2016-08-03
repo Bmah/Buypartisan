@@ -13,8 +13,14 @@ public class SimpleVictoryDisplay : MonoBehaviour {
     public GameObject EndGameObject;
     public GameObject VictoryScreen;
 
+    [Header("Player End Of Election Images")]
+    public Sprite BrownElection;
+    public Sprite RedElection;
+    public Sprite YellowElection;
+    public Sprite GreenElection;
+    public Sprite PurpleElection;
     //Holds the components of the victory screens
-    [Header("Player Victory Images")]
+    [Header("Player End Game Images")]
     public Sprite BrownGameOver;
     public Sprite RedGameOver;
     public Sprite YellowGameOver;
@@ -64,24 +70,24 @@ public class SimpleVictoryDisplay : MonoBehaviour {
     /// This is will display the winner of an election, or if the game is over, the winner of the game 
     /// The function caller does need to specify if they want the player ordered votes or victory points (Alex Jungroth)
     /// </summary>
-    public void displayWinner(bool isVotes)
+    public void displayWinner(bool EndOfElection)
     {
         //Gets the winner from game controller
         winner = gameController.WinnerName;
         winnerNumber = gameController.WinnerPlayerNum;
         
         //Determines how the players will be ordered
-        if (isVotes == true)
+        if (EndOfElection == true)
         {
             //Sets the max to votes
             max = gameController.MaxVote;
 
             //Orders the players by votes (AAJ)
-            for(int i = 0; i < gameController.numberPlayers; i++)
+            for (int i = 0; i < gameController.numberPlayers; i++)
             {
-                for(int j = i + 1; j < gameController.numberPlayers; j++)
+                for (int j = i + 1; j < gameController.numberPlayers; j++)
                 {
-                    if(gameController.Players[playerArray[j]].GetComponent<PlayerVariables>().votes >= gameController.Players[playerArray[i]].GetComponent<PlayerVariables>().votes)
+                    if (gameController.Players[playerArray[j]].GetComponent<PlayerVariables>().votes >= gameController.Players[playerArray[i]].GetComponent<PlayerVariables>().votes)
                     {
                         //Swaps the order of the players
                         temp = playerArray[i];
@@ -117,26 +123,40 @@ public class SimpleVictoryDisplay : MonoBehaviour {
             //enables the win screens
             if (winner == "Brown")
             {
-                SetVictoryImage(BrownGameOver);
+                if (EndOfElection)
+                    SetVictoryImage(BrownElection);
+                else
+                    SetVictoryImage(BrownGameOver);
             }
             else if (winner == "Red")
             {
-                SetVictoryImage(RedGameOver);
+                if (EndOfElection)
+                    SetVictoryImage(RedElection);
+                else
+                    SetVictoryImage(RedGameOver);
             }
             else if (winner == "Yellow")
             {
-                SetVictoryImage(YellowGameOver);
+                if (EndOfElection)
+                    SetVictoryImage(YellowElection);
+                else
+                    SetVictoryImage(YellowGameOver);
             }
             else if (winner == "Green")
             {
-                SetVictoryImage(GreenGameOver);
+                if (EndOfElection)
+                    SetVictoryImage(GreenElection);
+                else
+                    SetVictoryImage(GreenGameOver);
             }
             else if (winner == "Purple")
             {
-                SetVictoryImage(PurpleGameOver);
+                if (EndOfElection)
+                    SetVictoryImage(PurpleElection);
+                else
+                    SetVictoryImage(PurpleGameOver);
             }
-        }
-        else
+            else
         {
             //A special screen for the case where no one voted
             SetVictoryImage(NoWinner);
