@@ -1,0 +1,4 @@
+Every round, each player can purchase an action that will effect the flow of the game.
+Each action costs different amounts, and the cost of the action will increase the more the player buys (NEEDS CLARIFICATION!).
+Actions include moving voters, moving your own token, increasing or decreasing spheres, and more.
+Mouse over an action to see specifics of said action.

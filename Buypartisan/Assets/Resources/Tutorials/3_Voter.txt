@@ -1,0 +1,5 @@
+This is an example of a voter!
+Each voter can only give one vote, and each voter has a certain amount of money they can donate to a player's campeign.
+Money is added to the controlling player's party at the end of each round. 
+Mouse over a voter at any time to see more information about that voter.
+TODO: PEDASTALS ARE UNCLEAR AND THERE IS AN OPTION TO TAKE THEM OUT. VOTERS NEED REWORKING.

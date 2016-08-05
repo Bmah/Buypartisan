@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour {
     [Header("Debug Settings")]
     public bool TOGGLE_TUT;
     public bool TOGGLE_PEDESTAL;
+    public bool DEBUG_UNLIM_MONEY;
     public int GRID_SIZE;
     public int NUM_OF_ROUNDS;
     public int NUM_OF_ELECTIONS;
@@ -216,7 +217,6 @@ public class GameController : MonoBehaviour {
     private bool PreAnnouncmentSFXPlaying = false;
 	private float PreAnnouncmentSFXTime = 3.7f;
     private int tracker = 0;
-    private bool TVMoved = false;
 	/// <summary>
 	/// Start this instance.
 	/// Adds in Voter Array
@@ -476,11 +476,11 @@ public class GameController : MonoBehaviour {
 		}//else if 
 		else if(currentState == GameState.ActionTurns)
 		{
-            if (!TVMoved)
+            /*if (!TVMoved)
             {
                 popUpTVScript.UpdateTVPos(1);
                 TVMoved = true;
-            }
+            }*/
 
             //Displays the action section of the tutorial if the tutorial is being used (Alex Jungroth)
             if(useTutorial == true)

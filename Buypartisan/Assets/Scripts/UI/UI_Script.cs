@@ -28,12 +28,12 @@ public class UI_Script : MonoBehaviour {
     public GameObject confirmTokenButton;
 
 	//holds the gameobjects that are responsible for showing the partys' tool tips
-    [Header("Tooltips")]
+   /* [Header("Tooltips")]
 	public GameObject espressoToolTip;
 	public GameObject droneToolTip;
 	public GameObject applePieToolTip;
 	public GameObject windyToolTip;
-	public GameObject providenceToolTip;
+	public GameObject providenceToolTip;*/
 
 	//holds the player sliders for the choose your token screen
     [Header("Player Token Slider")]
@@ -568,11 +568,11 @@ public class UI_Script : MonoBehaviour {
 		confirmTokenButton.SetActive(false);
 
 		//disables the partys' tool tips
-		espressoToolTip.SetActive(false);
+		/*espressoToolTip.SetActive(false);
 		droneToolTip.SetActive(false);
 		applePieToolTip.SetActive(false);
 		windyToolTip.SetActive(false);
-		providenceToolTip.SetActive(false);
+		providenceToolTip.SetActive(false);*/
 	}
 
 	public void AlterTextBoxAndDisplayNewsflash(string text){

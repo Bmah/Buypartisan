@@ -1,0 +1,4 @@
+Positioning is very important in Buypartisan. You can only move your piece again if you purchase the needed action.
+Use the movement buttons above to position your token in such a way to try and influence as many voters as you can.
+Press the confirm button under the TV Screen to confirm your placement.
+TODO: CONFIRM BUTTON SHOULD POSSIBLY BE MOVED OFF OF THE DROPDOWN TV.

@@ -31,10 +31,8 @@ public class PopUpTVScript : MonoBehaviour {
 	public GameObject Confirm, Cancel;
 
     [Header("TV Locations")]
-    public Transform TooltipStartLoc;
-    public Transform TooltipDropLoc;
-    public Transform ActionStartLoc;
-    public Transform ActionDropLoc;
+    public Transform TVStartLoc;
+    public Transform TVDropLoc;
 
     private Transform OriginalLocation;
     private Transform DropdownLocation;
@@ -51,8 +49,8 @@ public class PopUpTVScript : MonoBehaviour {
         //-21 | 250
 		prevConfirm = Confirm.activeSelf;
 		prevCancel = Cancel.activeSelf;
-        OriginalLocation = TooltipStartLoc;
-        DropdownLocation = TooltipDropLoc;
+        OriginalLocation = TVStartLoc;
+        DropdownLocation = TVDropLoc;
 	}
 	
 	// Update is called once per frame
@@ -129,7 +127,7 @@ public class PopUpTVScript : MonoBehaviour {
         TimeOfDecay = Time.time + timeTillDecay;
 	}
 
-    public void UpdateTVPos(int Loc)
+/*    public void UpdateTVPos(int Loc)
     {
         //LOC = 0: Original Tooltip Positions
         //LOC = 1: Action Tooltip Positions
@@ -148,5 +146,5 @@ public class PopUpTVScript : MonoBehaviour {
         TVObject.GetComponent<Transform>().position = OriginalLocation.position;
 
 
-    }
+    }*/
 }
