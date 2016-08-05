@@ -10,7 +10,7 @@ public class Action2Script : MonoBehaviour {
 	public GameObject gameController; 
 	public GameObject inputManager; 
 	public GameObject uiController;
-    private GameObject visualAid;
+    //private GameObject visualAid;
 	private GameObject[] voters;
 	private GameObject[] players;
 	//Brian Mah
@@ -66,7 +66,7 @@ public class Action2Script : MonoBehaviour {
 		gameController = GameObject.FindWithTag ("GameController");
 		inputManager = GameObject.FindWithTag ("InputManager");
 		uiController = GameObject.Find ("UI Controller");
-        visualAid = GameObject.FindWithTag("VisualAidManager");
+        //visualAid = GameObject.FindWithTag("VisualAidManager");
 
 		uiController.GetComponent<UI_Script> ().disableActionButtons ();
 		uiController.GetComponent<UI_Script>().activateAction2UI1();
@@ -96,7 +96,7 @@ public class Action2Script : MonoBehaviour {
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
 
 			totalCost = (int)(baseCost * costMultiplier);
-            visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject);
+            //visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject);
             transform.position = new Vector3(999, 999, 999); // This is a cheat in making it invisible when spawning
 
 		}
@@ -120,7 +120,7 @@ public class Action2Script : MonoBehaviour {
 		if (cancelButton) 
 		{
 			//handles early canceling(Alex Jungroth)
-            visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
+            //visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 			uiController.GetComponent<UI_Script>().activateAction2UI2();
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
@@ -288,7 +288,7 @@ public class Action2Script : MonoBehaviour {
 	}
 	
 	void EndAction() {
-        visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
+        //visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 		uiController.GetComponent<UI_Script>().activateAction2UI2();//handles early canceling(Alex Jungroth)
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
