@@ -59,8 +59,8 @@ public class WindyPolicies : MonoBehaviour {
 		{
 			if(i != gameController.electionWinner)
 			{
-				gameController.players[i].GetComponent<PlayerVariables>().money = (int) Mathf.Ceil
-					(gameController.players[i].GetComponent<PlayerVariables>().money * fifteenPercentDecrease);
+				gameController.Players[i].GetComponent<PlayerVariables>().money = (int) Mathf.Ceil
+					(gameController.Players[i].GetComponent<PlayerVariables>().money * fifteenPercentDecrease);
 			}
 		}
 	}
@@ -70,13 +70,13 @@ public class WindyPolicies : MonoBehaviour {
 	{
 		if (Random.value >= half) 
 		{
-			gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().votes = (int) Mathf.Ceil
-				(gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().votes * fifteenPercentIncrease);
+			gameController.Players[gameController.electionWinner].GetComponent<PlayerVariables>().votes = (int) Mathf.Ceil
+				(gameController.Players[gameController.electionWinner].GetComponent<PlayerVariables>().votes * fifteenPercentIncrease);
 		} 
 		else
 		{
-			gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().votes = (int) Mathf.Floor
-				(gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().votes * fivePercentDecrease);
+			gameController.Players[gameController.electionWinner].GetComponent<PlayerVariables>().votes = (int) Mathf.Floor
+				(gameController.Players[gameController.electionWinner].GetComponent<PlayerVariables>().votes * fivePercentDecrease);
 		}
 	}
 

@@ -40,7 +40,7 @@ public class Action5Script : MonoBehaviour {
 		//Obtains the voter and player array from the gameController
 		if (gameController != null) {
 			//voters = gameController.GetComponent<GameController> ().voters;
-			players = gameController.GetComponent<GameController> ().players;
+			players = gameController.GetComponent<GameController> ().Players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
 			SFXVolume = gameController.GetComponent<GameController> ().SFXVolume;
 		} else {
@@ -63,7 +63,7 @@ public class Action5Script : MonoBehaviour {
 		}
 
 		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
-		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+		currentPlayer = gameController.GetComponent<GameController> ().CurrentPlayerTurn;
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
 		if (players[currentPlayer].GetComponent<PlayerVariables> ().money < (baseCost * costMultiplier)) {
 			Debug.Log ("Current Player doesn't have enough money to make this action.");
@@ -89,7 +89,7 @@ public class Action5Script : MonoBehaviour {
 		}
 
 		if (confirmButton) {
-			players [currentPlayer].GetComponent<PlayerVariables>().sphereController.transform.localScale += new Vector3 (10f, 10f, 10f);
+			players [currentPlayer].GetComponent<PlayerVariables>().SphereObject.transform.localScale += new Vector3 (10f, 10f, 10f);
 			EndAction ();
 		}
 	}
@@ -113,7 +113,7 @@ public class Action5Script : MonoBehaviour {
 
 		//puts the current player and the event number into the action counter of the event controller
 		//Brian Mah
-		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [5]++; // the second number should be the number of the action!
+		eventController.actionCounter [gameController.GetComponent<GameController>().CurrentPlayerTurn] [5]++; // the second number should be the number of the action!
 
 		//updates the tv so the users know whose turn it is (Alex Jungroth)
 		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +

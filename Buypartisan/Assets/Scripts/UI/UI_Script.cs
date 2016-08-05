@@ -7,7 +7,8 @@ using System.Collections;
 
 public class UI_Script : MonoBehaviour {
 
-	private GameController controller;
+	public GameController MainGameController;
+    public GameObject MainGameInfoBox;
 
     //holds the buttons for player placement as game objects
     [Header("Buttons")]
@@ -27,12 +28,12 @@ public class UI_Script : MonoBehaviour {
     public GameObject confirmTokenButton;
 
 	//holds the gameobjects that are responsible for showing the partys' tool tips
-    [Header("Tooltips")]
+   /* [Header("Tooltips")]
 	public GameObject espressoToolTip;
 	public GameObject droneToolTip;
 	public GameObject applePieToolTip;
 	public GameObject windyToolTip;
-	public GameObject providenceToolTip;
+	public GameObject providenceToolTip;*/
 
 	//holds the player sliders for the choose your token screen
     [Header("Player Token Slider")]
@@ -43,7 +44,6 @@ public class UI_Script : MonoBehaviour {
 	public Slider player5TokenSlider;
 
     [Header("Misc")]
-    public GameObject partyCover;
     public PlayerTurnsManager actionManager;
 	public Text UpperLeftDisplayPlayer;
 	public Text UpperLeftDisplayParty;
@@ -51,57 +51,47 @@ public class UI_Script : MonoBehaviour {
 
 
     //holds the Action Buttons by the tag ActionButton
-    [System.NonSerialized]
+    [HideInInspector]
     public GameObject[] ActionButtonObject;
-    [System.NonSerialized]
+    [HideInInspector]
     public bool requirementsMet = true;
-    [System.NonSerialized]
+    [HideInInspector]
     public int gridSize;
-    //holds the main text box object
-    [System.NonSerialized]
-    public GameObject mainTextBox;
-    //holds the main text box's text
-    [System.NonSerialized]
-    public Text visualText;
+
     //holds all the action button's texts
-    [System.NonSerialized]
-    public Text text0, text1, text2, text3, text4, text5, text6, text7, text8, text9;
+    [HideInInspector]
+    public Text text0, text1, text2, text3, text4, text5, text6, text7, text8;
     //used for the increment and decrement of X,Y, and Z
-    [System.NonSerialized]
+    [HideInInspector]
     Vector3 ppMove = Vector3.zero;
     //holds the current Player
-    [System.NonSerialized]
-    public GameObject[] currentPlayerPrefab;
+    [HideInInspector]
+    public GameObject[] currentPlayers;
+
+    //this is so that this script can communicate with the Action script
+    [HideInInspector]
+    public GameObject instantiatedAction;
+    //this allows the UI to talk to the SFX controller to play sounds
+    private SFXController sfx;
+    [HideInInspector]
+    public float SFXvolume = 1;
+    //Holds whether the cover needs to be set or not at the start of the game
+    [HideInInspector]
+    public bool uniqueParties = true;
+
     //this will allow us to change states for some of the buttons, so that when the turn phase begins, the buttons can therefore do something else.
     private bool turnPhase = false;
     //this is to keep track of which action has been chosen.
     private int chosenAction = 0;
-    //this is so that this script can communicate with the Action script
-    [System.NonSerialized]
-    public GameObject instantiatedAction;
-    //this allows the UI to talk to the SFX controller to play sounds
-    private SFXController sfx;
-    [System.NonSerialized]
-    public float SFXvolume = 1;
-    //Holds whether the cover needs to be set or not at the start of the game
-    [System.NonSerialized]
-    public bool uniqueParties = true;
+
+    [HideInInspector]
+    public int numActions = 9;
 
 
 
 
     // Use this for initialization
     void Start () {
-		controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
-
-		//gets the text box
-		mainTextBox = GameObject.Find ("Game Announcements TBox");
-
-		//gets the actual text you see
-		visualText = mainTextBox.GetComponent<Text>();
-
-		//tests the above two lines of code
-		visualText.text = "Testing";
 
         // Action button texts
         text0 = GameObject.Find("Text0").GetComponent<Text>();
@@ -113,13 +103,12 @@ public class UI_Script : MonoBehaviour {
         text6 = GameObject.Find("Text6").GetComponent<Text>();
         text7 = GameObject.Find("Text7").GetComponent<Text>();
         text8 = GameObject.Find("Text8").GetComponent<Text>();
-        text9 = GameObject.Find("Text9").GetComponent<Text>();
 
 		//gets the Action Buttons
 		ActionButtonObject = GameObject.FindGameObjectsWithTag ("ActionButton");
 
 		//disables the Action Buttons at the start
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < numActions; i++)
 		{
 			ActionButtonObject[i].SetActive(false);
 		}
@@ -153,44 +142,22 @@ public class UI_Script : MonoBehaviour {
         // Initializes cost
         updateCost();
 
-
-        //TYLER WELSH 
-        //SCROLL WHEEL POSITION DISABLED IN CODE
-
-		//set size and position of scrollview and scrollBar
-		//Brian Mah
-		//float scrollViewHeight = Screen.height - (titleHeight + bottomTVHeight);
-		//float heightToMove = scrollViewHeight - rectScrollBar.sizeDelta.y;
-		//heightToMove /= 2;
-		//if (scrollViewHeight < 1f) {
-		//	Debug.LogError("Screen Height not supported");
-		//	scrollViewHeight = 100f;
-		//}
-        
-        //rectScrollView.sizeDelta = new Vector2 (scrollViewWidth, scrollViewHeight);
-		//rectScrollBar.sizeDelta = new Vector2(rectScrollBar.rect.width,scrollViewHeight);
-		//rectScrollView.anchoredPosition = new Vector2 (rectScrollView.anchoredPosition.x, rectScrollView.anchoredPosition.y - heightToMove);
-		//rectScrollBar.anchoredPosition = new Vector2 (rectScrollBar.anchoredPosition.x, rectScrollBar.anchoredPosition.y - heightToMove);
-        //rectScrollView.position = new Vector3 (rectScrollView.position.x, 0, rectScrollView.position.z);
-		//rectScrollBar.position = new Vector3 (rectScrollBar.position.x, 0, rectScrollBar.position.z);
-		//Debug.Log ("The Height is: " + rectScrollView.localPosition.y);
-		//Debug.Log ("Height move is: " + heightToMove);
 	}
 
 	/// <summary>
 	/// Gets the player array when game controller has finished setting it up (Alex Jungroth)
 	/// </summary>
-	public void getPlayerArray(GameObject[] players)
+	public void setPlayerArray(GameObject[] players)
 	{
 		//gets the array of players
-		currentPlayerPrefab = players;
+		currentPlayers = players;
 	}
 
 	// Update is called once per frame
 	void Update ()
 	{
 		//updates the sliders for the confirm token screen
-		if (controller.totalPlayersPicked == false) 
+		if (MainGameController.MaxNumPlayerSelected == false) 
 		{
 			if (player3TokenSlider.value == 0) {
 				player4TokenSlider.enabled = false;
@@ -207,17 +174,11 @@ public class UI_Script : MonoBehaviour {
 			}
 			
 			//updates players' list of parties that they have chosen
-			controller.party [0] = (int)player1TokenSlider.value;
-			controller.party [1] = (int)player2TokenSlider.value;
-			controller.party [2] = (int)player3TokenSlider.value - 1;
-			controller.party [3] = (int)player4TokenSlider.value - 1;
-			controller.party [4] = (int)player5TokenSlider.value - 1;
-
-            //Enables the cover if there are no unique parties (AAJ)
-            if (uniqueParties == false)
-            {
-                partyCover.SetActive(true);
-            }//if
+			MainGameController.ChosenParty [0] = (int)player1TokenSlider.value;
+			MainGameController.ChosenParty [1] = (int)player2TokenSlider.value;
+			MainGameController.ChosenParty [2] = (int)player3TokenSlider.value - 1;
+			MainGameController.ChosenParty [3] = (int)player4TokenSlider.value - 1;
+			MainGameController.ChosenParty [4] = (int)player5TokenSlider.value - 1;
         }
 	}
 
@@ -231,10 +192,10 @@ public class UI_Script : MonoBehaviour {
 	public void PP_X_Plus()
 	{
 		if (!turnPhase) {
-			if (controller.currentPlayer.transform.position.x < gridSize - 1) {
-				ppMove = controller.currentPlayer.transform.position;
+			if (MainGameController.currentPlayer.transform.position.x < gridSize - 1) {
+				ppMove = MainGameController.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.right;
-				controller.currentPlayer.transform.position = ppMove;
+				MainGameController.currentPlayer.transform.position = ppMove;
 			}
 			else{
 				PlayErrorSound();
@@ -261,10 +222,10 @@ public class UI_Script : MonoBehaviour {
 	public void PP_X_Minus()
 	{
 		if (!turnPhase) {
-			if (controller.currentPlayer.transform.position.x > 0) {
-				ppMove = controller.currentPlayer.transform.position;
+			if (MainGameController.currentPlayer.transform.position.x > 0) {
+				ppMove = MainGameController.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.left;
-				controller.currentPlayer.transform.position = ppMove;
+				MainGameController.currentPlayer.transform.position = ppMove;
 			}
 			else{
 				PlayErrorSound();
@@ -291,10 +252,10 @@ public class UI_Script : MonoBehaviour {
 	public void PP_Y_Plus()
 	{
 		if (!turnPhase) {
-			if (controller.currentPlayer.transform.position.y < gridSize - 1) {
-				ppMove = controller.currentPlayer.transform.position;
+			if (MainGameController.currentPlayer.transform.position.y < gridSize - 1) {
+				ppMove = MainGameController.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.up;
-				controller.currentPlayer.transform.position = ppMove;
+				MainGameController.currentPlayer.transform.position = ppMove;
 			}
 			else{
 				PlayErrorSound();
@@ -321,10 +282,10 @@ public class UI_Script : MonoBehaviour {
 	public void PP_Y_Minus()
 	{
 		if (!turnPhase) {
-			if (controller.currentPlayer.transform.position.y > 0) {
-				ppMove = controller.currentPlayer.transform.position;
+			if (MainGameController.currentPlayer.transform.position.y > 0) {
+				ppMove = MainGameController.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.down;
-				controller.currentPlayer.transform.position = ppMove;
+				MainGameController.currentPlayer.transform.position = ppMove;
 			}
 			else{
 				PlayErrorSound();
@@ -351,10 +312,10 @@ public class UI_Script : MonoBehaviour {
 	public void PP_Z_Plus()
 	{
 		if (!turnPhase) {
-			if (controller.currentPlayer.transform.position.z < gridSize - 1) {
-				ppMove = controller.currentPlayer.transform.position;
+			if (MainGameController.currentPlayer.transform.position.z < gridSize - 1) {
+				ppMove = MainGameController.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.forward;
-				controller.currentPlayer.transform.position = ppMove;
+				MainGameController.currentPlayer.transform.position = ppMove;
 			}
 			else{
 				PlayErrorSound();
@@ -381,10 +342,10 @@ public class UI_Script : MonoBehaviour {
 	public void PP_Z_Minus()
 	{
 		if (!turnPhase) {
-			if (controller.currentPlayer.transform.position.z > 0) {
-				ppMove = controller.currentPlayer.transform.position;
+			if (MainGameController.currentPlayer.transform.position.z > 0) {
+				ppMove = MainGameController.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.back;
-				controller.currentPlayer.transform.position = ppMove;
+				MainGameController.currentPlayer.transform.position = ppMove;
 			}
 			else{
 				PlayErrorSound();
@@ -474,26 +435,26 @@ public class UI_Script : MonoBehaviour {
 		//if all of the requirements are met then the players can begin spawning
 		if(requirementsMet)
 		{
-			controller.totalPlayersPicked = true;
+			MainGameController.MaxNumPlayerSelected = true;
 
 			//allows the first player to be spawned
-			controller.spawnFinished = true;
+			MainGameController.CurPlayerFinishedSpawning = true;
 
 			if(player5TokenSlider.value > 0)
 			{
-				controller.numberPlayers = 5;
+				MainGameController.numberPlayers = 5;
 			}
 			else if(player4TokenSlider.value > 0)
 			{
-				controller.numberPlayers = 4;
+				MainGameController.numberPlayers = 4;
 			}
 			else if(player3TokenSlider.value > 0)
 			{
-				controller.numberPlayers = 3;
+				MainGameController.numberPlayers = 3;
 			}
 			else
 			{
-				controller.numberPlayers = 2;
+				MainGameController.numberPlayers = 2;
 			}
 		}
 
@@ -507,7 +468,7 @@ public class UI_Script : MonoBehaviour {
 		if (!turnPhase)
 		{
 			//attempts a potential placement for the player to spawn in
-			controller.playerConfirmsPlacement = true;
+			MainGameController.CurPlayerConfirmPlacement = true;
 		}
 		else
 		{
@@ -601,17 +562,17 @@ public class UI_Script : MonoBehaviour {
 		confirmButton.SetActive(false);
 	}
 
-	public void TotalPlayersDisable()
+	public void PlayerSelectDisable()
 	{
 		chooseTokenScreen.SetActive(false);
 		confirmTokenButton.SetActive(false);
 
 		//disables the partys' tool tips
-		espressoToolTip.SetActive(false);
+		/*espressoToolTip.SetActive(false);
 		droneToolTip.SetActive(false);
 		applePieToolTip.SetActive(false);
 		windyToolTip.SetActive(false);
-		providenceToolTip.SetActive(false);
+		providenceToolTip.SetActive(false);*/
 	}
 
 	public void AlterTextBoxAndDisplayNewsflash(string text){
@@ -627,7 +588,7 @@ public class UI_Script : MonoBehaviour {
 
 	public void alterTextBox(string inputText)
 	{
-		visualText.text = inputText;
+		MainGameInfoBox.GetComponent<Text>().text = inputText;
 	}
 
 	public void SetPlayerAndParyNameInUpperLeft(string party,int player){
@@ -684,7 +645,7 @@ public class UI_Script : MonoBehaviour {
 		//this enables the action buttons
 		//Note: could recode it so that specific 
 		//buttons can be toggled on or off
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < numActions; i++)
 		{
 			ActionButtonObject[i].SetActive(true);
 		}
@@ -708,7 +669,7 @@ public class UI_Script : MonoBehaviour {
 
 	public void disableActionButtons()
 	{
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < numActions; i++)
 		{
 			ActionButtonObject[i].SetActive(false);
 		}
@@ -793,22 +754,6 @@ public class UI_Script : MonoBehaviour {
 		cancelButton.SetActive (true);
 	}
 
-    //TYLER WELSH - Commenting out old button functionality. Now unused
-	//public void leftButtonClicked()
-	//{
-	//	if (chosenAction == 2)
-	//		instantiatedAction.GetComponent<Action2Script> ().leftButton = true;
-	//	if (chosenAction == 0)
-	//		instantiatedAction.GetComponent<Action0Script> ().leftButton = true;
-	//}
-
-	//public void rightButtonClicked()
-	//{
-	//	if (chosenAction == 2)
-	//		instantiatedAction.GetComponent<Action2Script> ().rightButton = true;
-	//	if (chosenAction == 0)
-	//		instantiatedAction.GetComponent<Action0Script> ().rightButton = true;
-	//}
 
 	/// <summary>
 	/// Sound Effect player

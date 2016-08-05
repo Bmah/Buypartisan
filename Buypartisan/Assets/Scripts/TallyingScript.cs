@@ -36,18 +36,6 @@ public class TallyingScript : MonoBehaviour {
 	//holds the size of the players shadow position's sphere of influence
 	private float shadowSphereSize;
 
-	// Use this for initialization
-	void Start ()
-	{
-		
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-		
-	}
-
 	/// <summary>
 	/// Tallying script. Tallies each players votes and money at the start of each turn.
 	/// This includes the votes and money earned by a player's shadow positions.
@@ -55,10 +43,10 @@ public class TallyingScript : MonoBehaviour {
 	public void preTurnTalling()
 	{
 		//gets the players
-		players = gameController.GetComponent<GameController> ().players;
+		players = gameController.GetComponent<GameController> ().Players;
 		
 		//gets the voters
-		voters = gameController.GetComponent<GameController> ().voters;
+		voters = gameController.GetComponent<GameController> ().Voters;
 
 		numberPlayers = gameController.GetComponent<GameController> ().numberPlayers;
 
@@ -82,7 +70,7 @@ public class TallyingScript : MonoBehaviour {
 			for (int j = 0; j < numberPlayers; j++)
 			{
 				//gets the player's sphere of influence size
-				sphereSize = players[j].GetComponent<PlayerVariables>().sphereController.transform.localScale.x;
+				sphereSize = players[j].GetComponent<PlayerVariables>().SphereObject.transform.localScale.x;
 
 				distanceVector = players [j].transform.position - voters [i].transform.position;
 				distance = Mathf.Abs (distanceVector.magnitude);
@@ -122,7 +110,7 @@ public class TallyingScript : MonoBehaviour {
 				{
 
 					//gets the player's shadow postion sphere of influence
-					shadowSphereSize = players[j].GetComponent<PlayerVariables>().shadowPositions[k].GetComponent<PlayerVariables>().sphereController.transform.localScale.x;
+					shadowSphereSize = players[j].GetComponent<PlayerVariables>().shadowPositions[k].GetComponent<PlayerVariables>().SphereObject.transform.localScale.x;
 
 					distanceVector = players [j].GetComponent<PlayerVariables>().shadowPositions[k].GetComponent<PlayerVariables>().transform.position - 
 						voters [i].GetComponent<VoterVariables>().transform.position;
@@ -204,7 +192,7 @@ public class TallyingScript : MonoBehaviour {
 			{
 				for (int j = 0; j < gameController.GetComponent<GameController>().numberPlayers; j++) 
 				{
-					sphereSize = players [i].GetComponent<PlayerVariables> ().sphereController.transform.localScale.x;
+					sphereSize = players [i].GetComponent<PlayerVariables> ().SphereObject.transform.localScale.x;
 					distanceVector = players [j].transform.position - players [i].transform.position;
 					distance = Mathf.Abs (distanceVector.magnitude);
 

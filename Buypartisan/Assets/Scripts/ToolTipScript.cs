@@ -1,203 +1,224 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ToolTipScript : MonoBehaviour {
+public class ToolTipScript : MonoBehaviour
+{
 
-	//holds the UI Controller so this script can alter the text box
-	public PopUpTVScript popupUIController;
+    //holds the UI Controller so this script can alter the text box
+    public PopUpTVScript popupUIController;
 
-	//These are the messages that will be displayed
-	//on the TV when you hover over the aciton buttons
-	public string messageAction0;
-	public string messageAction1;
-	public string messageAction2;
-	public string messageAction3;
-	public string messageAction4;
-	public string messageAction5;
-	public string messageAction6;
-	public string messageAction7;
-	public string messageAction8;
-	public string messageAction9;
+    //All tooltip messages appear in the upper right TV screen to display help messages for the players
 
-	//a help message for the scrolling and zooming
-	public string messageHelp;
+    //Help messages to detail what the actions do
+    [TextArea]
+    public string[] ActionMessages;
 
-	//messages for the dirctional movement buttons
-	public string messageXPlus;
-	public string messageXMinus;
-	public string messageYPlus;
-	public string messageYMinus;
-	public string messageZPlus;
-	public string messageZMinus;
+    //messages for the dirctional movement buttons
+    //0: Neg X, 1: Pos X
+    //2: Neg Y, 3: Pos Y
+    //4: Neg Z, 5: Pos Z
+    [TextArea]
+    public string[] DirectionalMessages = new string[6];
 
-	//messages for the parties
-	public string party1;
-	public string party2;
-	public string party3;
-	public string party4;
-	public string party5;
+    //messages for the parties
+    [TextArea]
+    public string[] PartyMessages = new string[5];
 
-	//holds the original message from the text box so
-	//doesn't get over written
-	private string origninalMessage;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    //a help message for the scrolling and zooming
+    [TextArea]
+    public string HelpMessage;
 
-	/// <summary>
-	/// Resets the text box on mouse off.
-	/// </summary>
-	public void ResetTextBox()
-	{
-		popupUIController.SetPopupTextBox (origninalMessage);
-		popupUIController.ExitUIToolTip ();
-	}
+    //Holds the original (last) message in the screen so that it does not get overwritten
+    private string origninalMessage;
 
-	/// <summary>
-	/// Clearses the text box when you click the cancel button.
-	/// </summary>
-	public void ClearsTextBox()
-	{
-		//clears the text box by loading in a blank message
-		popupUIController.SetPopupTextBox ("");
-	}
 
-	//these functions load their message on mouse on.
-	public void LoadMessageAction0()
-	{
-		//saves off the original message
-		origninalMessage = popupUIController.popUpText.text;
+    /// <summary>
+    /// Resets the text box on mouse off.
+    /// </summary>
+    public void ResetTextBox()
+    {
+        popupUIController.SetPopupTextBox(origninalMessage);
+        popupUIController.ExitUIToolTip();
+    }
 
-		//puts the help message for action 0 into the maint text box
-		popupUIController.SetPopupTextBox (messageAction0);
-		//starts the timer that waits for the ui tooltip down function
-		popupUIController.StartWaitingForUIToolTip ();
-	}
+    /// <summary>
+    /// Clearses the text box when you click the cancel button.
+    /// </summary>
+    public void ClearsTextBox()
+    {
+        //clears the text box by loading in a blank message
+        popupUIController.SetPopupTextBox("");
+    }
 
-	public void LoadMessageAction1()
-	{
-		//saves off the original message
-		origninalMessage = popupUIController.popUpText.text;
-		
-		//puts the help message for action 1 into the maint text box
-		popupUIController.SetPopupTextBox (messageAction1);
-		//starts the timer that waits for the ui tooltip down function
-		popupUIController.StartWaitingForUIToolTip ();
-	}
+    public void LoadActionMessage(int curAction)
+    {
+        //saves off the original message
+        origninalMessage = popupUIController.popUpText.text;
 
-	public void LoadMessageAction2()
-	{
-		//saves off the original message
-		origninalMessage = popupUIController.popUpText.text;
-		
-		//puts the help message for action 2 into the maint text box
-		popupUIController.SetPopupTextBox (messageAction2);
-		//starts the timer that waits for the ui tooltip down function
-		popupUIController.StartWaitingForUIToolTip ();
-	}
+        //puts the help message for action 0 into the maint text box
+        popupUIController.SetPopupTextBox(ActionMessages[curAction]);
+        //starts the timer that waits for the ui tooltip down function
+        popupUIController.StartWaitingForUIToolTip();
 
-	public void LoadMessageAction3()
-	{
-		//saves off the original message
-		origninalMessage = popupUIController.popUpText.text;
-		
-		//puts the help message for action 3 into the maint text box
-		popupUIController.SetPopupTextBox (messageAction3);
-		//starts the timer that waits for the ui tooltip down function
-		popupUIController.StartWaitingForUIToolTip ();
-	}
+    }
 
-	public void LoadMessageAction4()
-	{
-		//saves off the original message
-		origninalMessage = popupUIController.popUpText.text;
-		
-		//puts the help message for action 4 into the maint text box
-		popupUIController.SetPopupTextBox (messageAction4);
-		//starts the timer that waits for the ui tooltip down function
-		popupUIController.StartWaitingForUIToolTip ();
-	}
+    public void LoadMessageHelp()
+    {
+        //saves off the original message
+        origninalMessage = popupUIController.popUpText.text;
 
-	public void LoadMessageAction5()
-	{
-		//saves off the original message
-		origninalMessage = popupUIController.popUpText.text;
-		
-		//puts the help message for action 5 into the maint text box
-		popupUIController.SetPopupTextBox (messageAction5);
-		//starts the timer that waits for the ui tooltip down function
-		popupUIController.StartWaitingForUIToolTip ();
-	}
+        //puts the help message for the help button into the maint text box
+        popupUIController.SetPopupTextBox(HelpMessage);
+        //starts the timer that waits for the ui tooltip down function
+        popupUIController.StartWaitingForUIToolTip();
+    }
 
-	public void LoadMessageAction6()
-	{
-		//saves off the original message
-		origninalMessage = popupUIController.popUpText.text;
-		
-		//puts the help message for action 6 into the maint text box
-		popupUIController.SetPopupTextBox (messageAction6);
-		//starts the timer that waits for the ui tooltip down function
-		popupUIController.StartWaitingForUIToolTip ();
-	}
+    public void LoadDirectionMessage(int dir)
+    {
+        //0: Neg X, 1: Pos X
+        //2: Neg Y, 3: Pos Y
+        //4: Neg Z, 5: Pos Z
 
-	public void LoadMessageAction7()
-	{
-		//saves off the original message
-		origninalMessage = popupUIController.popUpText.text;
-		
-		//puts the help message for action 7 into the maint text box
-		popupUIController.SetPopupTextBox (messageAction7);
-		//starts the timer that waits for the ui tooltip down function
-		popupUIController.StartWaitingForUIToolTip ();
-	}
+        //saves off the original message
+        origninalMessage = popupUIController.popUpText.text;
 
-	public void LoadMessageAction8()
-	{
-		//saves off the original message
-		origninalMessage = popupUIController.popUpText.text;
-		
-		//puts the help message for action 8 into the maint text box
-		popupUIController.SetPopupTextBox (messageAction8);
-		//starts the timer that waits for the ui tooltip down function
-		popupUIController.StartWaitingForUIToolTip ();
-	}
+        //puts the help message for the X+ button into the maint text box
+        popupUIController.SetPopupTextBox(DirectionalMessages[dir]);
+        //starts the timer that waits for the ui tooltip down function
+        popupUIController.StartWaitingForUIToolTip();
+    }
 
-	public void LoadMessageAction9()
-	{
-		//saves off the original message
-		origninalMessage = popupUIController.popUpText.text;
-		
-		//puts the help message for action 9 into the maint text box
-		popupUIController.SetPopupTextBox (messageAction9);
-		//starts the timer that waits for the ui tooltip down function
-		popupUIController.StartWaitingForUIToolTip ();
-	}
+    public void LoadPartyMessage(int partyNum)
+    {
+        //saves off the original message
+        origninalMessage = popupUIController.popUpText.text;
 
-	public void LoadMessageHelp()
-	{
-		//saves off the original message
-		origninalMessage = popupUIController.popUpText.text;
-		
-		//puts the help message for the help button into the maint text box
-		popupUIController.SetPopupTextBox (messageHelp);
-		//starts the timer that waits for the ui tooltip down function
-		popupUIController.StartWaitingForUIToolTip ();
-	}
+        //puts the help message for the Z- button into the maint text box
+        popupUIController.SetPopupTextBox(PartyMessages[partyNum]);
+        //starts the timer that waits for the ui tooltip down function
+        popupUIController.StartWaitingForUIToolTip();
 
+        //0: Apple Party
+        //1: Espresso
+        //2: Drone
+        //3: Windy
+        //4: Providence
+    }
+
+}
+
+
+
+
+////these functions load their message on mouse on.
+//public void LoadMessageAction0()
+//{
+//	//saves off the original message
+//	origninalMessage = popupUIController.popUpText.text;
+
+//	//puts the help message for action 0 into the maint text box
+//	popupUIController.SetPopupTextBox (ActionMessages[0]);
+//	//starts the timer that waits for the ui tooltip down function
+//	popupUIController.StartWaitingForUIToolTip ();
+//}
+
+//public void LoadMessageAction1()
+//{
+//	//saves off the original message
+//	origninalMessage = popupUIController.popUpText.text;
+
+//	//puts the help message for action 1 into the maint text box
+//	popupUIController.SetPopupTextBox (ActionMessages[1]);
+//	//starts the timer that waits for the ui tooltip down function
+//	popupUIController.StartWaitingForUIToolTip ();
+//}
+
+//public void LoadMessageAction2()
+//{
+//	//saves off the original message
+//	origninalMessage = popupUIController.popUpText.text;
+
+//	//puts the help message for action 2 into the maint text box
+//	popupUIController.SetPopupTextBox (ActionMessages[2]);
+//	//starts the timer that waits for the ui tooltip down function
+//	popupUIController.StartWaitingForUIToolTip ();
+//}
+
+//public void LoadMessageAction3()
+//{
+//	//saves off the original message
+//	origninalMessage = popupUIController.popUpText.text;
+
+//	//puts the help message for action 3 into the maint text box
+//	popupUIController.SetPopupTextBox (ActionMessages[3]);
+//	//starts the timer that waits for the ui tooltip down function
+//	popupUIController.StartWaitingForUIToolTip ();
+//}
+
+//public void LoadMessageAction4()
+//{
+//	//saves off the original message
+//	origninalMessage = popupUIController.popUpText.text;
+
+//	//puts the help message for action 4 into the maint text box
+//	popupUIController.SetPopupTextBox (ActionMessages[4]);
+//	//starts the timer that waits for the ui tooltip down function
+//	popupUIController.StartWaitingForUIToolTip ();
+//}
+
+//public void LoadMessageAction5()
+//{
+//	//saves off the original message
+//	origninalMessage = popupUIController.popUpText.text;
+
+//	//puts the help message for action 5 into the maint text box
+//	popupUIController.SetPopupTextBox (ActionMessages[5]);
+//	//starts the timer that waits for the ui tooltip down function
+//	popupUIController.StartWaitingForUIToolTip ();
+//}
+
+//public void LoadMessageAction6()
+//{
+//	//saves off the original message
+//	origninalMessage = popupUIController.popUpText.text;
+
+//	//puts the help message for action 6 into the maint text box
+//	popupUIController.SetPopupTextBox (ActionMessages[6]);
+//	//starts the timer that waits for the ui tooltip down function
+//	popupUIController.StartWaitingForUIToolTip ();
+//}
+
+//public void LoadMessageAction7()
+//{
+//	//saves off the original message
+//	origninalMessage = popupUIController.popUpText.text;
+
+//	//puts the help message for action 7 into the maint text box
+//	popupUIController.SetPopupTextBox (ActionMessages[7]);
+//	//starts the timer that waits for the ui tooltip down function
+//	popupUIController.StartWaitingForUIToolTip ();
+//}
+
+//public void LoadMessageAction8()
+//{
+//	//saves off the original message
+//	origninalMessage = popupUIController.popUpText.text;
+
+//	//puts the help message for action 8 into the maint text box
+//	popupUIController.SetPopupTextBox (ActionMessages[8]);
+//	//starts the timer that waits for the ui tooltip down function
+//	popupUIController.StartWaitingForUIToolTip ();
+//}
+
+/*
 	public void LoadMessageXPlus()
 	{
 		//saves off the original message
 		origninalMessage = popupUIController.popUpText.text;
 		
 		//puts the help message for the X+ button into the maint text box
-		popupUIController.SetPopupTextBox (messageXPlus);
+		popupUIController.SetPopupTextBox (DirectionalMessages[1]);
 		//starts the timer that waits for the ui tooltip down function
 		popupUIController.StartWaitingForUIToolTip ();
 	}
@@ -208,7 +229,7 @@ public class ToolTipScript : MonoBehaviour {
 		origninalMessage = popupUIController.popUpText.text;
 		
 		//puts the help message for the X- button into the maint text box
-		popupUIController.SetPopupTextBox (messageXMinus);
+		popupUIController.SetPopupTextBox (DirectionalMessages[0]);
 		//starts the timer that waits for the ui tooltip down function
 		popupUIController.StartWaitingForUIToolTip ();
 	}
@@ -219,7 +240,7 @@ public class ToolTipScript : MonoBehaviour {
 		origninalMessage = popupUIController.popUpText.text;
 		
 		//puts the help message for the Y+ button into the maint text box
-		popupUIController.SetPopupTextBox (messageYPlus);
+		popupUIController.SetPopupTextBox (DirectionalMessages[3]);
 		//starts the timer that waits for the ui tooltip down function
 		popupUIController.StartWaitingForUIToolTip ();
 	}
@@ -230,7 +251,7 @@ public class ToolTipScript : MonoBehaviour {
 		origninalMessage = popupUIController.popUpText.text;
 		
 		//puts the help message for the Y- button into the maint text box
-		popupUIController.SetPopupTextBox (messageYMinus);
+		popupUIController.SetPopupTextBox (DirectionalMessages[2]);
 		//starts the timer that waits for the ui tooltip down function
 		popupUIController.StartWaitingForUIToolTip ();
 	}
@@ -241,7 +262,7 @@ public class ToolTipScript : MonoBehaviour {
 		origninalMessage = popupUIController.popUpText.text;
 		
 		//puts the help message for the Z+ button into the maint text box
-		popupUIController.SetPopupTextBox (messageZPlus);
+		popupUIController.SetPopupTextBox (DirectionalMessages[5]);
 		//starts the timer that waits for the ui tooltip down function
 		popupUIController.StartWaitingForUIToolTip ();
 	}
@@ -252,18 +273,17 @@ public class ToolTipScript : MonoBehaviour {
 		origninalMessage = popupUIController.popUpText.text;
 		
 		//puts the help message for the Z- button into the maint text box
-		popupUIController.SetPopupTextBox (messageZMinus);
+		popupUIController.SetPopupTextBox (DirectionalMessages[4]);
 		//starts the timer that waits for the ui tooltip down function
 		popupUIController.StartWaitingForUIToolTip ();
 	}
-
-	public void LoadMessageParty1()
+    	public void LoadMessageParty1()
 	{
 		//saves off the original message
 		origninalMessage = popupUIController.popUpText.text;
 		
 		//puts the help message for the Z- button into the maint text box
-		popupUIController.SetPopupTextBox (party1);
+		popupUIController.SetPopupTextBox (PartyMessages[0]);
 		//starts the timer that waits for the ui tooltip down function
 		popupUIController.StartWaitingForUIToolTip ();
 	}
@@ -274,7 +294,7 @@ public class ToolTipScript : MonoBehaviour {
 		origninalMessage = popupUIController.popUpText.text;
 		
 		//puts the help message for the Z- button into the maint text box
-		popupUIController.SetPopupTextBox (party2);
+		popupUIController.SetPopupTextBox (PartyMessages[1]);
 		//starts the timer that waits for the ui tooltip down function
 		popupUIController.StartWaitingForUIToolTip ();
 	}
@@ -285,7 +305,7 @@ public class ToolTipScript : MonoBehaviour {
 		origninalMessage = popupUIController.popUpText.text;
 		
 		//puts the help message for the Z- button into the maint text box
-		popupUIController.SetPopupTextBox (party3);
+		popupUIController.SetPopupTextBox (PartyMessages[2]);
 		//starts the timer that waits for the ui tooltip down function
 		popupUIController.StartWaitingForUIToolTip ();
 	}
@@ -296,7 +316,7 @@ public class ToolTipScript : MonoBehaviour {
 		origninalMessage = popupUIController.popUpText.text;
 		
 		//puts the help message for the Z- button into the maint text box
-		popupUIController.SetPopupTextBox (party4);
+		popupUIController.SetPopupTextBox (PartyMessages[3]);
 		//starts the timer that waits for the ui tooltip down function
 		popupUIController.StartWaitingForUIToolTip ();
 	}
@@ -307,9 +327,14 @@ public class ToolTipScript : MonoBehaviour {
 		origninalMessage = popupUIController.popUpText.text;
 		
 		//puts the help message for the Z- button into the maint text box
-		popupUIController.SetPopupTextBox (party5);
+		popupUIController.SetPopupTextBox (PartyMessages[4]);
 		//starts the timer that waits for the ui tooltip down function
 		popupUIController.StartWaitingForUIToolTip ();
 	}
 
 }
+
+    //
+
+    */
+

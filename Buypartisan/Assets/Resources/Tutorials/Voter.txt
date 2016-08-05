@@ -1,2 +1,0 @@
-VoterText
-Explains the voters.
