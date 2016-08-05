@@ -216,7 +216,7 @@ public class GameController : MonoBehaviour {
     private bool PreAnnouncmentSFXPlaying = false;
 	private float PreAnnouncmentSFXTime = 3.7f;
     private int tracker = 0;
-    
+    private bool TVMoved = false;
 	/// <summary>
 	/// Start this instance.
 	/// Adds in Voter Array
@@ -476,6 +476,12 @@ public class GameController : MonoBehaviour {
 		}//else if 
 		else if(currentState == GameState.ActionTurns)
 		{
+            if (!TVMoved)
+            {
+                popUpTVScript.UpdateTVPos(1);
+                TVMoved = true;
+            }
+
             //Displays the action section of the tutorial if the tutorial is being used (Alex Jungroth)
             if(useTutorial == true)
             {
@@ -505,9 +511,12 @@ public class GameController : MonoBehaviour {
 			else 
 			{
 				currentState = GameState.RoundEnd;
-			}//else
-		}//else if
-		else if(currentState == GameState.RoundEnd)
+            }//else
+
+
+            
+        }//else if
+        else if(currentState == GameState.RoundEnd)
 		{
             //Ends the round (Alex Jungroth)
             EndTheRound();
@@ -860,7 +869,7 @@ public class GameController : MonoBehaviour {
             //Updates the UI immediately if window generator is not being used (Alex Jungroth)
 
             //updates the winner's money on the main TV and displays to the TV that it is player 1's turn (Alex Jungroth)
-            UIController.alterTextBox("It is the " + Players[0].GetComponent<PlayerVariables>().politicalPartyName +
+            UIController.alterTextBox("It is the " + Players[CurrentPlayerTurn].GetComponent<PlayerVariables>().politicalPartyName +
                 " Party's turn.\n" + displayPlayerStats());
 
             //enables the end turn and player stats buttons

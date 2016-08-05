@@ -156,7 +156,8 @@ public class SimpleVictoryDisplay : MonoBehaviour {
                 else
                     SetVictoryImage(PurpleGameOver);
             }
-            else
+        }
+        else
         {
             //A special screen for the case where no one voted
             SetVictoryImage(NoWinner);

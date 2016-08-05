@@ -10,6 +10,7 @@ public class PopUpTVScript : MonoBehaviour {
 
 
 	//public float downyloaction = -1f;
+    [Header("TV Settings")]
     public float timeTillToolTip = 1.5f;
     public float timeTillDecay = 1.0f;
     public float scrollSpeed = 2f;
@@ -21,21 +22,28 @@ public class PopUpTVScript : MonoBehaviour {
     private bool ConfirmCancelButtonLock = false;
 
     private bool mouseIsOnButton = false;
+    [HideInInspector]
 	public bool bringPopupDown = false;
 
-	public Text popUpText;
-
+    [Header("UI Elements")]
+    public GameObject TVObject;
+    public Text popUpText;
 	public GameObject Confirm, Cancel;
 
-    public Transform OriginalLocation;
-    public Transform DropdownLocation;
+    [Header("TV Locations")]
+    public Transform TooltipStartLoc;
+    public Transform TooltipDropLoc;
+    public Transform ActionStartLoc;
+    public Transform ActionDropLoc;
 
+    private Transform OriginalLocation;
+    private Transform DropdownLocation;
 
-	/// <summary>
-	/// gets y location of the popupTV
-	/// sets the location for it when it moves down.
-	/// </summary>
-	void Start () {
+    /// <summary>
+    /// gets y location of the popupTV
+    /// sets the location for it when it moves down.
+    /// </summary>
+    void Start () {
 
         //yLocation = this.GetComponent<RectTransform>().localPosition.y;
         //OriginalLocation = this.GetComponent<RectTransform>();
@@ -43,6 +51,8 @@ public class PopUpTVScript : MonoBehaviour {
         //-21 | 250
 		prevConfirm = Confirm.activeSelf;
 		prevCancel = Cancel.activeSelf;
+        OriginalLocation = TooltipStartLoc;
+        DropdownLocation = TooltipDropLoc;
 	}
 	
 	// Update is called once per frame
@@ -78,13 +88,13 @@ public class PopUpTVScript : MonoBehaviour {
 
 		if (bringPopupDown && this.transform.position.y > DropdownLocation.position.y)
         {
-            //Debug.Log("DROPDOWN");
+            Debug.Log("DROPDOWN");
 			//this.transform.Translate (new Vector3 (0, -scrollSpeed * ((this.transform.position.y - downyloaction) / 250), 0) * Time.deltaTime);
             this.transform.Translate(new Vector3(0f, (this.transform.position.y - DropdownLocation.position.y) * -scrollSpeed, 0f)  * Time.deltaTime);
 		}
         else if (!bringPopupDown && this.transform.position.y < OriginalLocation.position.y)
         {
-            //Debug.Log("GO UP");
+            Debug.Log("GO UP");
 			//this.transform.Translate (new Vector3 (0, scrollSpeed * ((yLocation - this.transform.position.y) / 250), 0) * Time.deltaTime);
             this.transform.Translate ( new Vector3 (0f, (OriginalLocation.position.y - this.transform.position.y) * scrollSpeed, 0f)  * Time.deltaTime);
 		}
@@ -113,8 +123,30 @@ public class PopUpTVScript : MonoBehaviour {
 		TimeOfToolTip = Time.time + timeTillToolTip * 0.5f;
 	}
 
-	public void ExitUIToolTip(){
+	public void ExitUIToolTip()
+    {
 		mouseIsOnButton = false;
         TimeOfDecay = Time.time + timeTillDecay;
 	}
+
+    public void UpdateTVPos(int Loc)
+    {
+        //LOC = 0: Original Tooltip Positions
+        //LOC = 1: Action Tooltip Positions
+        if (Loc == 1)
+        {
+            OriginalLocation = ActionStartLoc;
+            DropdownLocation = ActionDropLoc;
+            TVObject.GetComponent<Transform>().position = OriginalLocation.position;
+        }
+        else
+        {
+            OriginalLocation = TooltipStartLoc;
+            DropdownLocation = TooltipDropLoc;
+        }
+
+        TVObject.GetComponent<Transform>().position = OriginalLocation.position;
+
+
+    }
 }

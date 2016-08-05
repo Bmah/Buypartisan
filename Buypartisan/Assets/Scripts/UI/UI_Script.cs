@@ -7,7 +7,8 @@ using System.Collections;
 
 public class UI_Script : MonoBehaviour {
 
-	private GameController controller;
+	public GameController MainGameController;
+    public GameObject MainGameInfoBox;
 
     //holds the buttons for player placement as game objects
     [Header("Buttons")]
@@ -56,12 +57,7 @@ public class UI_Script : MonoBehaviour {
     public bool requirementsMet = true;
     [HideInInspector]
     public int gridSize;
-    //holds the main text box object
-    [HideInInspector]
-    public GameObject mainTextBox;
-    //holds the main text box's text
-    [HideInInspector]
-    public Text visualText;
+
     //holds all the action button's texts
     [HideInInspector]
     public Text text0, text1, text2, text3, text4, text5, text6, text7, text8;
@@ -88,11 +84,6 @@ public class UI_Script : MonoBehaviour {
     //this is to keep track of which action has been chosen.
     private int chosenAction = 0;
 
-
-
-
-
-
     [HideInInspector]
     public int numActions = 9;
 
@@ -101,16 +92,6 @@ public class UI_Script : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
-
-		//gets the text box
-		mainTextBox = GameObject.Find ("Game Announcements TBox");
-
-		//gets the actual text you see
-		visualText = mainTextBox.GetComponent<Text>();
-
-		//tests the above two lines of code
-		visualText.text = "Testing";
 
         // Action button texts
         text0 = GameObject.Find("Text0").GetComponent<Text>();
@@ -176,7 +157,7 @@ public class UI_Script : MonoBehaviour {
 	void Update ()
 	{
 		//updates the sliders for the confirm token screen
-		if (controller.MaxNumPlayerSelected == false) 
+		if (MainGameController.MaxNumPlayerSelected == false) 
 		{
 			if (player3TokenSlider.value == 0) {
 				player4TokenSlider.enabled = false;
@@ -193,11 +174,11 @@ public class UI_Script : MonoBehaviour {
 			}
 			
 			//updates players' list of parties that they have chosen
-			controller.ChosenParty [0] = (int)player1TokenSlider.value;
-			controller.ChosenParty [1] = (int)player2TokenSlider.value;
-			controller.ChosenParty [2] = (int)player3TokenSlider.value - 1;
-			controller.ChosenParty [3] = (int)player4TokenSlider.value - 1;
-			controller.ChosenParty [4] = (int)player5TokenSlider.value - 1;
+			MainGameController.ChosenParty [0] = (int)player1TokenSlider.value;
+			MainGameController.ChosenParty [1] = (int)player2TokenSlider.value;
+			MainGameController.ChosenParty [2] = (int)player3TokenSlider.value - 1;
+			MainGameController.ChosenParty [3] = (int)player4TokenSlider.value - 1;
+			MainGameController.ChosenParty [4] = (int)player5TokenSlider.value - 1;
         }
 	}
 
@@ -211,10 +192,10 @@ public class UI_Script : MonoBehaviour {
 	public void PP_X_Plus()
 	{
 		if (!turnPhase) {
-			if (controller.currentPlayer.transform.position.x < gridSize - 1) {
-				ppMove = controller.currentPlayer.transform.position;
+			if (MainGameController.currentPlayer.transform.position.x < gridSize - 1) {
+				ppMove = MainGameController.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.right;
-				controller.currentPlayer.transform.position = ppMove;
+				MainGameController.currentPlayer.transform.position = ppMove;
 			}
 			else{
 				PlayErrorSound();
@@ -241,10 +222,10 @@ public class UI_Script : MonoBehaviour {
 	public void PP_X_Minus()
 	{
 		if (!turnPhase) {
-			if (controller.currentPlayer.transform.position.x > 0) {
-				ppMove = controller.currentPlayer.transform.position;
+			if (MainGameController.currentPlayer.transform.position.x > 0) {
+				ppMove = MainGameController.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.left;
-				controller.currentPlayer.transform.position = ppMove;
+				MainGameController.currentPlayer.transform.position = ppMove;
 			}
 			else{
 				PlayErrorSound();
@@ -271,10 +252,10 @@ public class UI_Script : MonoBehaviour {
 	public void PP_Y_Plus()
 	{
 		if (!turnPhase) {
-			if (controller.currentPlayer.transform.position.y < gridSize - 1) {
-				ppMove = controller.currentPlayer.transform.position;
+			if (MainGameController.currentPlayer.transform.position.y < gridSize - 1) {
+				ppMove = MainGameController.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.up;
-				controller.currentPlayer.transform.position = ppMove;
+				MainGameController.currentPlayer.transform.position = ppMove;
 			}
 			else{
 				PlayErrorSound();
@@ -301,10 +282,10 @@ public class UI_Script : MonoBehaviour {
 	public void PP_Y_Minus()
 	{
 		if (!turnPhase) {
-			if (controller.currentPlayer.transform.position.y > 0) {
-				ppMove = controller.currentPlayer.transform.position;
+			if (MainGameController.currentPlayer.transform.position.y > 0) {
+				ppMove = MainGameController.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.down;
-				controller.currentPlayer.transform.position = ppMove;
+				MainGameController.currentPlayer.transform.position = ppMove;
 			}
 			else{
 				PlayErrorSound();
@@ -331,10 +312,10 @@ public class UI_Script : MonoBehaviour {
 	public void PP_Z_Plus()
 	{
 		if (!turnPhase) {
-			if (controller.currentPlayer.transform.position.z < gridSize - 1) {
-				ppMove = controller.currentPlayer.transform.position;
+			if (MainGameController.currentPlayer.transform.position.z < gridSize - 1) {
+				ppMove = MainGameController.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.forward;
-				controller.currentPlayer.transform.position = ppMove;
+				MainGameController.currentPlayer.transform.position = ppMove;
 			}
 			else{
 				PlayErrorSound();
@@ -361,10 +342,10 @@ public class UI_Script : MonoBehaviour {
 	public void PP_Z_Minus()
 	{
 		if (!turnPhase) {
-			if (controller.currentPlayer.transform.position.z > 0) {
-				ppMove = controller.currentPlayer.transform.position;
+			if (MainGameController.currentPlayer.transform.position.z > 0) {
+				ppMove = MainGameController.currentPlayer.transform.position;
 				ppMove = ppMove + Vector3.back;
-				controller.currentPlayer.transform.position = ppMove;
+				MainGameController.currentPlayer.transform.position = ppMove;
 			}
 			else{
 				PlayErrorSound();
@@ -454,26 +435,26 @@ public class UI_Script : MonoBehaviour {
 		//if all of the requirements are met then the players can begin spawning
 		if(requirementsMet)
 		{
-			controller.MaxNumPlayerSelected = true;
+			MainGameController.MaxNumPlayerSelected = true;
 
 			//allows the first player to be spawned
-			controller.CurPlayerFinishedSpawning = true;
+			MainGameController.CurPlayerFinishedSpawning = true;
 
 			if(player5TokenSlider.value > 0)
 			{
-				controller.numberPlayers = 5;
+				MainGameController.numberPlayers = 5;
 			}
 			else if(player4TokenSlider.value > 0)
 			{
-				controller.numberPlayers = 4;
+				MainGameController.numberPlayers = 4;
 			}
 			else if(player3TokenSlider.value > 0)
 			{
-				controller.numberPlayers = 3;
+				MainGameController.numberPlayers = 3;
 			}
 			else
 			{
-				controller.numberPlayers = 2;
+				MainGameController.numberPlayers = 2;
 			}
 		}
 
@@ -487,7 +468,7 @@ public class UI_Script : MonoBehaviour {
 		if (!turnPhase)
 		{
 			//attempts a potential placement for the player to spawn in
-			controller.CurPlayerConfirmPlacement = true;
+			MainGameController.CurPlayerConfirmPlacement = true;
 		}
 		else
 		{
@@ -607,7 +588,7 @@ public class UI_Script : MonoBehaviour {
 
 	public void alterTextBox(string inputText)
 	{
-		visualText.text = inputText;
+		MainGameInfoBox.GetComponent<Text>().text = inputText;
 	}
 
 	public void SetPlayerAndParyNameInUpperLeft(string party,int player){

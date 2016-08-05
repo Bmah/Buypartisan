@@ -22,7 +22,6 @@ public class Action1Script : MonoBehaviour {
 	public GameObject inputManager;
 	public GameObject uiController; 
 	private GameObject[] players; // Need this to search which player to move
-    private GameObject visualAid;
 	//Brian Mah
 	private RandomEventControllerScript eventController;
 
@@ -62,7 +61,6 @@ public class Action1Script : MonoBehaviour {
 		gameController = GameObject.FindWithTag ("GameController");
 		inputManager = GameObject.FindWithTag ("InputManager");
 		uiController = GameObject.Find ("UI Controller");
-        visualAid = GameObject.FindWithTag("VisualAidManager");
 
 		uiController.GetComponent<UI_Script>().disableActionButtons();
 		uiController.GetComponent<UI_Script> ().activateAction1UI ();
@@ -95,10 +93,7 @@ public class Action1Script : MonoBehaviour {
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
-        else
-        {
-            visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject);
-        }
+
 	}
 	
 	// Update is called once per frame
@@ -108,7 +103,6 @@ public class Action1Script : MonoBehaviour {
 		if (cancelButton) 
 		{
 			//handles early canceling(Alex Jungroth)
-            visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy(gameObject);
 		}
@@ -222,7 +216,6 @@ public class Action1Script : MonoBehaviour {
 	}
 
 	void EndAction() {
-        visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
 
