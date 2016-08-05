@@ -93,13 +93,13 @@ public class VoterVariables : MonoBehaviour {
 		float closestDistance = 1000f;
 		float currentCanidateDistance;
 
-		for (int i = 0; i < gameController.playersSpawned; i++) {
+		for (int i = 0; i < gameController.NumPlayersSpawned; i++) {
 			for (int j = 0; j < players[i].GetComponent<PlayerVariables>().shadowPositions.Count; j++) {
 				//distance to the canidate's shadow positions being checked
 				currentCanidateDistance = (this.transform.position - players [i].GetComponent<PlayerVariables> ().shadowPositions [j].transform.position).magnitude;
 			
 				//if that is closer than the previous closestDistance
-				if (currentCanidateDistance < closestDistance && currentCanidateDistance <= players [i].GetComponent<PlayerVariables> ().shadowPositions [j].GetComponent<PlayerVariables> ().sphereController.transform.localScale.x / 20f) {
+				if (currentCanidateDistance < closestDistance && currentCanidateDistance <= players [i].GetComponent<PlayerVariables> ().shadowPositions [j].GetComponent<PlayerVariables> ().SphereObject.transform.localScale.x / 20f) {
 					closestDistance = currentCanidateDistance;
 					CanidateChoice = players [i];
 				} else if (currentCanidateDistance == closestDistance) {
@@ -111,7 +111,7 @@ public class VoterVariables : MonoBehaviour {
 			currentCanidateDistance = (this.transform.position - players [i].transform.position).magnitude;
 		
 			//if that is closer than the previous closestDistance
-			if (currentCanidateDistance < closestDistance && currentCanidateDistance <= players [i].GetComponent<PlayerVariables> ().sphereController.transform.localScale.x / 20f) {
+			if (currentCanidateDistance < closestDistance && currentCanidateDistance <= players [i].GetComponent<PlayerVariables> ().SphereObject.transform.localScale.x / 20f) {
 				closestDistance = currentCanidateDistance;
 				CanidateChoice = players [i];
 			} else if (currentCanidateDistance == closestDistance) {
@@ -139,8 +139,8 @@ public class VoterVariables : MonoBehaviour {
 //			unselectedTexture = CanidateChoice.GetComponent<Renderer>().material;
 //			selectedTexture = CanidateChoice.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer> ().material;
 //			unselectedTexture = CanidateChoice.transform.GetChild (1).transform.GetChild(1).gameObject.GetComponent<Renderer> ().material;
-			selectedTexture = CanidateChoice.GetComponent<PlayerVariables>().selectedTexture;
-			unselectedTexture = CanidateChoice.GetComponent<PlayerVariables>().unselectedTexture;
+			selectedTexture = CanidateChoice.GetComponent<PlayerVariables>().PlayerSelectedTexture;
+			unselectedTexture = CanidateChoice.GetComponent<PlayerVariables>().PlayerUnselectedTexture;
 			voterRenderer.material = unselectedTexture;
 		}
 

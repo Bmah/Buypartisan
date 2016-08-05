@@ -59,7 +59,7 @@ public class DronePolicies : MonoBehaviour {
 		{
 			for(int i = 0; i < gameController.NumVoters; i++)
 			{
-				gameController.voters[i].GetComponent<VoterVariables>().baseResistance *= 0.9f;
+				gameController.Voters[i].GetComponent<VoterVariables>().baseResistance *= 0.9f;
 			}
 		}
 	}
@@ -78,13 +78,13 @@ public class DronePolicies : MonoBehaviour {
 	{
 		if (Random.value >= half) 
 		{
-			gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().votes = (int) Mathf.Ceil
-				(gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().votes * fifteenPercentIncrease);
+			gameController.Players[gameController.electionWinner].GetComponent<PlayerVariables>().votes = (int) Mathf.Ceil
+				(gameController.Players[gameController.electionWinner].GetComponent<PlayerVariables>().votes * fifteenPercentIncrease);
 		} 
 		else
 		{
-			gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().votes = (int) Mathf.Floor
-				(gameController.players[gameController.electionWinner].GetComponent<PlayerVariables>().votes * fivePercentDecrease);
+			gameController.Players[gameController.electionWinner].GetComponent<PlayerVariables>().votes = (int) Mathf.Floor
+				(gameController.Players[gameController.electionWinner].GetComponent<PlayerVariables>().votes * fivePercentDecrease);
 		}
 	}
 }

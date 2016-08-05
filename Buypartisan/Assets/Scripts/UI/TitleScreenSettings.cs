@@ -17,7 +17,7 @@ public class TitleScreenSettings : MonoBehaviour
     public float sFXVolume = 0.1f;
 
     //Holds whether or not there will be unique parties
-    public bool uniqueParties;
+    public bool uniqueParties = false;
 
     //Holds whether or not window generator will be used
     public bool complexElections;
@@ -60,7 +60,7 @@ public class TitleScreenSettings : MonoBehaviour
 		totalVoters = (int)voters;
 		musicVolume = music;
 		sFXVolume = sFX;
-        uniqueParties = unique;
+        uniqueParties = false;
         complexElections = complex;
         usePedestals = pedestals;
         useTutorial = tutorial;

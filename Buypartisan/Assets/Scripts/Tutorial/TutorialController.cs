@@ -12,19 +12,19 @@ public class TutorialController : MonoBehaviour {
     private const int numberOfTutorialSections = 7;
 
     //Hold the index numbers of different tutorial sections
-    [System.NonSerialized]
+    [HideInInspector]
     public const int goalSection = 0;
-    [System.NonSerialized]
+    [HideInInspector]
     public const int sliderSection = 1;
-    [System.NonSerialized]
+    [HideInInspector]
     public const int voterSection = 2;
-    [System.NonSerialized]
+    [HideInInspector]
     public const int positioningSection = 3;
-    [System.NonSerialized]
+    [HideInInspector]
     public const int actionSection = 4;
-    [System.NonSerialized]
+    [HideInInspector]
     public const int randomEventSection = 5;
-    [System.NonSerialized]
+    [HideInInspector]
     public const int electionSection = 6;
     private const int numFiles = 7;
 
@@ -55,18 +55,6 @@ public class TutorialController : MonoBehaviour {
     //Which cover we are on
     private int currentCover;
 
-    //Holds the speech bubble for the tutorial
-    public GameObject tutorialSpeechBubble;
-    //Holds the buttons for the tutorial 
-    public GameObject leftButton;
-    public GameObject rightButton;
-    public GameObject confirmButton;
-
-    //Variable to hold a picture of a voter for tutorial purposes
-    public GameObject voterImage;
-    //Holds the movement buttons to disable them when needed
-    public GameObject movementKeys;
-    
     //Holds the cover that grays out sections of the screen
     public GameObject[] TutorialCovers;
 
@@ -76,10 +64,24 @@ public class TutorialController : MonoBehaviour {
     //Holds text files for tutorials
     public TextAsset[] TutorialFiles;
 
+    [Header("Images")]
+    //Holds the speech bubble for the tutorial
+    public GameObject tutorialSpeechBubble;
+    //Variable to hold a picture of a voter for tutorial purposes
+    public GameObject voterImage;
+    //Holds the buttons for the tutorial 
+    [Header("Buttons")]
+    public GameObject leftButton;
+    public GameObject rightButton;
+    public GameObject confirmButton;
+    //Holds the movement buttons to disable them when needed
+    public GameObject movementKeys;
+
     //Used to read in the text files
     StreamReader currentReader;
 
     //Holds whether or not the tutorial controller is currently active
+    [HideInInspector]
     public bool isActiveTutorial = false;
     
     //Use this for initialization
@@ -249,360 +251,4 @@ public class TutorialController : MonoBehaviour {
     }//forwardButton
 }
 
-/*
 
-     //Parses the text files to get the strings
-        //Goal Text
-        currentReader = new StreamReader(Application.dataPath + "\\Tutorial Text Files\\Goal.txt", Encoding.Default);
-
-        using(currentReader)
-        {
-            //Reads the first line of the file
-            tempString = currentReader.ReadLine();
-
-            //Reads line by line to the end of the text file
-            while(tempString != null)
-            {
-                goalStrings.Add(tempString);
-               tempString = currentReader.ReadLine();
-            }//while
-
-            //Closes this sections reader
-            currentReader.Close();
-        }//using
-
-        //Slider Text
-        currentReader = new StreamReader(Application.dataPath + "\\Tutorial Text Files\\Slider.txt", Encoding.Default);
-
-        using (currentReader)
-        {
-            //Reads the first line of the file
-            tempString = currentReader.ReadLine();
-
-            //Reads line by line to the end of the text file
-            while (tempString != null)
-            {
-                sliderStrings.Add(tempString);
-                tempString = currentReader.ReadLine();
-            }//while
-
-            //Closes this sections reader
-            currentReader.Close();
-        }//using
-
-        //Voter Text
-        currentReader = new StreamReader(Application.dataPath + "\\Tutorial Text Files\\Voter.txt", Encoding.Default);
-
-        using (currentReader)
-        {
-            //Reads the first line of the file
-            tempString = currentReader.ReadLine();
-
-            //Reads line by line to the end of the text file
-            while (tempString != null)
-            {
-                voterStrings.Add(tempString);
-                tempString = currentReader.ReadLine();
-            }//while
-
-            //Closes this sections reader
-            currentReader.Close();
-        }//using
-
-        //Positioning Text
-        currentReader = new StreamReader(Application.dataPath + "\\Tutorial Text Files\\Positioning.txt", Encoding.Default);
-
-        using (currentReader)
-        {
-            //Reads the first line of the file
-            tempString = currentReader.ReadLine();
-
-            //Reads line by line to the end of the text file
-            while (tempString != null)
-            {
-                positioningStrings.Add(tempString);
-                tempString = currentReader.ReadLine();
-            }//while
-
-            //Closes this sections reader
-            currentReader.Close();
-        }//using
-
-        //Action Text
-        currentReader = new StreamReader(Application.dataPath + "\\Tutorial Text Files\\Action.txt", Encoding.Default);
-
-        using (currentReader)
-        {
-            //Reads the first line of the file
-            tempString = currentReader.ReadLine();
-
-            //Reads line by line to the end of the text file
-            while (tempString != null)
-            {
-                actionStrings.Add(tempString);
-                tempString = currentReader.ReadLine();
-            }//while
-
-            //Closes this sections reader
-            currentReader.Close();
-        }//using
-
-        //Random Text
-        currentReader = new StreamReader(Application.dataPath + "\\Tutorial Text Files\\Random.txt", Encoding.Default);
-
-        using (currentReader)
-        {
-            //Reads the first line of the file
-            tempString = currentReader.ReadLine();
-
-            //Reads line by line to the end of the text file
-            while (tempString != null)
-            {
-                randomEventStrings.Add(tempString);
-                tempString = currentReader.ReadLine();
-            }//while
-
-            //Closes this sections reader
-            currentReader.Close();
-        }//using
-
-        //Election Text
-        currentReader = new StreamReader(Application.dataPath + "\\Tutorial Text Files\\Election.txt", Encoding.Default);
-
-        using (currentReader)
-        {
-            //Reads the first line of the file
-            tempString = currentReader.ReadLine();
-
-            //Reads line by line to the end of the text file
-            while (tempString != null)
-            {
-                electionStrings.Add(tempString);
-                tempString = currentReader.ReadLine();
-            }//while
-
-            //Closes this sections reader
-            currentReader.Close();
-        }//using
-
-    public void goalExplainer()
-    {
-        //Prevents this function from being called more than once a game
-        if(tutorialSectionsUsed[goalSection] == false)
-        {
-            //Sets the current section of the tutorial to true so it won't be called again
-            tutorialSectionsUsed[goalSection] = true;
-
-            //Moves the speech bubble to the correct location
-            tutorialSpeechBubble.transform.position = TutorialTransforms[goalSection].position;
-            //Displays the tutorial speech bubble
-            tutorialSpeechBubble.SetActive(true);
-            //Activates the correct dark screen mask
-            TutorialCovers[goalSection].SetActive(true);
-            //Sets the currentCover
-            currentCover = goalSection;
-
-            //Updates the current strings to this sections text
-            currentStrings = goalStrings;
-
-            //Sets the tutorial speech bubble to the first line of text
-            tutorialSpeechBubble.gameObject.transform.GetChild(0).gameObject.transform.GetChild(0).GetComponent<Text>().text = currentStrings[0];
-
-            //The tutorial is currently active
-            isActiveTutorial = true;
-        }//if
-    }//goalExplainer
-
-    /// <summary>
-    /// Explains how to use the sliders on the choose your party screen (Alex Jungroth)
-    /// </summary>
-    public void sliderExplainer()
-    {
-        //Prevents this function from being called more than once a game
-        if (tutorialSectionsUsed[sliderSection] == false)
-        {
-            //Sets the current section of the tutorial to true so it won't be called again
-            tutorialSectionsUsed[sliderSection] = true;
-
-            //Moves the speech bubble to the correct location
-            tutorialSpeechBubble.transform.position = TutorialTransforms[sliderSection].position;
-            //Displays the tutorial speech bubble
-            tutorialSpeechBubble.SetActive(true);
-            //Activates the correct dark screen mask
-            TutorialCovers[sliderSection].SetActive(true);
-            //Sets the currentCover
-            currentCover = sliderSection;
-
-            //Updates the current strings to this sections text
-            currentStrings = sliderStrings;
-
-            //Sets the tutorial speech bubble to the first line of text
-            tutorialSpeechBubble.gameObject.transform.GetChild(0).gameObject.transform.GetChild(0).GetComponent<Text>().text = currentStrings[0];
-
-            //The tutorial is currently active
-            isActiveTutorial = true;
-        }//if
-    }//sliderExplainer
-
-    /// <summary>
-    /// Explains everything about the voters (Alex Jungroth)
-    /// </summary>
-    public void voterExplainer()
-    {
-        //Prevents this function from being called more than once a game
-        if (tutorialSectionsUsed[voterSection] == false)
-        {
-            //Sets the current section of the tutorial to true so it won't be called again
-            tutorialSectionsUsed[voterSection] = true;
-
-            //Moves the speech bubble to the correct location
-            tutorialSpeechBubble.transform.position = TutorialTransforms[voterSection].position;
-            //Displays the tutorial speech bubble
-            tutorialSpeechBubble.SetActive(true);
-            //Activates the correct dark screen mask
-            TutorialCovers[voterSection].SetActive(true);
-            //Sets the currentCover
-            currentCover = voterSection;
-            //Makes the image of the voter active so we can see what they look like
-            voterImage.SetActive(true);
-
-            //Updates the current strings to this sections text
-            currentStrings = voterStrings;
-
-            //Sets the tutorial speech bubble to the first line of text
-            tutorialSpeechBubble.gameObject.transform.GetChild(0).gameObject.transform.GetChild(0).GetComponent<Text>().text = currentStrings[0];
-
-            //The tutorial is currently active
-            isActiveTutorial = true;
-        }//if
-    }//voterExplainer
-
-    /// <summary>
-    /// Explains initially positioning a party on the grid (Alex Jungroth)
-    /// </summary>
-    public void positioningExplainer()
-    {
-        //Prevents this function from being called more than once a game
-        if (tutorialSectionsUsed[positioningSection] == false)
-        {
-            //Sets the current section of the tutorial to true so it won't be called again
-            tutorialSectionsUsed[positioningSection] = true;
-
-            //Moves the speech bubble to the correct location
-            tutorialSpeechBubble.transform.position = TutorialTransforms[positioningSection].position;
-            //Displays the tutorial speech bubble
-            tutorialSpeechBubble.SetActive(true);
-            //Activates the correct dark screen mask
-            TutorialCovers[positioningSection].SetActive(true);
-            //Sets the currentCover
-            currentCover = positioningSection;
-
-            //Updates the current strings to this sections text
-            currentStrings = positioningStrings;
-
-            //Sets the tutorial speech bubble to the first line of text
-            tutorialSpeechBubble.gameObject.transform.GetChild(0).gameObject.transform.GetChild(0).GetComponent<Text>().text = currentStrings[0];
-
-            //The tutorial is currently active
-            isActiveTutorial = true;
-        }//if
-    }//positioningExplainer
-
-    /// <summary>
-    /// Explains the actions that can be done during a players turn (Alex Jungroth)
-    /// </summary>
-    public void actionExplainer()
-    {
-        //Prevents this function from being called more than once a game
-        if (tutorialSectionsUsed[actionSection] == false)
-        {
-            //Sets the current section of the tutorial to true so it won't be called again
-            tutorialSectionsUsed[actionSection] = true;
-
-            //Disable the movement buttons so they are not in the way
-            movementKeys.SetActive(false);
-
-            //Moves the speech bubble to the correct location
-            tutorialSpeechBubble.transform.position = TutorialTransforms[actionSection].position;
-            //Displays the tutorial speech bubble
-            tutorialSpeechBubble.SetActive(true);
-            //Activates the correct dark screen mask
-            TutorialCovers[actionSection].SetActive(true);
-            //Sets the currentCover
-            currentCover = actionSection;
-
-            //Updates the current strings to this sections text
-            currentStrings = actionStrings;
-
-            //Sets the tutorial speech bubble to the first line of text
-            tutorialSpeechBubble.gameObject.transform.GetChild(0).gameObject.transform.GetChild(0).GetComponent<Text>().text = currentStrings[0];
-
-            //The tutorial is currently active
-            isActiveTutorial = true;
-        }//if
-    }//actionExplainer
-
-    /// <summary>
-    /// Explains the random events that happen at the end of each round (Alex Jungroth)
-    /// </summary>
-    public void randomEventExplainer()
-    {
-        //Prevents this function from being called more than once a game
-        if (tutorialSectionsUsed[randomEventSection] == false)
-        {
-            //Sets the current section of the tutorial to true so it won't be called again
-            tutorialSectionsUsed[randomEventSection] = true;
-
-            //Moves the speech bubble to the correct location
-            tutorialSpeechBubble.transform.position = TutorialTransforms[randomEventSection].position;
-            //Displays the tutorial speech bubble
-            tutorialSpeechBubble.SetActive(true);
-            //Activates the correct dark screen mask
-            TutorialCovers[randomEventSection].SetActive(true);
-            //Sets the currentCover
-            currentCover = randomEventSection;
-
-            //Updates the current strings to this sections text
-            currentStrings = randomEventStrings;
-
-            //Sets the tutorial speech bubble to the first line of text
-            tutorialSpeechBubble.gameObject.transform.GetChild(0).gameObject.transform.GetChild(0).GetComponent<Text>().text = currentStrings[0];
-
-            //The tutorial is currently active
-            isActiveTutorial = true;
-        }//if
-    }//randomEventExplainer
-
-    /// <summary>
-    /// Explains the election(s) that happen after a set number of rounds (Alex Jungroth)
-    /// </summary>
-    public void electionExplainer()
-    {
-        //Prevents this function from being called more than once a game
-        if (tutorialSectionsUsed[electionSection] == false)
-        {
-            //Sets the current section of the tutorial to true so it won't be called again
-            tutorialSectionsUsed[electionSection] = true;
-
-            //Moves the speech bubble to the correct location
-            tutorialSpeechBubble.transform.position = TutorialTransforms[electionSection].position;
-            //Displays the tutorial speech bubble
-            tutorialSpeechBubble.SetActive(true);
-            //Activates the correct dark screen mask
-            TutorialCovers[electionSection].SetActive(true);
-            //Sets the currentCover
-            currentCover = electionSection;
-
-            //Updates the current strings to this sections text
-            currentStrings = electionStrings;
-
-            //Sets the tutorial speech bubble to the first line of text
-            tutorialSpeechBubble.gameObject.transform.GetChild(0).gameObject.transform.GetChild(0).GetComponent<Text>().text = currentStrings[0];
-
-            //The tutorial is currently active
-            isActiveTutorial = true;
-        }//if
-    }//electionExplainer
-
-
-    */

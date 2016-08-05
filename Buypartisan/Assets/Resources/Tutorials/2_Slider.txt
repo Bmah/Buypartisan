@@ -1,0 +1,2 @@
+Players can select their party's color here. The color has no effect on gameplay.
+Player 4 can only be added after Player 3, and Player 5 can only be added after Player 5.
