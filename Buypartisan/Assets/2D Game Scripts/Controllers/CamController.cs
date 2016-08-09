@@ -25,6 +25,8 @@ public class CamController : MonoBehaviour
     public float minScrollDistance = .5f;
     //Maximum Scroll distance
     public float maxScrollDistance = 15f;
+    //Mouse Sensitivity for panning
+    public float MouseSensitivity = 1.0f;
 
     //Current Camera X Angle
     private float CamAngle_X = 0.0f;
@@ -36,10 +38,15 @@ public class CamController : MonoBehaviour
     private Vector3 cameraOriginalPosition;
     //Starting point of the main game board
     private Vector3 gridStartingPoint;
-    //Camera Rotater boolean is for whether the camera should rotate freely around the board or be player controller
-    //Used for the BeforePlay state
-    [HideInInspector]
-    public bool CamRotater = false;
+    //Boolean to control whether control of the camera should be enabled
+    public bool ControlEnabled = true;
+    //Boolean to allow the cam to free rotate
+    private bool RotateCam = false;
+    //Last mouse click position
+    private Vector3 LastMousePos;
+
+    private Vector3 negScrollDistance;
+    private Vector3 NewCamPos;
 
     // Use this for initialization
     void Start()
@@ -47,6 +54,7 @@ public class CamController : MonoBehaviour
         CamAngle_X = this.transform.eulerAngles.x;
         CamAngle_Y = this.transform.eulerAngles.y;
         cameraRigidbody = GetComponent<Rigidbody>();
+        
         // Make the rigid body not change rotation
         if (cameraRigidbody != null)
         {
@@ -75,12 +83,26 @@ public class CamController : MonoBehaviour
 
     void LateUpdate()
     {
-        Vector3 negScrollDistance;
-        Vector3 NewCamPos;
+
 
         //If player has control of the camera
-        if (!CamRotater)
-        {
+        if (ControlEnabled)
+        { 
+            if (Input.GetMouseButtonDown(0))
+            {
+                LastMousePos = Input.mousePosition;
+            }
+            if(Input.GetMouseButton(0))
+            {
+                Vector3 deltaMovement = Camera.main.ScreenToViewportPoint(Input.mousePosition - LastMousePos);
+                Vector3 camMove = new Vector3(deltaMovement.x * MouseSensitivity, 0, deltaMovement.y * MouseSensitivity);
+                this.transform.Translate(camMove, Space.World);
+                LastMousePos = Input.mousePosition;
+            }
+
+            //NEED TO INCORPORATE ABOVE CODE WITH THE BELOW CODE
+
+
             //Rotation
             if (Input.GetMouseButton(1))
             {
@@ -101,7 +123,7 @@ public class CamController : MonoBehaviour
             NewCamPos = this.transform.rotation * negScrollDistance + CamTarget.position;
             this.transform.position = NewCamPos;
         }
-        else
+        else if(RotateCam)
         {
             //If Camera is being computer controlled
             //Same code as above minus the player input
@@ -120,4 +142,16 @@ public class CamController : MonoBehaviour
             this.transform.position = NewCamPos;
         }
     }    
+    /// <summary>
+    /// Toggles the camera control. Control turns camera control on/off. Rotate turns on/off auto rotate.
+    /// </summary>
+    /// <param name="control"></param>
+    /// <param name="rotate"></param>
+    public void ToggleCamControls(bool control, bool rotate)
+    {
+        Debug.Log("SETTING CONTROL TO: " + control + " SETTING ROTATE TO: " + rotate);
+        ControlEnabled = control;
+        RotateCam = rotate;
+    }
+
 }

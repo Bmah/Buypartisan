@@ -24,13 +24,13 @@ namespace GameStates
         public PlayerSelectState(MonoBehaviour parent) : base(parent)
         {
             gameController = (BoardGameController)parent;
-            gameController.camController.enabled = false;
             gameController.PlayerSelectStartCam();
             ScreenEnabled = false;
             NumOfPlayers = gameController.NumberOfPlayers;
             gameController.Players = new GameObject[(int)NumOfPlayers];
             gameController.PlayerPartyMapping = new int[(int)NumOfPlayers];
             CurrentPlayerSelect = 0;
+            Debug.Log("Game Setup");
         }
 
         public override void Update()
@@ -44,35 +44,42 @@ namespace GameStates
             }
 
             //When left mouse click, shoot raycast
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !gameController.IsCamMoving)
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
 
+                //TODO: ADD CONFIRMATION SELECT
+
                 if (Physics.Raycast(ray, out hit)) 
                 {
+
                     Debug.DrawLine(ray.origin, hit.point);
                     if(hit.transform.tag == ("Orange_Party"))
                     {
-                        //ORANGE PARTY ID IS 0
-                        gameController.PlayerPartyMapping[CurrentPlayerSelect] = 0; 
+                        gameController.PlayerPartyMapping[CurrentPlayerSelect] = BoardGameController.Orange_Party;
+                        gameController.PlayerSelectGameModels[BoardGameController.Orange_Party].SetActive(false);
+                        Debug.Log("Current Player: " + CurrentPlayerSelect + " Selected Party: " + gameController.PlayerPartyMapping[CurrentPlayerSelect]);
+                        CurrentPlayerSelect++;
                     }
                     else if(hit.transform.tag == ("Green_Party"))
                     {
-                        //ORANGE PARTY ID IS 0
-                        gameController.PlayerPartyMapping[CurrentPlayerSelect] = 1;
+                        gameController.PlayerPartyMapping[CurrentPlayerSelect] = BoardGameController.Green_Party;
+                        gameController.PlayerSelectGameModels[BoardGameController.Green_Party].SetActive(false);
+                        Debug.Log("Current Player: " + CurrentPlayerSelect + " Selected Party: " + gameController.PlayerPartyMapping[CurrentPlayerSelect]);
+                        CurrentPlayerSelect++;
                     }
                     else if(hit.transform.tag == ("Purple_Party"))
                     {
-                        //ORANGE PARTY ID IS 0
-                        gameController.PlayerPartyMapping[CurrentPlayerSelect] = 2;
+                        gameController.PlayerPartyMapping[CurrentPlayerSelect] = BoardGameController.Purple_Party;
+                        gameController.PlayerSelectGameModels[BoardGameController.Purple_Party].SetActive(false);
+                        Debug.Log("Current Player: " + CurrentPlayerSelect + " Selected Party: " + gameController.PlayerPartyMapping[CurrentPlayerSelect]);
+                        CurrentPlayerSelect++;
                     }
-                    Debug.Log("Current Player: " + CurrentPlayerSelect + " Selected Party: " + gameController.PlayerPartyMapping[CurrentPlayerSelect]);
-                    CurrentPlayerSelect++;
-
                 }
             }
 
+            //STATE CHANGE
             if(CurrentPlayerSelect >= NumOfPlayers)
             {
                 //FINISHED PLAYER SELECT
@@ -81,6 +88,7 @@ namespace GameStates
                 gameController.currentState = new GameSetupState(gameController);
 
             }
+
         }
     }
 }

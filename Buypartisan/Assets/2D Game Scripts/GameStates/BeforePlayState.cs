@@ -9,27 +9,27 @@ namespace GameStates
         private BoardGameController gameController;
         //Main GUI Controller
         private GUIController GUI;
-        //Main Camera Object
-        private GameObject MainCam;
 
         public BeforePlayState(MonoBehaviour parent) : base(parent)
         {
             //Assign the parent script
             gameController = (BoardGameController)parent;
             //Get Main Cam
-            MainCam = gameController.MainCam;
             //Set the Cam Rotater to true. Rotates camera around the board
-            MainCam.GetComponent<CamController>().CamRotater = true;
+            gameController.camController.ToggleCamControls(false, true);
+            Debug.Log("Before Game Start");
+
         }
 
         // Update is called once per frame
         public override void Update()
         { 
             //If game has begun, disable the camera rotater and set the next state
+            //STATE CHANGE
             if(gameController.GameHasBegun)
             {
                 //Disables board game cam rotater
-                MainCam.GetComponent<CamController>().CamRotater = false;
+                gameController.camController.ToggleCamControls(false, false);
                 //Sets next state to player select
                 gameController.currentState = new PlayerSelectState(gameController);
             }
