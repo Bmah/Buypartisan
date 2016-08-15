@@ -47,6 +47,7 @@ public class CamController : MonoBehaviour
 
     private Vector3 negScrollDistance;
     private Vector3 NewCamPos;
+    private Vector3 camMove;
 
     // Use this for initialization
     void Start()
@@ -87,21 +88,19 @@ public class CamController : MonoBehaviour
 
         //If player has control of the camera
         if (ControlEnabled)
-        { 
-            if (Input.GetMouseButtonDown(0))
-            {
-                LastMousePos = Input.mousePosition;
-            }
-            if(Input.GetMouseButton(0))
-            {
-                Vector3 deltaMovement = Camera.main.ScreenToViewportPoint(Input.mousePosition - LastMousePos);
-                Vector3 camMove = new Vector3(deltaMovement.x * MouseSensitivity, 0, deltaMovement.y * MouseSensitivity);
-                this.transform.Translate(camMove, Space.World);
-                LastMousePos = Input.mousePosition;
-            }
-
-            //NEED TO INCORPORATE ABOVE CODE WITH THE BELOW CODE
-
+        {
+            //if (Input.GetMouseButtonDown(0))
+            //{
+            //    LastMousePos = Input.mousePosition;
+            //}
+            //if(Input.GetMouseButton(0))
+            //{
+            //    Vector3 deltaMovement = Camera.main.ScreenToViewportPoint(Input.mousePosition - LastMousePos);
+            //    camMove = new Vector3(deltaMovement.x * MouseSensitivity, 0, deltaMovement.y * MouseSensitivity);
+            //    CamTarget.position += camMove;
+            //    //this.transform.Translate(camMove, Space.World);
+            //    LastMousePos = Input.mousePosition;
+            //}
 
             //Rotation
             if (Input.GetMouseButton(1))

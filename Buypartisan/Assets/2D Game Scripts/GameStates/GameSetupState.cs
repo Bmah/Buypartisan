@@ -11,7 +11,7 @@ namespace GameStates
         //CAN DO PRESET TEXT FILE OR RANDOM GENERATED
         //TODO: RANDOM GENERATION
 
-        private int MaxVoters = 5;
+        private int NumVoters = 5;
         private float TimeBetweenSpawn = 0.5f;
         private float elapsedTime;
         private Vector3[] VoterLocations = new Vector3[5];
@@ -23,20 +23,28 @@ namespace GameStates
             gameController = (BoardGameController)parent;
             elapsedTime = 0.0f;
             VoterLocationsFile = gameController.VoterLocations;
-            GetVoterLocs();
+            if (gameController.BoardIsReady)
+                GetVoterLocs();
+            else
+                Debug.Log("ERROR BOARD ISN'T READY");
+
+            gameController.Voters = new GameObject[NumVoters];
             Debug.Log("Game Setup");
+
         }
         // Update is called once per frame
         public override void Update()
         {
-            if (!gameController.IsCamMoving)
+            if (!gameController.IsCamMoving && gameController.BoardIsReady)
             {
-                if (elapsedTime > TimeBetweenSpawn && curSpawned < MaxVoters)
+                if (elapsedTime > TimeBetweenSpawn && curSpawned < NumVoters)
                 {
                     Debug.Log("Spawning");
                     elapsedTime = 0;
 
                     GameObject Voter = MonoBehaviour.Instantiate(gameController.VoterObject, VoterLocations[curSpawned], Quaternion.identity) as GameObject;
+                    Voter.GetComponent<Voter>().SetupVoter(gameController, curSpawned);
+                    gameController.Voters[curSpawned] = Voter;
                     if (Voter)
                     {
                         Debug.Log("Spawned Correctly");
@@ -47,7 +55,7 @@ namespace GameStates
                 }
 
                 //STATE CHANGE
-                if (curSpawned >= MaxVoters)
+                if (curSpawned >= NumVoters)
                 {
                     gameController.PlacePlayerCam();
                     gameController.currentState = new PlacePlayerState(gameController);
@@ -58,7 +66,7 @@ namespace GameStates
 
         public void GetVoterLocs()
         {
-            float x, y, z;
+            int x, y, z;
             //Characters that split the lines (like newline)
             var FileSplit = new string[] { "\r\n", "\n", "\r" };
             //Characters that split individual numbers (space or comma)
@@ -69,10 +77,11 @@ namespace GameStates
             for (int i = 0; i < VoterLines.Length; i++)
             {
                 var curLine = VoterLines[i].Split(LineSplit, System.StringSplitOptions.None);
-                float.TryParse(curLine[0], out x);
-                float.TryParse(curLine[1], out y);
-                float.TryParse(curLine[2], out z);
-                VoterLocations[i] = new Vector3(x, y, z);
+                int.TryParse(curLine[0], out x);
+                int.TryParse(curLine[1], out y);
+                int.TryParse(curLine[2], out z);
+                gameController.Board[x, z] = 1;
+                VoterLocations[i] = new Vector3(x + 0.5f, y, z + 0.5f);
                 Debug.Log(VoterLocations[i]);
             }
             

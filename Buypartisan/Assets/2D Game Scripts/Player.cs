@@ -5,10 +5,8 @@ public class Player : MonoBehaviour
 {
     private BoardGameController gameController;
     private int PlayerID;
-    private int curMoney;
     private int curNumVotes;
     private int curSphereSize;
-    private int victoryPoints;
     private bool playerSelected;
 
     private GameObject sphereObject;
@@ -16,8 +14,17 @@ public class Player : MonoBehaviour
     private Renderer sphereRenderer;
 
     public int PartyID;
+    public string PartyName;
     public int StartingMoney;
     public int SphereSize;
+    
+    [HideInInspector]
+    public int CurMoney;
+    [HideInInspector]
+    public int victoryPoints;
+    [HideInInspector]
+    public float Radius;
+
 
     public GameObject PlayerMovementKeys;
 
@@ -46,7 +53,14 @@ public class Player : MonoBehaviour
         TransparantColor.a = 0.2f;
         sphereRenderer.material.SetColor("_Color", TransparantColor);
         sphereObject.transform.localScale = new Vector3(SphereSize, SphereSize, SphereSize);
-        
+        Radius = SphereSize / 20.0f;
+        CurMoney = StartingMoney;
+
+    }
+
+    public void ToggleMovementKeys(bool state)
+    {
+        PlayerMovementKeys.SetActive(state);
     }
 
     public void ToggleSelected()

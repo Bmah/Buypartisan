@@ -27,8 +27,8 @@ namespace GameStates
             gameController.PlayerSelectStartCam();
             ScreenEnabled = false;
             NumOfPlayers = gameController.NumberOfPlayers;
-            gameController.Players = new GameObject[(int)NumOfPlayers];
-            gameController.PlayerPartyMapping = new int[(int)NumOfPlayers];
+            //gameController.Players = new GameObject[(int)NumOfPlayers];
+            //gameController.PlayerPartyMapping = new int[(int)NumOfPlayers];
             CurrentPlayerSelect = 0;
             Debug.Log("Game Setup");
         }
@@ -39,7 +39,7 @@ namespace GameStates
             if(!gameController.IsCamMoving && !ScreenEnabled)
             {
                 //Enable player select info
-                gameController.EnablePlayerSelect();
+                gameController.TogglePlayerSelect(true);
                 ScreenEnabled = true;
             }
 
@@ -83,7 +83,7 @@ namespace GameStates
             if(CurrentPlayerSelect >= NumOfPlayers)
             {
                 //FINISHED PLAYER SELECT
-                gameController.DisablePlayerSelect();
+                gameController.TogglePlayerSelect(false);
                 gameController.PlayerSelectEndCam();
                 gameController.currentState = new GameSetupState(gameController);
 
