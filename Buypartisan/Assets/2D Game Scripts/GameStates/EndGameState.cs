@@ -1,15 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EndGameState : MonoBehaviour {
+namespace GameStates
+{
+    public class EndGameState : AbstractGameObjectState
+    {
+        BoardGameController gameController;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+        public EndGameState(MonoBehaviour parent) : base(parent)
+        {
+            gameController = (BoardGameController)parent;
+            gameController.ToggleEndOfGame(true);
+        }
+
+        // Update is called once per frame
+        public override void Update()
+        {
+
+        }
+
+    }
 }

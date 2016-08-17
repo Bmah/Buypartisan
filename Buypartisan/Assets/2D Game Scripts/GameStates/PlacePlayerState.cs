@@ -34,6 +34,9 @@ namespace GameStates
                     GameObject NewPlayer =  MonoBehaviour.Instantiate(gameController.PlayerPrefabs[partyToSelect], new Vector3(0.5f, 0.1f, 0.5f), Quaternion.identity) as GameObject;
                     NewPlayer.GetComponent<Player>().SetupPlayer(currentPlayer, gameController);
                     gameController.Players[currentPlayer] = NewPlayer;
+
+                    NewPlayer.transform.parent = gameController.PlayerContainer.transform;
+
                     Player = NewPlayer;
                     CurrentPlayerHasSpawned = true;
                     PlayerIsPlaced = false;

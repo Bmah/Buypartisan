@@ -32,7 +32,7 @@ namespace GameStates
 
             currentPlayer = 0;
             CurRound = 0;
-            CurElection = 1;
+            CurElection = gameController.CurrentElection;
 
             ActionIsReady = false;
             currentAction = null;
@@ -51,10 +51,20 @@ namespace GameStates
         {
             if(CurRound >= gameController.NumOfRounds)
             {
-                gameController.currentState = new GameStates.EndOfElectionState(gameController);
-                gameController.ToggleInfoDisplay(false);
-                gameController.ToggleActionDisplay(false);
-                gameController.ToggleTurnPanel(false);
+                if (gameController.CurrentElection >= gameController.NumOfElections)
+                {
+                    gameController.ToggleInfoDisplay(false);
+                    gameController.ToggleActionDisplay(false);
+                    gameController.ToggleTurnPanel(false);
+                    gameController.currentState = new GameStates.EndGameState(gameController);
+                }
+                else
+                {
+                    gameController.currentState = new GameStates.EndOfElectionState(gameController);
+                    gameController.ToggleInfoDisplay(false);
+                    gameController.ToggleActionDisplay(false);
+                    gameController.ToggleTurnPanel(false);
+                }
             }
 
             if (gameController.NumActionSelected >= 0)
@@ -124,17 +134,20 @@ namespace GameStates
                 for (int p = 0; p < Players.Length; p++)
                 {
                     CurrentPlayerDist = (Voters[v].transform.position - Players[p].transform.position).magnitude;
-                    Debug.Log("Voter " + v + " Dist from player " + p + " " + CurrentPlayerDist);
+                    //Debug.Log("Voter " + v + " Dist from player " + p + " " + CurrentPlayerDist);
                     //Debug.Log("Cur Dist " + Voters[v].GetComponent<Voter>().DistanceToPlayer);
                     if (CurrentPlayerDist < Players[p].GetComponent<Player>().Radius && CurrentPlayerDist < Voters[v].GetComponent<Voter>().DistanceToPlayer) 
                     {
                         //IF THE VOTER IS WITHIN THE RADIUS OF SPHERE
-                        Debug.Log("Changing Voter " + v + " to Party " + p);
+
+                        //Debug.Log("Changing Voter " + v + " to Party " + p);
                         Voters[v].GetComponent<Voter>().ChangeParty(p, CurrentPlayerDist);
                     }
                     else
                     {
-                        Voters[v].GetComponent<Voter>().ChangeParty(-1, int.MaxValue);
+                     //   Debug.Log("Changing Voter " + Voters[v].GetComponent<Voter>().VoterNum + " to default - 1");
+                     //   Voters[v].GetComponent<Voter>().ChangeParty(-1, int.MaxValue);
+                     // Stay Default
                     }
                 }
             }
@@ -142,7 +155,10 @@ namespace GameStates
 
         public void TallyVotes()
         {
-
+            for(int p = 0; p < gameController.NumberOfPlayers; p++)
+            {
+                gameController.Players[p].GetComponent<Player>().Tally();
+            }
         }
 
 

@@ -40,6 +40,12 @@ public class BoardGameController : MonoBehaviour
     public GameObject TurnPanel;
     public GameObject ElectionResultsScreen;
     public GameObject GameOverScreen;
+    [Header("End Round/Game Texsts")]
+    public GameObject Player1_Text;
+    public GameObject Player2_Text;
+    public GameObject Player3_Text;
+    public GameObject Winner_Text;
+    public GameObject Values_Text;
 
     //////////////////////////////////////////////////
     // Game Settings                                //
@@ -50,6 +56,7 @@ public class BoardGameController : MonoBehaviour
     public TextAsset VoterLocations;
     public int NumOfRounds = 5;
     public int NumOfElections = 2;
+    public int MaxVoters = 5;
 
     //////////////////////////////////////////////////
     // Various Variables                            //
@@ -57,6 +64,7 @@ public class BoardGameController : MonoBehaviour
     [Header("Misc")]
     public Transform[] CamPositions = new Transform[2];
     public GameObject VoterContainer;
+    public GameObject PlayerContainer;
     public LayerMask RayMask;
 
 
@@ -72,6 +80,8 @@ public class BoardGameController : MonoBehaviour
     public GameObject[] Players;
     [HideInInspector]
     public GameObject[] Voters;
+    [HideInInspector]
+    public int CurrentElection;
     //TODO: MAKE BOARD SIZE VARIABLE
     [HideInInspector]
     public int[,] Board = new int[10,10];
@@ -91,6 +101,8 @@ public class BoardGameController : MonoBehaviour
     public int NumActionSelected = -1;
     [HideInInspector]
     public bool endTurn = false;
+    [HideInInspector]
+    public bool continueGame = false;
 
     // Use this for initialization
     void Start ()
@@ -100,8 +112,12 @@ public class BoardGameController : MonoBehaviour
         ToggleActionDisplay(false);
         ToggleInfoDisplay(false);
         ToggleTurnPanel(false);
+        ToggleEndOfElection(false);
+        ToggleEndOfGame(false);
         ToggleStartingScreen(true);
+
         NumberOfPlayers = 2;
+        CurrentElection = 1;
         //When game starts, state is set to Player Select State
         currentState = new GameStates.BeforePlayState(this);
         StartCoroutine(InitBoard());
@@ -196,6 +212,16 @@ public class BoardGameController : MonoBehaviour
         TurnPanel.SetActive(state);
     }
 
+    public void ToggleEndOfElection(bool state)
+    {
+        ElectionResultsScreen.SetActive(state);
+    }
+
+    public void ToggleEndOfGame(bool state)
+    {
+        GameOverScreen.SetActive(state);
+    }
+
     //////////////////////////////////////////////////
     // Button Functions                             //
     //////////////////////////////////////////////////
@@ -208,6 +234,11 @@ public class BoardGameController : MonoBehaviour
     public void EndTurn()
     {
         endTurn = true;
+    }
+
+    public void ContinueGame()
+    {
+        continueGame = true;
     }
 
     //////////////////////////////////////////////////

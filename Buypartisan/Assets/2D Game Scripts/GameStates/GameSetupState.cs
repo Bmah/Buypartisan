@@ -28,6 +28,8 @@ namespace GameStates
             else
                 Debug.Log("ERROR BOARD ISN'T READY");
 
+            NumVoters = gameController.MaxVoters;
+
             gameController.Voters = new GameObject[NumVoters];
             Debug.Log("Game Setup");
 

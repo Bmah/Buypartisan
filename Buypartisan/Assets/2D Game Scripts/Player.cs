@@ -4,9 +4,10 @@ using System.Collections;
 public class Player : MonoBehaviour
 {
     private BoardGameController gameController;
-    private int PlayerID;
+    public int PlayerID;
     private int curNumVotes;
     private int curSphereSize;
+    private int numVoters;
     private bool playerSelected;
 
     private GameObject sphereObject;
@@ -17,6 +18,8 @@ public class Player : MonoBehaviour
     public string PartyName;
     public int StartingMoney;
     public int SphereSize;
+
+    public Hashtable AlignedVoters = new Hashtable();
     
     [HideInInspector]
     public int CurMoney;
@@ -56,7 +59,42 @@ public class Player : MonoBehaviour
         Radius = SphereSize / 20.0f;
         CurMoney = StartingMoney;
 
+        numVoters = 0;
+
     }
+
+    public void AsignNewVoter(GameObject voter)
+    {
+        Debug.Log("Player " + PartyName + " got new voter, ID: " + voter.GetComponent<Voter>().VoterNum);
+        AlignedVoters.Add(voter.GetComponent<Voter>().VoterNum, voter);
+        numVoters++;
+    }
+
+    public void DeleteVoter(GameObject voter)
+    {
+        Debug.Log("Deleting Voter for party: " + PartyName);
+        if(AlignedVoters.Contains(voter.GetComponent<Voter>().VoterNum))
+        {
+            AlignedVoters.Remove(voter.GetComponent<Voter>().VoterNum);
+        }
+        else
+        {
+            Debug.LogError("Voter didn't exist");
+        }
+    }
+
+    public void Tally()
+    {
+        //Debug.Log("Tallying Votes for " + PartyName + ". Has " + AlignedVoters.Count + " voters");
+        foreach(DictionaryEntry voter in AlignedVoters)
+        {
+            GameObject v = (GameObject)voter.Value;
+            CurMoney += v.GetComponent<Voter>().money;
+            victoryPoints += v.GetComponent<Voter>().votes;
+            Debug.Log("Player: " + PartyName + " got $" + v.GetComponent<Voter>().money + " and " + v.GetComponent<Voter>().votes + " votes");
+        }
+    }
+
 
     public void ToggleMovementKeys(bool state)
     {

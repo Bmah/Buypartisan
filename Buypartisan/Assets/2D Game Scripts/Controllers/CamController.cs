@@ -27,6 +27,8 @@ public class CamController : MonoBehaviour
     public float maxScrollDistance = 15f;
     //Mouse Sensitivity for panning
     public float MouseSensitivity = 1.0f;
+    //Cam Sensitivity
+    public float CamMoveSpeed = 8.0f;
 
     //Current Camera X Angle
     private float CamAngle_X = 0.0f;
@@ -82,26 +84,55 @@ public class CamController : MonoBehaviour
         //camController.rect = new Rect(margin, 0f, 1-margin, 1f);
     }
 
+
+    void Update()
+    {
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    LastMousePos = Input.mousePosition;
+        //}
+        //if (Input.GetMouseButton(0))
+        //{
+        //    Vector3 deltaMovement = Camera.main.ScreenToViewportPoint(Input.mousePosition - LastMousePos);
+        //    camMove = new Vector3(deltaMovement.x * MouseSensitivity, 0, deltaMovement.y * MouseSensitivity);
+        //    CamTarget.position += camMove;
+        //    this.transform.Translate(camMove, Space.Self);
+        //    LastMousePos = Input.mousePosition;
+        //}
+
+        if (ControlEnabled)
+        {
+            if (Input.GetKey("w"))
+            {
+                transform.Translate(new Vector3(0, 0.5f, 0.5f) * Time.deltaTime * CamMoveSpeed);
+                CamTarget.Translate(new Vector3(0, 0.5f, 0.5f) * Time.deltaTime * CamMoveSpeed);
+            }
+            if (Input.GetKey("a"))
+            {
+                transform.Translate(Vector3.left * Time.deltaTime * CamMoveSpeed);
+                CamTarget.Translate(Vector3.left * Time.deltaTime * CamMoveSpeed);
+            }
+            if (Input.GetKey("s"))
+            {
+                transform.Translate(new Vector3(0, -0.5f, -0.5f) * Time.deltaTime * CamMoveSpeed);
+                CamTarget.Translate(new Vector3(0, -0.5f, -0.5f) * Time.deltaTime * CamMoveSpeed);
+            }
+            if (Input.GetKey("d"))
+            {
+                transform.Translate(Vector3.right * Time.deltaTime * CamMoveSpeed);
+                CamTarget.Translate(Vector3.right * Time.deltaTime * CamMoveSpeed);
+            }
+        }
+        
+    }
+
     void LateUpdate()
     {
 
 
         //If player has control of the camera
         if (ControlEnabled)
-        {
-            //if (Input.GetMouseButtonDown(0))
-            //{
-            //    LastMousePos = Input.mousePosition;
-            //}
-            //if(Input.GetMouseButton(0))
-            //{
-            //    Vector3 deltaMovement = Camera.main.ScreenToViewportPoint(Input.mousePosition - LastMousePos);
-            //    camMove = new Vector3(deltaMovement.x * MouseSensitivity, 0, deltaMovement.y * MouseSensitivity);
-            //    CamTarget.position += camMove;
-            //    //this.transform.Translate(camMove, Space.World);
-            //    LastMousePos = Input.mousePosition;
-            //}
-
+        { 
             //Rotation
             if (Input.GetMouseButton(1))
             {
