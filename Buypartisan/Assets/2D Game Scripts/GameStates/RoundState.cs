@@ -7,6 +7,7 @@ namespace GameStates
     public class RoundState : AbstractGameObjectState
     {
         private BoardGameController gameController;
+        private ActionController actionController;
 
         private int currentPlayer;
         private GameObject Player;
@@ -25,10 +26,12 @@ namespace GameStates
         public RoundState(MonoBehaviour parent) : base(parent)
         {
             gameController = (BoardGameController)parent;
+            actionController = gameController.ActionControl;
 
             gameController.ToggleInfoDisplay(true);
             gameController.ToggleActionDisplay(true);
             gameController.ToggleTurnPanel(true);
+            gameController.ToggleTooltipPanel(true);
 
             currentPlayer = 0;
             CurRound = 0;
@@ -43,19 +46,24 @@ namespace GameStates
 
             DisplayInfo = gameController.InfoDisplayScreen.GetComponentsInChildren<Text>();
             UpdateInfoDisplay();
+            gameController.TooltipPanel.GetComponentInChildren<Text>().text = "Select an action to the left.\n Mouse over a voter to see more info.";
 
             DetermineVoterParty();
         }
 
         public override void Update()
         {
-            if(CurRound >= gameController.NumOfRounds)
+
+            UpdateInfoDisplay();
+
+            if (CurRound >= gameController.NumOfRounds)
             {
                 if (gameController.CurrentElection >= gameController.NumOfElections)
                 {
                     gameController.ToggleInfoDisplay(false);
                     gameController.ToggleActionDisplay(false);
                     gameController.ToggleTurnPanel(false);
+                    gameController.ToggleTooltipPanel(false);
                     gameController.currentState = new GameStates.EndGameState(gameController);
                 }
                 else
@@ -64,6 +72,8 @@ namespace GameStates
                     gameController.ToggleInfoDisplay(false);
                     gameController.ToggleActionDisplay(false);
                     gameController.ToggleTurnPanel(false);
+                    gameController.ToggleTooltipPanel(false);
+
                 }
             }
 
@@ -74,18 +84,27 @@ namespace GameStates
                     if (gameController.NumActionSelected == 0)
                     {
                         //currentAction = Instantiate the game object
-                        currentAction = MonoBehaviour.Instantiate(gameController.ActionPrefabs[gameController.NumActionSelected]);
-                        currentAction.GetComponent<Action_0>().Setup(currentPlayer, gameController);
-                        ActionIsReady = true;
+                        if (Player.GetComponent<Player>().CurMoney >= gameController.Action_0_Cost)
+                        {
+                            currentAction = actionController.StartAction(gameController.NumActionSelected, currentPlayer);
+                            ActionIsReady = true;
+                        }
                     }
                     else if (gameController.NumActionSelected == 1)
                     {
-                        ActionIsReady = true;
+                        if (Player.GetComponent<Player>().CurMoney >= gameController.Action_1_Cost)
+                        {
+                            currentAction = actionController.StartAction(gameController.NumActionSelected, currentPlayer);
+                            ActionIsReady = true;
+                        }
                     }
                     else if (gameController.NumActionSelected == 2)
                     {
-
-                        ActionIsReady = true;
+                        if (Player.GetComponent<Player>().CurMoney >= gameController.Action_2_Cost)
+                        {
+                            currentAction = actionController.StartAction(gameController.NumActionSelected, currentPlayer);
+                            ActionIsReady = true;
+                        }
                     }
                     else
                     {
@@ -112,13 +131,12 @@ namespace GameStates
                     currentPlayer = 0;
                     Player = Players[currentPlayer];
                     CurRound++;
-                    UpdateInfoDisplay();
+                    
                 }
                 else
                 {
                     //Next player
                     Player = Players[currentPlayer];
-                    UpdateInfoDisplay();
                 }
                 gameController.endTurn = false;
             }

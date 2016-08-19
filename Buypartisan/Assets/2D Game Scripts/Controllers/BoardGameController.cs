@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 //Tyler Welsh - 2016
@@ -17,6 +19,7 @@ public class BoardGameController : MonoBehaviour
     [Header("Controllers")]
     public GUIController GUI;
     public CamController camController;
+    public ActionController ActionControl;
 
     //////////////////////////////////////////////////
     // Game Objects                                 //
@@ -25,8 +28,8 @@ public class BoardGameController : MonoBehaviour
     public GameObject MainCam;
     public GameObject[] PlayerSelectGameModels;
     public GameObject[] PlayerPrefabs;
-    public GameObject[] ActionPrefabs;
     public GameObject VoterObject;
+    public GameObject MovementKeys;
 
     //////////////////////////////////////////////////
     // UI Objects                                   //
@@ -38,6 +41,8 @@ public class BoardGameController : MonoBehaviour
     public GameObject InfoDisplayScreen;
     public GameObject ActionDisplayScreen;
     public GameObject TurnPanel;
+    public GameObject TooltipPanel;
+    public GameObject ConfirmActionPanel;
     public GameObject ElectionResultsScreen;
     public GameObject GameOverScreen;
     [Header("End Round/Game Texsts")]
@@ -57,6 +62,14 @@ public class BoardGameController : MonoBehaviour
     public int NumOfRounds = 5;
     public int NumOfElections = 2;
     public int MaxVoters = 5;
+
+    //TODO : MOVE TO A TEXT FILE
+    [HideInInspector]
+    public float Action_0_Cost = 100;
+    [HideInInspector]
+    public float Action_1_Cost = 100;
+    [HideInInspector]
+    public float Action_2_Cost = 150;
 
     //////////////////////////////////////////////////
     // Various Variables                            //
@@ -103,23 +116,14 @@ public class BoardGameController : MonoBehaviour
     public bool endTurn = false;
     [HideInInspector]
     public bool continueGame = false;
+    private string prevText;
 
     // Use this for initialization
     void Start ()
     {
-        TogglePlayerSelect(false);
-        ToggleConfirmPlacement(false);
-        ToggleActionDisplay(false);
-        ToggleInfoDisplay(false);
-        ToggleTurnPanel(false);
-        ToggleEndOfElection(false);
-        ToggleEndOfGame(false);
-        ToggleStartingScreen(true);
-
-        NumberOfPlayers = 2;
-        CurrentElection = 1;
         //When game starts, state is set to Player Select State
         currentState = new GameStates.BeforePlayState(this);
+        prevText = "";
         StartCoroutine(InitBoard());
     }
 	
@@ -212,6 +216,11 @@ public class BoardGameController : MonoBehaviour
         TurnPanel.SetActive(state);
     }
 
+    public void ToggleTooltipPanel(bool state)
+    {
+        TooltipPanel.SetActive(state);
+    }
+
     public void ToggleEndOfElection(bool state)
     {
         ElectionResultsScreen.SetActive(state);
@@ -220,6 +229,30 @@ public class BoardGameController : MonoBehaviour
     public void ToggleEndOfGame(bool state)
     {
         GameOverScreen.SetActive(state);
+    }
+
+    public void ToggleConfirmAction(bool state)
+    {
+        ConfirmActionPanel.SetActive(state);
+    }
+
+
+    public void ActionTooltipEnter(int actionNum)
+    {
+        Text tooltipText = TooltipPanel.GetComponentInChildren<Text>();
+        prevText = tooltipText.text;
+        if (actionNum == 0)
+            tooltipText.text = "Move yourself one space.\n Cost: XX";
+        else if (actionNum == 1)
+            tooltipText.text = "Action #2";
+        else if (actionNum == 2)
+            tooltipText.text = "Action #3";
+        else
+            tooltipText.text = "ERROR IN EDITOR: ActionTooltipInfo, wrong number sent.";
+    }
+    public void ActionTooltipExit()
+    {
+        TooltipPanel.GetComponentInChildren<Text>().text = prevText;
     }
 
     //////////////////////////////////////////////////
@@ -239,6 +272,16 @@ public class BoardGameController : MonoBehaviour
     public void ContinueGame()
     {
         continueGame = true;
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene("2D Prototype");
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 
     //////////////////////////////////////////////////

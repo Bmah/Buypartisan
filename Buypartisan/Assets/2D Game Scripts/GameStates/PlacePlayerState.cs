@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 namespace GameStates
@@ -19,7 +20,9 @@ namespace GameStates
             gameController = (BoardGameController)parent;
             currentPlayer = 0;
             gameController.camController.ToggleCamControls(true, false);
-            gameController.ToggleConfirmPlacement(true); 
+            gameController.ToggleConfirmPlacement(true);
+            gameController.ToggleTooltipPanel(true);
+            gameController.TooltipPanel.GetComponentInChildren<Text>().text = "Tip: Use arrows around player to move.\n Mouse over a voter to see more info.";
         }
 
         // Update is called once per frame

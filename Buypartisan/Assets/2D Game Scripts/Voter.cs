@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Voter : MonoBehaviour
 {
     private BoardGameController gameController;
+    private string prevText;
 
     public int VoterNum;
 
@@ -64,4 +66,20 @@ public class Voter : MonoBehaviour
         }
     }
 	
+    public void OnMouseEnter()
+    {
+        Debug.Log("Got Mouse Enter");
+
+        Text tooltipText = gameController.TooltipPanel.GetComponentInChildren<Text>();
+        prevText = tooltipText.text;
+        tooltipText.text = "Voter #" + VoterNum + " Votes: " + votes + " Money: " + money;
+        
+    }
+    public void OnMouseExit()
+    {
+        Debug.Log("Got mouse exit");
+
+        Text tooltipText = gameController.TooltipPanel.GetComponentInChildren<Text>();
+        tooltipText.text = prevText;
+    }
 }

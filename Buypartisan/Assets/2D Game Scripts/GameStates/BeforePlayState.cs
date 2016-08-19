@@ -19,6 +19,19 @@ namespace GameStates
             gameController.camController.ToggleCamControls(false, true);
             Debug.Log("Before Game Start");
 
+            gameController.TogglePlayerSelect(false);
+            gameController.ToggleConfirmPlacement(false);
+            gameController.ToggleActionDisplay(false);
+            gameController.ToggleInfoDisplay(false);
+            gameController.ToggleTurnPanel(false);
+            gameController.ToggleTooltipPanel(false);
+            gameController.ToggleEndOfElection(false);
+            gameController.ToggleEndOfGame(false);
+            gameController.ToggleConfirmAction(false);
+            gameController.ToggleStartingScreen(true);
+
+            gameController.NumberOfPlayers = 2;
+            gameController.CurrentElection = 1;
         }
 
         // Update is called once per frame

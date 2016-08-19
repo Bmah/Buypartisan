@@ -12,7 +12,7 @@ namespace GameStates
         private int NumOfPlayers;
         private GameObject[] Players;
 
-        private float TimeUntilDisplay = 3.0f;
+        private float TimeUntilDisplay = 1.5f;
         private float elapsedTime;
 
         private bool notToggled = true;
@@ -28,8 +28,7 @@ namespace GameStates
             NumOfPlayers = gameController.NumberOfPlayers;
             Players = gameController.Players;
 
-            CalculateWinner();
-            UpdateWinnerText();
+            UpdateText();
 
             elapsedTime = 0.0f;
 
@@ -57,10 +56,9 @@ namespace GameStates
             }
         }
 
-        void UpdateWinnerText()
+        void UpdateText()
         {
             Text[] Player1 = gameController.Player1_Text.GetComponentsInChildren<Text>();
-            Debug.Log("Got num text objects: " + Player1.Length);
             Text[] Player2 = gameController.Player2_Text.GetComponentsInChildren<Text>();
             Text[] Player3 = gameController.Player3_Text.GetComponentsInChildren<Text>();
 
@@ -84,21 +82,6 @@ namespace GameStates
 
         }
 
-        void CalculateWinner()
-        {
-            int curWinner = -1;
-            int highestVotes = -1;
 
-            for(int p = 0; p < NumOfPlayers; p++)
-            {
-                Player curPlayer = Players[p].GetComponent<Player>();
-                if(curPlayer.victoryPoints > highestVotes)
-                {
-                    curWinner = curPlayer.PlayerID;
-                    highestVotes = curPlayer.victoryPoints;
-                    Debug.Log("Cur Winnner Is: " + curWinner);
-                }
-            }
-        }
     }
 }
