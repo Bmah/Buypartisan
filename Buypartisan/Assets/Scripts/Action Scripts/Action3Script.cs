@@ -15,7 +15,7 @@ public class Action3Script : MonoBehaviour {
 	public GameObject inputManager; //this is the input manager varibale. Obtained from the PlayerTurnManager
 	private GameObject[] players; //array which houses the players. Obtained from the Game Controller
 	public GameObject uiController; //this is the UI controller variable. Obtained from the scene
-    private GameObject visualAid;
+    //private GameObject visualAid;
 	//Brian Mah
 	private RandomEventControllerScript eventController;
 
@@ -90,11 +90,11 @@ public class Action3Script : MonoBehaviour {
 		gameController = GameObject.FindWithTag ("GameController");
 		inputManager = GameObject.FindWithTag ("InputManager");
 		uiController = GameObject.Find ("UI Controller");
-        visualAid = GameObject.FindWithTag("VisualAidManager");
+        //visualAid = GameObject.FindWithTag("VisualAidManager");
 		
 		if (gameController != null) {
 			//			voters = gameController.GetComponent<GameController> ().voters;
-			players = gameController.GetComponent<GameController> ().players;
+			players = gameController.GetComponent<GameController> ().Players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
 			SFXVolume = gameController.GetComponent<GameController> ().SFXVolume;
 		} else {
@@ -102,7 +102,7 @@ public class Action3Script : MonoBehaviour {
 		}
 
 		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
-		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+		currentPlayer = gameController.GetComponent<GameController> ().CurrentPlayerTurn;
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
 
 		//gets the original postion of the player who is spawning a shadow positon
@@ -112,7 +112,7 @@ public class Action3Script : MonoBehaviour {
 		semiTestedPosition = originalPosition;
 		
 		//gets the number of spawned players
-		playersSpawned = gameController.GetComponent<GameController> ().playersSpawned;
+		playersSpawned = gameController.GetComponent<GameController> ().NumPlayersSpawned;
 		
 		//Disables the Action UI buttons
 		uiController.GetComponent<UI_Script>().disableActionButtons();
@@ -150,7 +150,7 @@ public class Action3Script : MonoBehaviour {
 		if (players [currentPlayer].GetComponent<PlayerVariables> ().money >= (baseCost * costMultiplier)) {
 
 			totalCost = (int)(baseCost * costMultiplier);
-            visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject);
+            //visualAid.GetComponent<VisualAidAxisManangerScript>().Attach(this.gameObject);
 		}
         else
         {
@@ -170,7 +170,7 @@ public class Action3Script : MonoBehaviour {
 		if (cancelButton) 
 		{
 			//handles early canceling(Alex Jungroth)
-            visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
+            //visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 			uiController.GetComponent<UI_Script>().toggleActionButtons();
 			Destroy (marker);
 			Destroy(gameObject);
@@ -431,7 +431,7 @@ public class Action3Script : MonoBehaviour {
                 }//else
 
 				//
-				shadowRenderer.material = players[currentPlayer].GetComponent<PlayerVariables>().transparentTexture;
+				shadowRenderer.material = players[currentPlayer].GetComponent<PlayerVariables>().PlayerTransparentTexture;
 
 				//sets the shadow position's color equal to the player's render color
 				shadowRenderer.material.color = playerRenderer.material.color;
@@ -459,7 +459,7 @@ public class Action3Script : MonoBehaviour {
 	}
 	
 	void EndAction() {
-        visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
+        //visualAid.GetComponent<VisualAidAxisManangerScript>().Detach();
 		uiController.GetComponent<UI_Script>().toggleActionButtons();
 		this.transform.parent.GetComponent<PlayerTurnsManager> ().IncreaseCostMultiplier();
 
@@ -476,7 +476,7 @@ public class Action3Script : MonoBehaviour {
 		players[currentPlayer].GetComponent<PlayerVariables>().money -= totalCost; // Money is subtracted
 		//puts the current player and the event number into the action counter of the event controller
 		//Brian Mah
-		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [3]++; // the second number should be the number of the action!
+		eventController.actionCounter [gameController.GetComponent<GameController>().CurrentPlayerTurn] [3]++; // the second number should be the number of the action!
 
 		//updates the tv so the users know whose turn it is (Alex Jungroth)
 		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +

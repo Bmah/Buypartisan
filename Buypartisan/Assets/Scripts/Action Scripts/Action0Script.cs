@@ -56,8 +56,8 @@ public class Action0Script : MonoBehaviour {
 		uiController.GetComponent<UI_Script>().activateAction0UI();
 		//Obtains the voter and player array from the gameController
 		if (gameController != null) {
-			voters = gameController.GetComponent<GameController> ().voters;
-			players = gameController.GetComponent<GameController> ().players;
+			voters = gameController.GetComponent<GameController> ().Voters;
+			players = gameController.GetComponent<GameController> ().Players;
 			eventController = gameController.GetComponent<GameController> ().randomEventController;
 			SFXVolume = gameController.GetComponent<GameController> ().SFXVolume;
 		} else {
@@ -74,7 +74,7 @@ public class Action0Script : MonoBehaviour {
 		//that will crash the game (Alex Jungroth)
 
 		//Get's whose turn it is from the gameController. Then checks if he has enough money to perform the action
-		currentPlayer = gameController.GetComponent<GameController> ().currentPlayerTurn;
+		currentPlayer = gameController.GetComponent<GameController> ().CurrentPlayerTurn;
 		costMultiplier = this.transform.parent.GetComponent<PlayerTurnsManager> ().costMultiplier;
 
 		this.transform.position = voters [selectedVoter].transform.position;
@@ -184,7 +184,7 @@ public class Action0Script : MonoBehaviour {
 		players [currentPlayer].GetComponent<PlayerVariables> ().money -= totalCost;  // Money is subtracted
 		//puts the current player and the event number into the action Counter of the event controller
 		//Brian Mah
-		eventController.actionCounter [gameController.GetComponent<GameController>().currentPlayerTurn] [0]++; // the second number should be the number of the action!
+		eventController.actionCounter [gameController.GetComponent<GameController>().CurrentPlayerTurn] [0]++; // the second number should be the number of the action!
 
 		//updates the tv so the users know whose turn it is (Alex Jungroth)
 		uiController.GetComponent<UI_Script>().alterTextBox("It is the " + players[currentPlayer].GetComponent<PlayerVariables>().politicalPartyName +

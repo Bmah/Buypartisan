@@ -1,0 +1,2 @@
+At the end of each round, there is a chance for a random event to trigger. 
+TODO: RANDOM EVENTS NEED CHANGING / TUNING FOR MORE EXPLANATION. UNFINISHED

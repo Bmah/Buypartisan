@@ -1,0 +1,3 @@
+At the end of XXXX number of rounds, there is an election. The player who has accrued the most votes will win that election.
+Victory points are allocated to the players depending on where they landed on the leaderboard.
+TODO: MARIO PARTY STYLE VICTORY POINTS? MOST MONEY, MOST VOTES SHOULD REWARD POINTS. THIS IS A GAME.

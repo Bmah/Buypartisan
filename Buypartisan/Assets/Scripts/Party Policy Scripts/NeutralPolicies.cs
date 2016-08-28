@@ -54,49 +54,49 @@ public class NeutralPolicies : MonoBehaviour {
 		for(int i = 0; i < gameController.NumVoters; i++) 
 		{
 			//sets the temporary variable equal to the voter's current position
-			temp = gameController.voters[i].transform.position;
+			temp = gameController.Voters[i].transform.position;
 
 			if(gameController.gridSize%even == odd)
 			{
 				//if the grid size is odd do these checks
-				if(gameController.voters[i].transform.position.x > (gameController.gridSize/even))
+				if(gameController.Voters[i].transform.position.x > (gameController.gridSize/even))
 				{
 					temp -= new Vector3(1,0,0);
 
 					if((temp.x > 0) && (overlapCheck(temp)))
 					{
-						gameController.voters[i].transform.position = temp;
+						gameController.Voters[i].transform.position = temp;
 					}
 				}
-				else if(gameController.voters[i].transform.position.x < (gameController.gridSize/even) - half)
+				else if(gameController.Voters[i].transform.position.x < (gameController.gridSize/even) - half)
 				{
 					temp += new Vector3(1,0,0);
 
 					if((temp.x < gameController.gridSize - 1) && (overlapCheck(temp)))
 					{
-						gameController.voters[i].transform.position = temp;
+						gameController.Voters[i].transform.position = temp;
 					}
 				}
 			}
 			else
 			{
 				//the grid size is even do these checks
-				if(gameController.voters[i].transform.position.x > (gameController.gridSize/even))
+				if(gameController.Voters[i].transform.position.x > (gameController.gridSize/even))
 				{
 					temp -= new Vector3(1,0,0);
 					
 					if((temp.x > 0) && (overlapCheck(temp)))
 					{
-						gameController.voters[i].transform.position = temp;
+						gameController.Voters[i].transform.position = temp;
 					}
 				}
-				else if(gameController.voters[i].transform.position.x < (gameController.gridSize/even) - odd)
+				else if(gameController.Voters[i].transform.position.x < (gameController.gridSize/even) - odd)
 				{
 					temp += new Vector3(1,0,0);
 
 					if((temp.x < gameController.gridSize - 1) && (overlapCheck(temp)))
 					{
-						gameController.voters[i].transform.position = temp;
+						gameController.Voters[i].transform.position = temp;
 					}//if
 				}//else
 			}//else
@@ -109,50 +109,50 @@ public class NeutralPolicies : MonoBehaviour {
 		for(int i = 0; i < gameController.NumVoters; i++) 
 		{
 			//sets the temporary variable equal to the voter's current position
-			temp = gameController.voters[i].transform.position;
+			temp = gameController.Voters[i].transform.position;
 
 			if(gameController.gridSize%even == odd)
 			{
 				//if the grid size is odd do these checks
-				if(gameController.voters[i].transform.position.y > (gameController.gridSize/even))
+				if(gameController.Voters[i].transform.position.y > (gameController.gridSize/even))
 				{
 					temp -= new Vector3(0,1,0);
 					
 					if((temp.y > 0) && (overlapCheck(temp)))
 					{
-						gameController.voters[i].transform.position = temp;
+						gameController.Voters[i].transform.position = temp;
 					}
 				}
-				else if(gameController.voters[i].transform.position.y < (gameController.gridSize/even) - half)
+				else if(gameController.Voters[i].transform.position.y < (gameController.gridSize/even) - half)
 				{
 					
 					temp += new Vector3(0,1,0);
 					
 					if((temp.y < gameController.gridSize - 1) && (overlapCheck(temp)))
 					{
-						gameController.voters[i].transform.position = temp;
+						gameController.Voters[i].transform.position = temp;
 					}
 				}
 			}
 			else
 			{
 				//the grid size is even do these checks
-				if(gameController.voters[i].transform.position.y > (gameController.gridSize/even))
+				if(gameController.Voters[i].transform.position.y > (gameController.gridSize/even))
 				{
 					temp -= new Vector3(0,1,0);
 					
 					if((temp.y > 0) && (overlapCheck(temp)))
 					{
-						gameController.voters[i].transform.position = temp;
+						gameController.Voters[i].transform.position = temp;
 					}
 				}
-				else if(gameController.voters[i].transform.position.y < (gameController.gridSize/even) - odd)
+				else if(gameController.Voters[i].transform.position.y < (gameController.gridSize/even) - odd)
 				{
 					temp += new Vector3(0,1,0);
 					
 					if((temp.y < gameController.gridSize - 1) && (overlapCheck(temp)))
 					{
-						gameController.voters[i].transform.position = temp;
+						gameController.Voters[i].transform.position = temp;
 					}//if
 				}//else
 			}//else
@@ -165,50 +165,50 @@ public class NeutralPolicies : MonoBehaviour {
 		for(int i = 0; i < gameController.NumVoters; i++) 
 		{
 			//sets the temporary variable equal to the voter's current position
-			temp = gameController.voters[i].transform.position;
+			temp = gameController.Voters[i].transform.position;
 
 			if(gameController.gridSize%even == odd)
 			{
 				//if the grid size is odd do these checks
-				if(gameController.voters[i].transform.position.z > (gameController.gridSize/even))
+				if(gameController.Voters[i].transform.position.z > (gameController.gridSize/even))
 				{
 					temp -= new Vector3(0,0,1);
 					
 					if((temp.z > 0) && (overlapCheck(temp)))
 					{
-						gameController.voters[i].transform.position = temp;
+						gameController.Voters[i].transform.position = temp;
 					}
 				}
-				else if(gameController.voters[i].transform.position.z < (gameController.gridSize/even) - half)
+				else if(gameController.Voters[i].transform.position.z < (gameController.gridSize/even) - half)
 				{
 					
 					temp += new Vector3(0,0,1);
 					
 					if((temp.z < gameController.gridSize - 1) && (overlapCheck(temp)))
 					{
-						gameController.voters[i].transform.position = temp;
+						gameController.Voters[i].transform.position = temp;
 					}
 				}
 			}
 			else
 			{
 				//the grid size is even do these checks
-				if(gameController.voters[i].transform.position.z > (gameController.gridSize/even))
+				if(gameController.Voters[i].transform.position.z > (gameController.gridSize/even))
 				{
 					temp -= new Vector3(0,0,1);
 					
 					if((temp.z > 0) && (overlapCheck(temp)))
 					{
-						gameController.voters[i].transform.position = temp;
+						gameController.Voters[i].transform.position = temp;
 					}
 				}
-				else if(gameController.voters[i].transform.position.z < (gameController.gridSize/even) - odd)
+				else if(gameController.Voters[i].transform.position.z < (gameController.gridSize/even) - odd)
 				{
 					temp += new Vector3(0,0,1);
 					
 					if((temp.z < gameController.gridSize - 1) && (overlapCheck(temp)))
 					{
-						gameController.voters[i].transform.position = temp;
+						gameController.Voters[i].transform.position = temp;
 					}//if
 				}//else
 			}//else
@@ -222,7 +222,7 @@ public class NeutralPolicies : MonoBehaviour {
 	{
 		for(int i = 0; i < gameController.NumVoters; i++)
 		{
-			if(temp == gameController.voters[i].transform.position)
+			if(temp == gameController.Voters[i].transform.position)
 			{
 				return false;
 			}

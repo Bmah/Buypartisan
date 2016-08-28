@@ -1,0 +1,6 @@
+Welcome to Buypartisan! (FIRST DRAFT TUTORIAL - TYLER WELSH)
+The goal of the game is to accumulate the most victory points by the end of Buypartisan.
+You obtain victory points by winning elections, (AND OTHER THINGS?).
+You win elections by gathering the most voters (AND OTHER THINGS?).
+Players gain voters by "capturing" them in their sphere of influence, indicated by the sphere of their color.
+Voters also give the player money which can be spent on actions to change the course of their campeign.
