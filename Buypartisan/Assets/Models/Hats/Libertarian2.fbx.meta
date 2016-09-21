@@ -1,17 +1,21 @@
 fileFormatVersion: 2
-guid: 06b8a077426cd9740a19bdc9766a0548
-timeCreated: 1472517014
+guid: c74793d054ad31442a3b0e7e57cdbf87
+timeCreated: 1474420394
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: LibertarianHat
-    7400000: Default Take
-    9500000: //RootNode
+    100000: Camera
+    100002: Lamp
+    100004: Libertarian
+    100006: //RootNode
+    400000: Camera
+    400002: Lamp
+    400004: Libertarian
+    400006: //RootNode
+    2300000: Libertarian
+    3300000: Libertarian
+    4300000: Libertarian
   materials:
     importMaterials: 1
     materialName: 0
@@ -19,7 +23,7 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 
@@ -70,7 +74,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

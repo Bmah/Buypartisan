@@ -1,17 +1,21 @@
 fileFormatVersion: 2
-guid: 4afc72d2a5fe36a44aa20186ac44037f
-timeCreated: 1472516961
+guid: f3356c5d70421494db73f53bfc1a69db
+timeCreated: 1474419142
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
+    100000: Camera
+    100002: //RootNode
+    100004: Lamp
+    100006: Sphere
+    400000: Camera
+    400002: //RootNode
+    400004: Lamp
+    400006: Sphere
+    2300000: Sphere
+    3300000: Sphere
     4300000: Sphere
-    7400000: Default Take
-    9500000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -19,7 +23,7 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 
@@ -70,7 +74,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
